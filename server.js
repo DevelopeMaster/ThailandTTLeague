@@ -1,4 +1,4 @@
-const browserSync = require('browser-sync');
+// const browserSync = require('browser-sync');
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const app = express();

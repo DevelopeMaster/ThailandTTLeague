@@ -1,3 +1,5 @@
+"browser-sync": "^3.0.2",
+
 const cities = [
   { english: "Bangkok", russian: "Бангкок", thai: "กรุงเทพฯ" },
   { english: "Chiang Mai", russian: "Чиангмай", thai: "เชียงใหม่" },

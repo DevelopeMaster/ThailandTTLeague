@@ -10,7 +10,8 @@
     "build-css": "npm run sass && npm run minify-css",
     "watch-css": "nodemon -e sass -x \"npm run build-css\"",
     "sync": "node server.js",
-    "start-dev": "concurrently  \"npm run sync\" \"npm run watch-css\""
+    "start-dev": "concurrently  \"npm run sync\" \"npm run watch-css\"",
+    "start": "npm run sync"
   },
   "author": "Ohar O.",
   "license": "ISC",

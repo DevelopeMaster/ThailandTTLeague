@@ -1,0 +1,12 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Feather Icons / globe" clip-path="url(#clip0_1135_39220)">
+<path id="Vector" d="M9.9974 18.3327C14.5998 18.3327 18.3307 14.6017 18.3307 9.99935C18.3307 5.39698 14.5998 1.66602 9.9974 1.66602C5.39502 1.66602 1.66406 5.39698 1.66406 9.99935C1.66406 14.6017 5.39502 18.3327 9.9974 18.3327Z" stroke="#FA6400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M1.66406 10H18.3307" stroke="#FA6400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_3" d="M9.9974 1.66602C12.0818 3.94798 13.2664 6.90938 13.3307 9.99935C13.2664 13.0893 12.0818 16.0507 9.9974 18.3327C7.913 16.0507 6.72844 13.0893 6.66406 9.99935C6.72844 6.90938 7.913 3.94798 9.9974 1.66602V1.66602Z" stroke="#FA6400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_1135_39220">
+<rect width="20" height="20" fill="white"/>
+</clipPath>
+</defs>
+</svg>

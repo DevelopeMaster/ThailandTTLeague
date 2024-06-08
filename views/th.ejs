@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TTLeague</title>
+    <link rel="icon" type="image/png" href="/icons/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
+</head>
+
+<body>
+    <header class="header" id="scroll">
+        <div class="header_wrapper">
+            <div class="container">
+                <div class="header_top">
+                    <div class="header_top_left">
+                        <a class="logo" href="#">
+                            <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                        </a>
+                        <label class="header_top_left_label" id="headerPC">
+                            <input class="header_top_left_input" type="text" placeholder="ค้นหาผู้เล่น">
+                            <button type="submit" class="header_top_left_search">
+                                <img src="/icons/search.svg" alt="search icon">
+                            </button>
+                        </label>
+                    </div>
+                    <div class="header_top_right" id="headerPC">
+                        
+                        <div class="header_langs">
+                            <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                <span class="languageText">ไทย</span>
+                                <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                            </button>
+                            <div class="header_langs_dropbtnLangs_content dropdown">
+                            <a href="#" data-lang="english">ENG</a>
+                            <a href="#" data-lang="russian">RUS</a>
+                            <a href="#" data-lang="thai">ไทย</a>
+                            </div>
+                        </div>
+                        <div class="header_buttons">
+                            <button class="header_btn-log btnLogin">
+                                เข้าสู่ระบบ
+                            </button>
+                            <button class="header_btn-sign btnRegister">
+                                ลงทะเบียน
+                            </button>
+                        </div>
+                    </div>
+                    <button class="burger-btn" id="burger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="header_bottom header_bottom_pc" id="headerPC">
+                <a class="header_bottom_category">
+                    <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        การแข่งขัน
+                    </p>
+                </a>
+                <a class="header_bottom_category">
+                    <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        สโมสร
+                    </p>
+                </a>
+                <a class="header_bottom_category">
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        ผู้เล่น
+                    </p>
+                </a>
+                <a class="header_bottom_category">
+                    <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        เทรนกับโค้ช
+                    </p>
+                </a>
+                <a class="header_bottom_category">
+                    <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        เกี่ยวกับเรา
+                    </p>
+                </a>                
+            </div>
+
+            
+        </div>
+        <div class="header_bottom header_bottom_mob" id="headerMob">
+          <button class="header_bottom_mob_cross">
+              <img  src="/icons/x-circle.svg" alt="cross">
+          </button>
+          
+          <label class="header_top_left_label">
+              <input class="header_top_left_input" type="text" placeholder="Search for a player">
+              <button class="header_top_left_search">
+                  <img src="/icons/search.svg" alt="search icon">
+              </button>
+          </label>
+          <a class="header_bottom_category guest">
+              <p class="header_category-text btnLogin">
+                เข้าสู่ระบบ
+              </p>
+          </a>
+          <a class="header_bottom_category guest">
+              <p class="header_bottom_category-text btnRegister">
+                ลงทะเบียน
+              </p>
+          </a>
+
+          <a class="header_bottom_category logedIn">
+              <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+              <p class="header_bottom_category-text">
+                ประวัติของฉัน
+              </p>
+          </a>
+          <a class="header_bottom_category">
+              <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+              <p class="header_bottom_category-text">
+                การแข่งขัน
+              </p>
+          </a>
+          <a class="header_bottom_category">
+              <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+              <p class="header_bottom_category-text">
+                สโมสร
+              </p>
+          </a>
+          <a class="header_bottom_category">
+              <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+              <p class="header_bottom_category-text">
+                ผู้เล่น
+              </p>
+          </a>
+          <a class="header_bottom_category">
+              <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+              <p class="header_bottom_category-text">
+                เทรนกับโค้ช
+              </p>
+          </a>
+          <a class="header_bottom_category">
+              <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+              <p class="header_bottom_category-text">
+                เกี่ยวกับเรา
+              </p>
+          </a>
+          <div class="header_langs">
+              <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                  <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                  <span class="languageText">ไทย</span>
+                  <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+              </button>
+              <div class="header_langs_dropbtnLangs_content dropdown">
+                  <a href="#" data-lang="EN">ENG</a>
+                  <a href="#" data-lang="RUS">RUS</a>
+                  <a href="#" data-lang="ไทย">ไทย</a>
+              </div>
+          </div>
+          <div class="header_footer_contacts">
+              <div class="header_footer_contacts_title">
+                ติดต่อเรา
+              </div>
+              <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                  thailandttleague@gmail.com
+              </a>
+              <a class="footer_cantacts-phone" href="tel:+66951954053">
+                  +66 95 195 4053
+              </a>
+          </div>
+      </div>
+    </header>
+    <section class="info">
+        <div class="container">
+            <div class="info_wrapper">
+                <div class="info_content">
+                    <h1 class="info_content_title">
+                        THAILAND <br> TABLE TENNIS <br>
+                        LEAGUE
+                    </h1>
+                    <div class="info_content_descr">
+                        Play. Improve. Enjoy
+                    </div>
+                    <a class="info_content_btn" href="#">
+                        เรียนรู้เพิ่มเติม
+                    </a>
+                </div>
+                <!-- <img src="/images/mainPagePicture.png" alt="main background picture"> -->
+            </div>
+        </div>
+    </section>  
+  
+    <section class="tournaments">
+      <div class="container">
+        <div class="contentWrapper">
+          <h2>การแข่งขันที่กำลังจะจัดขึ้น</h2>
+          <div class="upcommingTable">
+            <div class="upcommingTable_header">
+                <span class="tournament_time">วันที่</span>
+                <span class="tournament_club">สโมสร</span>
+                <span class="tournament_restrict">คะแนนขั้นต่ำ</span>
+                <span class="tournament_rating">คะแนนเฉลี่ย</span>
+                <span class="tournament_players">ผู้เล่น</span>
+            </div>
+            <div class="upcommingTable_content">
+              <!-- <div class="upcommingTable_weekday">Среда 29.05.2024</div>
+              <div class="upcommingTable_tournament">
+                <div class="cell tournament_time">11:00</div>
+                <div class="cell tournament_club">
+                  <div class="clubLogo" style="background-image: url('icons/HarricaneTT-logo.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;" ></div>
+                  <span>HurricaneTT</span>
+                </div>
+                <div class="cell tournament_restrict">
+                  <div class="restrictionStatus">
+                    <div class="restriction">277</div>
+                  </div>
+                </div>
+                <div class="cell tournament_rating">368</div>
+                <div class="cell tournament_players">
+                  <img src="/icons/user.svg" alt="person">
+                  <span>8</span>
+                </div>
+              </div> -->
+              <!-- <a class="upcommingTable_btn" href="#">
+                Смотреть еще
+              </a> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="last">
+      <div class="container">
+        <div class="contentWrapper">
+          <h2>ผลการแข่งขันล่าสุด</h2>
+          <div class="last_tournaments">
+            <!-- <div class="last_tournaments_tournament">
+              <div class="last_tournaments_tournament_clubDate">
+                <div class="last_tournaments_tournament_clubDate_date">
+                  <img src="/icons/TTrocket.svg" alt="table tennis rocket">
+                  <span>Today, Tue. 12:30</span>
+                </div>
+                <div class="last_tournaments_tournament_clubDate_club">
+                  <div class="clubLogo" style="background-image: url('/icons/clubslogo/HarricaneTT-logo.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                  <span>HurricaneTT</span>
+                </div>
+
+              </div>
+              <div class="last_tournaments_tournament_winners">
+                <a href="#" class="last_tournaments_tournament_winners_first">
+                  <img src="/icons/gold-medal.svg" alt="gold medal">
+                  <span>Tabakov Oleg</span>
+                </a>
+                <a href="#" class="last_tournaments_tournament_winners_second">
+                  <img src="/icons/silver-medal.svg" alt="silver medal">
+                  <span>Sharshakov Andrey</span>
+                </a>
+                <a href="#" class="last_tournaments_tournament_winners_third">
+                  <img src="/icons/bronze-medal.svg" alt="bronze medal">
+                  <span>Konev Vladimir</span>
+                </a>
+
+              </div>
+              <div class="last_tournaments_tournament_aditInfo">
+                <div class="last_tournaments_tournament_aditInfo_playersLimit">
+                  <div class="last_tournaments_tournament_aditInfo_playersLimit_players">
+                    <img src="/icons/user.svg" alt="person">
+                    <span>8</span>
+                  </div>
+                  <div class="restrictionStatus" style="background: #ADADAD;">
+                    <div class="restriction">277</div>
+                  </div>
+                </div>
+                <a href="#">More details</a>
+              </div>
+            </div>
+
+            <div class="last_tournaments_tournament">
+              <div class="last_tournaments_tournament_clubDate">
+                <div class="last_tournaments_tournament_clubDate_date">
+                  <img src="/icons/TTrocket.svg" alt="table tennis rocket">
+                  <span>Today, Tue. 12:30</span>
+                </div>
+                <div class="last_tournaments_tournament_clubDate_club">
+                  <div class="clubLogo" style="background-image: url('/icons/clubslogo/HarricaneTT-logo.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                  <span>HurricaneTT</span>
+                </div>
+
+              </div>
+              <div class="last_tournaments_tournament_winners">
+                <a href="#" class="last_tournaments_tournament_winners_first">
+                  <img src="/icons/gold-medal.svg" alt="gold medal">
+                  <span>Tabakov Oleg</span>
+                </a>
+                <a href="#" class="last_tournaments_tournament_winners_second">
+                  <img src="/icons/silver-medal.svg" alt="silver medal">
+                  <span>Sharshakov Andrey</span>
+                </a>
+                <a href="#" class="last_tournaments_tournament_winners_third">
+                  <img src="/icons/bronze-medal.svg" alt="bronze medal">
+                  <span>Konev Vladimir</span>
+                </a>
+
+              </div>
+              <div class="last_tournaments_tournament_aditInfo">
+                <div class="last_tournaments_tournament_aditInfo_playersLimit">
+                  <div class="last_tournaments_tournament_aditInfo_playersLimit_players">
+                    <img src="/icons/user.svg" alt="person">
+                    <span>8</span>
+                  </div>
+                  <div class="restrictionStatus" style="background: #ADADAD;">
+                    <div class="restriction">277</div>
+                  </div>
+                </div>
+                <a href="#">More details</a>
+              </div>
+            </div> -->
+
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="clubs">
+      <div class="container">
+        <div class="contentWrapper">
+          <h2>สโมสรเทเบิลเทนนิส</h2>
+          <div class="clubs_content">
+            <!-- <div class="clubs_content_club">
+              <img class="clubs_content_club_logo" src="icons/clubslogo/HarricaneTT.svg" alt="logo">
+              <div class="clubs_content_club_info">
+                <h4 class="clubs_content_club_info_name">TTL-Savel</h4>
+                <span class="clubs_content_club_info_city">Bangkok</span>
+                <a class="clubs_content_club_info_phoneNumber" href="tel:+79951195210">+7(995) 119-5210</a>
+              </div>
+            </div>
+            <div class="clubs_content_club">
+              <img class="clubs_content_club_logo" src="icons/clubslogo/HarricaneTT.svg" alt="logo">
+              <div class="clubs_content_club_info">
+                <h4 class="clubs_content_club_info_name">TTL-Savel</h4>
+                <span class="clubs_content_club_info_city">Bangkok</span>
+                <a class="clubs_content_club_info_phoneNumber" href="tel:+79951195210">+7(995) 119-5210</a>
+              </div>
+            </div>
+            <div class="clubs_content_club">
+              <img class="clubs_content_club_logo" src="icons/clubslogo/HarricaneTT.svg" alt="logo">
+              <div class="clubs_content_club_info">
+                <h4 class="clubs_content_club_info_name">TTL-Savel</h4>
+                <span class="clubs_content_club_info_city">Bangkok</span>
+                <a class="clubs_content_club_info_phoneNumber" href="tel:+79951195210">+7(995) 119-5210</a>
+              </div>
+            </div> -->
+
+          </div>
+          <div class="clubs_down">
+            <button class="header_btn-sign btnRegister clubs_down_btn" fdprocessedid="vvr4zp">
+                เพิ่มสโมสรของคุณ
+            </button>
+            <a href="#">ดูสโมสรทั้งหมด</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="coaches">
+      <div class="container">
+        <div class="contentWrapper">
+          <h2>โค้ชปิงปอง</h2>
+          <div class="coaches_content">
+            <!-- <div class="coaches_content_coach">
+              <div class="coaches_content_coach_wrapLogo">
+                <div class="coaches_content_coach_wrapLogo_logo" style="background-image: url('/icons/playerslogo/petrov_aleksandr.svg'); background-position: 50%; background-size: cover; background-repeat: no-repeat;" alt="logo"></div>
+              </div>
+              <div class="coaches_content_coach_info">
+                <div class="coaches_content_coach_info_rating">754</div>
+                <h4 class="coaches_content_coach_info_name">Petrov Alexander</h4>
+                <div class="coaches_content_coach_info_club">
+                  <span class="coaches_content_coach_info_title">Club:</span>
+                  <p>PHUKET TT CLUB</p>
+                </div>
+                <div class="coaches_content_coach_info_city">
+                  <span class="coaches_content_coach_info_title">City:</span>
+                  <p>Phuket</p>
+                </div>
+              </div>
+            </div>
+            <div class="coaches_content_coach">
+              <div class="coaches_content_coach_wrapLogo">
+                <div class="coaches_content_coach_wrapLogo_logo" style="background-image: url('/icons/playerslogo/petrov_aleksandr.svg'); background-position: 50%; background-size: cover; background-repeat: no-repeat;" alt="logo"></div>
+              </div>
+              <div class="coaches_content_coach_info">
+                <div class="coaches_content_coach_info_rating">754</div>
+                <h4 class="coaches_content_coach_info_name">Petrov Alexander</h4>
+                <div class="coaches_content_coach_info_club">
+                  <span class="coaches_content_coach_info_title">Club:</span>
+                  <p>PHUKET TT CLUB</p>
+                </div>
+                <div class="coaches_content_coach_info_city">
+                  <span class="coaches_content_coach_info_title">City:</span>
+                  <p>Phuket</p>
+                </div>
+              </div>
+            </div>
+            <div class="coaches_content_coach">
+              <div class="coaches_content_coach_wrapLogo">
+                <div class="coaches_content_coach_wrapLogo_logo" style="background-image: url('/icons/playerslogo/petrov_aleksandr.svg'); background-position: 50%; background-size: cover; background-repeat: no-repeat;" alt="logo"></div>
+              </div>
+              <div class="coaches_content_coach_info">
+                <div class="coaches_content_coach_info_rating">754</div>
+                <h4 class="coaches_content_coach_info_name">Petrov Alexander</h4>
+                <div class="coaches_content_coach_info_club">
+                  <span class="coaches_content_coach_info_title">Club:</span>
+                  <p>PHUKET TT CLUB</p>
+                </div>
+                <div class="coaches_content_coach_info_city">
+                  <span class="coaches_content_coach_info_title">City:</span>
+                  <p>Phuket</p>
+                </div>
+              </div>
+            </div> -->
+        </div>
+        <div class="clubs_down">
+          <button id="becomeCoach" class="header_btn-sign btnRegister coaches_down_btn" fdprocessedid="vvr4zp">
+            สมัครเป็นโค้ช
+          </button>
+          <a href="#">ดูโค้ชทั้งหมด</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="footer">
+    <div class="container">
+      <!-- <a class="mobilelogo" href="#">
+        <img class="logo_img" src="/icons/logo.svg" alt="logo">
+      </a> -->
+      <div class="footer_wrap">
+        <a class="logo" href="#">
+          <img class="logo_img" src="/icons/logo.svg" alt="logo">
+        </a>
+        <div class="footer_menu">
+          <div class="footer_menu_path">
+            <a href="#">การแข่งขัน</a>
+            <a href="#">สโมสร</a>
+            <a href="#">ผู้เล่น</a>
+          </div>
+          <div class="footer_menu_path">
+            <a href="#">เทรนกับโค้ช</a>
+            <a href="#">รูปภาพและวิดีโอ</a>
+          </div>
+        </div>
+        <div class="footer_right">
+          <div class="footer_right_contacts">
+            <h4>ติดต่อเรา</h4>
+            <a class="footer_mail" href="mailto:thailandttleague@gmail.com">thailandttleague@gmail.com</a>
+            <a href="tel:+66951954053">+66 95 195 4053</a>
+          </div>
+          <div class="footer_right_social">
+            <h4>ช่องทางออนไลน์</h4>
+            <div class="footer_right_social_list">
+              <a href="#">
+                <img src="/icons/instagram.svg" alt="instagram">
+              </a>
+              <a href="#">
+                <img src="/icons/facebook.svg" alt="facebook">
+              </a>
+              <a href="#">
+                <img src="/icons/line-orange.svg" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <span class="footer_laws">© 2024 Thailand TT League. All Rights Reserved</span>
+    </div>
+  </footer>
+  
+  <div class="adv">
+    <a href="#">
+      <img src="/icons/ads/TTLeague.svg" alt="adv">
+    </a>
+  </div>
+  
+
+
+  <!-- Модальное окно -->
+  <div id="myModal" class="modal">    
+      <div class="modal-content">
+        
+      </div>
+  </div>
+  <script type="module" src="/index.js"></script> 
+</body>
+
+</html>

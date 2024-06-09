@@ -1400,6 +1400,8 @@ h2 {
       font-size: 12px; }
   .modal #signIn {
     width: 100%; }
+  .modal #logIn {
+    width: 100%; }
   .modal .hands_left {
     align-items: center; }
   .modal .hands_right {

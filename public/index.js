@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <input class="checkbox" type="checkbox" id="policy" name="policy" required>
                                         <label for="policy"><a href="\policy">Agree to the processing of personal data</a></label>
                                     </div>
-                                    <button id="signIn class='header_btn-sign btnSbmt' type="submit">Sign in</button>
+                                    <button id="signIn" class='header_btn-sign btnSbmt' type="submit">Sign in</button>
                                 </form>`;
             
             document.body.style = 'overflow: hidden;';
@@ -814,7 +814,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <label for="password">Password*</label>
                                     <input type="password" placeholder="Enter password" id="password" name="password" autocomplete="new-password" required>
                                     <button class='btnFogot' type="button">Forgot your password?</button>
-                                    <button class='header_btn-sign btnSbmt header_btn-login' type="submit">Log in</button>
+                                    <button id="logIn" class='header_btn-sign btnSbmt header_btn-login' type="submit">Log in</button>
                                 </form>`;
             document.body.style = 'overflow: hidden;';
             modal.style.display = "block";

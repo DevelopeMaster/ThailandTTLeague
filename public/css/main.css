@@ -1316,9 +1316,11 @@ h2 {
         height: auto;
         padding: 16px;
         box-sizing: border-box;
-        justify-content: flex-start; }
+        justify-content: flex-start;
+        align-items: center; }
         .coaches_content_coach_wrapLogo {
-          width: 87px; }
+          width: 87px;
+          height: 87px; }
         .coaches_content_coach_info {
           gap: 5px;
           justify-content: flex-start; }

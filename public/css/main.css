@@ -1391,4 +1391,12 @@ h2 {
       .footer_right_social h4 {
         display: none; }
     .footer_laws {
-      font-size: 12px; } }
+      font-size: 12px; }
+  .modal h2 {
+    font-size: 18px; }
+  .modal label {
+    font-size: 14px; }
+    .modal label a {
+      font-size: 12px; }
+  .modal .btnSmbt {
+    width: 100%; } }

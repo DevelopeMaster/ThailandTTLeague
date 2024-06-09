@@ -24,5 +24,5 @@ npm-debug.log
 /.ssh
 
 # временно
-server.js
-package.json
+# server.js
+# package.json

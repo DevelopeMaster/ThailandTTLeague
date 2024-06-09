@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dateDiv.className = 'last_tournaments_tournament_clubDate_date';
 
             let img = document.createElement('img');
-            img.src = '/icons/TTrocket.svg';
+            img.src = '/icons/ttrocket.svg';
             img.alt = 'table tennis rocket';
 
             let langMap = {'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU'};

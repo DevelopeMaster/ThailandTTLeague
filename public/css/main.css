@@ -1298,9 +1298,8 @@ h2 {
         .clubs_content_club h4 {
           font-size: 14px;
           font-weight: 600; }
-        .clubs_content_club .clublogo {
-          width: 20px;
-          height: 20px; }
+        .clubs_content_club_logo {
+          width: 150px; }
         .clubs_content_club_info {
           justify-content: center; }
           .clubs_content_club_info_name {

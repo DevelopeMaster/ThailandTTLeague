@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <p>If you have forgotten your password, enter your username or email and we will send you a link to reset your password.</p>
                                 <label for="login">E-mail or login*</label>
                                 <input type="text" placeholder="Enter your email or login" id="email" name="email" required>
-                                <button class='header_btn-sign btnSbmt' type="submit">Restore</button>
+                                <button id="restor" class='header_btn-sign btnSbmt' type="submit">Restore</button>
                             </form>`;
         document.body.style = 'overflow: hidden;';
         modal.style.display = "block";

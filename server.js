@@ -1,4 +1,4 @@
-// const browserSync = require('browser-sync');
+const browserSync = require('browser-sync');
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const app = express();
@@ -114,15 +114,15 @@ async function run() {
     db = client.db('ttleague');
     await createRoutes();
 
-    // app.listen(port, function () {
-    //   browserSync({
-    //     proxy: `localhost:${port}`,
-    //     files: ['public/**/*.{js,css}', 'views/**/*.ejs']
-    //   });
-    // });
-    app.listen(8080, function () {
-      console.log(`Server is running on port ${8080}`);
+    app.listen(port, function () {
+      browserSync({
+        proxy: `localhost:${port}`,
+        files: ['public/**/*.{js,css}', 'views/**/*.ejs']
+      });
     });
+    // app.listen(8080, function () {
+    //   console.log(`Server is running on port ${8080}`);
+    // });
   } catch (err) {
     console.error('Ошибка подключения к MongoDB:', err);
   }

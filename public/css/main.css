@@ -657,22 +657,25 @@ h2 {
       background: #262630;
       display: flex;
       box-sizing: border-box;
+      justify-content: flex-start;
       gap: 28px; }
-      .coaches_content_coach_wrapLogo_logo {
-        position: relative;
-        aspect-ratio: 1/1;
-        width: auto;
-        height: 100%;
-        border-radius: 50%; }
-        .coaches_content_coach_wrapLogo_logo::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          right: -14px;
-          display: block;
+      .coaches_content_coach_wrapLogo {
+        width: 108px; }
+        .coaches_content_coach_wrapLogo_logo {
+          position: relative;
+          aspect-ratio: 1/1;
+          width: auto;
           height: 100%;
-          width: 1px;
-          background-color: #3F3F4C; }
+          border-radius: 50%; }
+          .coaches_content_coach_wrapLogo_logo::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -14px;
+            display: block;
+            height: 100%;
+            width: 1px;
+            background-color: #3F3F4C; }
       .coaches_content_coach_info {
         color: #FFF;
         font-family: Inter;
@@ -1312,7 +1315,10 @@ h2 {
         min-width: 320px;
         height: auto;
         padding: 16px;
-        box-sizing: border-box; }
+        box-sizing: border-box;
+        justify-content: flex-start; }
+        .coaches_content_coach_wrapLogo {
+          width: 87px; }
         .coaches_content_coach_info {
           gap: 5px;
           justify-content: flex-start; }

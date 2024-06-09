@@ -22,3 +22,7 @@ Thumbs.db
 npm-debug.log
 
 /.ssh
+
+# временно
+server.js
+package.json

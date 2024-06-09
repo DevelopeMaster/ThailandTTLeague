@@ -1276,6 +1276,7 @@
                 grid-template-columns: repeat(6, 1fr)
             .cell
                 gap: 8px
+                justify-content: center
             .tournament
                 
                 &_time
@@ -1283,7 +1284,8 @@
                     padding-left: 0
                 &_club
                     grid-column: 2/4
-                    padding-left: 8px
+                    // padding-left: 8px
+                    padding-left: 0px
                     width: 111px
                     .clubLogo
                         width: 20px
@@ -1295,13 +1297,16 @@
                         text-overflow: ellipsis
                 &_restrict
                     grid-column: 4/5
-                    padding-left: 8px
+                    // padding-left: 8px
+                    padding-left: 0px
                 &_rating
                     grid-column: 5/6
-                    padding-left: 8px
+                    // padding-left: 8px
+                    padding-left: 0px
                 &_players
                     grid-column: 6/7
-                    padding-left: 8px
+                    // padding-left: 8px
+                    padding-left: 0px
                     padding-right: 0px
     .last
         margin-top: 40px
@@ -1345,6 +1350,14 @@
                     height: 20px
                 &_info
                     justify-content: center
+                    &_name
+                        font-weight: 600
+                    &_city
+                        font-size: 14px
+                        font-weight: 400
+                    &_phoneNumber
+                        font-size: 14px
+                        font-weight: 400
         &_down
             flex-direction: column-reverse
             align-items: flex-start

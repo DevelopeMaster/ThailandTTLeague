@@ -1240,13 +1240,14 @@ h2 {
       .tournaments .upcommingTable_tournament {
         grid-template-columns: repeat(6, 1fr); }
       .tournaments .upcommingTable .cell {
-        gap: 8px; }
+        gap: 8px;
+        justify-content: center; }
       .tournaments .upcommingTable .tournament_time {
         grid-column: 1/2;
         padding-left: 0; }
       .tournaments .upcommingTable .tournament_club {
         grid-column: 2/4;
-        padding-left: 8px;
+        padding-left: 0px;
         width: 111px; }
         .tournaments .upcommingTable .tournament_club .clubLogo {
           width: 20px;
@@ -1258,13 +1259,13 @@ h2 {
           text-overflow: ellipsis; }
       .tournaments .upcommingTable .tournament_restrict {
         grid-column: 4/5;
-        padding-left: 8px; }
+        padding-left: 0px; }
       .tournaments .upcommingTable .tournament_rating {
         grid-column: 5/6;
-        padding-left: 8px; }
+        padding-left: 0px; }
       .tournaments .upcommingTable .tournament_players {
         grid-column: 6/7;
-        padding-left: 8px;
+        padding-left: 0px;
         padding-right: 0px; }
   .last {
     margin-top: 40px; }
@@ -1302,6 +1303,14 @@ h2 {
           height: 20px; }
         .clubs_content_club_info {
           justify-content: center; }
+          .clubs_content_club_info_name {
+            font-weight: 600; }
+          .clubs_content_club_info_city {
+            font-size: 14px;
+            font-weight: 400; }
+          .clubs_content_club_info_phoneNumber {
+            font-size: 14px;
+            font-weight: 400; }
     .clubs_down {
       flex-direction: column-reverse;
       align-items: flex-start; }

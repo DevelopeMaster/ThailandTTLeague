@@ -882,6 +882,7 @@ h2 {
       padding-left: 3px; }
       .modal form .hands_left, .modal form .hands_right {
         display: flex;
+        align-items: center;
         gap: 8px; }
       .modal form .hands label, .modal form .hands input {
         margin-top: 0; }

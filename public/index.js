@@ -527,13 +527,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Modal window
     const modal = document.getElementById("myModal");
     const content = modal.querySelector('.modal-content')
-    // const header = document.querySelector('header');
-    // const btnRegister = document.querySelector('.header_btn-sign'); 
-    // const btnLogin = document.querySelector('.header_btn-log'); 
-    // const btnRegister = document.querySelector('.btnRegister');
-    // const btnLogin = document.querySelector('.btnLogin');
-    // const btnFogot = document.querySelector('.btnFogot');
-    
 
     window.closeModal = function() {
         const modal = document.getElementById("myModal");
@@ -606,7 +599,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <input class="checkbox" type="checkbox" id="policy" name="policy" required>
                                         <label for="policy"><a href="\policy">Agree to the processing of personal data</a></label>
                                     </div>
-                                    <button class='header_btn-sign btnSbmt' type="submit">Sign in</button>
+                                    <button id="signIn class='header_btn-sign btnSbmt' type="submit">Sign in</button>
                                 </form>`;
             
             document.body.style = 'overflow: hidden;';

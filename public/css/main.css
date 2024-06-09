@@ -1398,5 +1398,11 @@ h2 {
     font-size: 14px; }
     .modal label a {
       font-size: 12px; }
-  .modal .header_btn-sign .btnSbmt {
-    width: 100%; } }
+  .modal #signIn {
+    width: 100%; }
+  .modal .hands_left {
+    align-items: center; }
+  .modal .hands_right {
+    align-items: center; }
+  .modal .hands label {
+    font-weight: 400; } }

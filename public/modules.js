@@ -132,7 +132,7 @@ export function fetchPastTournaments() {
             pastPlayersImg.src = '/icons/user.svg';
             pastPlayersImg.alt = 'person';
             let pastPlayersSpan = document.createElement('span');
-            pastPlayersSpan.textContent = tournament.players.length - 1;
+            pastPlayersSpan.textContent = tournament.players.length; // -1
             pastPlayersDiv.appendChild(pastPlayersImg);
             pastPlayersDiv.appendChild(pastPlayersSpan);
 

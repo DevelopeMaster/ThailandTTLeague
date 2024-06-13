@@ -1455,6 +1455,8 @@ h2 {
         width: 22px;
         height: 22px;
         vertical-align: middle; }
+      .navigate_breadcrumb_item:first-child::before {
+        content: none; }
       .navigate_breadcrumb_item a {
         color: #666877;
         font-size: 16px;

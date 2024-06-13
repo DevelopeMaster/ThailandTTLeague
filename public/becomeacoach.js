@@ -75,11 +75,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             } else {
                 document.querySelector('form').reset();
-                showErrorModal(translation.successful, translation.congratulations);
-                setTimeout(() => {
-                    const modal = document.getElementById("myModal");
-                    modal.style.display = "none";
-                }, 2000);
+                document.querySelector('form').style.display = 'none';
+                document.querySelector('.request_successfull').style.display = 'flex';
+                // showErrorModal(translation.successful, translation.congratulations);
+                // setTimeout(() => {
+                //     const modal = document.getElementById("myModal");
+                //     modal.style.display = "none";
+                // }, 2000);
             }
         })
         .catch(error => {

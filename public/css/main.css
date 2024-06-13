@@ -1591,6 +1591,43 @@ h2 {
     .applyCoach_form_btn {
       border: none; }
 
+.request_successfull {
+  margin-top: 20px;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  gap: 16px;
+  width: 100%;
+  padding: 40px 0;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background: #262630; }
+  .request_successfull img {
+    aspect-ratio: 1/1;
+    height: auto;
+    width: 71px; }
+  .request_successfull h2 {
+    margin-top: 4px;
+    margin-bottom: 0px;
+    color: #FFF;
+    font-family: Inter;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-transform: uppercase; }
+  .request_successfull p {
+    max-width: 375px;
+    text-align: center;
+    color: #FFF;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; }
+
 @media (max-width: 1025px) {
   .navigate {
     padding-top: 110px; } }
@@ -1618,4 +1655,15 @@ h2 {
         font-size: 14px;
         width: 100%; }
     .applyCoach p {
+      font-size: 14px; }
+  .request_successfull {
+    padding: 20px;
+    gap: 14px; }
+    .request_successfull img {
+      width: 54px; }
+    .request_successfull h2 {
+      font-size: 18px;
+      margin-top: 2px;
+      margin-bottom: 0px; }
+    .request_successfull p {
       font-size: 14px; } }

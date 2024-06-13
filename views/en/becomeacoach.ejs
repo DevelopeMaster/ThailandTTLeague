@@ -5,6 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>TTLeague</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icons/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/manifest.json">
+
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="ThailandTTLeague">
+    <meta property="og:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta property="og:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta property="og:url" content="https://thailandttleague.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Thailand TT League">
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ThailandTTLeague">
+    <meta name="twitter:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta name="twitter:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta name="twitter:url" content="https://thailandttleague.com/">
+
+    <!-- Favicon and other icons -->
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/icons/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/icons/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-config" content="/icons/favicons/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icons/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#262630">
+    <!-- Для iOS установка цвета шторки (status bar) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#262630">
+    <!-- Для Android установка цвета шторки -->
+    <meta name="theme-color" content="#000817"> 
+
     <link rel="icon" type="image/png" href="/icons/logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -177,9 +224,61 @@
           </div>
       </div>
     </header>
-
-
-
+    <div class="navigate">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol id="breadcrumb" class="navigate_breadcrumb">
+                    <!-- <li class="navigate_breadcrumb_item"><a href="/">Home</a></li>
+                    <li class="navigate_breadcrumb_item"><a href="/category">Category</a></li>
+                    <li class="navigate_breadcrumb_item navigate_breadcrumb_item_active" aria-current="page">Current Page</li> -->
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <section class="applyCoach">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>BEcome a COACH</h2>
+                <p>If you are a table tennis coach and would like to place information about yourself on our website, fill out the form below. We will add you to our list of coaches. All league players will be able to find you by searching on our website. 
+                    <br><br>Advertise yourself for free and get new clients with THAILAND TT LEAGUE!
+                </p>
+                <form class="applyCoach_form" action="/applyCoach" id="applyCoachForm">
+                    <div class="applyCoach_form_namePhone">
+                        <div class="form_group">
+                            <label for="name">Your name*</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form_group">
+                            <label for="phone">Phone number*</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        
+                    </div>
+                    <div class="form_group">
+                        <label for="profileLink">Link to profile on our website (if available)</label>
+                        <input type="text" id="profile-link" name="profileLink">
+                    </div>
+                    <div class="form_group">
+                        <label for="location">Where do you provide the training (club/city)?*</label>
+                        <input type="text" id="location" name="location">
+                    </div>
+                    <div class="form_group">
+                        <label for="info">Information about yourself and the price of your training</label>
+                        <textarea id="info" name="info" rows="7"></textarea>
+                    </div>
+                    <div class="textareaLimit">
+                        <div id="charNotificate" class="textareaLimit_charNotificate">Character limit reached</div>
+                        <div id="charLimit" class="textareaLimit_charLimit">3000/3000</div>
+                    </div>
+                    <div class="policy">
+                        <input class="checkbox" type="checkbox" id="policy" name="policy" required="">
+                        <label for="policy"><a href="policy">Agree to the processing of personal data</a></label>
+                    </div>
+                    <button type="submit" class="header_btn-sign applyCoach_form_btn">Send application</button>
+                </form>
+            </div>
+        </div>
+    </section>
 
 
     <footer class="footer">
@@ -230,9 +329,7 @@
       </footer>
       
       <div class="adv">
-        <a href="#">
-          <img src="/icons/ads/TTLeague.svg" alt="adv">
-        </a>
+        <!-- add from DB -->
       </div>
       
     
@@ -240,10 +337,10 @@
       <!-- Модальное окно -->
       <div id="myModal" class="modal">    
           <div class="modal-content">
-            
+            <!-- add from DB -->
           </div>
       </div>
-      <script src="/index.js"></script> 
+      <script type="module" src="/becomeacoach.js"></script> 
 </body>
     
 </html>

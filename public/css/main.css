@@ -31,7 +31,8 @@ button {
     background: transparent; }
 
 body {
-  line-height: 1; }
+  line-height: 1;
+  position: relative; }
 
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
@@ -79,6 +80,7 @@ h2 {
 
 .header {
   position: fixed;
+  top: 0;
   display: block;
   z-index: 10;
   width: 100%;
@@ -823,6 +825,19 @@ h2 {
     line-height: 130%;
     padding-bottom: 20px; }
 
+.goUp {
+  position: fixed;
+  display: flex;
+  right: 100px;
+  bottom: 80px;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  z-index: 1000; }
+  .goUp img {
+    width: 100%;
+    height: 100%; }
+
 .adv {
   position: absolute;
   right: 0;
@@ -1411,3 +1426,194 @@ h2 {
     align-items: center; }
   .modal .hands label {
     font-weight: 400; } }
+
+.navigate {
+  padding-top: 200px; }
+  .navigate_breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    background-color: transparent; }
+    .navigate_breadcrumb_item {
+      display: flex;
+      align-items: center;
+      color: #666877;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal; }
+      .navigate_breadcrumb_item::before {
+        display: inline-block;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+        color: #6c757d;
+        content: url("/icons/breadcrumbSep.svg");
+        width: 22px;
+        height: 22px;
+        vertical-align: middle; }
+      .navigate_breadcrumb_item a {
+        color: #666877;
+        font-size: 16px;
+        text-decoration: none; }
+        .navigate_breadcrumb_item a:hover {
+          color: #FA6400; }
+      .navigate_breadcrumb_item_active {
+        color: #FFF; }
+
+.applyCoach {
+  margin-top: 40px; }
+  .applyCoach p {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; }
+  .applyCoach_form {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; }
+    .applyCoach_form label {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal; }
+      .applyCoach_form label a {
+        text-decoration: none;
+        color: #666877;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 130%; }
+    .applyCoach_form input {
+      width: 100%;
+      display: flex;
+      padding: 8px 13px 8px 8px;
+      align-items: center;
+      border: none;
+      border-radius: 6px;
+      background: #3F3F4C;
+      color: #fff;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal; }
+    .applyCoach_form input:focus {
+      outline: none; }
+    .applyCoach_form input:-webkit-autofill,
+    .applyCoach_form input:-webkit-autofill:hover,
+    .applyCoach_form input:-webkit-autofill:focus {
+      -webkit-text-fill-color: #fff;
+      transition: background-color 5000s ease-in-out 0s; }
+    .applyCoach_form input[type='checkbox'] {
+      -webkit-appearance: none;
+      width: 21px;
+      height: 21px;
+      border-radius: 10%;
+      outline: none;
+      background-color: #ffffff00;
+      box-shadow: 0 0 0 2px #3F3F4C; }
+    .applyCoach_form input[type='checkbox']:checked {
+      background-image: url("/icons/radio-checked.svg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-color: #fff;
+      box-shadow: 0 0 0 2px #fff; }
+    .applyCoach_form textarea {
+      border-radius: 6px;
+      border: none;
+      background: #3F3F4C;
+      padding: 8px;
+      color: #ffffff;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      width: 100%;
+      resize: vertical;
+      overflow: hidden;
+      box-sizing: border-box; }
+    .applyCoach_form textarea:focus {
+      outline: none; }
+    .applyCoach_form textarea:-webkit-autofill,
+    .applyCoach_form textarea:-webkit-autofill:hover,
+    .applyCoach_form textarea:-webkit-autofill:focus {
+      -webkit-text-fill-color: #fff;
+      transition: background-color 5000s ease-in-out 0s; }
+    .applyCoach_form .textareaLimit {
+      width: 100%;
+      display: none;
+      justify-content: space-between; }
+      .applyCoach_form .textareaLimit_charNotificate {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 130%; }
+      .applyCoach_form .textareaLimit_charLimit {
+        color: #ffffff;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; }
+    .applyCoach_form .form_group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px; }
+    .applyCoach_form .policy {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-left: 3px; }
+      .applyCoach_form .policy label {
+        margin-top: 0; }
+      .applyCoach_form .policy .checkbox {
+        margin-top: 0; }
+    .applyCoach_form_namePhone {
+      width: 100%;
+      display: flex;
+      gap: 20px; }
+    .applyCoach_form_btn {
+      border: none; }
+
+@media (max-width: 1025px) {
+  .navigate {
+    padding-top: 110px; } }
+
+@media (max-width: 768px) {
+  .applyCoach {
+    margin-top: 20px; }
+  .navigate {
+    padding-top: 80px; } }
+
+@media (max-width: 576px) {
+  .navigate {
+    padding-top: 75px; }
+  .applyCoach {
+    margin-top: 20px; }
+    .applyCoach h2 {
+      margin-bottom: 20px; }
+    .applyCoach_form {
+      margin-top: 20px; }
+      .applyCoach_form_namePhone {
+        flex-direction: column; }
+      .applyCoach_form label {
+        font-size: 14px; }
+      .applyCoach_form_btn {
+        font-size: 14px;
+        width: 100%; }
+    .applyCoach p {
+      font-size: 14px; } }

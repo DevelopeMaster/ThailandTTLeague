@@ -3,6 +3,7 @@
   
 .header
     position: fixed
+    top: 0
     display: block
     z-index: 10
     width: 100%
@@ -794,6 +795,19 @@
         line-height: 130%
         padding-bottom: 20px
 
+.goUp
+    position: fixed
+    display: flex
+    right: 100px
+    bottom: 80px
+    width: 45px
+    height: 45px
+    cursor: pointer
+    z-index: 1000
+    img
+        width: 100%
+        height: 100%
+
 
 .adv
     position: absolute
@@ -1219,6 +1233,8 @@
             &_social
                 h4
                     display: none
+    // .goUp
+    //     visibility: hidden
 
 @media (max-width: 576px)
     section
@@ -1467,4 +1483,4 @@
         
 
 @import 'personalpage';
-
+@import 'becomeacoach';

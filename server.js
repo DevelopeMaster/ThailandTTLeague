@@ -95,6 +95,8 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 const host = process.env.DB_HOST;
+const notificateEmail = process.env.NOTIFICATE_EMAIL;
+const notificatePass = process.env.NOTIFICATE_PASSWORD;
 
 const uri = `mongodb+srv://${user}:${password}@${host}/?retryWrites=true&w=majority&appName=Users`;
 
@@ -388,6 +390,41 @@ async function createRoutes() {
                                               policy 
       });
       console.log("Данные успешно вставлены");
+
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: notificateEmail,
+          pass: notificatePass
+        }
+      });
+
+      const mailOptions = {
+        from: notificateEmail,
+        to: 'ogarsanya@gmail.com',
+        subject: 'New User Application',
+        text: `
+          A new coach application has been received:
+            E-mail: ${email}, 
+            Login: ${login},  
+            City: ${city}, 
+            Name: ${fullname}, 
+            Plaing hand: ${hand}, 
+            Burthday: ${birthdayDate}, 
+            Registered date: ${registeredDate}, 
+            Policy: 'Agreed'
+        `
+        // Policy: ${policy ? 'Agreed' : 'Not agreed'}
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Error sending email:', error);
+        } else {
+          console.log('Email sent:', info.response);
+        }
+      });
+
       res.status(200).json({ status: 'success', message: 'Registration successful!' });
     } catch (err) {
       console.error('Ошибка при вставке в MongoDB:', err);
@@ -475,6 +512,74 @@ async function createRoutes() {
       console.error('Ads not found:', err);
     }
   });
+
+
+  
+  app.post('/applyCoach', [
+    // Валидация данных
+      body('name').notEmpty().withMessage('Name is required'),
+      body('phone').notEmpty().withMessage('Phone number is required'),
+      body('location').notEmpty().withMessage('Location is required')
+    ],
+    async function(req, res) {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ status: 'error', errors: errors.array() });
+      }
+      const { name, phone, requestDate, profileLink, info, policy } = req.body;
+      if (!name || !phone || !requestDate || !policy ) {
+        res.status(400).json({ error: 'Something wrong. Please renew page and try again' });
+        return;
+      }
+  
+      try {
+        await db.collection('requestfromcoach')
+          .insertOne({ name, phone, requestDate, profileLink, info, policy });
+        console.log("Заявка успешно отправлена");
+
+        // Отправка email
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: notificateEmail,
+            pass: notificatePass
+          }
+        });
+
+        const mailOptions = {
+          from: notificateEmail,
+          to: 'ogarsanya@gmail.com',
+          subject: 'New Coach Application',
+          text: `
+            A new coach application has been received:
+            
+            Name: ${name}
+            Phone: ${phone}
+            Date: ${new Date(requestDate).toLocaleString()}
+            Profile Link: ${profileLink}
+            Info: ${info}
+            Policy: 'Agreed'
+          `
+          // Policy: ${policy ? 'Agreed' : 'Not agreed'}
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error('Error sending email:', error);
+          } else {
+            console.log('Email sent:', info.response);
+          }
+        });
+
+        res.status(200).json({ status: 'success', message: 'Request has been sent' });
+      } catch (err) {
+        console.error('Ошибка при отправке заявки:', err);
+        res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });
+      }
+    }
+  );
+
+
 }
 
 

@@ -1,0 +1,202 @@
+.navigate
+    padding-top: 200px
+    &_breadcrumb
+        display: flex
+        flex-wrap: wrap
+        align-items: center
+        padding: 0
+        margin: 0
+        list-style: none
+        background-color: transparent
+        &_item 
+            display: flex
+            align-items: center
+            color: #666877
+            font-family: Inter
+            font-size: 16px
+            font-style: normal
+            font-weight: 500
+            line-height: normal
+            &::before
+                display: inline-block
+                padding-right: 0.5rem
+                padding-left: 0.5rem
+                color: #6c757d
+                content: url('/icons/breadcrumbSep.svg')
+                width: 22px
+                height: 22px
+                vertical-align: middle
+            a
+                color: #666877
+                font-size: 16px
+                text-decoration: none
+                &:hover
+                    color: #FA6400
+            &_active
+                color: #FFF
+        
+.applyCoach
+    margin-top: 40px
+    p
+        color: #FFF
+        font-family: Inter
+        font-size: 16px
+        font-style: normal
+        font-weight: 500
+        line-height: 130%
+    &_form
+        margin-top: 30px
+        display: flex
+        flex-direction: column
+        gap: 16px
+        label
+            color: #FFF
+            font-family: Inter
+            font-size: 16px
+            font-style: normal
+            font-weight: 500
+            line-height: normal
+            // margin-top: 16px
+            a
+                text-decoration: none
+                color: #666877
+                font-family: Inter
+                font-size: 14px
+                font-style: normal
+                font-weight: 500
+                line-height: 130%
+        input
+            width: 100%
+            // margin-top: 10px
+            display: flex
+            padding: 8px 13px 8px 8px
+            align-items: center
+            border: none
+            border-radius: 6px
+            background: #3F3F4C
+            color: #fff
+            font-family: Inter
+            font-size: 14px
+            font-style: normal
+            font-weight: 400
+            line-height: normal
+            // &::placeholder
+            //     color: #666877
+            //     font-family: Inter
+            //     font-size: 14px
+            //     font-style: normal
+            //     font-weight: 400
+            //     line-height: normal
+        input:focus
+            outline: none
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus
+            -webkit-text-fill-color: #fff
+            transition: background-color 5000s ease-in-out 0s
+        input[type='checkbox']
+            -webkit-appearance: none
+            width: 21px
+            height: 21px
+            border-radius: 10%
+            outline: none
+            background-color: #ffffff00
+            box-shadow: 0 0 0 2px #3F3F4C
+        input[type='checkbox']:checked
+            background-image: url('/icons/radio-checked.svg')
+            background-repeat: no-repeat
+            background-size: cover
+            background-color: #fff
+            box-shadow: 0 0 0 2px #fff
+        textarea
+            border-radius: 6px
+            border: none
+            background: #3F3F4C
+            padding: 8px
+            color: #ffffff
+            font-family: Inter
+            font-size: 14px
+            font-style: normal
+            font-weight: 400
+            line-height: normal
+
+            width: 100%
+            resize: vertical
+            overflow: hidden
+            box-sizing: border-box
+        textarea:focus
+            outline: none
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:hover, 
+        textarea:-webkit-autofill:focus
+            -webkit-text-fill-color: #fff
+            transition: background-color 5000s ease-in-out 0s
+        .textareaLimit
+            width: 100%
+            display: none
+            justify-content: space-between
+            &_charNotificate
+                color: #FFF
+                font-family: Inter
+                font-size: 14px
+                font-style: normal
+                font-weight: 400
+                line-height: 130%
+            &_charLimit
+                color: #ffffff
+                font-family: Inter
+                font-size: 14px
+                font-style: normal
+                font-weight: 400
+                line-height: 150%
+        .form_group
+            width: 100%
+            display: flex
+            flex-direction: column
+            gap: 10px
+        .policy
+            display: flex
+            align-items: center
+            gap: 8px
+            // margin-top: 12px
+            padding-left: 3px
+            label
+                margin-top: 0
+            .checkbox
+                margin-top: 0
+        &_namePhone
+            width: 100%
+            display: flex
+            gap: 20px
+        &_btn
+            border: none
+
+@media (max-width: 1025px)
+    .navigate
+        padding-top: 110px
+
+@media (max-width: 768px)
+    .applyCoach
+        margin-top: 20px
+    .navigate
+        padding-top: 80px
+
+@media (max-width: 576px)
+    .navigate
+        padding-top: 75px
+    .applyCoach
+        margin-top: 20px
+        h2
+            margin-bottom: 20px
+        &_form
+            margin-top: 20px
+            &_namePhone
+                flex-direction: column
+            label
+                font-size: 14px
+            &_btn
+                font-size: 14px
+                width: 100%
+        p
+            font-size: 14px
+        

@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     listenerOfButtons();
 
 
-    controlTextAreaCoach();
+    controlTextAreaCoach('info', '.textareaInfoLimit');
 
     const form = document.querySelector('#applyCoachForm');
     form.addEventListener('submit', function (event) {

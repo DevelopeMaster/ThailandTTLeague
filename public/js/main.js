@@ -13,6 +13,19 @@ async function initializeApp() {
 //----------- important -----------//
 
 document.addEventListener('DOMContentLoaded', function() {
+    const languageMap = {
+        'russian': 'ru',
+        'english': 'en',
+        'thai': 'th'
+    };
+    
+    let shortLang = languageMap[localStorage.getItem('clientLang')] || 'en';
+
+    if (!window.location.pathname.startsWith(`/${shortLang}`)) {
+        let newPath = `/${shortLang}` + window.location.pathname.replace(/^\/(ru|en|th)/, '');
+        window.location.href = window.location.origin + newPath;
+    }
+    
     initializeApp();
 
     btnGoUp();

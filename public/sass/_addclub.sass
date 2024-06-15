@@ -1,45 +1,4 @@
-.navigate
-    padding-top: 200px
-    &_breadcrumb
-        display: flex
-        flex-wrap: wrap
-        align-items: center
-        padding: 0
-        margin: 0
-        list-style: none
-        background-color: transparent
-        &_item 
-            display: flex
-            align-items: center
-            color: #666877
-            font-family: Inter
-            font-size: 16px
-            font-style: normal
-            font-weight: 500
-            line-height: normal
-            &::before
-                display: inline-block
-                padding-right: 0.5rem
-                padding-left: 0.5rem
-                color: #6c757d
-                content: url('/icons/breadcrumbSep.svg')
-                width: 22px
-                height: 22px
-                vertical-align: middle
-            &:first-child
-                &::before
-                    content: none
-                
-            a
-                color: #666877
-                font-size: 16px
-                text-decoration: none
-                &:hover
-                    color: #FA6400
-            &_active
-                color: #FFF
-        
-.applyCoach
+.addClub
     margin-top: 40px
     p
         color: #FFF
@@ -135,7 +94,10 @@
         textarea:-webkit-autofill:focus
             -webkit-text-fill-color: #fff
             transition: background-color 5000s ease-in-out 0s
-        
+        .textareaInfoTournamentsLimit
+            width: 100%
+            display: none
+            justify-content: space-between
         .textareaInfoLimit
             width: 100%
             display: none
@@ -159,6 +121,13 @@
             display: flex
             flex-direction: column
             gap: 10px
+            span
+                color: #666877
+                font-family: Inter
+                font-size: 14px
+                font-style: normal
+                font-weight: 500
+                line-height: 130%
         .policy
             display: flex
             align-items: center
@@ -214,20 +183,13 @@
         font-weight: 500
         line-height: 130%
 
-@media (max-width: 1025px)
-    .navigate
-        padding-top: 110px
 
 @media (max-width: 768px)
-    .applyCoach
+    .addClub
         margin-top: 20px
-    .navigate
-        padding-top: 80px
 
 @media (max-width: 576px)
-    .navigate
-        padding-top: 75px
-    .applyCoach
+    .addClub
         margin-top: 20px
         h2
             margin-bottom: 20px
@@ -242,16 +204,3 @@
                 width: 100%
         p
             font-size: 14px
-    .request_successfull
-        padding: 20px
-        gap: 14px
-        img
-            width: 54px
-        h2
-            font-size: 18px
-            margin-top: 2px
-            margin-bottom: 0px
-        p
-            font-size: 14px
-
-        

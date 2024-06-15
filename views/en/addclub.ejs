@@ -69,7 +69,7 @@
                             <img class="logo_img" src="/icons/logo.svg" alt="logo">
                         </a>
                         <label class="header_top_left_label" id="headerPC">
-                            <input class="header_top_left_input" type="text" placeholder="Поиск игрока">
+                            <input class="header_top_left_input" type="text" placeholder="Search for a player">
                             <button type="submit" class="header_top_left_search">
                                 <img src="/icons/search.svg" alt="search icon">
                             </button>
@@ -79,7 +79,7 @@
                         
                         <div class="header_langs">
                             <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
-                                <span class="languageText">RUS</span>
+                                <span class="languageText">ENG</span>
                                 <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
                             </button>
                             <div class="header_langs_dropbtnLangs_content dropdown">
@@ -90,10 +90,10 @@
                         </div>
                         <div class="header_buttons">
                             <button class="header_btn-log btnLogin">
-                                Войти
+                                Log in
                             </button>
                             <button class="header_btn-sign btnRegister">
-                                Регистрация
+                                Sign in
                             </button>
                         </div>
                     </div>
@@ -110,31 +110,31 @@
                 <a class="header_bottom_category">
                     <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
                     <p class="header_bottom_category-text">
-                      Турниры
+                        Tournaments
                     </p>
                 </a>
                 <a class="header_bottom_category">
                     <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
                     <p class="header_bottom_category-text">
-                      Клубы
+                        Clubs
                     </p>
                 </a>
                 <a class="header_bottom_category">
                     <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
                     <p class="header_bottom_category-text">
-                      Игроки
+                        Players
                     </p>
                 </a>
                 <a class="header_bottom_category">
                     <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                     <p class="header_bottom_category-text">
-                      Тренировки
+                        Training
                     </p>
                 </a>
                 <a class="header_bottom_category">
                     <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
                     <p class="header_bottom_category-text">
-                      О Нас
+                        About Us
                     </p>
                 </a>                
             </div>
@@ -154,66 +154,66 @@
           </label>
           <a class="header_bottom_category guest">
               <p class="header_category-text btnLogin">
-                  Войти
+                  Log in
               </p>
           </a>
           <a class="header_bottom_category guest">
               <p class="header_bottom_category-text btnRegister">
-                  Регистрация
+                  Sign in
               </p>
           </a>
 
           <a class="header_bottom_category logedIn">
               <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
               <p class="header_bottom_category-text">
-                  Мой профиль
+                  My profile
               </p>
           </a>
           <a class="header_bottom_category">
               <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
               <p class="header_bottom_category-text">
-                Турниры
+                  Tournaments
               </p>
           </a>
           <a class="header_bottom_category">
               <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
               <p class="header_bottom_category-text">
-                Клубы
+                  Clubs
               </p>
           </a>
           <a class="header_bottom_category">
               <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
               <p class="header_bottom_category-text">
-                Игроки
+                  Players
               </p>
           </a>
           <a class="header_bottom_category">
               <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
               <p class="header_bottom_category-text">
-                Тренировки
+                  Training
               </p>
           </a>
           <a class="header_bottom_category">
               <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
               <p class="header_bottom_category-text">
-                О Нас
+                  About Us
               </p>
           </a>
           <div class="header_langs">
               <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
                   <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
-                  <span class="languageText">RUS</span>
+                  <span class="languageText">ENG</span>
                   <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
               </button>
               <div class="header_langs_dropbtnLangs_content dropdown">
-                  <a href="#" data-lang="english">ENG</a>
-                  <a href="#" data-lang="russian">RUS</a>
-                  <a href="#" data-lang="thai">ไทย</a>
+                  <a href="#" data-lang="EN">ENG</a>
+                  <a href="#" data-lang="RUS">RUS</a>
+                  <a href="#" data-lang="ไทย">ไทย</a>
               </div>
           </div>
           <div class="header_footer_contacts">
               <div class="header_footer_contacts_title">
-                  Контакты
+                  contacts
               </div>
               <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
                   thailandttleague@gmail.com
@@ -235,51 +235,78 @@
             </nav>
         </div>
     </div>
-    <section class="applyCoach">
+    <section class="addClub">
         <div class="container">
             <div class="contentWrapper">
-                <h2>Заявка на добавление тренера</h2>
-                <p>Если Вы тренер по настольному теннису и хотите разместить информацию о себе на нашем сайте,  заполните форму ниже. Мы добавим Вас в базу и Ваш профиль будет отображаться в общем списке тренеров. 
-                    <br><br>Все игроки лиги смогут найти Вас по поиску на нашем сайте. Получайте новых клиентов вместе с THAILAND TT LEAGUE абсолютно бесплатно!
+                <h2>Application to add a club</h2>
+                <p>If you are an owner or a representative of a table tennis club, fill out the form below to be able to organize tournaments with our rating system. 
+                    <br><br>After the regestration you will get the access to hold and announce tournaments. We will add your club to our website so it will be easy for players to find you.
                 </p>
-                <form class="applyCoach_form" action="/applyCoach" id="applyCoachForm">
-                    <div class="applyCoach_form_namePhone">
+                <form class="addClub_form" action="/addClub" id="addClubForm">
+                    <div class="addClub_form_namePhone">
                         <div class="form_group">
-                            <label for="name">Ваше имя*</label>
-                            <input type="text" id="name" name="name" required>
+                            <label for="name">Your name*</label>
+                            <input placeholder="Your first and last name" type="text" id="name" name="name" required>
                         </div>
                         <div class="form_group">
-                            <label for="phone">Номер телефона*</label>
-                            <input type="tel" id="phone" name="phone" required>
+                            <label for="phone">Phone number*</label>
+                            <input placeholder="Number" type="tel" id="phone" name="phone" required>
                         </div>
                         
                     </div>
                     <div class="form_group">
-                        <label for="profileLink">Ссылка на профиль у нас на сайте(если есть)</label>
-                        <input type="text" id="profile-link" name="profileLink">
+                        <label for="clubcity">City*</label>
+                        <input placeholder="City" type="text" id="city" name="city" required>
+                        <!-- <input type="text" placeholder="City" id="clubcity" name="clubcity" style="background-image: url('/icons/chevron-down.svg'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 30px;">
+                        <div class="dropdownForm">
+                            <div class="dropdown-content" id="dropdown-content">
+                            
+                            </div>
+                        </div> -->
                     </div>
                     <div class="form_group">
-                        <label for="location">В каком городe / клубе Вы проводите тренировки*</label>
-                        <input type="text" id="location" name="location">
+                        <label for="address">Club address*</label>
+                        <input placeholder="Аddress" type="text" id="address" name="address" required>
                     </div>
                     <div class="form_group">
-                        <label for="info">Краткая информация о себе, стоимость Ваших тренировок</label>
-                        <textarea id="info" name="info" rows="7"></textarea>
+                        <label for="clubname">Club name*</label>
+                        <input placeholder="Club" type="text" id="clubName" name="clubname" required>
                     </div>
-                    <div class="textareaLimit">
-                        <div id="charNotificate" class="textareaLimit_charNotificate">Достигнут лимит символов</div>
+                    <div class="form_group">
+                        <label for="qtytable">Number of tables*</label>
+                        <input placeholder="Tables" type="qtytable" id="qtytable" name="qtytable" required>
+                    </div>
+                    <div class="form_group">
+                        <label for="website">Club website</label>
+                        <input placeholder="Enter site" type="text" id="webSite" name="website" required>
+                    </div>
+                    <div class="form_group">
+                        <label for="infotournaments">Do you have tournaments?</label>
+                        <textarea placeholder="Enter tournament information" id="infoTournaments" name="infotournaments" rows="7"></textarea>
+                        <span>If yes, which ones? How often? What is the average number of participants?</span>
+                    </div>
+                    <div class="textareaInfoTournamentsLimit">
+                        <div id="charNotificate" class="textareaLimit_charNotificate">Character limit reached</div>
                         <div id="charLimit" class="textareaLimit_charLimit">3000/3000</div>
+                    </div>
+                    <div class="form_group">
+                        <label for="info">Brief description of the club</label>
+                        <textarea placeholder="Enter information about your club" id="info" name="info" rows="7"></textarea>
+                    </div>
+                    <div class="textareaInfoLimit">
+                        <div id="charNotificate" class="textareaInfoLimit_charNotificate">Character limit reached</div>
+                        <div id="charLimit" class="textareaInfoLimit_charLimit">3000/3000</div>
                     </div>
                     <div class="policy">
                         <input class="checkbox" type="checkbox" id="policy" name="policy" required="">
-                        <label for="policy"><a href="policy">Согласиться на обработку персональных данных</a></label>
+                        <label for="policy"><a href="policy">Agree to the processing of personal data</a></label>
                     </div>
-                    <button type="submit" class="header_btn-sign applyCoach_form_btn">Отправить заявку</button>
+                    <button type="submit" class="header_btn-sign addClub_form_btn">Send application</button>
                 </form>
                 <div class="request_successfull">
                     <img src="/icons/requestSuccessfull.svg" alt="successfull">
-                    <h2>Заявка отправлена</h2>
-                    <p>Ваша заявка успешно отправлена, в ближайшее время с вами свяжется менеджер</p>
+                    <h2>Application sent</h2>
+                    <p>Your application has been successfully sent, a manager will contact you shortly</p>
                 </div>
             </div>
         </div>
@@ -345,7 +372,7 @@
             <!-- add from DB -->
           </div>
       </div>
-      <script type="module" src="/js/becomeacoach.js"></script> 
+      <script type="module" src="/js/addclub.js"></script> 
 </body>
     
 </html>

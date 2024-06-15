@@ -10,6 +10,7 @@ const nodemailer = require('nodemailer');
 // const crypto = require('crypto');
 const port = 3000;
 
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -17,20 +18,11 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// app.get('/', function(req, res) {
-//   res.redirect('/en');
-// });
-
 app.get('/en', (req, res) => {
   res.render('en');
 });
 
-// app.get('/:lang', function(req, res) {
-//   const lang = req.params.lang;
-//   res.render(lang + '/index');
-// });
-
-app.get('/:lang/:page', function(req, res) {
+app.get('/:lang(en|ru|th)/:page', function(req, res) {
   const lang = req.params.lang;
   const page = req.params.page;
   res.render(`${lang}/${page}`);
@@ -59,10 +51,6 @@ app.get('/th', function(req, res) {
 app.get('/error', function(req, res) {
   res.render('error');
 });
-
-// app.get('/register', function(req, res) {
-//   res.render('register');
-// });
 
 app.get('/check-email', async function(req, res) {
   const email = req.query.email;
@@ -352,6 +340,7 @@ async function run() {
 
 
 async function createRoutes() {
+  
   app.post('/register', [
     // check passwords
     body('password')
@@ -399,12 +388,12 @@ async function createRoutes() {
         }
       });
 
-      const mailOptions = {
+      const mailOptionsForOwner = {
         from: notificateEmail,
         to: 'ogarsanya@gmail.com',
         subject: 'New User Application',
         text: `
-          A new coach application has been received:
+          A new user has registered
             E-mail: ${email}, 
             Login: ${login},  
             City: ${city}, 
@@ -414,10 +403,27 @@ async function createRoutes() {
             Registered date: ${registeredDate}, 
             Policy: 'Agreed'
         `
-        // Policy: ${policy ? 'Agreed' : 'Not agreed'}
+      };
+      const mailOptionsForUser = {
+        from: notificateEmail,
+        to: `${email}`,
+        subject: 'Congratulation!',
+        text: `
+          You have successfully registered at https://thailandttleague.com
+            E-mail: ${email}, 
+            Login: ${login}
+        `
       };
 
-      transporter.sendMail(mailOptions, (error, info) => {
+      transporter.sendMail(mailOptionsForOwner, (error, info) => {
+        if (error) {
+          console.error('Error sending email:', error);
+        } else {
+          console.log('Email sent:', info.response);
+        }
+      });
+
+      transporter.sendMail(mailOptionsForUser, (error, info) => {
         if (error) {
           console.error('Error sending email:', error);
         } else {
@@ -513,14 +519,13 @@ async function createRoutes() {
     }
   });
 
-
-  
+   
   app.post('/applyCoach', [
     // Валидация данных
       body('name').notEmpty().withMessage('Name is required'),
       body('phone').notEmpty().withMessage('Phone number is required'),
       body('location').notEmpty().withMessage('Location is required')
-    ],
+    ],    
     async function(req, res) {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -548,11 +553,10 @@ async function createRoutes() {
 
         const mailOptions = {
           from: notificateEmail,
-          to: 'ogarsanya@gmail.com',
+          to: 'ogarsanya@gmail.com', // получатель ------------------------- ЗАМЕНИТЬ
           subject: 'New Coach Application',
           text: `
             A new coach application has been received:
-            
             Name: ${name}
             Phone: ${phone}
             Date: ${new Date(requestDate).toLocaleString()}
@@ -575,6 +579,80 @@ async function createRoutes() {
       } catch (err) {
         console.error('Ошибка при отправке заявки:', err);
         res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });
+        
+      }
+    }
+  );
+
+  app.post('/addApplicationClub', [
+    // Валидация данных
+      body('name').notEmpty().withMessage('Name is required'),
+      body('phone').notEmpty().withMessage('Phone number is required'),
+      body('city').notEmpty().withMessage('City is required'),
+      body('address').notEmpty().withMessage('Address is required'),
+      body('clubname').notEmpty().withMessage('clubname is required'),
+      body('qtytable').notEmpty().withMessage('Quantity tables is required')
+    ],    
+    async function(req, res) {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ status: 'error', errors: errors.array() });
+      }
+      const { name, phone, requestDate, city, address, clubname, qtytable, infotournaments, info, policy } = req.body;
+      if (!name || !phone || !requestDate || !policy || !city || !address || !clubname || !qtytable ) {
+        console.log('данные не дошли до сервера');
+        res.status(400).json({ error: 'Something wrong. Please renew page and try again' });
+        return;
+      }
+  
+      try {
+        await db.collection('requestfromclub')
+          .insertOne({ name, phone, requestDate, city, address, clubname, qtytable, infotournaments, info, policy });
+        console.log("Заявка успешно отправлена");
+
+        // Отправка email
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: notificateEmail,
+            pass: notificatePass
+          }
+        });
+
+        const mailOptions = {
+          from: notificateEmail,
+          to: 'ogarsanya@gmail.com', // получатель ------------------------- ЗАМЕНИТЬ
+          subject: 'New Club Application',
+          text: `
+            A new club application has been received:
+            Name: ${name}
+            Phone: ${phone}
+            Date: ${new Date(requestDate).toLocaleString()}
+             city, address, clubname, qtytable, infotournaments, info,
+            City: ${city}
+            Address: ${address}
+            Clubname: ${clubname}
+            Quantity table: ${qtytable}
+            Info about tournaments: ${infotournaments}
+            Info about club: ${info}
+            Policy: 'Agreed'
+          `
+          // Policy: ${policy ? 'Agreed' : 'Not agreed'}
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error('Error sending email:', error);
+          } else {
+            console.log('Email sent:', info.response);
+          }
+        });
+
+        res.status(200).json({ status: 'success', message: 'Request has been sent' });
+      } catch (err) {
+        console.error('Ошибка при отправке заявки:', err);
+        res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });
+        
       }
     }
   );

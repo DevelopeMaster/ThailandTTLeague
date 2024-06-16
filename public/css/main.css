@@ -1866,3 +1866,129 @@ h2 {
         width: 100%; }
     .addClub p {
       font-size: 14px; } }
+
+.filterCoaches {
+  margin-top: 40px; }
+  .filterCoaches p {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; }
+  .filterCoaches_wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end; }
+  .filterCoaches #filterCoaches {
+    height: 37px;
+    width: 264px; }
+  .filterCoaches_filter {
+    border-radius: 14px;
+    background: #3F3F4C;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px; }
+    .filterCoaches_filter input {
+      width: 100%;
+      margin-top: 10px;
+      display: flex;
+      padding: 8px 13px 8px 8px;
+      align-items: center;
+      border: none;
+      border-radius: 6px;
+      background: #262630;
+      color: #fff;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      background-image: url(/icons/chevron-down.svg);
+      background-repeat: no-repeat;
+      background-position: right 8px center; }
+      .filterCoaches_filter input::placeholder {
+        color: #666877;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal; }
+    .filterCoaches_filter input:focus {
+      outline: none; }
+    .filterCoaches_filter input:-webkit-autofill,
+    .filterCoaches_filter input:-webkit-autofill:hover,
+    .filterCoaches_filter input:-webkit-autofill:focus {
+      -webkit-text-fill-color: #fff;
+      transition: background-color 5000s ease-in-out 0s; }
+    .filterCoaches_filter label {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      margin-top: 16px; }
+      .filterCoaches_filter label a {
+        text-decoration: none;
+        color: #666877;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 130%; }
+    .filterCoaches_filter .dropdownForm {
+      position: relative;
+      display: block;
+      width: 100%; }
+      .filterCoaches_filter .dropdownForm .dropdown-content {
+        display: none;
+        position: absolute;
+        width: 100%;
+        z-index: 2;
+        max-height: 165px;
+        overflow-y: auto;
+        background-color: #3F3F4C;
+        border-radius: 0px 0px 14px 14px; }
+      .filterCoaches_filter .dropdownForm .dropdown-content div {
+        color: black;
+        padding: 8px 13px 8px 8px;
+        text-decoration: none;
+        display: block;
+        color: #FFF;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        cursor: default; }
+      .filterCoaches_filter .dropdownForm .dropdown-content div:hover {
+        background-color: #343643; }
+      .filterCoaches_filter .dropdownForm .dropdown-content::-webkit-scrollbar {
+        padding-right: 8px;
+        width: 2px; }
+      .filterCoaches_filter .dropdownForm .dropdown-content::-webkit-scrollbar-track {
+        background: #262630; }
+      .filterCoaches_filter .dropdownForm .dropdown-content::-webkit-scrollbar-thumb {
+        background: #666877; }
+      .filterCoaches_filter .dropdownForm .dropdown-content::-webkit-scrollbar-thumb:hover {
+        background: #666877; }
+    .filterCoaches_filter .dropbtnCities:hover, .filterCoaches_filter .dropbtnCities:focus {
+      background-color: #3F3F4C; }
+
+.allCoaches {
+  margin-top: 80px; }
+
+@media (max-width: 576px) {
+  .filterCoaches_wrapper {
+    flex-direction: column;
+    gap: 16px; }
+  .filterCoaches #filterCoaches {
+    width: 100%; }
+  .filterCoaches label {
+    font-size: 14px; }
+  .allCoaches {
+    margin-top: 40px; } }

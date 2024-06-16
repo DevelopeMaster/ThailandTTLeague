@@ -400,6 +400,94 @@ export function fetchCoaches() {
     });
 };
 
+export function fetchAllCoaches() {
+    fetch(`/coaches`)
+    .then(response => response.json())
+    .then(coaches => {
+        const coachesContent = document.querySelector('.coaches_content');
+        coachesContent.innerHTML = '';
+
+        let coachesList = coaches;
+        coachesList.sort().forEach(coach => {
+            let coachDiv = document.createElement('div');
+            coachDiv.className = 'coaches_content_coach';
+
+            let wrapLogoDiv = document.createElement('div');
+            wrapLogoDiv.className = 'coaches_content_coach_wrapLogo';
+
+            let logoDiv = document.createElement('div');
+            logoDiv.className = 'coaches_content_coach_wrapLogo_logo';
+            logoDiv.style.backgroundImage = `url('${coach.logo}')`;
+            logoDiv.style.backgroundPosition = '50%';
+            logoDiv.style.backgroundSize = 'cover';
+            logoDiv.style.backgroundRepeat = 'no-repeat';
+
+            wrapLogoDiv.appendChild(logoDiv);
+            coachDiv.appendChild(wrapLogoDiv);
+
+            let infoDiv = document.createElement('div');
+            infoDiv.className = 'coaches_content_coach_info';
+
+            let ratingDiv = document.createElement('div');
+            ratingDiv.className = 'coaches_content_coach_info_rating';
+            ratingDiv.textContent = coach.rating;
+
+            let nameH4 = document.createElement('h4');
+            nameH4.className = 'coaches_content_coach_info_name';
+            nameH4.textContent = coach.name;
+
+            let clubDiv = document.createElement('div');
+            clubDiv.className = 'coaches_content_coach_info_club';
+
+            let clubTitleSpan = document.createElement('span');
+            clubTitleSpan.className = 'coaches_content_coach_info_title';
+            let clubTitle = {
+                'english': 'Club:',
+                'thai': 'ชมรม:',
+                'russian': 'Клуб:'
+            };
+            clubTitleSpan.textContent = clubTitle[localStorage.clientLang] || 'Club:';
+
+            let clubNameP = document.createElement('p');
+            clubNameP.textContent = coach.club;
+
+            clubDiv.appendChild(clubTitleSpan);
+            clubDiv.appendChild(clubNameP);
+
+            let cityDiv = document.createElement('div');
+            cityDiv.className = 'coaches_content_coach_info_city';
+
+            let cityTitleSpan = document.createElement('span');
+            cityTitleSpan.className = 'coaches_content_coach_info_title';
+            let cityTitle = {
+                'english': 'City:',
+                'thai': 'เมือง:',
+                'russian': 'Город:'
+            };
+            cityTitleSpan.textContent = cityTitle[localStorage.clientLang] || 'City:';
+
+            let cityNameP = document.createElement('p');
+            cityNameP.textContent = coach.city;
+
+            cityDiv.appendChild(cityTitleSpan);
+            cityDiv.appendChild(cityNameP);
+
+            infoDiv.appendChild(ratingDiv);
+            infoDiv.appendChild(nameH4);
+            infoDiv.appendChild(clubDiv);
+            infoDiv.appendChild(cityDiv);
+
+            coachDiv.appendChild(infoDiv);
+
+            coachesContent.appendChild(coachDiv);
+        });
+    })
+    .catch(error => {
+        console.error('Произошла ошибка:', error);
+        showErrorModal('Database connection error');
+    });
+};
+
 export function btnGoUp() {
     const body = document.querySelector('body');
     const aGoUp = document.createElement('a');
@@ -1094,19 +1182,22 @@ export function breadCrumb() {
         'en': {
             'home': 'Home',
             'becomeacoach': 'Become a Coach',
-            'addclub': 'Application to add a club'
+            'addclub': 'Application to add a club',
+            'allcoaches': 'Coaches'
             // Добавить
         },
         'ru': {
             'home': 'Главная',
             'becomeacoach': 'Стать тренером',
-            'addclub': 'Заявка на добавление клуба'
+            'addclub': 'Заявка на добавление клуба',
+            'allcoaches': 'Тренеры'
             // Добавить
         },
         'th': {
             'home': 'หน้าหลัก',
             'becomeacoach': 'สมัครเป็นโค้ช',
-            'addclub': 'การสมัครเพื่อเพิ่มสโมสร'
+            'addclub': 'การสมัครเพื่อเพิ่มสโมสร',
+            'allcoaches': 'โค้ชปิงปอง'
             // Добавить
         }
     };
@@ -1164,6 +1255,16 @@ export function listenerOfButtons() {
 
         if (event.target.id === 'btnAddClub') {
             window.location.href = `/${languageMap[localStorage.clientLang]}/addclub`;
+        }
+
+        if (event.target.closest('.clubs_down')) {
+            event.preventDefault();
+            if (event.target.id === 'goToAllCoaches') {
+                const selectedLanguage = localStorage.getItem('clientLang') || 'english';
+                const homeUrl = `/${languageMap[selectedLanguage] || 'en'}`;
+                window.location.href = homeUrl + '/allcoaches';
+            }
+           
         }
 
         if (event.target.closest('.logo')) {

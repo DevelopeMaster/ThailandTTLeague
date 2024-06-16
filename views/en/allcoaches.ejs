@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TTLeague</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icons/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/manifest.json">
+
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="ThailandTTLeague">
+    <meta property="og:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta property="og:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta property="og:url" content="https://thailandttleague.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Thailand TT League">
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ThailandTTLeague">
+    <meta name="twitter:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta name="twitter:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta name="twitter:url" content="https://thailandttleague.com/">
+
+    <!-- Favicon and other icons -->
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/icons/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/icons/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-config" content="/icons/favicons/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icons/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#262630">
+    <!-- Для iOS установка цвета шторки (status bar) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#262630">
+    <!-- Для Android установка цвета шторки -->
+    <meta name="theme-color" content="#000817"> 
+
+    <link rel="icon" type="image/png" href="/icons/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
+</head>
+
+<body>
+    <header class="header" id="scroll">
+        <div class="header_wrapper">
+            <div class="container">
+                <div class="header_top">
+                    <div class="header_top_left">
+                        <a id="headerLogo" class="logo" href="/">
+                            <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                        </a>
+                        <label class="header_top_left_label" id="headerPC">
+                            <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                            <button type="submit" class="header_top_left_search">
+                                <img src="/icons/search.svg" alt="search icon">
+                            </button>
+                        </label>
+                    </div>
+                    <div class="header_top_right" id="headerPC">
+                        
+                        <div class="header_langs">
+                            <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                <span class="languageText">ENG</span>
+                                <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                            </button>
+                            <div class="header_langs_dropbtnLangs_content dropdown">
+                            <a href="#" data-lang="english">ENG</a>
+                            <a href="#" data-lang="russian">RUS</a>
+                            <a href="#" data-lang="thai">ไทย</a>
+                            </div>
+                        </div>
+                        <div class="header_buttons">
+                            <button class="header_btn-log btnLogin">
+                                Log in
+                            </button>
+                            <button class="header_btn-sign btnRegister">
+                                Sign in
+                            </button>
+                        </div>
+                    </div>
+                    <button class="burger-btn" id="burger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="header_bottom header_bottom_pc" id="headerPC">
+                <a class="header_bottom_category">
+                    <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Tournaments
+                    </p>
+                </a>
+                <a class="header_bottom_category">
+                    <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Clubs
+                    </p>
+                </a>
+                <a class="header_bottom_category">
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Players
+                    </p>
+                </a>
+                <a class="header_bottom_category">
+                    <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Training
+                    </p>
+                </a>
+                <a class="header_bottom_category">
+                    <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        About Us
+                    </p>
+                </a>                
+            </div>
+
+            
+        </div>
+        <div class="header_bottom header_bottom_mob" id="headerMob">
+          <button class="header_bottom_mob_cross">
+              <img  src="/icons/x-circle.svg" alt="cross">
+          </button>
+          
+          <label class="header_top_left_label">
+              <input class="header_top_left_input" type="text" placeholder="Search for a player">
+              <button class="header_top_left_search">
+                  <img src="/icons/search.svg" alt="search icon">
+              </button>
+          </label>
+          <a class="header_bottom_category guest">
+              <p class="header_category-text btnLogin">
+                  Log in
+              </p>
+          </a>
+          <a class="header_bottom_category guest">
+              <p class="header_bottom_category-text btnRegister">
+                  Sign in
+              </p>
+          </a>
+
+          <a class="header_bottom_category logedIn">
+              <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+              <p class="header_bottom_category-text">
+                  My profile
+              </p>
+          </a>
+          <a class="header_bottom_category">
+              <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+              <p class="header_bottom_category-text">
+                  Tournaments
+              </p>
+          </a>
+          <a class="header_bottom_category">
+              <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+              <p class="header_bottom_category-text">
+                  Clubs
+              </p>
+          </a>
+          <a class="header_bottom_category">
+              <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+              <p class="header_bottom_category-text">
+                  Players
+              </p>
+          </a>
+          <a class="header_bottom_category">
+              <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+              <p class="header_bottom_category-text">
+                  Training
+              </p>
+          </a>
+          <a class="header_bottom_category">
+              <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+              <p class="header_bottom_category-text">
+                  About Us
+              </p>
+          </a>
+          <div class="header_langs">
+              <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                  <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                  <span class="languageText">ENG</span>
+                  <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+              </button>
+              <div class="header_langs_dropbtnLangs_content dropdown">
+                  <a href="#" data-lang="EN">ENG</a>
+                  <a href="#" data-lang="RUS">RUS</a>
+                  <a href="#" data-lang="ไทย">ไทย</a>
+              </div>
+          </div>
+          <div class="header_footer_contacts">
+              <div class="header_footer_contacts_title">
+                  contacts
+              </div>
+              <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                  thailandttleague@gmail.com
+              </a>
+              <a class="footer_cantacts-phone" href="tel:+66951954053">
+                  +66 95 195 4053
+              </a>
+          </div>
+      </div>
+    </header>
+    <div class="navigate">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol id="breadcrumb" class="navigate_breadcrumb">
+                    <!-- <li class="navigate_breadcrumb_item"><a href="/">Home</a></li>
+                    <li class="navigate_breadcrumb_item"><a href="/category">Category</a></li>
+                    <li class="navigate_breadcrumb_item navigate_breadcrumb_item_active" aria-current="page">Current Page</li> -->
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <section class="filterCoaches">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>FIND a Coach</h2>
+                <div class="filterCoaches_filter">
+                    <div class="filterCoaches_wrapper">
+                        <div class="dropdownForm">
+                            <label for="name">Search by name/player name</label>
+                            <input type="text" name="name" id="nameInput" placeholder="Coach name">
+                            <div id="nameDropdown" class="dropdown-content"></div>
+                        </div>
+                        <div class="dropdownForm">
+                            <label for="club">Clubs</label>
+                            <input type="text" name="club" id="clubInput" placeholder="Club name">
+                            <div id="clubDropdown" class="dropdown-content"></div>
+                        </div>
+                    </div>
+                    <div class="filterCoaches_wrapper">
+                        <div class="dropdownForm">
+                            <label for="city">Clubs</label>
+                            <input type="text" name="city" id="cityInput" placeholder="City">
+                            <div id="cityDropdown" class="dropdown-content"></div>
+                        </div>
+                        <button id="filterCoaches" class="header_btn-sign btnSbmt" type="submit" fdprocessedid="c3chv">Search</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="coaches">
+        <div class="container">
+          <div class="contentWrapper">
+            <h2>Coaches</h2>
+            <div id="coachesContainer" class="coaches_content">
+                <!-- add from js -->
+            </div>
+            <div class="clubs_down">
+                <button id="becomeCoach" class="header_btn-sign coaches_down_btn" fdprocessedid="vvr4zp">
+                Become a coach
+                </button>
+                <a href="#" id="viewAllCoaches">View all coaches</a>
+            </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <footer class="footer">
+        <div class="container">
+          <!-- <a class="mobilelogo" href="#">
+            <img class="logo_img" src="/icons/logo.svg" alt="logo">
+          </a> -->
+          <div class="footer_wrap">
+            <a class="logo" href="#">
+              <img class="logo_img" src="/icons/logo.svg" alt="logo">
+            </a>
+            <div class="footer_menu">
+              <div class="footer_menu_path">
+                <a href="#">Tournaments</a>
+                <a href="#">Clubs</a>
+                <a href="#">Players</a>
+              </div>
+              <div class="footer_menu_path">
+                <a href="#">Training</a>
+                <a href="#">About Us</a>
+              </div>
+            </div>
+            <div class="footer_right">
+              <div class="footer_right_contacts">
+                <h4>Contacts</h4>
+                <a class="footer_mail" href="mailto:thailandttleague@gmail.com">thailandttleague@gmail.com</a>
+                <a href="tel:+66951954053">+66 95 195 4053</a>
+              </div>
+              <div class="footer_right_social">
+                <h4>Social media</h4>
+                <div class="footer_right_social_list">
+                  <a href="#">
+                    <img src="/icons/instagram.svg" alt="instagram">
+                  </a>
+                  <a href="#">
+                    <img src="/icons/facebook.svg" alt="facebook">
+                  </a>
+                  <a href="#">
+                    <img src="/icons/line-orange.svg" alt="">
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <span class="footer_laws">© 2024 Thailand TT League. All Rights Reserved</span>
+        </div>
+      </footer>
+      
+      <div class="adv">
+        <!-- add from DB -->
+      </div>
+      
+    
+    
+      <!-- Модальное окно -->
+      <div id="myModal" class="modal">    
+          <div class="modal-content">
+            <!-- add from DB -->
+          </div>
+      </div>
+      <script type="module" src="/js/allcoaches.js"></script> 
+</body>
+</html>

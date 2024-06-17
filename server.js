@@ -341,45 +341,169 @@ async function run() {
 
 async function createRoutes() {
   
+
+  //код без добавления новых городов в бд
+  // app.post('/register', [
+  //   // check passwords
+  //   body('password')
+  //     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+  //     .matches(/^(?=.*\d)(?=.*[a-zа-яё\u0E01-\u0E5B])(?=.*[A-ZА-ЯЁ]).{8,}$/).withMessage('Password must contain at least one number, one lowercase and one uppercase letter')
+  
+  // ], async function(req, res) {
+  //   const errors = validationResult(req);
+  //   if (!errors.isEmpty()) {
+  //     return res.status(400).json({ status: 'error', errors: errors.array() });
+  //   }
+    
+  //   const defaultLogo = '/icons/playerslogo/default_avatar.svg';
+
+  //   console.log(req.body);
+  //   const { email, login, password, confirm_password, city, fullname, hand, date, registeredDate, policy, clientLang } = req.body;
+    
+  //   if (!email || !login || !password || !confirm_password || !city || !fullname || !hand || !date || !registeredDate || !policy ) {
+  //     res.status(400).json({ error: 'Something wrong. Please come back to homepage and try again' });
+  //     return;
+  //   }
+    
+  //   const parts = date.split(".");
+  //   const birthdayDate = new Date(`${parts[1]}/${parts[0]}/${parts[2]}`);
+    
+  //   try {
+  //     // Check if the city already exists
+  //     const cityExists = await db.collection('cities').findOne({ [clientLang]: city });
+  //     console.log(clientLang);
+
+  //     if (!cityExists) {
+  //       // If city does not exist, add it
+  //       const newCity = { [clientLang]: city };
+  //       console.log('Inserting new city:', newCity);
+  //       await db.collection('cities').insertOne(newCity);
+  //     } else {
+  //         console.log('City already exists:', cityExists);
+  //     }
+
+      
+  //     await db.collection('users').insertOne({ email, 
+  //                                             login, 
+  //                                             password, 
+  //                                             city, 
+  //                                             fullname,
+  //                                             logo: defaultLogo, 
+  //                                             hand, 
+  //                                             birthdayDate, 
+  //                                             registeredDate, 
+  //                                             policy 
+  //     });
+  //     console.log("Данные успешно вставлены");
+
+  //     const transporter = nodemailer.createTransport({
+  //       service: 'gmail',
+  //       auth: {
+  //         user: notificateEmail,
+  //         pass: notificatePass
+  //       }
+  //     });
+
+  //     const mailOptionsForOwner = {
+  //       from: notificateEmail,
+  //       to: 'ogarsanya@gmail.com',
+  //       subject: 'New User Application',
+  //       text: `
+  //         A new user has registered
+  //           E-mail: ${email}, 
+  //           Login: ${login},  
+  //           City: ${city}, 
+  //           Name: ${fullname}, 
+  //           Plaing hand: ${hand}, 
+  //           Burthday: ${birthdayDate}, 
+  //           Registered date: ${registeredDate}, 
+  //           Policy: 'Agreed'
+  //       `
+  //     };
+  //     const mailOptionsForUser = {
+  //       from: notificateEmail,
+  //       to: `${email}`,
+  //       subject: 'Congratulation!',
+  //       text: `
+  //         You have successfully registered at https://thailandttleague.com
+  //           E-mail: ${email}, 
+  //           Login: ${login}
+  //       `
+  //     };
+
+  //     transporter.sendMail(mailOptionsForOwner, (error, info) => {
+  //       if (error) {
+  //         console.error('Error sending email:', error);
+  //       } else {
+  //         console.log('Email sent:', info.response);
+  //       }
+  //     });
+
+  //     transporter.sendMail(mailOptionsForUser, (error, info) => {
+  //       if (error) {
+  //         console.error('Error sending email:', error);
+  //       } else {
+  //         console.log('Email sent:', info.response);
+  //       }
+  //     });
+
+  //     res.status(200).json({ status: 'success', message: 'Registration successful!' });
+  //   } catch (err) {
+  //     console.error('Ошибка при вставке в MongoDB:', err);
+  //     res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });
+  //   }
+  
+  // });
+
   app.post('/register', [
-    // check passwords
     body('password')
       .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
-      .matches(/^(?=.*\d)(?=.*[a-zа-яё\u0E01-\u0E5B])(?=.*[A-ZА-ЯЁ]).{8,}$/).withMessage('Password must contain at least one number, one lowercase and one uppercase letter')
-  
-  ], async function(req, res) {
+      .matches(/^(?=.*\d)(?=.*[a-zа-яё\u0E01-\u0E5B])(?=.*[A-ZА-ЯЁ]).{8,}$/).withMessage('Password must contain at least one number, one lowercase, and one uppercase letter')
+  ], async function (req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ status: 'error', errors: errors.array() });
     }
-    
+  
     const defaultLogo = '/icons/playerslogo/default_avatar.svg';
-
-    const { email, login, password, confirm_password, city, fullname, hand, date, registeredDate, policy } = req.body;
-    
-    if (!email || !login || !password || !confirm_password || !city || !fullname || !hand || !date || !registeredDate || !policy ) {
+  
+    const { email, login, password, confirm_password, city, fullname, hand, date, registeredDate, policy, clientLang } = req.body;
+  
+    if (!email || !login || !password || !confirm_password || !city || !fullname || !hand || !date || !registeredDate || !policy) {
       res.status(400).json({ error: 'Something wrong. Please come back to homepage and try again' });
       return;
     }
-    
+  
     const parts = date.split(".");
     const birthdayDate = new Date(`${parts[1]}/${parts[0]}/${parts[2]}`);
-
+  
     try {
-      
-      await db.collection('users').insertOne({ email, 
-                                              login, 
-                                              password, 
-                                              city, 
-                                              fullname,
-                                              logo: defaultLogo, 
-                                              hand, 
-                                              birthdayDate, 
-                                              registeredDate, 
-                                              policy 
+      // Check if the city already exists
+      let cityId;
+      const cityExists = await db.collection('cities').findOne({ [clientLang]: city });
+      if (cityExists) {
+        cityId = cityExists._id;
+      } else {
+        const newCity = { [clientLang]: city };
+        const result = await db.collection('cities').insertOne(newCity);
+        cityId = result.insertedId;
+      }
+  
+      await db.collection('users').insertOne({
+        email,
+        login,
+        password,
+        city: cityId,
+        fullname,
+        logo: defaultLogo,
+        hand,
+        birthdayDate,
+        registeredDate,
+        policy
       });
-      console.log("Данные успешно вставлены");
-
+  
+      console.log("User data inserted successfully");
+  
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -387,34 +511,35 @@ async function createRoutes() {
           pass: notificatePass
         }
       });
-
+  
       const mailOptionsForOwner = {
         from: notificateEmail,
         to: 'ogarsanya@gmail.com',
         subject: 'New User Application',
         text: `
           A new user has registered
-            E-mail: ${email}, 
-            Login: ${login},  
-            City: ${city}, 
-            Name: ${fullname}, 
-            Plaing hand: ${hand}, 
-            Burthday: ${birthdayDate}, 
-            Registered date: ${registeredDate}, 
-            Policy: 'Agreed'
+          E-mail: ${email}, 
+          Login: ${login},  
+          City: ${city}, 
+          Name: ${fullname}, 
+          Playing hand: ${hand}, 
+          Birthday: ${birthdayDate}, 
+          Registered date: ${registeredDate}, 
+          Policy: 'Agreed'
         `
       };
+  
       const mailOptionsForUser = {
         from: notificateEmail,
-        to: `${email}`,
-        subject: 'Congratulation!',
+        to: email,
+        subject: 'Congratulations!',
         text: `
           You have successfully registered at https://thailandttleague.com
-            E-mail: ${email}, 
-            Login: ${login}
+          E-mail: ${email}, 
+          Login: ${login}
         `
       };
-
+  
       transporter.sendMail(mailOptionsForOwner, (error, info) => {
         if (error) {
           console.error('Error sending email:', error);
@@ -422,7 +547,7 @@ async function createRoutes() {
           console.log('Email sent:', info.response);
         }
       });
-
+  
       transporter.sendMail(mailOptionsForUser, (error, info) => {
         if (error) {
           console.error('Error sending email:', error);
@@ -430,13 +555,12 @@ async function createRoutes() {
           console.log('Email sent:', info.response);
         }
       });
-
+  
       res.status(200).json({ status: 'success', message: 'Registration successful!' });
     } catch (err) {
-      console.error('Ошибка при вставке в MongoDB:', err);
+      console.error('Error inserting into MongoDB:', err);
       res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });
     }
-  
   });
 
   app.get('/get-past-tournaments', async function(req, res) {
@@ -508,6 +632,24 @@ async function createRoutes() {
       console.error('Error when loading the list of cities from the database:', err);
     }
   });
+
+  app.get('/cities/:cityId', async (req, res) => {
+    const cityId = req.params.cityId;
+
+    try {
+        const city = await db.collection('cities').findOne({ _id: new ObjectId(cityId) });
+        // console.log(city);
+        if (!city) {
+            return res.status(404).json({ error: 'City not found' });
+        }
+
+        res.json(city);
+    } catch (err) {
+        console.error('Error fetching city:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
 
   app.get('/adv', async function(req, res) {
     try {

@@ -312,10 +312,15 @@ export function fetchClub() {
     });
 };
 
-export function fetchCoaches() {
-    fetch(`/coaches`)
-    .then(response => response.json())
-    .then(coaches => {
+
+
+export async function fetchCoaches() {
+    try {
+        const response = await fetch('/coaches');
+        if (!response.ok) {
+            throw new Error('Failed to fetch coaches');
+        }
+        const coaches = await response.json();
         const coachesContent = document.querySelector('.coaches_content');
         coachesContent.innerHTML = '';
         const languageMap = {
@@ -323,11 +328,26 @@ export function fetchCoaches() {
             'english': 'en',
             'thai': 'th'
         };
-        const currentLang = localStorage.getItem('clientLang') || 'english';
-        const langKey = languageMap[currentLang];
 
+        async function getCityName(cityId) {
+            try {
+                const response = await fetch(`/cities/${cityId}`);
+                if (!response.ok) {
+                    throw new Error('City data not found');
+                }
+                const city = await response.json();
+                const currentLang = localStorage.getItem('clientLang') || 'english';
+                return city[currentLang]; // Возвращает имя города на выбранном языке
+            } catch (error) {
+                console.error('Ошибка при получении названия города:', error);
+                return 'Unknown City'; // Возвращение запасного значения в случае ошибки
+            }
+        }
+
+        const currentLang = localStorage.getItem('clientLang') || 'english';
+        
         let coachesList = coaches.slice(0, 6);
-        coachesList.sort().forEach(coach => {
+        for (const coach of coachesList) {
             let coachDiv = document.createElement('div');
             coachDiv.className = 'coaches_content_coach';
 
@@ -365,7 +385,7 @@ export function fetchCoaches() {
                 'thai': 'ชมรม:',
                 'russian': 'Клуб:'
             };
-            clubTitleSpan.textContent = clubTitle[localStorage.clientLang] || 'Club:';
+            clubTitleSpan.textContent = clubTitle[currentLang] || 'Club:';
 
             let clubNameP = document.createElement('p');
             clubNameP.textContent = coach.club;
@@ -383,10 +403,15 @@ export function fetchCoaches() {
                 'thai': 'เมือง:',
                 'russian': 'Город:'
             };
-            cityTitleSpan.textContent = cityTitle[localStorage.clientLang] || 'City:';
+            cityTitleSpan.textContent = cityTitle[currentLang] || 'City:';
 
             let cityNameP = document.createElement('p');
-            cityNameP.textContent = coach.city[langKey];
+            // Убедитесь, что передается правильный идентификатор города
+            if (coach.city) {
+                cityNameP.textContent = await getCityName(coach.city);
+            } else {
+                cityNameP.textContent = 'Unknown City';
+            }
 
             cityDiv.appendChild(cityTitleSpan);
             cityDiv.appendChild(cityNameP);
@@ -399,15 +424,15 @@ export function fetchCoaches() {
             coachDiv.appendChild(infoDiv);
 
             coachesContent.appendChild(coachDiv);
-        });
-    })
-    .catch(error => {
+        }
+    } catch (error) {
         console.error('Произошла ошибка:', error);
         showErrorModal('Database connection error');
-    });
+    }
 };
 
-export function getAllCoaches() {
+
+export async function getAllCoaches() {
     const nameInput = document.getElementById('nameInput');
     const clubInput = document.getElementById('clubInput');
     const cityInput = document.getElementById('cityInput');
@@ -428,12 +453,12 @@ export function getAllCoaches() {
 
     let allCoaches = [];
 
-    fetchAllCoaches();
+    await fetchAllCoaches();
 
-    function fetchAllCoaches() {
-        fetch(`/coaches`)
-        .then(response => response.json())
-        .then(coaches => {
+    async function fetchAllCoaches() {
+        try {
+            const response = await fetch(`/coaches`);
+            const coaches = await response.json();
             allCoaches = coaches;
 
             // Display first 12 coaches initially
@@ -442,20 +467,37 @@ export function getAllCoaches() {
 
             const names = [...new Set(coaches.flatMap(coach => [coach.name, coach.playerName]))];
             const clubs = [...new Set(coaches.map(coach => coach.club))];
-            const cities = [...new Set(coaches.map(coach => coach.city[langKey]))];
+            const cityIds = [...new Set(coaches.map(coach => coach.city))]; // Now storing city _id
 
             names.sort();
             clubs.sort();
-            cities.sort();
+
+            // Retrieve city names from MongoDB collection 'cities'
+            const cityNames = await Promise.all(cityIds.map(cityId => getCityName(cityId)));
+
+            cityNames.sort();
 
             createDropdown(nameDropdown, names, nameInput);
             createDropdown(clubDropdown, clubs, clubInput);
-            createDropdown(cityDropdown, cities, cityInput);
-        })
-        .catch(error => {
+            createDropdown(cityDropdown, cityNames, cityInput);
+        } catch (error) {
             console.error('Произошла ошибка:', error);
             showErrorModal('Database connection error');
-        });
+        }
+    }
+
+    async function getCityName(cityId) {
+        try {
+            const response = await fetch(`/cities/${cityId}`);
+            if (!response.ok) {
+                throw new Error('City data not found');
+            }
+            const city = await response.json();
+            return city[currentLang]; // Возвращает имя города на выбранном языке
+        } catch (error) {
+            console.error('Ошибка при получении названия города:', error);
+            return 'Unknown City'; // Возвращение запасного значения в случае ошибки
+        }
     }
 
     function createDropdown(dropdown, options, inputElement) {
@@ -490,7 +532,7 @@ export function getAllCoaches() {
         dropdown.style.display = 'block';
     }
 
-    function filterCoaches() {
+    async function filterCoaches() {
         const nameValue = nameInput.value.toLowerCase();
         const clubValue = clubInput.value.toLowerCase();
         const cityValue = cityInput.value.toLowerCase();
@@ -498,23 +540,25 @@ export function getAllCoaches() {
         const filteredCoaches = allCoaches.filter(coach => {
             const nameMatch = !nameValue || coach.name.toLowerCase().includes(nameValue) || coach.playerName.toLowerCase().includes(nameValue);
             const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
-            const cityMatch = !cityValue || coach.city[langKey].toLowerCase().includes(cityValue);
+            // Retrieve city name from MongoDB collection 'cities'
+            const cityMatch = !cityValue || cityValue === 'all' || getCityName(coach.city).toLowerCase().includes(cityValue);
             return nameMatch && clubMatch && cityMatch;
         });
         displayCoaches(filteredCoaches);
     }
 
-    function displayCoaches(coaches) {
+    async function displayCoaches(coaches) {
         const container = document.querySelector('.coaches_content');
         container.innerHTML = '';
-        coaches.forEach(coach => {
-            let coachDiv = document.createElement('div');
+
+        for (const coach of coaches) {
+            const coachDiv = document.createElement('div');
             coachDiv.className = 'coaches_content_coach';
 
-            let wrapLogoDiv = document.createElement('div');
+            const wrapLogoDiv = document.createElement('div');
             wrapLogoDiv.className = 'coaches_content_coach_wrapLogo';
 
-            let logoDiv = document.createElement('div');
+            const logoDiv = document.createElement('div');
             logoDiv.className = 'coaches_content_coach_wrapLogo_logo';
             logoDiv.style.backgroundImage = `url('${coach.logo}')`;
             logoDiv.style.backgroundPosition = '50%';
@@ -524,49 +568,50 @@ export function getAllCoaches() {
             wrapLogoDiv.appendChild(logoDiv);
             coachDiv.appendChild(wrapLogoDiv);
 
-            let infoDiv = document.createElement('div');
+            const infoDiv = document.createElement('div');
             infoDiv.className = 'coaches_content_coach_info';
 
-            let ratingDiv = document.createElement('div');
+            const ratingDiv = document.createElement('div');
             ratingDiv.className = 'coaches_content_coach_info_rating';
             ratingDiv.textContent = coach.rating;
 
-            let nameH4 = document.createElement('h4');
+            const nameH4 = document.createElement('h4');
             nameH4.className = 'coaches_content_coach_info_name';
             nameH4.textContent = coach.name;
 
-            let clubDiv = document.createElement('div');
+            const clubDiv = document.createElement('div');
             clubDiv.className = 'coaches_content_coach_info_club';
 
-            let clubTitleSpan = document.createElement('span');
+            const clubTitleSpan = document.createElement('span');
             clubTitleSpan.className = 'coaches_content_coach_info_title';
             let clubTitle = {
                 'english': 'Club:',
                 'thai': 'ชมรม:',
                 'russian': 'Клуб:'
             };
-            clubTitleSpan.textContent = clubTitle[localStorage.clientLang] || 'Club:';
+            clubTitleSpan.textContent = clubTitle[currentLang] || 'Club:';
+            // clubTitleSpan.textContent = 'Club:';
 
-            let clubNameP = document.createElement('p');
+            const clubNameP = document.createElement('p');
             clubNameP.textContent = coach.club;
 
             clubDiv.appendChild(clubTitleSpan);
             clubDiv.appendChild(clubNameP);
 
-            let cityDiv = document.createElement('div');
+            const cityDiv = document.createElement('div');
             cityDiv.className = 'coaches_content_coach_info_city';
 
-            let cityTitleSpan = document.createElement('span');
+            const cityTitleSpan = document.createElement('span');
             cityTitleSpan.className = 'coaches_content_coach_info_title';
             let cityTitle = {
                 'english': 'City:',
                 'thai': 'เมือง:',
                 'russian': 'Город:'
             };
-            cityTitleSpan.textContent = cityTitle[localStorage.clientLang] || 'City:';
+            cityTitleSpan.textContent = cityTitle[currentLang] || 'City:';
 
-            let cityNameP = document.createElement('p');
-            cityNameP.textContent = coach.city[langKey];
+            const cityNameP = document.createElement('p');
+            cityNameP.textContent = await getCityName(coach.city); // Retrieve city name
 
             cityDiv.appendChild(cityTitleSpan);
             cityDiv.appendChild(cityNameP);
@@ -579,7 +624,7 @@ export function getAllCoaches() {
             coachDiv.appendChild(infoDiv);
 
             container.appendChild(coachDiv);
-        });
+        }
     }
 
     nameInput.addEventListener('input', () => {
@@ -591,7 +636,7 @@ export function getAllCoaches() {
         filterCoaches();
     });
     cityInput.addEventListener('input', () => {
-        updateDropdownList(cityDropdown, [...new Set(allCoaches.map(coach => coach.city[langKey]))], cityInput);
+        updateDropdownList(cityDropdown, [...new Set(allCoaches.map(coach => getCityName(coach.city)))], cityInput);
         filterCoaches();
     });
 
@@ -608,7 +653,7 @@ export function getAllCoaches() {
         displayCoaches(allCoaches);
         viewAllButton.style.display = 'none';
     });
-};
+}
 
 export function btnGoUp() {
     const body = document.querySelector('body');
@@ -1226,6 +1271,8 @@ export function registrationForm() {
             cityParentElement.classList.add('error');
             return false;
         }
+        let clientLanguage = localStorage.getItem('clientLang') || 'english';
+        // console.log(clientLang);
         const data = {
             email: document.getElementById('emailRegInput').value,
             login: document.getElementById('loginRegInput').value,
@@ -1236,8 +1283,10 @@ export function registrationForm() {
             hand: document.querySelector('input[name="hand"]:checked').value,
             date: document.getElementById('date').value,
             registeredDate: new Date(),
-            policy: document.getElementById('policy').checked
+            policy: document.getElementById('policy').checked,
+            clientLang: clientLanguage,
         };
+        // console.log(data);
 
         fetch('/register', {
             method: 'POST',
@@ -1286,7 +1335,10 @@ export function showErrorModal(message, tittle) {
 };
 
 function redirectToPersonalAccount() {
-    window.location.href = '/account';
+    // window.location.href = '/';
+    loginForm();
+
+    // console.log('регистрация успешна');
 }
 
 export function breadCrumb() {

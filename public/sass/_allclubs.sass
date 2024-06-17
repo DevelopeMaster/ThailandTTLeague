@@ -1,5 +1,6 @@
-.filterCoaches
+.filterClubs
     margin-top: 40px
+    
     p
         color: #FFF
         font-family: Inter
@@ -7,13 +8,29 @@
         font-style: normal
         font-weight: 500
         line-height: 130%
+    a
+        margin-top: 20px
+        display: block
+        color: #FA6400
+        font-family: Inter
+        font-size: 14px
+        font-style: normal
+        font-weight: 500
+        line-height: normal
+        &:hover
+            color: #FF7A00
     &_wrapper
         display: flex
         gap: 20px
+        width: 100%
         align-items: flex-end
-    #filterCoaches
+    #filterClubs
         height: 37px
-        width: 264px
+        width: 186px
+        padding: 13px 38px
+        border-radius: 6px
+        align-items: center
+        align-content: center
     &_filter
         border-radius: 14px
         background: #3F3F4C
@@ -21,11 +38,15 @@
         width: 100%
         padding: 20px
         display: flex
-        flex-direction: column
-        gap: 14px
+        align-items: flex-end
+        justify-content: space-between
+        // flex-direction: column
+        // align-items: flex-end
+        gap: 20px
         input
             width: 100%
             margin-top: 10px
+            height: 37px
             display: flex
             padding: 8px 13px 8px 8px
             align-items: center
@@ -119,18 +140,21 @@
         .dropbtnCities:hover, .dropbtnCities:focus
             background-color: #3F3F4C
 
-// .allCoaches
-//     margin-top: 80px
+.clubs
+    margin-top: 80px
+
+
+@media (max-width: 768px)
+    .filterClubs
+        &_filter
+            flex-direction: column
 
 
 @media (max-width: 576px)
-    .filterCoaches
+    .filterClubs
         &_wrapper
             flex-direction: column
-            gap: 16px
-        #filterCoaches
+        #filterClubs
             width: 100%
-        label
-            font-size: 14px
-    .allCoaches
+    .clubs
         margin-top: 40px

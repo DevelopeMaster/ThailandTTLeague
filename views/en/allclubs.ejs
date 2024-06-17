@@ -67,65 +67,57 @@
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol id="breadcrumb" class="navigate_breadcrumb">
-                    <!-- <li class="navigate_breadcrumb_item"><a href="/">Home</a></li>
-                    <li class="navigate_breadcrumb_item"><a href="/category">Category</a></li>
-                    <li class="navigate_breadcrumb_item navigate_breadcrumb_item_active" aria-current="page">Current Page</li> -->
+                    <!-- from js -->
                 </ol>
             </nav>
         </div>
     </div>
-    <section class="filterCoaches">
+    <section class="filterClubs">
         <div class="container">
             <div class="contentWrapper">
-                <h2>FIND a Coach</h2>
-                <div class="filterCoaches_filter">
-                    <div class="filterCoaches_wrapper">
+                <h2>FIND a Club</h2>
+                <div class="filterClubs_filter">
+                    <div class="filterClubs_wrapper">
                         <div class="dropdownForm">
-                            <label for="name">Search by name/player name</label>
-                            <input type="text" name="name" id="nameInput" placeholder="Coach name">
-                            <div id="nameDropdown" class="dropdown-content"></div>
+                          <label for="club">Search by the club name</label>
+                          <input type="text" name="club" id="clubInput" placeholder="Club name">
+                          <div id="clubDropdown" class="dropdown-content"></div>
                         </div>
                         <div class="dropdownForm">
-                            <label for="club">Clubs</label>
-                            <input type="text" name="club" id="clubInput" placeholder="Club name">
-                            <div id="clubDropdown" class="dropdown-content"></div>
-                        </div>
-                    </div>
-                    <div class="filterCoaches_wrapper">
-                        <div class="dropdownForm">
-                            <label for="city">City</label>
+                            <label for="city">Search by the city</label>
                             <input type="text" name="city" id="cityInput" placeholder="City">
                             <div id="cityDropdown" class="dropdown-content"></div>
                         </div>
-                        <button id="filterCoaches" class="header_btn-sign btnSbmt" type="submit" fdprocessedid="c3chv">Search</button>
+                        
                     </div>
-                    
+                    <button id="filterClubs" class="header_btn-sign btnSbmt" type="submit" fdprocessedid="c3chv">Search</button>
                 </div>
+                <a id="btnAddClub" href="#">Application to add a club</a>
             </div>
         </div>
     </section>
 
-    <section class="coaches">
+    <section class="clubs">
         <div class="container">
           <div class="contentWrapper">
-            <h2>Coaches</h2>
-            <div id="coachesContainer" class="coaches_content">
-                <!-- add from js -->
+            <h2>Clubs</h2>
+            <div class="clubs_content">
+              <!-- from js -->  
             </div>
             <div class="clubs_down">
-                <button id="becomeCoach" class="header_btn-sign coaches_down_btn" fdprocessedid="vvr4zp">
-                Become a coach
-                </button>
-                <a href="#" id="viewAllCoaches">View all coaches</a>
+              <!-- <button id="btnAddClub" class="header_btn-sign clubs_down_btn" fdprocessedid="vvr4zp">
+                Add a club
+              </button> -->
+              <a href="#">View all clubs</a>
             </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
 
 
     <footer class="footer">
-       <!-- from js -->
+        <!-- from js -->
       </footer>
       
       <div class="adv">
@@ -140,6 +132,6 @@
             <!-- add from DB -->
           </div>
       </div>
-      <script type="module" src="/js/allcoaches.js"></script> 
+      <script type="module" src="/js/allclubs.js"></script> 
 </body>
 </html>

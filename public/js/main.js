@@ -1,4 +1,4 @@
-import { registrationForm, loginForm, restoreAccesForm, listenerOfButtons, btnGoUp, languageControl, fetchCities, fetchAdvertisements, fetchPastTournaments, fetchFutureTournaments, fetchClub, fetchCoaches } from './modules.js';
+import { createHeader, createFooter, registrationForm, loginForm, restoreAccesForm, listenerOfButtons, btnGoUp, languageControl, fetchCities, fetchAdvertisements, fetchPastTournaments, fetchFutureTournaments, fetchClub, fetchCoaches } from './modules.js';
 
 //----------- important -----------//
 window.onload = function() {
@@ -13,6 +13,8 @@ async function initializeApp() {
 //----------- important -----------//
 
 document.addEventListener('DOMContentLoaded', function() {
+    createHeader(localStorage.getItem('clientLang') || 'english');
+    createFooter(localStorage.getItem('clientLang') || 'english');
     const languageMap = {
         'russian': 'ru',
         'english': 'en',

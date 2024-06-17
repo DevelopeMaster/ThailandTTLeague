@@ -1,4 +1,4 @@
-import { showErrorModal, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
+import { createHeader, createFooter, showErrorModal, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
 //----------- important -----------//
 window.onload = function() {
     if (!localStorage.getItem('clientLang')) {
@@ -11,6 +11,9 @@ async function initializeApp() {
 }
 //----------- important -----------//
 document.addEventListener('DOMContentLoaded', function() {
+    createHeader(localStorage.getItem('clientLang') || 'english');
+    createFooter(localStorage.getItem('clientLang') || 'english');
+    
     initializeApp();
 
 

@@ -35,6 +35,645 @@ export function fetchAdvertisements(block) {
         });
 };
 
+export function createHeader(language) {
+    const headerTag = document.querySelector('.header');
+    // console.log(language);
+    if (language === 'english') {
+        headerTag.innerHTML = `
+            <div class="header_wrapper">
+                <div class="container">
+                    <div class="header_top">
+                        <div class="header_top_left">
+                            <a class="logo" href="/">
+                                <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                            </a>
+                            <label class="header_top_left_label" id="headerPC">
+                                <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                                <button type="submit" class="header_top_left_search">
+                                    <img src="/icons/search.svg" alt="search icon">
+                                </button>
+                            </label>
+                        </div>
+                        <div class="header_top_right" id="headerPC">
+                            
+                            <div class="header_langs">
+                                <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                    <span class="languageText">ENG</span>
+                                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                </button>
+                                <div class="header_langs_dropbtnLangs_content dropdown">
+                                <a href="#" data-lang="english">ENG</a>
+                                <a href="#" data-lang="russian">RUS</a>
+                                <a href="#" data-lang="thai">ไทย</a>
+                                </div>
+                            </div>
+                            <div class="header_buttons">
+                                <button class="header_btn-log btnLogin">
+                                    Log in
+                                </button>
+                                <button class="header_btn-sign btnRegister">
+                                    Sign in
+                                </button>
+                            </div>
+                        </div>
+                        <button class="burger-btn" id="burger">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="header_bottom header_bottom_pc" id="headerPC">
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                        <p class="header_bottom_category-text">
+                            Tournaments
+                        </p>
+                    </a>
+                    <a class="header_bottom_category goToAllClubs">
+                        <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                        <p class="header_bottom_category-text">
+                            Clubs
+                        </p>
+                    </a>
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                        <p class="header_bottom_category-text">
+                            Players
+                        </p>
+                    </a>
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                        <p class="header_bottom_category-text">
+                            Training
+                        </p>
+                    </a>
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                        <p class="header_bottom_category-text">
+                            About Us
+                        </p>
+                    </a>                
+                </div>
+
+                
+            </div>
+            <div class="header_bottom header_bottom_mob" id="headerMob">
+            <button class="header_bottom_mob_cross">
+                <img  src="/icons/x-circle.svg" alt="cross">
+            </button>
+            
+            <label class="header_top_left_label">
+                <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                <button class="header_top_left_search">
+                    <img src="/icons/search.svg" alt="search icon">
+                </button>
+            </label>
+            <a class="header_bottom_category guest">
+                <p class="header_category-text btnLogin">
+                    Log in
+                </p>
+            </a>
+            <a class="header_bottom_category guest">
+                <p class="header_bottom_category-text btnRegister">
+                    Sign in
+                </p>
+            </a>
+
+            <a class="header_bottom_category logedIn">
+                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                <p class="header_bottom_category-text">
+                    My profile
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                <p class="header_bottom_category-text">
+                    Tournaments
+                </p>
+            </a>
+            <a class="header_bottom_category goToAllClubs">
+                <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                <p class="header_bottom_category-text">
+                    Clubs
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                <p class="header_bottom_category-text">
+                    Players
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                <p class="header_bottom_category-text">
+                    Training
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                <p class="header_bottom_category-text">
+                    About Us
+                </p>
+            </a>
+            <div class="header_langs">
+                <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                    <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                    <span class="languageText">ENG</span>
+                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                </button>
+                <div class="header_langs_dropbtnLangs_content dropdown">
+                    <a href="#" data-lang="english">ENG</a>
+                    <a href="#" data-lang="russian">RUS</a>
+                    <a href="#" data-lang="thai">ไทย</a>
+                </div>
+            </div>
+            <div class="header_footer_contacts">
+                <div class="header_footer_contacts_title">
+                    contacts
+                </div>
+                <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                    thailandttleague@gmail.com
+                </a>
+                <a class="footer_cantacts-phone" href="tel:+66951954053">
+                    +66 95 195 4053
+                </a>
+            </div>
+        </div>
+        `;
+    } else if ( language === 'russian') {
+        headerTag.innerHTML = `
+            <div class="header_wrapper">
+                <div class="container">
+                    <div class="header_top">
+                        <div class="header_top_left">
+                            <a class="logo" href="/">
+                                <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                            </a>
+                            <label class="header_top_left_label" id="headerPC">
+                                <input class="header_top_left_input" type="text" placeholder="Поиск игрока">
+                                <button type="submit" class="header_top_left_search">
+                                    <img src="/icons/search.svg" alt="search icon">
+                                </button>
+                            </label>
+                        </div>
+                        <div class="header_top_right" id="headerPC">
+                            
+                            <div class="header_langs">
+                                <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                    <span class="languageText">RUS</span>
+                                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                </button>
+                                <div class="header_langs_dropbtnLangs_content dropdown">
+                                <a href="#" data-lang="english">ENG</a>
+                                <a href="#" data-lang="russian">RUS</a>
+                                <a href="#" data-lang="thai">ไทย</a>
+                                </div>
+                            </div>
+                            <div class="header_buttons">
+                                <button class="header_btn-log btnLogin">
+                                    Войти
+                                </button>
+                                <button class="header_btn-sign btnRegister">
+                                    Регистрация
+                                </button>
+                            </div>
+                        </div>
+                        <button class="burger-btn" id="burger">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="header_bottom header_bottom_pc" id="headerPC">
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                        <p class="header_bottom_category-text">
+                        Турниры
+                        </p>
+                    </a>
+                    <a class="header_bottom_category goToAllClubs">
+                        <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                        <p class="header_bottom_category-text">
+                        Клубы
+                        </p>
+                    </a>
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                        <p class="header_bottom_category-text">
+                        Игроки
+                        </p>
+                    </a>
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                        <p class="header_bottom_category-text">
+                        Тренировки
+                        </p>
+                    </a>
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                        <p class="header_bottom_category-text">
+                        О Нас
+                        </p>
+                    </a>                
+                </div>
+
+                
+            </div>
+            <div class="header_bottom header_bottom_mob" id="headerMob">
+            <button class="header_bottom_mob_cross">
+                <img  src="/icons/x-circle.svg" alt="cross">
+            </button>
+            
+            <label class="header_top_left_label">
+                <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                <button class="header_top_left_search">
+                    <img src="/icons/search.svg" alt="search icon">
+                </button>
+            </label>
+            <a class="header_bottom_category guest">
+                <p class="header_category-text btnLogin">
+                    Войти
+                </p>
+            </a>
+            <a class="header_bottom_category guest">
+                <p class="header_bottom_category-text btnRegister">
+                    Регистрация
+                </p>
+            </a>
+
+            <a class="header_bottom_category logedIn">
+                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                <p class="header_bottom_category-text">
+                    Мой профиль
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                <p class="header_bottom_category-text">
+                    Турниры
+                </p>
+            </a>
+            <a class="header_bottom_category goToAllClubs">
+                <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                <p class="header_bottom_category-text">
+                    Клубы
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                <p class="header_bottom_category-text">
+                    Игроки
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                <p class="header_bottom_category-text">
+                    Тренировки
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                <p class="header_bottom_category-text">
+                    О Нас
+                </p>
+            </a>
+            <div class="header_langs">
+                <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                    <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                    <span class="languageText">RUS</span>
+                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                </button>
+                <div class="header_langs_dropbtnLangs_content dropdown">
+                    <a href="#" data-lang="english">ENG</a>
+                    <a href="#" data-lang="russian">RUS</a>
+                    <a href="#" data-lang="thai">ไทย</a>
+                </div>
+            </div>
+            <div class="header_footer_contacts">
+                <div class="header_footer_contacts_title">
+                    Контакты
+                </div>
+                <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                    thailandttleague@gmail.com
+                </a>
+                <a class="footer_cantacts-phone" href="tel:+66951954053">
+                    +66 95 195 4053
+                </a>
+            </div>
+        </div>
+        `;
+    } else if ( language === 'thai') {
+        headerTag.innerHTML = `
+            <div class="header_wrapper">
+                <div class="container">
+                    <div class="header_top">
+                        <div class="header_top_left">
+                            <a class="logo" href="/">
+                                <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                            </a>
+                            <label class="header_top_left_label" id="headerPC">
+                                <input class="header_top_left_input" type="text" placeholder="ค้นหาผู้เล่น">
+                                <button type="submit" class="header_top_left_search">
+                                    <img src="/icons/search.svg" alt="search icon">
+                                </button>
+                            </label>
+                        </div>
+                        <div class="header_top_right" id="headerPC">
+                            
+                            <div class="header_langs">
+                                <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                    <span class="languageText">ไทย</span>
+                                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                </button>
+                                <div class="header_langs_dropbtnLangs_content dropdown">
+                                <a href="#" data-lang="english">ENG</a>
+                                <a href="#" data-lang="russian">RUS</a>
+                                <a href="#" data-lang="thai">ไทย</a>
+                                </div>
+                            </div>
+                            <div class="header_buttons">
+                                <button class="header_btn-log btnLogin">
+                                    เข้าสู่ระบบ
+                                </button>
+                                <button class="header_btn-sign btnRegister">
+                                    ลงทะเบียน
+                                </button>
+                            </div>
+                        </div>
+                        <button class="burger-btn" id="burger">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="header_bottom header_bottom_pc" id="headerPC">
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                        <p class="header_bottom_category-text">
+                            การแข่งขัน
+                        </p>
+                    </a>
+                    <a class="header_bottom_category goToAllClubs">
+                        <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                        <p class="header_bottom_category-text">
+                            สโมสร
+                        </p>
+                    </a>
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                        <p class="header_bottom_category-text">
+                            ผู้เล่น
+                        </p>
+                    </a>
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                        <p class="header_bottom_category-text">
+                            เทรนกับโค้ช
+                        </p>
+                    </a>
+                    <a class="header_bottom_category">
+                        <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                        <p class="header_bottom_category-text">
+                            เกี่ยวกับเรา
+                        </p>
+                    </a>                
+                </div>
+
+                
+            </div>
+            <div class="header_bottom header_bottom_mob" id="headerMob">
+            <button class="header_bottom_mob_cross">
+                <img  src="/icons/x-circle.svg" alt="cross">
+            </button>
+            
+            <label class="header_top_left_label">
+                <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                <button class="header_top_left_search">
+                    <img src="/icons/search.svg" alt="search icon">
+                </button>
+            </label>
+            <a class="header_bottom_category guest">
+                <p class="header_category-text btnLogin">
+                    เข้าสู่ระบบ
+                </p>
+            </a>
+            <a class="header_bottom_category guest">
+                <p class="header_bottom_category-text btnRegister">
+                    ลงทะเบียน
+                </p>
+            </a>
+
+            <a class="header_bottom_category logedIn">
+                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                <p class="header_bottom_category-text">
+                    ประวัติของฉัน
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                <p class="header_bottom_category-text">
+                    การแข่งขัน
+                </p>
+            </a>
+            <a class="header_bottom_category goToAllClubs">
+                <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                <p class="header_bottom_category-text">
+                    สโมสร
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                <p class="header_bottom_category-text">
+                    ผู้เล่น
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                <p class="header_bottom_category-text">
+                    เทรนกับโค้ช
+                </p>
+            </a>
+            <a class="header_bottom_category">
+                <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                <p class="header_bottom_category-text">
+                    เกี่ยวกับเรา
+                </p>
+            </a>
+            <div class="header_langs">
+                <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                    <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                    <span class="languageText">ไทย</span>
+                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                </button>
+                <div class="header_langs_dropbtnLangs_content dropdown">
+                    <a href="#" data-lang="english">ENG</a>
+                    <a href="#" data-lang="russian">RUS</a>
+                    <a href="#" data-lang="thai">ไทย</a>
+                </div>
+            </div>
+            <div class="header_footer_contacts">
+                <div class="header_footer_contacts_title">
+                    ติดต่อเรา
+                </div>
+                <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                    thailandttleague@gmail.com
+                </a>
+                <a class="footer_cantacts-phone" href="tel:+66951954053">
+                    +66 95 195 4053
+                </a>
+            </div>
+        </div>
+        `;
+    };
+    
+};
+
+export function createFooter(language) {
+    const footerTag = document.querySelector('.footer');
+    if (language === 'english') {
+        footerTag.innerHTML = `
+            <div class="container">
+                <div class="footer_wrap">
+                    <a class="logo" href="#">
+                    <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                    </a>
+                    <div class="footer_menu">
+                    <div class="footer_menu_path">
+                        <a href="#">Tournaments</a>
+                        <a class="goToAllClubs" href="#">Clubs</a>
+                        <a href="#">Players</a>
+                    </div>
+                    <div class="footer_menu_path">
+                        <a href="#">Training</a>
+                        <a href="#">About Us</a>
+                    </div>
+                    </div>
+                    <div class="footer_right">
+                    <div class="footer_right_contacts">
+                        <h4>Contacts</h4>
+                        <a class="footer_mail" href="mailto:thailandttleague@gmail.com">thailandttleague@gmail.com</a>
+                        <a href="tel:+66951954053">+66 95 195 4053</a>
+                    </div>
+                    <div class="footer_right_social">
+                        <h4>Social media</h4>
+                        <div class="footer_right_social_list">
+                        <a href="#">
+                            <img src="/icons/instagram.svg" alt="instagram">
+                        </a>
+                        <a href="#">
+                            <img src="/icons/facebook.svg" alt="facebook">
+                        </a>
+                        <a href="#">
+                            <img src="/icons/line-orange.svg" alt="">
+                        </a>
+                        </div>
+                    </div>
+                    </div>
+                    
+                </div>
+                <span class="footer_laws">© 2024 Thailand TT League. All Rights Reserved</span>
+            </div>
+        `;
+    } else if (language === 'russian') {
+        footerTag.innerHTML = `
+            <div class="container">
+                <div class="footer_wrap">
+                    <a class="logo" href="#">
+                    <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                    </a>
+                    <div class="footer_menu">
+                    <div class="footer_menu_path">
+                        <a href="#">Турниры</a>
+                        <a href="#">Клубы</a>
+                        <a href="#">Игроки</a>
+                    </div>
+                    <div class="footer_menu_path">
+                        <a href="#">Тренировки</a>
+                        <a href="#">О Нас</a>
+                    </div>
+                    </div>
+                    <div class="footer_right">
+                    <div class="footer_right_contacts">
+                        <h4>Контакты</h4>
+                        <a class="footer_mail" href="mailto:thailandttleague@gmail.com">thailandttleague@gmail.com</a>
+                        <a href="tel:+66951954053">+66 95 195 4053</a>
+                    </div>
+                    <div class="footer_right_social">
+                        <h4>Социальные сети</h4>
+                        <div class="footer_right_social_list">
+                        <a href="#">
+                            <img src="/icons/instagram.svg" alt="instagram">
+                        </a>
+                        <a href="#">
+                            <img src="/icons/facebook.svg" alt="facebook">
+                        </a>
+                        <a href="#">
+                            <img src="/icons/line-orange.svg" alt="">
+                        </a>
+                        </div>
+                    </div>
+                    </div>
+                    
+                </div>
+                <span class="footer_laws">© 2024 Thailand TT League. All Rights Reserved</span>
+            </div>
+        `;
+    } else if (language === 'thai') {
+        footerTag.innerHTML = `
+            <div class="container">
+                <div class="footer_wrap">
+                    <a class="logo" href="#">
+                    <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                    </a>
+                    <div class="footer_menu">
+                    <div class="footer_menu_path">
+                        <a href="#">การแข่งขัน</a>
+                        <a href="#">สโมสร</a>
+                        <a href="#">ผู้เล่น</a>
+                    </div>
+                    <div class="footer_menu_path">
+                        <a href="#">เทรนกับโค้ช</a>
+                        <a href="#">รูปภาพและวิดีโอ</a>
+                    </div>
+                    </div>
+                    <div class="footer_right">
+                    <div class="footer_right_contacts">
+                        <h4>ติดต่อเรา</h4>
+                        <a class="footer_mail" href="mailto:thailandttleague@gmail.com">thailandttleague@gmail.com</a>
+                        <a href="tel:+66951954053">+66 95 195 4053</a>
+                    </div>
+                    <div class="footer_right_social">
+                        <h4>ช่องทางออนไลน์</h4>
+                        <div class="footer_right_social_list">
+                        <a href="#">
+                            <img src="/icons/instagram.svg" alt="instagram">
+                        </a>
+                        <a href="#">
+                            <img src="/icons/facebook.svg" alt="facebook">
+                        </a>
+                        <a href="#">
+                            <img src="/icons/line-orange.svg" alt="">
+                        </a>
+                        </div>
+                    </div>
+                    </div>
+                    
+                </div>
+                <span class="footer_laws">© 2024 Thailand TT League. All Rights Reserved</span>
+            </div>
+        `;
+    }
+}
+
 export function fetchPastTournaments() {
     fetch('/get-past-tournaments')
       .then(response => response.json())
@@ -263,7 +902,58 @@ export function fetchFutureTournaments() {
 };
 
 
+// export function fetchClub() {
+//     fetch(`/clubs`)
+//     .then(response => response.json())
+//     .then(clubs => {
+//         const clubsContent = document.querySelector('.clubs_content');
+//         clubsContent.innerHTML = '';
+
+//         let clubsList = clubs.slice(0, 6);
+//         clubsList.sort().forEach(club => {
+//             let clubDiv = document.createElement('div');
+//             clubDiv.className = 'clubs_content_club';
+
+//             let logoImg = document.createElement('img');
+//             logoImg.className = 'clubs_content_club_logo';
+//             logoImg.src = club.logo;
+//             logoImg.alt = 'logo';
+
+//             let infoDiv = document.createElement('div');
+//             infoDiv.className = 'clubs_content_club_info';
+
+//             let nameH4 = document.createElement('h4');
+//             nameH4.className = 'clubs_content_club_info_name';
+//             nameH4.textContent = club.name;
+
+//             let citySpan = document.createElement('span');
+//             citySpan.className = 'clubs_content_club_info_city';
+//             citySpan.textContent = club.city;
+
+//             let phoneNumberLink = document.createElement('a');
+//             phoneNumberLink.className = 'clubs_content_club_info_phoneNumber';
+//             phoneNumberLink.href = `tel:${club.phoneNumber}`;
+//             phoneNumberLink.textContent = club.phoneNumber;
+
+//             infoDiv.appendChild(nameH4);
+//             infoDiv.appendChild(citySpan);
+//             infoDiv.appendChild(phoneNumberLink);
+
+//             clubDiv.appendChild(logoImg);
+//             clubDiv.appendChild(infoDiv);
+
+//             clubsContent.appendChild(clubDiv);
+//         });
+//     })
+//     .catch(error => {
+//         console.error('Произошла ошибка:', error);
+//         showErrorModal('Database connection error');
+//     });
+// };
+
+
 export function fetchClub() {
+    let language = localStorage.getItem('clientLang');
     fetch(`/clubs`)
     .then(response => response.json())
     .then(clubs => {
@@ -272,26 +962,192 @@ export function fetchClub() {
 
         let clubsList = clubs.slice(0, 6);
         clubsList.sort().forEach(club => {
-            let clubDiv = document.createElement('div');
+            fetch(`/cities/${club.city}`)
+            .then(response => response.json())
+            .then(city => {
+                let cityName = city[language]; // Получаем название города на выбранном языке
+
+                let clubDiv = document.createElement('div');
+                clubDiv.className = 'clubs_content_club';
+
+                let logoImg = document.createElement('img');
+                logoImg.className = 'clubs_content_club_logo';
+                logoImg.src = club.logo;
+                logoImg.alt = 'logo';
+
+                let infoDiv = document.createElement('div');
+                infoDiv.className = 'clubs_content_club_info';
+
+                let nameH4 = document.createElement('h4');
+                nameH4.className = 'clubs_content_club_info_name';
+                nameH4.textContent = club.name;
+
+                let citySpan = document.createElement('span');
+                citySpan.className = 'clubs_content_club_info_city';
+                citySpan.textContent = cityName;
+
+                let phoneNumberLink = document.createElement('a');
+                phoneNumberLink.className = 'clubs_content_club_info_phoneNumber';
+                phoneNumberLink.href = `tel:${club.phoneNumber}`;
+                phoneNumberLink.textContent = club.phoneNumber;
+
+                infoDiv.appendChild(nameH4);
+                infoDiv.appendChild(citySpan);
+                infoDiv.appendChild(phoneNumberLink);
+
+                clubDiv.appendChild(logoImg);
+                clubDiv.appendChild(infoDiv);
+
+                clubsContent.appendChild(clubDiv);
+            })
+            .catch(error => {
+                console.error('Произошла ошибка при получении города:', error);
+                showErrorModal('Database connection error');
+            });
+        });
+    })
+    .catch(error => {
+        console.error('Произошла ошибка при получении клубов:', error);
+        showErrorModal('Database connection error');
+    });
+}
+
+export async function getAllClubs() {
+    const clubInput = document.getElementById('clubInput');
+    const cityInput = document.getElementById('cityInput');
+
+    const clubDropdown = document.getElementById('clubDropdown');
+    const cityDropdown = document.getElementById('cityDropdown');
+    const viewAllButton = document.querySelector('.clubs_down a');
+
+    const languageMap = {
+        'russian': 'ru',
+        'english': 'en',
+        'thai': 'th'
+    };
+
+    const currentLang = localStorage.getItem('clientLang') || 'english';
+    const langKey = languageMap[currentLang];
+
+    let allClubs = [];
+    let cityMap = {};
+
+    await fetchAllClubs();
+
+    async function fetchAllClubs() {
+        try {
+            const response = await fetch(`/clubs`);
+            const clubs = await response.json();
+            allClubs = clubs;
+
+            const cityIds = [...new Set(clubs.map(club => club.city))];
+            const cityNames = await Promise.all(cityIds.map(cityId => getCityName(cityId)));
+
+            cityIds.forEach((cityId, index) => {
+                cityMap[cityId] = cityNames[index];
+            });
+
+            // Display first 12 clubs initially
+            displayClubs(clubs.slice(0, 12));
+            viewAllButton.style.display = 'block';
+
+            const clubNames = [...new Set(clubs.map(club => club.name))];
+            clubNames.sort();
+            cityNames.sort();
+
+            createDropdown(clubDropdown, clubNames, clubInput);
+            createDropdown(cityDropdown, cityNames, cityInput);
+        } catch (error) {
+            console.error('Произошла ошибка:', error);
+            showErrorModal('Database connection error');
+        }
+    }
+
+    async function getCityName(cityId) {
+        try {
+            const response = await fetch(`/cities/${cityId}`);
+            if (!response.ok) {
+                throw new Error('City data not found');
+            }
+            const city = await response.json();
+            return city[currentLang]; // Возвращает имя города на выбранном языке
+        } catch (error) {
+            console.error('Ошибка при получении названия города:', error);
+            return 'Unknown City'; // Возвращение запасного значения в случае ошибки
+        }
+    }
+
+    function createDropdown(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        options.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                filterClubs();
+            });
+            dropdown.appendChild(div);
+        });
+    }
+
+    function updateDropdownList(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        const currentText = inputElement.value.toLowerCase();
+        const filteredOptions = options
+            .filter(option => typeof option === 'string' && option.toLowerCase().includes(currentText))
+            .map(option => option.toString()); // Преобразуем все опции в строки
+
+        filteredOptions.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                filterClubs();
+            });
+            dropdown.appendChild(div);
+        });
+        dropdown.style.display = 'block';
+    }
+
+    function filterClubs() {
+        const clubValue = clubInput.value.toLowerCase();
+        const cityValue = cityInput.value.toLowerCase();
+
+        const filteredClubs = allClubs.filter(club => {
+            const clubMatch = !clubValue || club.name.toLowerCase().includes(clubValue);
+            const cityMatch = !cityValue || cityMap[club.city].toLowerCase().includes(cityValue);
+            return clubMatch && cityMatch;
+        });
+        displayClubs(filteredClubs);
+    }
+
+    async function displayClubs(clubs) {
+        const container = document.querySelector('.clubs_content');
+        container.innerHTML = '';
+
+        for (const club of clubs) {
+            const clubDiv = document.createElement('div');
             clubDiv.className = 'clubs_content_club';
 
-            let logoImg = document.createElement('img');
+            const logoImg = document.createElement('img');
             logoImg.className = 'clubs_content_club_logo';
             logoImg.src = club.logo;
             logoImg.alt = 'logo';
 
-            let infoDiv = document.createElement('div');
+            const infoDiv = document.createElement('div');
             infoDiv.className = 'clubs_content_club_info';
 
-            let nameH4 = document.createElement('h4');
+            const nameH4 = document.createElement('h4');
             nameH4.className = 'clubs_content_club_info_name';
             nameH4.textContent = club.name;
 
-            let citySpan = document.createElement('span');
+            const citySpan = document.createElement('span');
             citySpan.className = 'clubs_content_club_info_city';
-            citySpan.textContent = club.city;
+            citySpan.textContent = cityMap[club.city]; // Используем кешированное имя города
 
-            let phoneNumberLink = document.createElement('a');
+            const phoneNumberLink = document.createElement('a');
             phoneNumberLink.className = 'clubs_content_club_info_phoneNumber';
             phoneNumberLink.href = `tel:${club.phoneNumber}`;
             phoneNumberLink.textContent = club.phoneNumber;
@@ -303,14 +1159,32 @@ export function fetchClub() {
             clubDiv.appendChild(logoImg);
             clubDiv.appendChild(infoDiv);
 
-            clubsContent.appendChild(clubDiv);
-        });
-    })
-    .catch(error => {
-        console.error('Произошла ошибка:', error);
-        showErrorModal('Database connection error');
+            container.appendChild(clubDiv);
+        }
+    }
+
+    clubInput.addEventListener('input', () => {
+        updateDropdownList(clubDropdown, [...new Set(allClubs.map(club => club.name))], clubInput);
+        filterClubs();
     });
-};
+    cityInput.addEventListener('input', () => {
+        const cityNames = Object.values(cityMap);
+        updateDropdownList(cityDropdown, cityNames, cityInput);
+        filterClubs();
+    });
+
+    clubInput.addEventListener('focus', () => clubDropdown.style.display = 'block');
+    cityInput.addEventListener('focus', () => cityDropdown.style.display = 'block');
+
+    clubInput.addEventListener('blur', () => setTimeout(() => clubDropdown.style.display = 'none', 200));
+    cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
+
+    viewAllButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        displayClubs(allClubs);
+        viewAllButton.style.display = 'none';
+    });
+}
 
 
 
@@ -1360,21 +2234,24 @@ export function breadCrumb() {
             'home': 'Home',
             'becomeacoach': 'Become a Coach',
             'addclub': 'Application to add a club',
-            'allcoaches': 'Coaches'
+            'allcoaches': 'Coaches',
+            'allclubs': 'Clubs'
             // Добавить
         },
         'ru': {
             'home': 'Главная',
             'becomeacoach': 'Стать тренером',
             'addclub': 'Заявка на добавление клуба',
-            'allcoaches': 'Тренеры'
+            'allcoaches': 'Тренеры',
+            'allclubs': 'Клубы'
             // Добавить
         },
         'th': {
             'home': 'หน้าหลัก',
             'becomeacoach': 'สมัครเป็นโค้ช',
             'addclub': 'การสมัครเพื่อเพิ่มสโมสร',
-            'allcoaches': 'โค้ชปิงปอง'
+            'allcoaches': 'โค้ชปิงปอง',
+            'allclubs': 'สโมสร'
             // Добавить
         }
     };
@@ -1419,6 +2296,10 @@ export function listenerOfButtons() {
 
         if (event.target.classList.contains('btnLogin')) {
             loginForm();
+        }
+
+        if (event.target.closest('.goToAllClubs')) {
+            window.location.href = `/${languageMap[localStorage.clientLang]}/allclubs`;
         }
 
         // if (event.target.classList.contains('header_bottom_mob_cross')) {

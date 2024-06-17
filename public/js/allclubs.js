@@ -1,4 +1,4 @@
-import { createHeader, createFooter, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
+import { createHeader, createFooter, getAllClubs, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
 //----------- important -----------//
 window.onload = function() {
     if (!localStorage.getItem('clientLang')) {
@@ -10,6 +10,7 @@ async function initializeApp() {
     await fetchCities(language);
 }
 //----------- important -----------//
+
 document.addEventListener('DOMContentLoaded', function() {
     createHeader(localStorage.getItem('clientLang') || 'english');
     createFooter(localStorage.getItem('clientLang') || 'english');
@@ -21,15 +22,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     breadCrumb();
 
-    const topBlockAdv = document.querySelector('.filterCoaches');
+    const topBlockAdv = document.querySelector('.filterClubs');
     fetchAdvertisements(topBlockAdv);
 
     listenerOfButtons();
 
-    getAllCoaches();
+
+    getAllClubs();
+    // getAllCoaches();
 
 
 
 
 });
-

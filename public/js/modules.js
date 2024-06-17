@@ -781,6 +781,9 @@ export function languageControl() {
         element.addEventListener('click', function() {
             let selectedLang = this.getAttribute('data-lang');
             let shortLang = languageMap[selectedLang];
+            if (!shortLang) {
+                shortLang = 'en';
+            }
 
             localStorage.setItem('clientLang', selectedLang);
             let dropdown = this.parentElement;

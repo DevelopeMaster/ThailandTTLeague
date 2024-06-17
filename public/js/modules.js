@@ -318,6 +318,13 @@ export function fetchCoaches() {
     .then(coaches => {
         const coachesContent = document.querySelector('.coaches_content');
         coachesContent.innerHTML = '';
+        const languageMap = {
+            'russian': 'ru',
+            'english': 'en',
+            'thai': 'th'
+        };
+        const currentLang = localStorage.getItem('clientLang') || 'english';
+        const langKey = languageMap[currentLang];
 
         let coachesList = coaches.slice(0, 6);
         coachesList.sort().forEach(coach => {
@@ -379,7 +386,7 @@ export function fetchCoaches() {
             cityTitleSpan.textContent = cityTitle[localStorage.clientLang] || 'City:';
 
             let cityNameP = document.createElement('p');
-            cityNameP.textContent = coach.city;
+            cityNameP.textContent = coach.city[langKey];
 
             cityDiv.appendChild(cityTitleSpan);
             cityDiv.appendChild(cityNameP);
@@ -400,15 +407,107 @@ export function fetchCoaches() {
     });
 };
 
-export function fetchAllCoaches() {
-    fetch(`/coaches`)
-    .then(response => response.json())
-    .then(coaches => {
-        const coachesContent = document.querySelector('.coaches_content');
-        coachesContent.innerHTML = '';
+export function getAllCoaches() {
+    const nameInput = document.getElementById('nameInput');
+    const clubInput = document.getElementById('clubInput');
+    const cityInput = document.getElementById('cityInput');
 
-        let coachesList = coaches;
-        coachesList.sort().forEach(coach => {
+    const nameDropdown = document.getElementById('nameDropdown');
+    const clubDropdown = document.getElementById('clubDropdown');
+    const cityDropdown = document.getElementById('cityDropdown');
+    const viewAllButton = document.getElementById('viewAllCoaches');
+    
+    const languageMap = {
+        'russian': 'ru',
+        'english': 'en',
+        'thai': 'th'
+    };
+
+    const currentLang = localStorage.getItem('clientLang') || 'english';
+    const langKey = languageMap[currentLang];
+
+    let allCoaches = [];
+
+    fetchAllCoaches();
+
+    function fetchAllCoaches() {
+        fetch(`/coaches`)
+        .then(response => response.json())
+        .then(coaches => {
+            allCoaches = coaches;
+
+            // Display first 12 coaches initially
+            displayCoaches(coaches.slice(0, 12));
+            viewAllButton.style.display = 'block';
+
+            const names = [...new Set(coaches.flatMap(coach => [coach.name, coach.playerName]))];
+            const clubs = [...new Set(coaches.map(coach => coach.club))];
+            const cities = [...new Set(coaches.map(coach => coach.city[langKey]))];
+
+            names.sort();
+            clubs.sort();
+            cities.sort();
+
+            createDropdown(nameDropdown, names, nameInput);
+            createDropdown(clubDropdown, clubs, clubInput);
+            createDropdown(cityDropdown, cities, cityInput);
+        })
+        .catch(error => {
+            console.error('Произошла ошибка:', error);
+            showErrorModal('Database connection error');
+        });
+    }
+
+    function createDropdown(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        options.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                filterCoaches();
+            });
+            dropdown.appendChild(div);
+        });
+    }
+
+    function updateDropdownList(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        const currentText = inputElement.value.toLowerCase();
+        const filteredOptions = options.filter(option => option.toLowerCase().includes(currentText));
+
+        filteredOptions.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                filterCoaches();
+            });
+            dropdown.appendChild(div);
+        });
+        dropdown.style.display = 'block';
+    }
+
+    function filterCoaches() {
+        const nameValue = nameInput.value.toLowerCase();
+        const clubValue = clubInput.value.toLowerCase();
+        const cityValue = cityInput.value.toLowerCase();
+
+        const filteredCoaches = allCoaches.filter(coach => {
+            const nameMatch = !nameValue || coach.name.toLowerCase().includes(nameValue) || coach.playerName.toLowerCase().includes(nameValue);
+            const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
+            const cityMatch = !cityValue || coach.city[langKey].toLowerCase().includes(cityValue);
+            return nameMatch && clubMatch && cityMatch;
+        });
+        displayCoaches(filteredCoaches);
+    }
+
+    function displayCoaches(coaches) {
+        const container = document.querySelector('.coaches_content');
+        container.innerHTML = '';
+        coaches.forEach(coach => {
             let coachDiv = document.createElement('div');
             coachDiv.className = 'coaches_content_coach';
 
@@ -467,7 +566,7 @@ export function fetchAllCoaches() {
             cityTitleSpan.textContent = cityTitle[localStorage.clientLang] || 'City:';
 
             let cityNameP = document.createElement('p');
-            cityNameP.textContent = coach.city;
+            cityNameP.textContent = coach.city[langKey];
 
             cityDiv.appendChild(cityTitleSpan);
             cityDiv.appendChild(cityNameP);
@@ -479,12 +578,35 @@ export function fetchAllCoaches() {
 
             coachDiv.appendChild(infoDiv);
 
-            coachesContent.appendChild(coachDiv);
+            container.appendChild(coachDiv);
         });
-    })
-    .catch(error => {
-        console.error('Произошла ошибка:', error);
-        showErrorModal('Database connection error');
+    }
+
+    nameInput.addEventListener('input', () => {
+        updateDropdownList(nameDropdown, [...new Set(allCoaches.flatMap(coach => [coach.name, coach.playerName]))], nameInput);
+        filterCoaches();
+    });
+    clubInput.addEventListener('input', () => {
+        updateDropdownList(clubDropdown, [...new Set(allCoaches.map(coach => coach.club))], clubInput);
+        filterCoaches();
+    });
+    cityInput.addEventListener('input', () => {
+        updateDropdownList(cityDropdown, [...new Set(allCoaches.map(coach => coach.city[langKey]))], cityInput);
+        filterCoaches();
+    });
+
+    nameInput.addEventListener('focus', () => nameDropdown.style.display = 'block');
+    clubInput.addEventListener('focus', () => clubDropdown.style.display = 'block');
+    cityInput.addEventListener('focus', () => cityDropdown.style.display = 'block');
+
+    nameInput.addEventListener('blur', () => setTimeout(() => nameDropdown.style.display = 'none', 200));
+    clubInput.addEventListener('blur', () => setTimeout(() => clubDropdown.style.display = 'none', 200));
+    cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
+
+    viewAllButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        displayCoaches(allCoaches);
+        viewAllButton.style.display = 'none';
     });
 };
 

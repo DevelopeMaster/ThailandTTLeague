@@ -1,0 +1,175 @@
+.club
+    margin-top: 40px
+    &_mainInfo
+        border-radius: 14px
+        background: #262630
+        padding: 20px
+        box-sizing: border-box
+        width: 100%
+        display: flex
+        gap: 20px
+        // height: 194px
+        &_logo
+            aspect-ratio: 1.74/1.54
+            width: 174px
+            height: auto
+            // width: auto
+            // height: 100%
+            border-radius: 14px
+        &_info
+            display: flex
+            flex-direction: column
+            gap: 16px
+            width: 100%
+            &_name
+                color: #FFF
+                font-family: Inter
+                font-size: 24px
+                font-style: normal
+                font-weight: 500
+                line-height: normal
+                &::after
+                    content: ''
+                    display: block
+                    height: 1px
+                    width: 100%
+                    background-color: #3F3F4C
+                    margin-top: 10px
+            &_descr
+                display: flex
+                gap: 20px
+                &_path
+                    display: flex
+                    flex-direction: column
+                    gap: 14px
+                    p
+                        color: #FFF
+                        font-family: Inter
+                        font-size: 16px
+                        font-style: normal
+                        font-weight: 500
+                        line-height: normal
+
+                        white-space: nowrap
+                        overflow: hidden
+                        text-overflow: ellipsis
+                        span
+                            font-weight: 400
+                            a
+                                text-decoration: none
+                                color: #FFF
+    &_about
+        margin-top: 20px
+        border-radius: 14px
+        background: #262630
+        padding: 20px
+        width: 100%
+        box-sizing: border-box
+        h3
+            color: #FFF
+            font-family: Inter
+            font-size: 24px
+            font-style: normal
+            font-weight: 500
+            line-height: normal
+        &_wrapp
+            margin-top: 16px
+            display: flex
+            flex-direction: column
+            gap: 14px
+            p
+                color: #FFF
+                font-family: Inter
+                font-size: 16px
+                font-style: normal
+                font-weight: 400
+                line-height: normal
+                span
+                    font-weight: 500
+                    
+                        
+.clubLocation
+    margin-top: 80px
+    #map
+        border-radius: 14px
+        aspect-ratio: 2/1
+        width: 100%
+        height: auto
+        z-index: 3
+
+.clubPhotos
+    margin-top: 80px
+    &_item
+        aspect-ratio: 2/1
+        width: 100%
+        height: auto
+        border-radius: 14px
+        margin-bottom: 20px
+
+// вариант карточки клуба  от 768px до 575px
+// @media (max-width: 768px)
+//     .club
+//         &_mainInfo
+//             flex-direction: column
+//             &_info_descr
+//                 &_path
+//                     p
+//                         font-size: 14px
+//                         line-height: 130%
+//         &_about
+//             &_wrapp
+//                 p
+//                     font-size: 14px
+//                     line-height: 130%
+
+@media (max-width: 768px)
+    .club
+        &_mainInfo
+            // flex-direction: column
+            &_logo
+                width: 380px
+            &_info_descr
+                flex-direction: column
+                &_path
+                    p
+                        font-size: 14px
+                        line-height: 130%
+        
+        &_about
+            &_wrapp
+                p
+                    font-size: 14px
+                    line-height: 130%
+                
+
+@media (max-width: 576px)
+    .club
+        margin-top: 20px
+        &_mainInfo
+            flex-direction: column
+            align-items: center
+            &_logo
+                width: 100%
+            &_info
+                gap: 14px
+                &_name
+                    font-size: 18px
+            &_info_descr
+                flex-direction: column
+                gap: 14px
+        &_about
+            h3
+                font-size: 18px
+    .clubLocation
+        margin-top: 40px
+        h2
+            font-size: 18px
+
+
+    .clubPhotos
+        margin-top: 40px
+        h2
+            font-size: 18px
+        &_item
+            margin-bottom: 12px
+            

@@ -1,4 +1,4 @@
-const browserSync = require('browser-sync');
+// const browserSync = require('browser-sync');
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const app = express();
@@ -43,6 +43,13 @@ app.get('/en', (req, res) => {
 app.get('/ru', function(req, res) {
   res.render('ru');
 });
+
+app.get('/:lang/allclubs/:clubId', (req, res) => {
+  const { lang } = req.params;
+  // , { club: clubId, lang: lang }
+  res.render(`${lang}/allclubs/club`);
+});
+
 
 app.get('/th', function(req, res) {
   res.render('th');
@@ -104,356 +111,42 @@ async function run() {
     db = client.db('ttleague');
     await createRoutes();
 
-    app.listen(port, function () {
-      browserSync({
-        proxy: `localhost:${port}`,
-        files: ['public/**/*.{js,css}', 'views/**/*.ejs']
-      });
-    });
-    // app.listen(8080, function () {
-    //   console.log(`Server is running on port ${8080}`);
+    // app.listen(port, function () {
+    //   browserSync({
+    //     proxy: `localhost:${port}`,
+    //     files: ['public/**/*.{js,css}', 'views/**/*.ejs']
+    //   });
     // });
+    app.listen(8080, function () {
+      console.log(`Server is running on port ${8080}`);
+    });
   } catch (err) {
     console.error('Ошибка подключения к MongoDB:', err);
   }
 }
 
 
-
-// добавление турнира
-  // async function addTournaments() {
-  //   const tournamentsCollection = db.collection('tournaments');
-
-  //   const tournaments = [
-  //     {
-  //       date: new Date('2024-04-12'),
-  //       datetime: new Date('2024-04-12T11:00:00'),
-  //       club: {
-  //         name: 'HurricTT',
-  //         logo: '/icons/clubslogo/HarricaneTT-logo.png',
-  //       },
-  //       restrictions: 287,
-  //       rating: 304,
-  //       players: [
-  //         {
-  //           id: '665500ed32ca3e3a47517872',
-  //           place: 1,
-  //           rating: 300
-  //         },
-  //         {
-  //           id: '66564038f448d43a091cb5cd',
-  //           place: 2,
-  //           rating: 310
-  //         },
-  //         {
-  //           id: '665ca0a6ff770cc63cbb0e95',
-  //           place: 3,
-  //           rating: 305
-  //         },
-  //       ], 
-  //     },
-  //     {
-  //       date: new Date('2024-05-24'),
-  //       datetime: new Date('2024-05-24T12:00:00'),
-  //       club: {
-  //         name: 'TT-Wonder',
-  //         logo: '/icons/clubslogo/TTL-savel-logo.png',
-  //       },
-  //       restrictions: 350,
-  //       rating: 424,
-  //       players: [
-  //         {
-  //           id: '665500ed32ca3e3a47517872',
-  //           place: 1,
-  //           rating: 360
-  //         },
-  //         {
-  //           id: '66564038f448d43a091cb5cd',
-  //           place: 2,
-  //           rating: 370
-  //         },
-  //         {
-  //           id: '665ca0a6ff770cc63cbb0e95',
-  //           place: 3,
-  //           rating: 365
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       date: new Date('2024-06-01'),
-  //       datetime: new Date('2024-06-01T12:00:00'),
-  //       club: {
-  //         name: 'ThaiTT',
-  //         logo: '/icons/club3.jpg',
-  //       },
-  //       restrictions: 277,
-  //       rating: 344,
-  //       players: [
-  //         {
-  //           id: '665500ed32ca3e3a47517872',
-  //           place: 1,
-  //           rating: 300
-  //         },
-  //         {
-  //           id: '66564038f448d43a091cb5cd',
-  //           place: 2,
-  //           rating: 310
-  //         },
-  //         {
-  //           id: '665ca0a6ff770cc63cbb0e95',
-  //           place: 3,
-  //           rating: 305
-  //         },
-  //       ],
-  //     }
-  //   ];
-
-  //   try {
-  //     const result = await tournamentsCollection.insertMany(tournaments);
-  //     console.log(`Successfully inserted ${result.insertedCount} items!`);
-  //   } catch (err) {
-  //     console.error(`Failed to insert items: ${err}`);
-  //   }
-  // }
-
-
-// Хеширование паролей
-  // async function hashPassword(plaintextPassword, additionPath) {
-  //   try {
-  //       const personalSalt = generateRandomString(10);
-  //       const combinedSalt = additionPath + personalSalt + plaintextPassword;
-  //       console.log(combinedSalt);
-  //       const saltRounds = bcrypt.genSaltSync(10);
-  //       const hashedPassword = bcrypt.hashSync( combinedSalt, saltRounds);
-  //       console.log(hashedPassword);
-  //       return hashedPassword;
-  //   } catch (error) {
-  //       console.error('Ошибка при хешировании пароля:', error);
-  //       throw error;
-  //   }
-  // }
-  // console.log(generateRandomString());
-  // hashPassword('12345QweКЕНН', 'AlexO');
-
-
-// Добавление клубов
-
-// async function addClubs() {
-
-//   try {
-//       await client.connect();
-//       const clubsCollection = db.collection("clubs");
-
-//       const clubs = [
-//           {
-//               name: "TT-Savel",
-//               city: "Bangkok",
-//               logo: "/icons/clubslogo/TT-savel.svg",
-//               phoneNumber: "+1234567890"
-//           },
-//           {
-//               name: "HarricaneTT",
-//               city: "Bangkok",
-//               logo: "/icons/clubslogo/HarricaneTT.svg",
-//               phoneNumber: "+0987654321"
-//           },
-//           {
-//               name: "ThaiTT",
-//               city: "Bangkok",
-//               logo: "/icons/clubslogo/ThaiTT.svg",
-//               phoneNumber: "+1122334455"
-//           }
-//       ];
-
-//       await clubsCollection.insertMany(clubs);
-//       console.log("Clubs added successfully");
-//   } catch (err) {
-//       console.error(err);
-//   } 
-// }
-
-// добавление тренеров 
-// async function addCoaches() {
- 
-//   try {
-//       const coachesCollection = db.collection("coaches");
-
-//       const coaches = [
-//           {
-//               name: "Petrov Alexander",
-//               city: "Phuket",
-//               club: "TTL-Savel",
-//               logo: "/icons/playerslogo/petrov_aleksandr.svg",
-//               phoneNumber: "+1234567890",
-//               rating: 754
-//           },
-//           {
-//               name: "Aleksandr Ohar",
-//               city: "Bangkok",
-//               club: "PHUKET TT CLUB",
-//               logo: "/icons/playerslogo/default_avatar.svg",
-//               phoneNumber: "+0987654321",
-//               rating: 800
-//           },
-//           {
-//               name: "Svetlana Ohar",
-//               city: "Bangkok",
-//               club: "PHUKET TT CLUB",
-//               logo: "/icons/playerslogo/default_avatar.svg",
-//               phoneNumber: "+1122334455",
-//               rating: 850
-//           }
-//       ];
-
-//       await coachesCollection.insertMany(coaches);
-//       console.log("Coaches added successfully");
-//   } catch (err) {
-//       console.error(err);
-//   }
-// }
-
-// добавление рекламы
-// async function addAdv() {
-//   try {
-//       const advCollection = db.collection("adv");
-
-//       const adv = [
-//           {
-//               customer: "TTL-Savel",
-//               link: "#",
-//               image: "/icons/ads/TTLeague.svg"
-//           },
-//           {
-//             customer: "HarricaneTT",
-//             link: "#",
-//             image: "/icons/ads/TTLeague.svg"
-//           }
-//       ];
-
-//       await advCollection.insertMany(adv);
-//       console.log("Adv added successfully");
-//   } catch (err) {
-//       console.error(err);
-//   }
-// }
-
-
-
 async function createRoutes() {
+
   
+  app.get('/get-data-club', async (req, res) => {
+    const { lang, clubId } = req.query;
+    // console.log(lang, clubId);
+    // res.render(`/${lang}/club`);
+    try {
+        const dataClub = await db.collection('clubs').findOne({ _id: new ObjectId(clubId) });
+        if (!dataClub) {
+            return res.status(404).send('Club not found');
+        }
 
-  //код без добавления новых городов в бд
-  // app.post('/register', [
-  //   // check passwords
-  //   body('password')
-  //     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
-  //     .matches(/^(?=.*\d)(?=.*[a-zа-яё\u0E01-\u0E5B])(?=.*[A-ZА-ЯЁ]).{8,}$/).withMessage('Password must contain at least one number, one lowercase and one uppercase letter')
-  
-  // ], async function(req, res) {
-  //   const errors = validationResult(req);
-  //   if (!errors.isEmpty()) {
-  //     return res.status(400).json({ status: 'error', errors: errors.array() });
-  //   }
-    
-  //   const defaultLogo = '/icons/playerslogo/default_avatar.svg';
+        res.json(dataClub);
+        // , { clubId }
+    } catch (error) {
+        console.error('Error fetching club data:', error);
+        res.status(500).send('Internal Server Error');
+    }
+  });
 
-  //   console.log(req.body);
-  //   const { email, login, password, confirm_password, city, fullname, hand, date, registeredDate, policy, clientLang } = req.body;
-    
-  //   if (!email || !login || !password || !confirm_password || !city || !fullname || !hand || !date || !registeredDate || !policy ) {
-  //     res.status(400).json({ error: 'Something wrong. Please come back to homepage and try again' });
-  //     return;
-  //   }
-    
-  //   const parts = date.split(".");
-  //   const birthdayDate = new Date(`${parts[1]}/${parts[0]}/${parts[2]}`);
-    
-  //   try {
-  //     // Check if the city already exists
-  //     const cityExists = await db.collection('cities').findOne({ [clientLang]: city });
-  //     console.log(clientLang);
-
-  //     if (!cityExists) {
-  //       // If city does not exist, add it
-  //       const newCity = { [clientLang]: city };
-  //       console.log('Inserting new city:', newCity);
-  //       await db.collection('cities').insertOne(newCity);
-  //     } else {
-  //         console.log('City already exists:', cityExists);
-  //     }
-
-      
-  //     await db.collection('users').insertOne({ email, 
-  //                                             login, 
-  //                                             password, 
-  //                                             city, 
-  //                                             fullname,
-  //                                             logo: defaultLogo, 
-  //                                             hand, 
-  //                                             birthdayDate, 
-  //                                             registeredDate, 
-  //                                             policy 
-  //     });
-  //     console.log("Данные успешно вставлены");
-
-  //     const transporter = nodemailer.createTransport({
-  //       service: 'gmail',
-  //       auth: {
-  //         user: notificateEmail,
-  //         pass: notificatePass
-  //       }
-  //     });
-
-  //     const mailOptionsForOwner = {
-  //       from: notificateEmail,
-  //       to: 'ogarsanya@gmail.com',
-  //       subject: 'New User Application',
-  //       text: `
-  //         A new user has registered
-  //           E-mail: ${email}, 
-  //           Login: ${login},  
-  //           City: ${city}, 
-  //           Name: ${fullname}, 
-  //           Plaing hand: ${hand}, 
-  //           Burthday: ${birthdayDate}, 
-  //           Registered date: ${registeredDate}, 
-  //           Policy: 'Agreed'
-  //       `
-  //     };
-  //     const mailOptionsForUser = {
-  //       from: notificateEmail,
-  //       to: `${email}`,
-  //       subject: 'Congratulation!',
-  //       text: `
-  //         You have successfully registered at https://thailandttleague.com
-  //           E-mail: ${email}, 
-  //           Login: ${login}
-  //       `
-  //     };
-
-  //     transporter.sendMail(mailOptionsForOwner, (error, info) => {
-  //       if (error) {
-  //         console.error('Error sending email:', error);
-  //       } else {
-  //         console.log('Email sent:', info.response);
-  //       }
-  //     });
-
-  //     transporter.sendMail(mailOptionsForUser, (error, info) => {
-  //       if (error) {
-  //         console.error('Error sending email:', error);
-  //       } else {
-  //         console.log('Email sent:', info.response);
-  //       }
-  //     });
-
-  //     res.status(200).json({ status: 'success', message: 'Registration successful!' });
-  //   } catch (err) {
-  //     console.error('Ошибка при вставке в MongoDB:', err);
-  //     res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });
-  //   }
-  
-  // });
 
   app.post('/register', [
     body('password')
@@ -803,41 +496,10 @@ async function createRoutes() {
 }
 
 
-
-//  отправка email
-// let transporter = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: 'your-email@gmail.com',
-//     pass: 'your-password' 
-//   }
-// });
-
-// function sendEmail(userEmail) {
-//   let mailOptions = {
-//     from: 'your-email@gmail.com',
-//     to: userEmail,
-//     subject: 'Спасибо за регистрацию!',
-//     text: 'Благодарим вас за регистрацию на нашем сайте!'
-//   };
-
-//   transporter.sendMail(mailOptions, function(error, info){
-//     if (error) {
-//       console.log(error);
-//     } else {
-//       console.log('Email sent: ' + info.response);
-//     }
-//   });
-// }
-
 run().catch(console.dir);
 
 
 
-
-
-
-    
 
 
 

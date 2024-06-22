@@ -954,6 +954,11 @@ export function fetchFutureTournaments() {
 
 export function fetchClub() {
     let language = localStorage.getItem('clientLang');
+    const languageMap = {
+        'russian': 'ru',
+        'english': 'en',
+        'thai': 'th'
+    };
     fetch(`/clubs`)
     .then(response => response.json())
     .then(clubs => {
@@ -997,6 +1002,12 @@ export function fetchClub() {
 
                 clubDiv.appendChild(logoImg);
                 clubDiv.appendChild(infoDiv);
+
+                // Добавляем обработчик события для перехода на страницу клуба
+                clubDiv.addEventListener('click', () => {
+                    const currentLang = localStorage.getItem('clientLang') || 'en';
+                    window.location.href = `/${languageMap[currentLang]}/allclubs/${club._id}`;
+                });
 
                 clubsContent.appendChild(clubDiv);
             })
@@ -1126,6 +1137,11 @@ export async function getAllClubs() {
     async function displayClubs(clubs) {
         const container = document.querySelector('.clubs_content');
         container.innerHTML = '';
+        const languageMap = {
+            'russian': 'ru',
+            'english': 'en',
+            'thai': 'th'
+        };
 
         for (const club of clubs) {
             const clubDiv = document.createElement('div');
@@ -1158,6 +1174,12 @@ export async function getAllClubs() {
 
             clubDiv.appendChild(logoImg);
             clubDiv.appendChild(infoDiv);
+
+            // Добавляем обработчик события для перехода на страницу клуба
+            clubDiv.addEventListener('click', () => {
+                const currentLang = localStorage.getItem('clientLang') || 'en';
+                window.location.href = `/${languageMap[currentLang]}/allclubs/${club._id}`;
+            });
 
             container.appendChild(clubDiv);
         }
@@ -2235,24 +2257,24 @@ export function breadCrumb() {
             'becomeacoach': 'Become a Coach',
             'addclub': 'Application to add a club',
             'allcoaches': 'Coaches',
-            'allclubs': 'Clubs'
-            // Добавить
+            'allclubs': 'Clubs',
+            'club': 'About the club'
         },
         'ru': {
             'home': 'Главная',
             'becomeacoach': 'Стать тренером',
             'addclub': 'Заявка на добавление клуба',
             'allcoaches': 'Тренеры',
-            'allclubs': 'Клубы'
-            // Добавить
+            'allclubs': 'Клубы',
+            'club': 'О клубе'
         },
         'th': {
             'home': 'หน้าหลัก',
             'becomeacoach': 'สมัครเป็นโค้ช',
             'addclub': 'การสมัครเพื่อเพิ่มสโมสร',
             'allcoaches': 'โค้ชปิงปอง',
-            'allclubs': 'สโมสร'
-            // Добавить
+            'allclubs': 'สโมสร',
+            'club': 'เกี่ยวกับสโมสร'
         }
     };
 
@@ -2263,10 +2285,20 @@ export function breadCrumb() {
 
     filteredPathArray.forEach((path, index) => {
         const isLast = index === filteredPathArray.length - 1;
+        const isSecondLast = index === filteredPathArray.length - 2;
         const urlPath = '/' + [currentLang, ...filteredPathArray.slice(0, index + 1)].join('/');
-        const translatedPath = translations[currentLang][path] || capitalize(path);
+
+        let translatedPath;
+        if (isLast && filteredPathArray[index - 1] === 'allclubs') {
+            translatedPath = translations[currentLang]['club'];
+        } else {
+            translatedPath = translations[currentLang][path] || capitalize(path);
+        }
+
         if (isLast) {
-            breadcrumbHTML += `<li class="navigate_breadcrumb_item navigate_breadcrumb_item_active" aria-current="page">${translatedPath}</li>`;
+            if (filteredPathArray[index - 1] === 'allclubs') {
+                breadcrumbHTML += `<li class="navigate_breadcrumb_item navigate_breadcrumb_item_active" aria-current="page">${translatedPath}</li>`;
+            }
         } else {
             breadcrumbHTML += `<li class="navigate_breadcrumb_item"><a href="${urlPath}">${translatedPath}</a></li>`;
         }
@@ -2275,8 +2307,8 @@ export function breadCrumb() {
     breadcrumbContainer.innerHTML = breadcrumbHTML;
 }
 
-function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export function listenerOfButtons() {

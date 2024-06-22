@@ -32,7 +32,8 @@ button {
 
 body {
   line-height: 1;
-  position: relative; }
+  position: relative;
+  background-color: #000817; }
 
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
@@ -2136,3 +2137,146 @@ h2 {
     font-size: 14px; }
   .clubs {
     margin-top: 40px; } }
+
+.club {
+  margin-top: 40px; }
+  .club_mainInfo {
+    border-radius: 14px;
+    background: #262630;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    gap: 20px; }
+    .club_mainInfo_logo {
+      aspect-ratio: 1.74/1.54;
+      width: 174px;
+      height: auto;
+      border-radius: 14px; }
+    .club_mainInfo_info {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%; }
+      .club_mainInfo_info_name {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal; }
+        .club_mainInfo_info_name::after {
+          content: '';
+          display: block;
+          height: 1px;
+          width: 100%;
+          background-color: #3F3F4C;
+          margin-top: 10px; }
+      .club_mainInfo_info_descr {
+        display: flex;
+        gap: 20px; }
+        .club_mainInfo_info_descr_path {
+          display: flex;
+          flex-direction: column;
+          gap: 14px; }
+          .club_mainInfo_info_descr_path p {
+            color: #FFF;
+            font-family: Inter;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; }
+            .club_mainInfo_info_descr_path p span {
+              font-weight: 400; }
+              .club_mainInfo_info_descr_path p span a {
+                text-decoration: none;
+                color: #FFF; }
+  .club_about {
+    margin-top: 20px;
+    border-radius: 14px;
+    background: #262630;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box; }
+    .club_about h3 {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal; }
+    .club_about_wrapp {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px; }
+      .club_about_wrapp p {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal; }
+        .club_about_wrapp p span {
+          font-weight: 500; }
+
+.clubLocation {
+  margin-top: 80px; }
+  .clubLocation #map {
+    border-radius: 14px;
+    aspect-ratio: 2/1;
+    width: 100%;
+    height: auto;
+    z-index: 3; }
+
+.clubPhotos {
+  margin-top: 80px; }
+  .clubPhotos_item {
+    aspect-ratio: 2/1;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    margin-bottom: 20px; }
+
+@media (max-width: 768px) {
+  .club_mainInfo_logo {
+    width: 380px; }
+  .club_mainInfo_info_descr {
+    flex-direction: column; }
+    .club_mainInfo_info_descr_path p {
+      font-size: 14px;
+      line-height: 130%; }
+  .club_about_wrapp p {
+    font-size: 14px;
+    line-height: 130%; } }
+
+@media (max-width: 576px) {
+  .club {
+    margin-top: 20px; }
+    .club_mainInfo {
+      flex-direction: column;
+      align-items: center; }
+      .club_mainInfo_logo {
+        width: 100%; }
+      .club_mainInfo_info {
+        gap: 14px; }
+        .club_mainInfo_info_name {
+          font-size: 18px; }
+      .club_mainInfo_info_descr {
+        flex-direction: column;
+        gap: 14px; }
+    .club_about h3 {
+      font-size: 18px; }
+  .clubLocation {
+    margin-top: 40px; }
+    .clubLocation h2 {
+      font-size: 18px; }
+  .clubPhotos {
+    margin-top: 40px; }
+    .clubPhotos h2 {
+      font-size: 18px; }
+    .clubPhotos_item {
+      margin-bottom: 12px; } }

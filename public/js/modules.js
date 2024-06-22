@@ -2258,7 +2258,9 @@ export function breadCrumb() {
             'addclub': 'Application to add a club',
             'allcoaches': 'Coaches',
             'allclubs': 'Clubs',
-            'club': 'About the club'
+            'club': 'About the club',
+            'players': 'Players',
+            'player': 'Player Profile'
         },
         'ru': {
             'home': 'Главная',
@@ -2266,7 +2268,9 @@ export function breadCrumb() {
             'addclub': 'Заявка на добавление клуба',
             'allcoaches': 'Тренеры',
             'allclubs': 'Клубы',
-            'club': 'О клубе'
+            'club': 'О клубе',
+            'players': 'Игроки',
+            'player': 'Профиль игрока'
         },
         'th': {
             'home': 'หน้าหลัก',
@@ -2274,7 +2278,9 @@ export function breadCrumb() {
             'addclub': 'การสมัครเพื่อเพิ่มสโมสร',
             'allcoaches': 'โค้ชปิงปอง',
             'allclubs': 'สโมสร',
-            'club': 'เกี่ยวกับสโมสร'
+            'club': 'เกี่ยวกับสโมสร',
+            'players': 'ผู้เล่น',
+            'player': 'โปรไฟล์ผู้เล่น'
         }
     };
 
@@ -2285,20 +2291,21 @@ export function breadCrumb() {
 
     filteredPathArray.forEach((path, index) => {
         const isLast = index === filteredPathArray.length - 1;
-        const isSecondLast = index === filteredPathArray.length - 2;
+        const containsNumbers = /\d/.test(path); // Check if the path contains numbers
         const urlPath = '/' + [currentLang, ...filteredPathArray.slice(0, index + 1)].join('/');
 
         let translatedPath;
-        if (isLast && filteredPathArray[index - 1] === 'allclubs') {
+
+        if (containsNumbers && filteredPathArray[index - 1] === 'allclubs') {
             translatedPath = translations[currentLang]['club'];
+        } else if (containsNumbers && filteredPathArray[index - 1] === 'players') {
+            translatedPath = translations[currentLang]['player'];
         } else {
             translatedPath = translations[currentLang][path] || capitalize(path);
         }
 
         if (isLast) {
-            if (filteredPathArray[index - 1] === 'allclubs') {
-                breadcrumbHTML += `<li class="navigate_breadcrumb_item navigate_breadcrumb_item_active" aria-current="page">${translatedPath}</li>`;
-            }
+            breadcrumbHTML += `<li class="navigate_breadcrumb_item navigate_breadcrumb_item_active" aria-current="page">${translatedPath}</li>`;
         } else {
             breadcrumbHTML += `<li class="navigate_breadcrumb_item"><a href="${urlPath}">${translatedPath}</a></li>`;
         }

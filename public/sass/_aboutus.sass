@@ -1,0 +1,189 @@
+.aboutUs
+    h2
+        margin-top: 60px
+        margin-bottom: 14px
+    p
+        color: #FFF
+        font-family: Inter
+        font-size: 16px
+        font-style: normal
+        font-weight: 400
+        line-height: 130%
+    &_info
+        margin-top: 14px
+        display: flex
+        box-sizing: border-box
+        width: 100%
+        &_img
+            background-color: #000817
+            background-image: url(/images/aboutUsCoach.jpg)
+            background-position: center
+            background-size: cover
+            overflow: hidden
+            width: 57%
+            height: 400px
+            box-sizing: border-box
+        &_descr
+            box-sizing: border-box
+            display: flex
+            flex-direction: column
+            justify-content: space-around
+            width: 43%
+            min-width: 450px
+            // width: calc(100% - 616px)
+            &::before
+                content: ''
+                display: block
+                height: 1px
+                width: 100%
+                background-color: #3F3F4C
+            &::after
+                content: ''
+                display: block
+                height: 1px
+                width: 100%
+                background-color: #3F3F4C
+            &_item
+                max-width: 100%
+                padding: 20px 0
+                display: flex
+                flex-direction: column
+                gap: 16px
+                h4
+                    max-width: 417px
+                    color: #FFF
+                    font-family: Inter
+                    font-size: 24px
+                    font-style: normal
+                    font-weight: 500
+                    line-height: 130%
+                p
+                    max-width: 417px
+                    color: #FFF
+                    font-family: Inter
+                    font-size: 16px
+                    font-style: normal
+                    font-weight: 400
+                    line-height: 130%
+                &:nth-child(2)
+                    padding: 0
+                    &::before
+                        content: ''
+                        display: block
+                        height: 1px
+                        width: 100%
+                        background-color: #3F3F4C
+                    &::after
+                        content: ''
+                        display: block
+                        height: 1px
+                        width: 100%
+                        background-color: #3F3F4C
+                    
+    &_benefits
+        margin-top: 80px
+        display: flex
+        gap: 20px
+        &_item
+            width: 32%
+            h3
+                color: #FFF
+                font-family: Inter
+                font-size: 20px
+                font-style: normal
+                font-weight: 500
+                line-height: normal
+                text-transform: uppercase
+            &_list
+                list-style-type: none
+                padding-left: 0
+                margin: 8px
+                margin-top: 20px
+                display: flex
+                flex-direction: column
+                gap: 16px
+                li
+                    position: relative
+                    margin-bottom: 0
+                    margin-left: 13px
+                    color: #FFF
+                    font-family: Inter
+                    font-size: 16px
+                    font-style: normal
+                    font-weight: 400
+                    line-height: 130%
+                    &::before
+                        content: ''
+                        position: absolute
+                        left: -20px
+                        top: 0.3em
+                        width: 0.5em
+                        height: 0.5em
+                        background-color: orange
+                        border-radius: 50%
+
+
+@media (max-width: 1025px)
+    .aboutUs
+        &_info
+            // flex-direction: column
+            &_img
+                width: 57%
+            &_descr
+                width: 43%
+                min-width: 300px
+// @media (max-width: 992px)
+// @media (max-width: 800px)
+@media (max-width: 768px)
+    .aboutUs
+        &_info
+            flex-direction: column
+            &_img
+                width: 100%
+            &_descr
+                margin-top: 20px
+                width: 100%
+                min-width: 300px
+        &_benefits
+            flex-direction: column
+            &_item
+                width: 100%
+@media (max-width: 576px)
+    .aboutUs
+        h2
+            margin-top: 22px
+            margin-bottom: 8px
+            font-size: 24px
+        p
+            font-size: 14px
+            width: 100%
+        &_info
+            &_img
+                aspect-ratio: 3.2/2.07
+                width: 100%
+                height: auto
+            &_descr
+                &_item
+                    gap: 8px
+                    padding: 12px 0
+                    h4
+                        font-size: 20px
+                    p
+                        font-size: 14px
+        &_benefits
+            margin-top: 40px
+            &_item
+                h3
+                    font-size: 18px
+                &_list 
+                    margin-top: 16px
+                    gap: 12px
+                    li
+                        font-size: 14px
+                        margin-left: 8px
+                        &::before
+                            width: 5px
+                            height: 5px
+                            left: -14px
+                    
+                

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     breadCrumb();
 
-    const topBlockAdv = document.querySelector('.filterClubs');
+    const topBlockAdv = document.querySelector('.filterClubs_filter');
     fetchAdvertisements(topBlockAdv);
 
     listenerOfButtons();

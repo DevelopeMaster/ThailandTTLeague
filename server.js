@@ -18,26 +18,26 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/en', (req, res) => {
-  res.render('en');
-});
-
-app.get('/:lang(en|ru|th)/:page', function(req, res) {
-  const lang = req.params.lang;
-  const page = req.params.page;
-  res.render(`${lang}/${page}`);
+// Middleware для перенаправления URL с завершающим слэшем
+app.use((req, res, next) => {
+  if (req.path !== '/' && req.path.endsWith('/')) {
+    const query = req.url.slice(req.path.length);
+    const redirectPath = req.path.slice(0, -1) + query;
+    return res.redirect(301, redirectPath);
+  }
+  next();
 });
 
 app.get('/', (req, res) => {
   res.render('en');
 });
 
-app.get('/account', (req, res) => {
-  res.render('account');
-});
-
 app.get('/en', (req, res) => {
   res.render('en');
+});
+
+app.get('/account', (req, res) => {
+  res.render('account');
 });
 
 app.get('/ru', function(req, res) {
@@ -50,6 +50,50 @@ app.get('/:lang/allclubs/:clubId', (req, res) => {
   res.render(`${lang}/allclubs/club`);
 });
 
+// app.use((req, res, next) => {
+//   console.log('Incoming request:', req.url);
+//   next();
+// });
+
+// app.get('/:lang/tournaments/:tournamentId', async (req, res) => {
+//   const { lang, tournamentId } = req.params;
+//   console.log(lang, tournamentId);
+//   // console.log(`Requested Tournament ID: ${tournamentId}`);
+//   await renderTournament(tournamentId, lang, res);
+// });
+
+app.get('/:lang/tournaments/:tournamentId', async (req, res) => {
+  try {
+    const { lang, tournamentId } = req.params;
+    // console.log('Route matched:', lang, tournamentId);
+    await renderTournament(tournamentId, lang, res);
+  } catch (error) {
+    console.error('Error in route handler:', error);
+    res.status(500).send('Server error');
+  }
+});
+
+async function renderTournament(id, lang, res) {
+  // console.log("язык в рендере", lang);
+  try {
+    const tournament = await db.collection('tournaments').findOne({ _id: new ObjectId(id) });
+
+    if (!tournament) {
+      return res.status(404).send('Tournament not found');
+    }
+
+    if (tournament.datetime < new Date()) {
+      return res.render(`${lang}/tournaments/past-tournament`);
+    } 
+    if (tournament.datetime > new Date()) {
+      // console.log(`ссылка правильная${lang}/tournaments/upcoming-tournament`);
+      return res.render(`${lang}/tournaments/upcoming-tournament`);
+    }
+  } catch (error) {
+    console.error('Error fetching tournament:', error);
+    res.status(500).send('Error fetching tournament');
+  }
+}
 
 app.get('/th', function(req, res) {
   res.render('th');
@@ -79,6 +123,11 @@ app.get('/check-login', async function(req, res) {
   }
 });
 
+app.get('/:lang(en|ru|th)/:page', function(req, res) {
+  const lang = req.params.lang;
+  const page = req.params.page;
+  res.render(`${lang}/${page}`);
+});
 
 app.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/json');
@@ -126,9 +175,9 @@ async function run() {
 }
 
 
-async function createRoutes() {
 
-  
+async function createRoutes() {
+    
   app.get('/get-data-club', async (req, res) => {
     const { lang, clubId } = req.query;
     // console.log(lang, clubId);
@@ -143,6 +192,24 @@ async function createRoutes() {
         // , { clubId }
     } catch (error) {
         console.error('Error fetching club data:', error);
+        res.status(500).send('Internal Server Error');
+    }
+  });
+
+  app.get('/get-data-tournament', async (req, res) => {
+    const { lang, tournamentId } = req.query;
+    // console.log(lang, clubId);
+    // res.render(`/${lang}/club`);
+    try {
+        const dataTournament = await db.collection('tournaments').findOne({ _id: new ObjectId(tournamentId) });
+        if (!dataTournament) {
+            return res.status(404).send('Tournament not found');
+        }
+
+        res.json(dataTournament);
+        // , { clubId }
+    } catch (error) {
+        console.error('Error fetching tournament data:', error);
         res.status(500).send('Internal Server Error');
     }
   });
@@ -287,15 +354,15 @@ async function createRoutes() {
     }
   });
 
-  app.get('/tournament/:id', async function(req, res) {
-    const tournamentId = req.params.id;
-    const tournament = await db.collection('tournaments').findOne({ _id: tournamentId });
-    if (tournament) {
-      res.render('tournament', { tournament: tournament });
-    } else {
-      res.status(404).json({ error: 'Tournament not found' });
-    }
-  });
+  // app.get('/tournament/:id', async function(req, res) {
+  //   const tournamentId = req.params.id;
+  //   const tournament = await db.collection('tournaments').findOne({ _id: tournamentId });
+  //   if (tournament) {
+  //     res.render('tournament', { tournament: tournament });
+  //   } else {
+  //     res.status(404).json({ error: 'Tournament not found' });
+  //   }
+  // });
   
   app.get('/clubs', async function(req, res) {
     const clubs = await db.collection('clubs').find().toArray();

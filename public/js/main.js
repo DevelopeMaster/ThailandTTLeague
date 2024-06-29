@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     fetchCoaches();
 
-    const tournamentsElement = document.querySelector('.tournaments');
+    const tournamentsElement = document.querySelector('.upcommingTable');
     fetchAdvertisements(tournamentsElement);
 
     // listeners of buttons

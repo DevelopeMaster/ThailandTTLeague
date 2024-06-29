@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TTLeague</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icons/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/manifest.json">
+
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="ThailandTTLeague">
+    <meta property="og:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta property="og:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta property="og:url" content="https://thailandttleague.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Thailand TT League">
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ThailandTTLeague">
+    <meta name="twitter:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta name="twitter:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta name="twitter:url" content="https://thailandttleague.com/">
+
+    <!-- Favicon and other icons -->
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/icons/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/icons/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-config" content="/icons/favicons/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icons/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#262630">
+    <!-- Для iOS установка цвета шторки (status bar) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#262630">
+    <!-- Для Android установка цвета шторки -->
+    <meta name="theme-color" content="#000817"> 
+
+    <link rel="icon" type="image/png" href="/icons/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+
+<body>
+    <header class="header" id="scroll">
+       <!-- from js -->
+    </header>
+    <div class="navigate">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol id="breadcrumb" class="navigate_breadcrumb">
+                    <!-- from js -->
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <section class="tournament">
+        <div class="container">
+            <div class="contentWrapper">
+                <h3 id="tournamentDate">12.10.2024</h3>
+                <div class="tournament_mainInfo">
+                    <div id="tournamentLogo" class="tournament_mainInfo_logo" style="background-image: url(/icons/clubsLogo/TT_CLUB.png); ; background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>   
+                    
+                    <div class="tournament_mainInfo_info">
+                        <div id="tournamentName" class="tournament_mainInfo_info_name">
+                            PHUKET TT CLUB
+                        </div>
+                        <div class="tournament_mainInfo_info_descr">
+                            <div class="tournament_mainInfo_info_descr_path">
+                                <span class="tournament_mainInfo_info_descr_path_wrapp">
+                                    <img src="/icons/user.svg" alt="person">
+                                    <span id="registeredPlayers">9 people registered</span>
+                                </span>
+                                <span class="tournament_mainInfo_info_descr_path_wrapp">
+                                    <div id="restrictionStatus" class="restrictionStatus" style="background: rgb(0, 112, 38);">
+                                        <!-- <div class="restriction">277</div> -->
+                                    </div>
+                                    <span>Ограничения по рейтингу</span> 
+                                </span>
+                                <p>Начало: <span id="tournamentStart">11:00</span></p>
+                            </div>
+                            <div class="tournament_mainInfo_info_descr_path">
+                                <p>Город: <span id="tournamentCity">Phuket</span></p>
+                                <p>Контакты: <a id="tournamentContacts" href="tel:+79951195210">+7(995) 119-5210</a></p>
+                                <p>Взнос: <span id="tournamentContribution">1000฿</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="header_btn-sign singUpToTournament" fdprocessedid="bg1hto">
+                    Регистрация
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="tournamentLocation">
+        <div class="container">
+            <div class="contentWrapper">
+                <div id="mapTournament"></div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="prizes">
+        <div class="container">
+            <div class="contentWrapper">
+                <div id="prizesTable" class="prizes_table">
+                    <!-- <h3>Prizes and awards</h3> -->
+                    <!-- <div class="prizes_table_award">
+                        🥇 from 12 participants - for first place 900 THB for Club services or a cup + medal + diploma;
+                    </div>
+                    <div class="prizes_table_award">
+                        🥈 from 15 participants - for second place 600 THB for Club services or a medal + certificate;
+                    </div>
+                    <div class="prizes_table_award">
+                        🎁 from 12 participants - group training for last place (check the schedule with the administrators).
+                    </div> -->
+
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="upcomingTournament">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>список зарегистрированных</h2>
+                <div class="upcomingTournament_table">
+                    <div class="upcomingTournament_table_header">
+                        <span class="upcomingTournament_number">№</span>
+                        <span class="upcomingTournament_player">Игроки</span>
+                        <span class="upcomingTournament_rating">Рейтинг</span>
+                       
+                    </div>
+                    <div id="registeredPlayersList" class="upcomingTournament_table_content">
+                        <!-- <div class="upcomingTournament_table_player">
+                            <div class="upcomingTournament_number">1</div>
+                            <div class="cell upcomingTournament_player">
+                                <div class="playerLogo" style="background-image: url('/icons/playerslogo/petrov_aleksandr.svg'); background-position: 50%; background-size: cover; background-repeat: no-repeat;" ></div>
+                                <span>Petrov Alexander</span>
+                            </div>
+                            <div class="cell upcomingTournament_rating">377</div>
+    
+                        </div>
+                        <div class="upcomingTournament_table_player">
+                            <div class="upcomingTournament_number">1</div>
+                            <div class="cell upcomingTournament_player">
+                                <div class="playerLogo" style="background-image: url('/icons/playerslogo/petrov_aleksandr.svg'); background-position: 50%; background-size: cover; background-repeat: no-repeat;" ></div>
+                                <span>Sidorov Alexander</span>
+                            </div>
+                            <div class="cell upcomingTournament_rating">377</div>
+    
+                        </div>
+                        <div class="upcomingTournament_table_player">
+                            <div class="upcomingTournament_number">1</div>
+                            <div class="cell upcomingTournament_player">
+                                <div class="playerLogo" style="background-image: url('/icons/playerslogo/petrov_aleksandr.svg'); background-position: 50%; background-size: cover; background-repeat: no-repeat;" ></div>
+                                <span>Petrov Vasiliy</span>
+                            </div>
+                            <div class="cell upcomingTournament_rating">377</div>
+    
+                        </div>
+                        
+                    </div> -->
+                     
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+
+
+
+    <footer class="footer">
+        <!-- from js -->
+    </footer>
+    
+    <div class="adv">
+    <!-- add from DB -->
+    </div>
+    
+    
+    <!-- Модальное окно -->
+    <div id="myModal" class="modal">    
+        <div class="modal-content">
+        <!-- add from DB -->
+        </div>
+    </div>
+    
+    <script type="module" src="/js/upcoming-tournament.js"></script> 
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</body>
+</html>

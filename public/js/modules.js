@@ -112,7 +112,7 @@ export function createHeader(language) {
                     </a>
                     <a class="header_bottom_category">
                         <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                        <p class="header_bottom_category-text">
+                        <p class="header_bottom_category-text goToAboutUs">
                             About Us
                         </p>
                     </a>                
@@ -174,7 +174,7 @@ export function createHeader(language) {
             </a>
             <a class="header_bottom_category">
                 <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                <p class="header_bottom_category-text">
+                <p class="header_bottom_category-text goToAboutUs">
                     About Us
                 </p>
             </a>
@@ -275,9 +275,9 @@ export function createHeader(language) {
                         Тренировки
                         </p>
                     </a>
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAboutUs">
                         <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                        <p class="header_bottom_category-text">
+                        <p class="header_bottom_category-text goToAboutUs">
                         О Нас
                         </p>
                     </a>                
@@ -339,7 +339,7 @@ export function createHeader(language) {
             </a>
             <a class="header_bottom_category">
                 <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                <p class="header_bottom_category-text">
+                <p class="header_bottom_category-text goToAboutUs">
                     О Нас
                 </p>
             </a>
@@ -442,7 +442,7 @@ export function createHeader(language) {
                     </a>
                     <a class="header_bottom_category">
                         <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                        <p class="header_bottom_category-text">
+                        <p class="header_bottom_category-text goToAboutUs">
                             เกี่ยวกับเรา
                         </p>
                     </a>                
@@ -504,7 +504,7 @@ export function createHeader(language) {
             </a>
             <a class="header_bottom_category">
                 <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                <p class="header_bottom_category-text">
+                <p class="header_bottom_category-text goToAboutUs">
                     เกี่ยวกับเรา
                 </p>
             </a>
@@ -554,7 +554,7 @@ export function createFooter(language) {
                     </div>
                     <div class="footer_menu_path">
                         <a href="#">Training</a>
-                        <a href="#">About Us</a>
+                        <a href="#" class='goToAboutUs'>About Us</a>
                     </div>
                     </div>
                     <div class="footer_right">
@@ -598,7 +598,7 @@ export function createFooter(language) {
                     </div>
                     <div class="footer_menu_path">
                         <a href="#">Тренировки</a>
-                        <a href="#">О Нас</a>
+                        <a href="#" class='goToAboutUs'>О Нас</a>
                     </div>
                     </div>
                     <div class="footer_right">
@@ -642,7 +642,7 @@ export function createFooter(language) {
                     </div>
                     <div class="footer_menu_path">
                         <a href="#">เทรนกับโค้ช</a>
-                        <a href="#">รูปภาพและวิดีโอ</a>
+                        <a href="#" class='goToAboutUs'>รูปภาพและวิดีโอ</a>
                     </div>
                     </div>
                     <div class="footer_right">
@@ -772,8 +772,15 @@ export function fetchPastTournaments() {
             playersLimitDiv.appendChild(pastPlayersDiv);
             playersLimitDiv.appendChild(pastRestrictionStatusDiv);
 
+            const languageMap = {
+                'russian': 'ru',
+                'english': 'en',
+                'thai': 'th'
+            };
+            const currentLang = localStorage.getItem('clientLang');
+
             let moreDetailsLink = document.createElement('a');
-            moreDetailsLink.href = '#';
+            moreDetailsLink.href = `/${languageMap[currentLang]}/tournaments/${tournament._id}`;
             let moreDetailsText = {
                 'english': 'More details',
                 'thai': 'รายละเอียดเพิ่มเติม',
@@ -829,9 +836,15 @@ export function fetchFutureTournaments() {
                 document.querySelector('.upcommingTable_content').appendChild(weekdayDiv);
             }
 
+            const languageMap = {
+                'russian': 'ru',
+                'english': 'en',
+                'thai': 'th'
+            };
+            const currentLang = localStorage.getItem('clientLang');
             let tournamentDiv = document.createElement('a');
             tournamentDiv.className = 'upcommingTable_tournament';
-            tournamentDiv.href = `/tournament/${tournament._id}`;
+            tournamentDiv.href = `${languageMap[currentLang]}/tournaments/${tournament._id}`;
 
             let timeDiv = document.createElement('div');
             timeDiv.className = 'cell tournament_time';
@@ -2260,7 +2273,9 @@ export function breadCrumb() {
             'allclubs': 'Clubs',
             'club': 'About the club',
             'players': 'Players',
-            'player': 'Player Profile'
+            'player': 'Player Profile',
+            'aboutus': 'About us',
+            'tournament': 'About the Tournament'
         },
         'ru': {
             'home': 'Главная',
@@ -2270,7 +2285,9 @@ export function breadCrumb() {
             'allclubs': 'Клубы',
             'club': 'О клубе',
             'players': 'Игроки',
-            'player': 'Профиль игрока'
+            'player': 'Профиль игрока',
+            'aboutus': 'О нас',
+            'tournament': 'О Турнире'
         },
         'th': {
             'home': 'หน้าหลัก',
@@ -2280,7 +2297,9 @@ export function breadCrumb() {
             'allclubs': 'สโมสร',
             'club': 'เกี่ยวกับสโมสร',
             'players': 'ผู้เล่น',
-            'player': 'โปรไฟล์ผู้เล่น'
+            'player': 'โปรไฟล์ผู้เล่น',
+            'aboutus': 'เกี่ยวกับเรา',
+            'tournament': 'เกี่ยวกับการแข่งขัน'
         }
     };
 
@@ -2300,6 +2319,8 @@ export function breadCrumb() {
             translatedPath = translations[currentLang]['club'];
         } else if (containsNumbers && filteredPathArray[index - 1] === 'players') {
             translatedPath = translations[currentLang]['player'];
+        } else if (containsNumbers && filteredPathArray[index - 1] === 'tournaments') {
+            translatedPath = translations[currentLang]['tournament'];
         } else {
             translatedPath = translations[currentLang][path] || capitalize(path);
         }
@@ -2339,6 +2360,10 @@ export function listenerOfButtons() {
 
         if (event.target.closest('.goToAllClubs')) {
             window.location.href = `/${languageMap[localStorage.clientLang]}/allclubs`;
+        }
+        
+        if (event.target.closest('.goToAboutUs')) {
+            window.location.href = `/${languageMap[localStorage.clientLang]}/aboutus`;
         }
 
         // if (event.target.classList.contains('header_bottom_mob_cross')) {

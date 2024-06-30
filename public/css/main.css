@@ -1261,6 +1261,8 @@ h2 {
         display: none; }
       .tournaments .upcommingTable_tournament {
         grid-template-columns: repeat(6, 1fr); }
+        .tournaments .upcommingTable_tournament:hover > * {
+          background: none; }
       .tournaments .upcommingTable .cell {
         gap: 8px;
         justify-content: center; }
@@ -2771,13 +2773,14 @@ h2 {
       height: auto;
       width: 100%; }
   .tournament .singUpToTournament {
-    width: 100; }
+    width: 100%; }
   .tournamentLocation {
     margin-top: 40px; }
   .prizes_table h3 {
     font-size: 18px; }
   .prizes_table_award {
-    margin-bottom: 12px; }
+    margin-bottom: 12px;
+    line-height: 130%; }
   .upcomingTournament {
     margin-top: 40px; }
     .upcomingTournament_table_header {
@@ -2801,4 +2804,5 @@ h2 {
       font-weight: 400; }
     .upcomingTournament_rating {
       font-size: 14px;
-      font-weight: 400; } }
+      font-weight: 400;
+      text-align: right; } }

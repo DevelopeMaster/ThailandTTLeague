@@ -104,7 +104,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('tournamentLogo').style.backgroundImage = `url(${tournament.club.logo})`;
         document.getElementById('tournamentName').textContent = tournament.club.name;
         // document.getElementById('registeredPlayers').textContent = `${tournament.players.length} people registered`;
-        document.getElementById('registeredPlayers').textContent = `${tournament.players.length} ${translations[lang].peopleRegistered}`;
+
+        // document.getElementById('registeredPlayers').textContent = `${tournament.players.length} ${translations[lang].peopleRegistered}`;
+        // количество зарегистрированных людей на русском языке
+        const registeredPlayersText = getRegisteredPlayersText(tournament.players.length, lang);
+        document.getElementById('registeredPlayers').textContent = `${tournament.players.length} ${registeredPlayersText}`;
+
         document.getElementById('restrictionStatus').style.backgroundColor = 'rgb(0, 112, 38)';
         document.getElementById('restrictionStatus').innerHTML = `<div class="restriction">${tournament.restrictions}</div>`;
         // document.getElementById('tournamentStart').textContent = new Date(tournament.datetime).toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit' });
@@ -154,8 +159,23 @@ document.addEventListener('DOMContentLoaded', async function() {
         }).addTo(map);
 
         L.marker([tournament.location[0], tournament.location[1]]).addTo(map)
-            .bindPopup(`${tournament.address[lang] || tournament.address['en']}`)
+            // .bindPopup(`${tournament.address[lang] || tournament.address['en']}`)
+            .bindPopup(`${tournament.club.name}`)
             .openPopup();
+    }
+
+    function getRegisteredPlayersText(count, lang) {
+        if (lang === 'ru') {
+            if (count === 1) {
+                return "человек заявлен";
+            } else if (count >= 2 && count <= 4) {
+                return "человека заявлено";
+            } else {
+                return "человек заявлено";
+            }
+        } else {
+            return translations[lang].peopleRegistered;
+        }
     }
 
     const translations = {

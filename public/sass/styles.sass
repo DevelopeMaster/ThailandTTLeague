@@ -1296,6 +1296,8 @@
                 display: none
             &_tournament
                 grid-template-columns: repeat(6, 1fr)
+                &:hover > *
+                    background: none
             .cell
                 gap: 8px
                 justify-content: center
@@ -1330,6 +1332,7 @@
                     // padding-left: 8px
                     padding-left: 0px
                     padding-right: 0px
+                
     .last
         margin-top: 40px
         &_tournaments

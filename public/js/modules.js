@@ -2275,7 +2275,8 @@ export function breadCrumb() {
             'players': 'Players',
             'player': 'Player Profile',
             'aboutus': 'About us',
-            'tournament': 'About the Tournament'
+            'tournament': 'About the Tournament',
+            'tournaments': 'Tournaments'
         },
         'ru': {
             'home': 'Главная',
@@ -2287,7 +2288,8 @@ export function breadCrumb() {
             'players': 'Игроки',
             'player': 'Профиль игрока',
             'aboutus': 'О нас',
-            'tournament': 'О Турнире'
+            'tournament': 'О Турнире',
+            'tournaments': 'Турниры'
         },
         'th': {
             'home': 'หน้าหลัก',
@@ -2299,7 +2301,8 @@ export function breadCrumb() {
             'players': 'ผู้เล่น',
             'player': 'โปรไฟล์ผู้เล่น',
             'aboutus': 'เกี่ยวกับเรา',
-            'tournament': 'เกี่ยวกับการแข่งขัน'
+            'tournament': 'เกี่ยวกับการแข่งขัน',
+            'tournaments': 'การแข่งขัน'
         }
     };
 

@@ -1402,6 +1402,7 @@ export async function getAllCoaches() {
                 throw new Error('City data not found');
             }
             const city = await response.json();
+            console.log(city[currentLang]);
             return city[currentLang]; // Возвращает имя города на выбранном языке
         } catch (error) {
             console.error('Ошибка при получении названия города:', error);
@@ -1445,16 +1446,38 @@ export async function getAllCoaches() {
         const nameValue = nameInput.value.toLowerCase();
         const clubValue = clubInput.value.toLowerCase();
         const cityValue = cityInput.value.toLowerCase();
-
-        const filteredCoaches = allCoaches.filter(coach => {
+    
+        const filteredCoaches = await Promise.all(allCoaches.map(async coach => {
             const nameMatch = !nameValue || coach.name.toLowerCase().includes(nameValue) || coach.playerName.toLowerCase().includes(nameValue);
             const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
-            // Retrieve city name from MongoDB collection 'cities'
-            const cityMatch = !cityValue || cityValue === 'all' || getCityName(coach.city).toLowerCase().includes(cityValue);
-            return nameMatch && clubMatch && cityMatch;
-        });
-        displayCoaches(filteredCoaches);
+    
+            const cityName = await getCityName(coach.city);
+            const cityMatch = !cityValue || cityValue === 'all' || cityName.toLowerCase().includes(cityValue);
+    
+            return nameMatch && clubMatch && cityMatch ? coach : null;
+        }));
+    
+        // Убираем null значения из массива
+        const validCoaches = filteredCoaches.filter(coach => coach !== null);
+    
+        displayCoaches(validCoaches);
     }
+
+    // async function filterCoaches() {
+    //     const nameValue = nameInput.value.toLowerCase();
+    //     const clubValue = clubInput.value.toLowerCase();
+    //     const cityValue = cityInput.value.toLowerCase();
+
+    //     const filteredCoaches = allCoaches.filter(coach => {
+    //         const nameMatch = !nameValue || coach.name.toLowerCase().includes(nameValue) || coach.playerName.toLowerCase().includes(nameValue);
+    //         const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
+    //         // Retrieve city name from MongoDB collection 'cities'
+    //         // const getCurrCity = await getCityName(coach.city).toLowerCase().includes(cityValue));
+    //         const cityMatch = !cityValue || cityValue === 'all' ||  getCityName(coach.city).toLowerCase().includes(cityValue);
+    //         return nameMatch && clubMatch && cityMatch;
+    //     });
+    //     displayCoaches(filteredCoaches);
+    // }
 
     async function displayCoaches(coaches) {
         const container = document.querySelector('.coaches_content');

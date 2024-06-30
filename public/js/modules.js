@@ -1374,7 +1374,7 @@ export async function getAllCoaches() {
             displayCoaches(coaches.slice(0, 12));
             viewAllButton.style.display = 'block';
 
-            const names = [...new Set(coaches.flatMap(coach => [coach.name, coach.playerName]))];
+            const names = [...new Set(coaches.flatMap(coach => coach.name))];
             const clubs = [...new Set(coaches.map(coach => coach.club))];
             const cityIds = [...new Set(coaches.map(coach => coach.city))]; // Now storing city _id
 
@@ -1395,6 +1395,50 @@ export async function getAllCoaches() {
         }
     }
 
+    let debounceTimeout; // Переменная для хранения таймера дебаунсинга
+
+
+    nameInput.addEventListener('input', () => debounceFilterCoaches(updateNameDropdown));
+    clubInput.addEventListener('input', () => debounceFilterCoaches(updateClubDropdown));
+    cityInput.addEventListener('input', () => debounceFilterCoaches(updateCityDropdown));
+
+    nameInput.addEventListener('focus', () => nameDropdown.style.display = 'block');
+    clubInput.addEventListener('focus', () => clubDropdown.style.display = 'block');
+    cityInput.addEventListener('focus', () => cityDropdown.style.display = 'block');
+
+    nameInput.addEventListener('blur', () => setTimeout(() => nameDropdown.style.display = 'none', 200));
+    clubInput.addEventListener('blur', () => setTimeout(() => clubDropdown.style.display = 'none', 200));
+    cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
+
+    viewAllButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        displayCoaches(allCoaches);
+        viewAllButton.style.display = 'none';
+    });
+
+    function debounceFilterCoaches(updateDropdown) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            updateDropdown();
+            filterCoaches();
+        }, 300); // Задержка в 300 мс
+    }
+
+    function updateNameDropdown() {
+        updateDropdownList(nameDropdown, [...new Set(allCoaches.flatMap(coach => coach.name))], nameInput);
+    }
+
+    function updateClubDropdown() {
+        updateDropdownList(clubDropdown, [...new Set(allCoaches.map(coach => coach.club))], clubInput);
+    }
+
+    function updateCityDropdown() {
+        Promise.all(allCoaches.map(coach => getCityName(coach.city)))
+            .then(cityNames => {
+                updateDropdownList(cityDropdown, [...new Set(cityNames)], cityInput);
+            });
+    }
+
     async function getCityName(cityId) {
         try {
             const response = await fetch(`/cities/${cityId}`);
@@ -1402,7 +1446,6 @@ export async function getAllCoaches() {
                 throw new Error('City data not found');
             }
             const city = await response.json();
-            console.log(city[currentLang]);
             return city[currentLang]; // Возвращает имя города на выбранном языке
         } catch (error) {
             console.error('Ошибка при получении названия города:', error);
@@ -1446,38 +1489,22 @@ export async function getAllCoaches() {
         const nameValue = nameInput.value.toLowerCase();
         const clubValue = clubInput.value.toLowerCase();
         const cityValue = cityInput.value.toLowerCase();
-    
+
         const filteredCoaches = await Promise.all(allCoaches.map(async coach => {
             const nameMatch = !nameValue || coach.name.toLowerCase().includes(nameValue) || coach.playerName.toLowerCase().includes(nameValue);
             const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
-    
+
             const cityName = await getCityName(coach.city);
             const cityMatch = !cityValue || cityValue === 'all' || cityName.toLowerCase().includes(cityValue);
-    
+
             return nameMatch && clubMatch && cityMatch ? coach : null;
         }));
-    
+
         // Убираем null значения из массива
         const validCoaches = filteredCoaches.filter(coach => coach !== null);
-    
+
         displayCoaches(validCoaches);
     }
-
-    // async function filterCoaches() {
-    //     const nameValue = nameInput.value.toLowerCase();
-    //     const clubValue = clubInput.value.toLowerCase();
-    //     const cityValue = cityInput.value.toLowerCase();
-
-    //     const filteredCoaches = allCoaches.filter(coach => {
-    //         const nameMatch = !nameValue || coach.name.toLowerCase().includes(nameValue) || coach.playerName.toLowerCase().includes(nameValue);
-    //         const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
-    //         // Retrieve city name from MongoDB collection 'cities'
-    //         // const getCurrCity = await getCityName(coach.city).toLowerCase().includes(cityValue));
-    //         const cityMatch = !cityValue || cityValue === 'all' ||  getCityName(coach.city).toLowerCase().includes(cityValue);
-    //         return nameMatch && clubMatch && cityMatch;
-    //     });
-    //     displayCoaches(filteredCoaches);
-    // }
 
     async function displayCoaches(coaches) {
         const container = document.querySelector('.coaches_content');
@@ -1522,7 +1549,6 @@ export async function getAllCoaches() {
                 'russian': 'Клуб:'
             };
             clubTitleSpan.textContent = clubTitle[currentLang] || 'Club:';
-            // clubTitleSpan.textContent = 'Club:';
 
             const clubNameP = document.createElement('p');
             clubNameP.textContent = coach.club;
@@ -1559,32 +1585,18 @@ export async function getAllCoaches() {
         }
     }
 
-    nameInput.addEventListener('input', () => {
-        updateDropdownList(nameDropdown, [...new Set(allCoaches.flatMap(coach => [coach.name, coach.playerName]))], nameInput);
-        filterCoaches();
-    });
-    clubInput.addEventListener('input', () => {
-        updateDropdownList(clubDropdown, [...new Set(allCoaches.map(coach => coach.club))], clubInput);
-        filterCoaches();
-    });
-    cityInput.addEventListener('input', () => {
-        updateDropdownList(cityDropdown, [...new Set(allCoaches.map(coach => getCityName(coach.city)))], cityInput);
-        filterCoaches();
-    });
+    // Инициализация данных тренеров и вызов начальной фильтрации
+    fetchCoachesData();
 
-    nameInput.addEventListener('focus', () => nameDropdown.style.display = 'block');
-    clubInput.addEventListener('focus', () => clubDropdown.style.display = 'block');
-    cityInput.addEventListener('focus', () => cityDropdown.style.display = 'block');
-
-    nameInput.addEventListener('blur', () => setTimeout(() => nameDropdown.style.display = 'none', 200));
-    clubInput.addEventListener('blur', () => setTimeout(() => clubDropdown.style.display = 'none', 200));
-    cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
-
-    viewAllButton.addEventListener('click', function(event) {
-        event.preventDefault();
-        displayCoaches(allCoaches);
-        viewAllButton.style.display = 'none';
-    });
+    async function fetchCoachesData() {
+        try {
+            const response = await fetch('/coaches');
+            allCoaches = await response.json();
+            filterCoaches(); // Выполнить фильтрацию при загрузке данных
+        } catch (error) {
+            console.error('Ошибка при загрузке данных тренеров:', error);
+        }
+    }
 }
 
 export function btnGoUp() {

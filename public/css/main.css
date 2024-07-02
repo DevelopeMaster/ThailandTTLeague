@@ -478,6 +478,10 @@ h2 {
       grid-column: 1/3; }
     .tournaments .upcommingTable .tournament_club {
       grid-column: 3/5; }
+      .tournaments .upcommingTable .tournament_club span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
     .tournaments .upcommingTable .tournament_restrict {
       position: relative;
       grid-column: 5/7;
@@ -487,7 +491,7 @@ h2 {
       grid-column: 7/8; }
     .tournaments .upcommingTable .tournament_players {
       border-radius: 0 6px 6px 0;
-      padding-right: 38px;
+      padding-right: 30px;
       grid-column: 8/-1;
       gap: 10px; }
     .tournaments .upcommingTable_btn {
@@ -604,6 +608,7 @@ h2 {
       border-radius: 14px;
       background: #262630;
       display: flex;
+      cursor: pointer;
       gap: 20px;
       overflow: hidden; }
       .clubs_content_club:hover {
@@ -1284,6 +1289,13 @@ h2 {
       .tournaments .upcommingTable .tournament_restrict {
         grid-column: 4/5;
         padding-left: 0px; }
+        .tournaments .upcommingTable .tournament_restrict .restrictionStatus {
+          height: 20px;
+          width: 44px; }
+          .tournaments .upcommingTable .tournament_restrict .restrictionStatus .restriction {
+            padding: 0 11px;
+            height: 17px;
+            font-size: 12px; }
       .tournaments .upcommingTable .tournament_rating {
         grid-column: 5/6;
         padding-left: 0px; }
@@ -1291,6 +1303,9 @@ h2 {
         grid-column: 6/7;
         padding-left: 0px;
         padding-right: 0px; }
+        .tournaments .upcommingTable .tournament_players img {
+          width: 20px;
+          height: 20px; }
   .last {
     margin-top: 40px; }
     .last_tournaments_tournament {
@@ -1318,7 +1333,7 @@ h2 {
       .clubs_content_club {
         min-width: 320px;
         font-size: 14px;
-        height: 104PX; }
+        height: 104px; }
         .clubs_content_club h4 {
           font-size: 14px;
           font-weight: 600; }
@@ -2806,3 +2821,298 @@ h2 {
       font-size: 14px;
       font-weight: 400;
       text-align: right; } }
+
+.filterTournaments {
+  margin-top: 40px; }
+  .filterTournaments p {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; }
+  .filterTournaments_wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end; }
+  .filterTournaments #filterTournaments_btnSearch {
+    height: 37px;
+    width: 264px; }
+  .filterTournaments_filter {
+    border-radius: 14px;
+    background: #3F3F4C;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px; }
+    .filterTournaments_filter input {
+      width: 100%;
+      margin-top: 10px;
+      display: flex;
+      padding: 8px 13px 8px 8px;
+      align-items: center;
+      border: none;
+      border-radius: 6px;
+      background: #262630;
+      color: #fff;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      background-image: url(/icons/chevron-down.svg);
+      background-repeat: no-repeat;
+      background-position: right 8px center; }
+      .filterTournaments_filter input::placeholder {
+        color: #666877;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal; }
+    .filterTournaments_filter input:focus {
+      outline: none; }
+    .filterTournaments_filter input:-webkit-autofill,
+    .filterTournaments_filter input:-webkit-autofill:hover,
+    .filterTournaments_filter input:-webkit-autofill:focus {
+      -webkit-text-fill-color: #fff;
+      transition: background-color 5000s ease-in-out 0s; }
+    .filterTournaments_filter label {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      margin-top: 16px; }
+      .filterTournaments_filter label a {
+        text-decoration: none;
+        color: #666877;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 130%; }
+    .filterTournaments_filter .dropdownForm {
+      position: relative;
+      display: block;
+      width: 100%; }
+      .filterTournaments_filter .dropdownForm .dropdown-content {
+        display: none;
+        position: absolute;
+        width: 100%;
+        z-index: 2;
+        max-height: 165px;
+        overflow-y: auto;
+        background-color: #3F3F4C;
+        border-radius: 0px 0px 14px 14px; }
+      .filterTournaments_filter .dropdownForm .dropdown-content div {
+        color: black;
+        padding: 8px 13px 8px 8px;
+        text-decoration: none;
+        display: block;
+        color: #FFF;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        cursor: default; }
+      .filterTournaments_filter .dropdownForm .dropdown-content div:hover {
+        background-color: #343643; }
+      .filterTournaments_filter .dropdownForm .dropdown-content::-webkit-scrollbar {
+        padding-right: 8px;
+        width: 2px; }
+      .filterTournaments_filter .dropdownForm .dropdown-content::-webkit-scrollbar-track {
+        background: #262630; }
+      .filterTournaments_filter .dropdownForm .dropdown-content::-webkit-scrollbar-thumb {
+        background: #666877; }
+      .filterTournaments_filter .dropdownForm .dropdown-content::-webkit-scrollbar-thumb:hover {
+        background: #666877; }
+    .filterTournaments_filter .dropbtnCities:hover, .filterTournaments_filter .dropbtnCities:focus {
+      background-color: #3F3F4C; }
+    .filterTournaments_filter .datesForm {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 12px;
+      width: auto; }
+      .filterTournaments_filter .datesForm label {
+        grid-column: 1/3; }
+      .filterTournaments_filter .datesForm input {
+        background-image: none;
+        display: block;
+        width: 126px; }
+
+.tournaments {
+  position: relative;
+  margin-top: 100px;
+  background-color: transparent;
+  z-index: 1; }
+  .tournaments .lastTournamentsTable {
+    position: relative;
+    border-radius: 14px;
+    background: #262630;
+    padding: 20px;
+    color: #FFF;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%; }
+    .tournaments .lastTournamentsTable_header {
+      border-radius: 8px;
+      background: #3F3F4C;
+      padding: 15px 0;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr); }
+      .tournaments .lastTournamentsTable_header span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
+    .tournaments .lastTournamentsTable_weekday {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      border-radius: 6px;
+      height: 31px;
+      background: #081B3E;
+      font-size: 16px;
+      box-sizing: border-box; }
+      .tournaments .lastTournamentsTable_weekday span:first-letter {
+        text-transform: uppercase; }
+    .tournaments .lastTournamentsTable_tournament {
+      height: 50px;
+      display: grid;
+      align-items: center;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: 1fr;
+      color: #FFF;
+      text-decoration: none;
+      padding-top: 20px; }
+      .tournaments .lastTournamentsTable_tournament:hover > * {
+        background: #3F3F4C; }
+      .tournaments .lastTournamentsTable_tournament::after {
+        margin-top: 20px;
+        content: '';
+        display: block;
+        grid-column: 1/-1;
+        height: 1px;
+        background-color: #3F3F4C; }
+    .tournaments .lastTournamentsTable .cell {
+      height: 30px;
+      display: flex;
+      gap: 14px;
+      align-items: center; }
+    .tournaments .lastTournamentsTable .tournament_time {
+      border-radius: 6px 0 0 6px;
+      padding-left: 30px;
+      grid-column: 1/3; }
+    .tournaments .lastTournamentsTable .tournament_club {
+      grid-column: 3/5; }
+      .tournaments .lastTournamentsTable .tournament_club span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
+    .tournaments .lastTournamentsTable .tournament_restrict {
+      position: relative;
+      grid-column: 5/7;
+      padding-left: 50px;
+      box-sizing: border-box; }
+    .tournaments .lastTournamentsTable .tournament_rating {
+      grid-column: 7/8; }
+    .tournaments .lastTournamentsTable .tournament_players {
+      border-radius: 0 6px 6px 0;
+      padding-right: 30px;
+      grid-column: 8/-1;
+      gap: 10px; }
+    .tournaments .lastTournamentsTable_btn {
+      display: block;
+      margin-top: 20px;
+      color: #FA6400;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      text-decoration-line: underline; }
+      .tournaments .lastTournamentsTable_btn:hover {
+        color: #FF7A00; }
+
+@media (max-width: 768px) {
+  .tournaments {
+    margin-top: 60px; }
+    .tournaments .tournament_club span {
+      font-size: 14px; } }
+
+@media (max-width: 576px) {
+  .filterTournaments {
+    margin-top: 20px; }
+    .filterTournaments_wrapper {
+      flex-direction: column;
+      gap: 16px; }
+      .filterTournaments_wrapper .datesForm label {
+        margin-top: 0; }
+      .filterTournaments_wrapper .datesForm input {
+        width: 100%; }
+    .filterTournaments #filterTournaments {
+      width: 100%; }
+    .filterTournaments #filterTournaments_btnSearch {
+      width: 100%; }
+    .filterTournaments label {
+      font-size: 14px; }
+    .filterTournaments_filter .datesForm {
+      width: 100%; }
+  .tournaments {
+    margin-top: 40px; }
+    .tournaments .lastTournamentsTable {
+      padding: 16px 8px;
+      font-size: 14px; }
+      .tournaments .lastTournamentsTable_weekday {
+        font-size: 14px; }
+      .tournaments .lastTournamentsTable_header {
+        display: none; }
+      .tournaments .lastTournamentsTable_tournament {
+        grid-template-columns: repeat(6, 1fr); }
+        .tournaments .lastTournamentsTable_tournament:hover > * {
+          background: none; }
+      .tournaments .lastTournamentsTable .cell {
+        gap: 8px;
+        justify-content: center; }
+      .tournaments .lastTournamentsTable .tournament_time {
+        grid-column: 1/2;
+        padding-left: 0; }
+      .tournaments .lastTournamentsTable .tournament_club {
+        grid-column: 2/4;
+        padding-left: 0px;
+        width: 111px; }
+        .tournaments .lastTournamentsTable .tournament_club .clubLogo {
+          width: 20px;
+          height: 20px; }
+        .tournaments .lastTournamentsTable .tournament_club span {
+          width: 83px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis; }
+      .tournaments .lastTournamentsTable .tournament_restrict {
+        grid-column: 4/5;
+        padding-left: 0px; }
+        .tournaments .lastTournamentsTable .tournament_restrict .restrictionStatus {
+          height: 20px;
+          width: 44px; }
+          .tournaments .lastTournamentsTable .tournament_restrict .restrictionStatus .restriction {
+            padding: 0 11px;
+            height: 17px;
+            font-size: 12px; }
+      .tournaments .lastTournamentsTable .tournament_rating {
+        grid-column: 5/6;
+        padding-left: 0px; }
+      .tournaments .lastTournamentsTable .tournament_players {
+        grid-column: 6/7;
+        padding-left: 0px;
+        padding-right: 0px; }
+        .tournaments .lastTournamentsTable .tournament_players img {
+          width: 20px;
+          height: 20px; } }

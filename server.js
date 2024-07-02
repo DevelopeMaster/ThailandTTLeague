@@ -50,10 +50,10 @@ app.get('/:lang/allclubs/:clubId', (req, res) => {
   res.render(`${lang}/allclubs/club`);
 });
 
-// app.use((req, res, next) => {
-//   console.log('Incoming request:', req.url);
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log('Incoming request:', req.url);
+  next();
+});
 
 // app.get('/:lang/tournaments/:tournamentId', async (req, res) => {
 //   const { lang, tournamentId } = req.params;
@@ -123,11 +123,17 @@ app.get('/check-login', async function(req, res) {
   }
 });
 
+app.get('/:lang(en|ru|th)/tournaments', function(req, res) {
+  const lang = req.params.lang;
+  res.render(`${lang}/alltournaments`);
+});
+
 app.get('/:lang(en|ru|th)/:page', function(req, res) {
   const lang = req.params.lang;
   const page = req.params.page;
   res.render(`${lang}/${page}`);
 });
+
 
 app.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/json');

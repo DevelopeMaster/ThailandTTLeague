@@ -86,7 +86,7 @@ export function createHeader(language) {
             </div>
             <div class="container">
                 <div class="header_bottom header_bottom_pc" id="headerPC">
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAllTournaments">
                         <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
                         <p class="header_bottom_category-text">
                             Tournaments
@@ -148,7 +148,7 @@ export function createHeader(language) {
                     My profile
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAllTournaments">
                 <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
                 <p class="header_bottom_category-text">
                     Tournaments
@@ -251,7 +251,7 @@ export function createHeader(language) {
             </div>
             <div class="container">
                 <div class="header_bottom header_bottom_pc" id="headerPC">
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAllTournaments">
                         <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
                         <p class="header_bottom_category-text">
                         Турниры
@@ -313,7 +313,7 @@ export function createHeader(language) {
                     Мой профиль
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAllTournaments">
                 <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
                 <p class="header_bottom_category-text">
                     Турниры
@@ -416,7 +416,7 @@ export function createHeader(language) {
             </div>
             <div class="container">
                 <div class="header_bottom header_bottom_pc" id="headerPC">
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAllTournaments">
                         <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
                         <p class="header_bottom_category-text">
                             การแข่งขัน
@@ -478,7 +478,7 @@ export function createHeader(language) {
                     ประวัติของฉัน
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAllTournaments">
                 <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
                 <p class="header_bottom_category-text">
                     การแข่งขัน
@@ -548,7 +548,7 @@ export function createFooter(language) {
                     </a>
                     <div class="footer_menu">
                     <div class="footer_menu_path">
-                        <a href="#">Tournaments</a>
+                        <a class="goToAllTournaments" href="#">Tournaments</a>
                         <a class="goToAllClubs" href="#">Clubs</a>
                         <a href="#">Players</a>
                     </div>
@@ -592,8 +592,8 @@ export function createFooter(language) {
                     </a>
                     <div class="footer_menu">
                     <div class="footer_menu_path">
-                        <a href="#">Турниры</a>
-                        <a href="#">Клубы</a>
+                        <a class="goToAllTournaments" href="#">Турниры</a>
+                        <a class="goToAllClubs" href="#">Клубы</a>
                         <a href="#">Игроки</a>
                     </div>
                     <div class="footer_menu_path">
@@ -636,8 +636,8 @@ export function createFooter(language) {
                     </a>
                     <div class="footer_menu">
                     <div class="footer_menu_path">
-                        <a href="#">การแข่งขัน</a>
-                        <a href="#">สโมสร</a>
+                        <a class="goToAllTournaments" href="#">การแข่งขัน</a>
+                        <a class="goToAllClubs" href="#">สโมสร</a>
                         <a href="#">ผู้เล่น</a>
                     </div>
                     <div class="footer_menu_path">
@@ -2311,7 +2311,8 @@ export function breadCrumb() {
             'player': 'Player Profile',
             'aboutus': 'About us',
             'tournament': 'About the Tournament',
-            'tournaments': 'Tournaments'
+            'tournaments': 'Tournaments',
+            'alltournaments': 'Tournaments'
         },
         'ru': {
             'home': 'Главная',
@@ -2324,7 +2325,8 @@ export function breadCrumb() {
             'player': 'Профиль игрока',
             'aboutus': 'О нас',
             'tournament': 'О Турнире',
-            'tournaments': 'Турниры'
+            'tournaments': 'Турниры',
+            'alltournaments': 'Турниры'
         },
         'th': {
             'home': 'หน้าหลัก',
@@ -2337,7 +2339,8 @@ export function breadCrumb() {
             'player': 'โปรไฟล์ผู้เล่น',
             'aboutus': 'เกี่ยวกับเรา',
             'tournament': 'เกี่ยวกับการแข่งขัน',
-            'tournaments': 'การแข่งขัน'
+            'tournaments': 'การแข่งขัน',
+            'alltournaments': 'การแข่งขัน'
         }
     };
 
@@ -2398,6 +2401,10 @@ export function listenerOfButtons() {
 
         if (event.target.closest('.goToAllClubs')) {
             window.location.href = `/${languageMap[localStorage.clientLang]}/allclubs`;
+        }
+
+        if (event.target.closest('.goToAllTournaments')) {
+            window.location.href = `/${languageMap[localStorage.clientLang]}/alltournaments`;
         }
         
         if (event.target.closest('.goToAboutUs')) {
@@ -2495,4 +2502,505 @@ export function controlTextAreaCoach(area, note) {
     textarea.addEventListener('input', () => {
         autoResize.call(textarea);
     });
+}
+
+// function validateDates() {
+//     const dateFromInput = document.getElementById('dateFromInput');
+//     const dateUntilInput = document.getElementById('dateUntilInput');
+
+//     const dateFromParts = dateFromInput.value.split('.');
+//     const dateUntilParts = dateUntilInput.value.split('.');
+
+//     const dateFrom = new Date(`${dateFromParts[2]}-${dateFromParts[1]}-${dateFromParts[0]}`);
+//     const dateUntil = new Date(`${dateUntilParts[2]}-${dateUntilParts[1]}-${dateUntilParts[0]}`);
+
+//     if (dateFrom > dateUntil) {
+//         alert('The "From" date cannot be later than the "Until" date.');
+//         return false;
+//     }
+//     return true;
+// }
+
+
+export async function getAllTournaments() {
+    const dateFromInput = document.getElementById('dateFromInput');
+    const dateUntilInput = document.getElementById('dateUntilInput');
+    const clubInput = document.getElementById('clubInput');
+    const cityInput = document.getElementById('cityInput');
+
+    const clubDropdown = document.getElementById('clubDropdown');
+    const cityDropdown = document.getElementById('cityDropdown');
+    const searchButton = document.getElementById('filterTournaments_btnSearch');
+
+    const upcomingBlock = document.querySelector('.upcommingTable_content');
+    const pastBlock = document.querySelector('.lastTournamentsTable_content');
+
+    if (!upcomingBlock) {
+        console.error('Контейнеры будущих турниров не найден');
+        return;
+    }
+    if (!pastBlock) {
+        console.error('Контейнеры прошедших турниров не найден');
+        return;
+    }
+
+    
+    const languageMap = {
+        'russian': 'ru',
+        'english': 'en',
+        'thai': 'th'
+    };
+
+    const currentLang = localStorage.getItem('clientLang') || 'english';
+    const langKey = languageMap[currentLang];
+
+    let allTournaments = [];
+    let cities = {};
+
+    await fetchAllTournaments();
+    await fetchCities();
+
+    async function fetchAllTournaments() {
+        try {
+            const response = await fetch(`/get-future-tournaments`);
+            const tournaments = await response.json();
+            allTournaments = tournaments;
+
+            // Display first 12 tournaments initially
+            displayTournaments(tournaments.slice(0, 12), upcomingBlock, pastBlock);
+
+            const clubs = [...new Set(tournaments.map(tournament => tournament.club.name))];
+            const cityIds = [...new Set(tournaments.map(tournament => tournament.city._id))];
+            clubs.sort();
+            // console.log(cityIds);
+            // Retrieve city names from MongoDB collection 'cities'
+            const cityNames = await Promise.all(cityIds.map(cityId => getCityName(cityId)));
+            cityNames.sort();
+            
+
+            createDropdown(clubDropdown, clubs, clubInput);
+            createDropdown(cityDropdown, cityNames, cityInput);
+        } catch (error) {
+            console.error('Произошла ошибка:', error);
+            showErrorModal('Database connection error', 'Ops!');
+        }
+    }
+
+    let debounceTimeout;
+
+    dateFromInput.addEventListener('input', () => formatInputDate(dateFromInput));
+    dateUntilInput.addEventListener('input', () => formatInputDate(dateUntilInput));
+    clubInput.addEventListener('input', () => debounceFilterTournaments(updateClubDropdown));
+    cityInput.addEventListener('input', () => debounceFilterTournaments(updateCityDropdown));
+
+    dateFromInput.addEventListener('blur', validateDates);
+    dateUntilInput.addEventListener('blur', validateDates);
+
+    clubInput.addEventListener('focus', () => clubDropdown.style.display = 'block');
+    cityInput.addEventListener('focus', () => cityDropdown.style.display = 'block');
+
+    clubInput.addEventListener('blur', () => setTimeout(() => clubDropdown.style.display = 'none', 200));
+    cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
+
+    searchButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        filterTournaments();
+    });
+
+    function debounceFilterTournaments(updateDropdown) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            updateDropdown();
+            filterTournaments();
+        }, 300);
+    }
+
+    function updateClubDropdown() {
+        updateDropdownList(clubDropdown, [...new Set(allTournaments.map(tournament => tournament.club.name))], clubInput);
+    }
+
+    function updateCityDropdown() {
+        const cityNames = Object.values(cities);
+        updateDropdownList(cityDropdown, cityNames, cityInput);
+    }
+
+    async function getCityName(cityId) {
+        try {
+            const response = await fetch(`/cities/${cityId}`);
+            if (!response.ok) {
+                throw new Error('City data not found');
+            }
+            const city = await response.json();
+    
+            return city[currentLang] || city['english']; // Возвращаем название города на заданном языке или английском (по умолчанию)
+        } catch (error) {
+            console.error('Ошибка при получении названия города:', error);
+            return 'Unknown City'; // Возвращение запасного значения в случае ошибки
+        }
+    }
+
+    function createDropdown(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        options.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                filterTournaments();
+            });
+            dropdown.appendChild(div);
+        });
+    }
+
+    function updateDropdownList(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        const currentText = inputElement.value.toLowerCase();
+        const filteredOptions = options.filter(option => option.toLowerCase().includes(currentText));
+
+        filteredOptions.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                filterTournaments();
+            });
+            dropdown.appendChild(div);
+        });
+        dropdown.style.display = 'block';
+    }
+
+    async function filterTournaments() {
+        const dateFromValue = dateFromInput.value;
+        const dateUntilValue = dateUntilInput.value;
+        const clubValue = clubInput.value.toLowerCase();
+        const cityValue = cityInput.value.toLowerCase();
+
+        const filteredTournaments = await Promise.all(allTournaments.map(async tournament => {
+            const dateFromMatch = !dateFromValue || new Date(tournament.date) >= new Date(dateFromValue.split('.').reverse().join('-'));
+            const dateUntilMatch = !dateUntilValue || new Date(tournament.date) <= new Date(dateUntilValue.split('.').reverse().join('-'));
+            const clubMatch = !clubValue || tournament.club.name.toLowerCase().includes(clubValue);
+
+            const cityName = await getCityName(tournament.city._id, langKey);
+            const cityMatch = !cityValue || cityValue === 'all' || cityName.toLowerCase().includes(cityValue);
+
+            return dateFromMatch && dateUntilMatch && clubMatch && cityMatch ? tournament : null;
+        }));
+
+        const validTournaments = filteredTournaments.filter(tournament => tournament !== null);
+        displayTournaments(validTournaments, upcomingBlock, pastBlock);
+    }
+
+    function validateDates() {
+        const dateFromInput = document.getElementById('dateFromInput');
+        const dateUntilInput = document.getElementById('dateUntilInput');
+
+        const dateFromParts = dateFromInput.value.split('.');
+        const dateUntilParts = dateUntilInput.value.split('.');
+
+        const dateFrom = new Date(`${dateFromParts[2]}-${dateFromParts[1]}-${dateFromParts[0]}`);
+        const dateUntil = new Date(`${dateUntilParts[2]}-${dateUntilParts[1]}-${dateUntilParts[0]}`);
+
+        if (dateFrom > dateUntil) {
+            alert('The "From" date cannot be later than the "Until" date.');
+            return false;
+        }
+        return true;
+    }
+
+    function formatInputDate(input) {
+        input.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2 && value.length <= 4) {
+                value = value.replace(/^(\d{2})(\d{1,2})$/, '$1.$2');
+            } else if (value.length > 4) {
+                value = value.replace(/^(\d{2})(\d{2})(\d{1,4})$/, '$1.$2.$3');
+            }
+            e.target.value = value;
+        });
+    }
+
+
+    // async function displayTournaments(tournaments, upcomingContainer, pastContainer) {
+    //     try {
+    //         // Очистим содержимое контейнеров перед отрисовкой новых данных
+    //         upcomingContainer.innerHTML = '';
+    //         pastContainer.innerHTML = '';
+    
+    //         const languageMap = {
+    //             'russian': 'ru',
+    //             'english': 'en',
+    //             'thai': 'th'
+    //         };
+    
+    //         const currentLang = localStorage.getItem('clientLang') || 'english';
+    //         const langKey = languageMap[currentLang];
+    
+    //         let upcomingTournaments = tournaments.filter(tournament => new Date(tournament.datetime) >= new Date());
+    //         let pastTournaments = tournaments.filter(tournament => new Date(tournament.datetime) < new Date());
+    
+    //         // Сортируем турниры по дате
+    //         upcomingTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+    //         pastTournaments.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+    
+    //         const renderTournament = async (tournament, container, className) => {
+    //             let tournamentDate = new Date(tournament.datetime);
+    //             let langMap = { 'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU' };
+                
+    //             let lang = langMap[localStorage.clientLang] || 'en-US';
+    //             let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
+    //             let formattedDate = `${dayOfWeek} ${String(tournamentDate.getDate()).padStart(2, '0')}.${String(tournamentDate.getMonth() + 1).padStart(2, '0')}.${tournamentDate.getFullYear()}`;
+    
+    //             if (container.dataset.currentDay !== formattedDate) {
+    //                 container.dataset.currentDay = formattedDate;
+    //                 let weekdayDiv = document.createElement('div');
+    //                 weekdayDiv.className = `${className}_weekday`;
+    //                 let dateSpan = document.createElement('span');
+    //                 dateSpan.textContent = formattedDate;
+    //                 weekdayDiv.appendChild(dateSpan);
+    //                 container.appendChild(weekdayDiv);
+    //             }
+    
+    //             let tournamentDiv = document.createElement('a');
+    //             tournamentDiv.className = `${className}_tournament`;
+    //             tournamentDiv.href = `${languageMap[currentLang]}/tournaments/${tournament._id}`;
+    
+    //             let timeDiv = document.createElement('div');
+    //             timeDiv.className = 'cell tournament_time';
+    //             timeDiv.textContent = tournament.datetime.split('T')[1].substring(0, 5);
+    //             tournamentDiv.appendChild(timeDiv);
+    
+    //             let clubDiv = document.createElement('div');
+    //             clubDiv.className = 'cell tournament_club';
+    //             let clubLogoDiv = document.createElement('div');
+    //             clubLogoDiv.className = 'clubLogo';
+    //             clubLogoDiv.style.cssText = `background-image: url('${tournament.club.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
+    //             clubDiv.appendChild(clubLogoDiv);
+    
+    //             let clubNameSpan = document.createElement('span');
+    //             clubNameSpan.textContent = tournament.club.name;
+    //             clubDiv.appendChild(clubNameSpan);
+    //             tournamentDiv.appendChild(clubDiv);
+    
+    //             let restrictionsDiv = document.createElement('div');
+    //             restrictionsDiv.className = 'cell tournament_restrict';
+    //             let restrictionStatusDiv = document.createElement('div');
+    //             restrictionStatusDiv.className = 'restrictionStatus';
+    
+    //             if (new Date(tournament.datetime) > new Date()) {
+    //                 restrictionStatusDiv.style.background = '#007026';
+    //             } else {
+    //                 restrictionStatusDiv.style.background = '#ADADAD';
+    //             }
+    
+    //             let restrictionDiv = document.createElement('div');
+    //             restrictionDiv.className = 'restriction';
+    //             restrictionDiv.textContent = tournament.restrictions;
+    //             restrictionStatusDiv.appendChild(restrictionDiv);
+    //             restrictionsDiv.appendChild(restrictionStatusDiv);
+    //             tournamentDiv.appendChild(restrictionsDiv);
+    
+    //             let ratingDiv = document.createElement('div');
+    //             ratingDiv.className = 'cell tournament_rating';
+    //             ratingDiv.textContent = tournament.rating;
+    //             tournamentDiv.appendChild(ratingDiv);
+    
+    //             let playersDiv = document.createElement('a');
+    //             playersDiv.className = 'cell tournament_players';
+    //             let playersImg = document.createElement('img');
+    //             playersImg.src = '/icons/user.svg';
+    //             playersImg.alt = 'person';
+    //             playersDiv.appendChild(playersImg);
+    //             let playersSpan = document.createElement('span');
+    //             playersSpan.textContent = tournament.players.length - 1;
+    //             playersDiv.appendChild(playersSpan);
+    //             tournamentDiv.appendChild(playersDiv);
+    
+    //             container.appendChild(tournamentDiv);
+    //         };
+    
+    //         for (let tournament of upcomingTournaments) {
+    //             await renderTournament(tournament, upcomingContainer, 'upcommingTable');
+    //         }
+    
+    //         let moreButton = document.createElement('a');
+    //         moreButton.className = 'upcommingTable_btn';
+    //         moreButton.href = '#';
+    //         let showMore = {
+    //             'english': 'See more',
+    //             'thai': 'ดูเพิ่มเติม',
+    //             'russian': 'Смотреть еще'
+    //         };
+    //         moreButton.textContent = showMore[localStorage.clientLang] || 'See more';
+    //         upcomingContainer.appendChild(moreButton);
+    
+    //         for (let tournament of pastTournaments) {
+    //             await renderTournament(tournament, pastContainer, 'lastTournamentsTable');
+    //         }
+    
+    //         let pastMoreButton = document.createElement('a');
+    //         pastMoreButton.className = 'lastTournamentsTable_btn';
+    //         pastMoreButton.href = '#';
+    //         pastMoreButton.textContent = showMore[localStorage.clientLang] || 'See more';
+    //         pastContainer.appendChild(pastMoreButton);
+    
+    //     } catch (error) {
+    //         console.error('Произошла ошибка при отображении турниров:', error);
+    //         showErrorModal('Error while displaying tournaments', 'Ops!');
+    //     }
+    // }
+
+
+    async function displayTournaments(tournaments, upcomingContainer, pastContainer) {
+        try {
+            // Очистим содержимое контейнеров перед отрисовкой новых данных
+            upcomingContainer.innerHTML = '';
+            pastContainer.innerHTML = '';
+    
+            const languageMap = {
+                'russian': 'ru',
+                'english': 'en',
+                'thai': 'th'
+            };
+    
+            const currentLang = localStorage.getItem('clientLang') || 'english';
+            const langKey = languageMap[currentLang];
+    
+            let upcomingTournaments = tournaments.filter(tournament => new Date(tournament.datetime) >= new Date());
+            let pastTournaments = tournaments.filter(tournament => new Date(tournament.datetime) < new Date());
+    
+            // Сортируем турниры по дате
+            upcomingTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+            pastTournaments.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+    
+            const renderTournament = async (tournament, container, className) => {
+                let tournamentDate = new Date(tournament.datetime);
+                let langMap = { 'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU' };
+                
+                let lang = langMap[localStorage.clientLang] || 'en-US';
+                let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
+                let formattedDate = `${dayOfWeek} ${String(tournamentDate.getDate()).padStart(2, '0')}.${String(tournamentDate.getMonth() + 1).padStart(2, '0')}.${tournamentDate.getFullYear()}`;
+    
+                if (container.dataset.currentDay !== formattedDate) {
+                    container.dataset.currentDay = formattedDate;
+                    let weekdayDiv = document.createElement('div');
+                    weekdayDiv.className = `${className}_weekday`;
+                    let dateSpan = document.createElement('span');
+                    dateSpan.textContent = formattedDate;
+                    weekdayDiv.appendChild(dateSpan);
+                    container.appendChild(weekdayDiv);
+                }
+    
+                let tournamentDiv = document.createElement('a');
+                tournamentDiv.className = `${className}_tournament`;
+                tournamentDiv.href = `/${languageMap[currentLang]}/tournaments/${tournament._id}`;
+    
+                let timeDiv = document.createElement('div');
+                timeDiv.className = 'cell tournament_time';
+                timeDiv.textContent = tournament.datetime.split('T')[1].substring(0, 5);
+                tournamentDiv.appendChild(timeDiv);
+    
+                let clubDiv = document.createElement('div');
+                clubDiv.className = 'cell tournament_club';
+                let clubLogoDiv = document.createElement('div');
+                clubLogoDiv.className = 'clubLogo';
+                clubLogoDiv.style.cssText = `background-image: url('${tournament.club.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
+                clubDiv.appendChild(clubLogoDiv);
+    
+                let clubNameSpan = document.createElement('span');
+                clubNameSpan.textContent = tournament.club.name;
+                clubDiv.appendChild(clubNameSpan);
+                tournamentDiv.appendChild(clubDiv);
+    
+                let restrictionsDiv = document.createElement('div');
+                restrictionsDiv.className = 'cell tournament_restrict';
+                let restrictionStatusDiv = document.createElement('div');
+                restrictionStatusDiv.className = 'restrictionStatus';
+    
+                if (new Date(tournament.datetime) > new Date()) {
+                    restrictionStatusDiv.style.background = '#007026';
+                } else {
+                    restrictionStatusDiv.style.background = '#ADADAD';
+                }
+    
+                let restrictionDiv = document.createElement('div');
+                restrictionDiv.className = 'restriction';
+                restrictionDiv.textContent = tournament.restrictions;
+                restrictionStatusDiv.appendChild(restrictionDiv);
+                restrictionsDiv.appendChild(restrictionStatusDiv);
+                tournamentDiv.appendChild(restrictionsDiv);
+    
+                let ratingDiv = document.createElement('div');
+                ratingDiv.className = 'cell tournament_rating';
+                ratingDiv.textContent = tournament.rating;
+                tournamentDiv.appendChild(ratingDiv);
+    
+                let playersDiv = document.createElement('a');
+                playersDiv.className = 'cell tournament_players';
+                let playersImg = document.createElement('img');
+                playersImg.src = '/icons/user.svg';
+                playersImg.alt = 'person';
+                playersDiv.appendChild(playersImg);
+                let playersSpan = document.createElement('span');
+                playersSpan.textContent = tournament.players.length - 1;
+                playersDiv.appendChild(playersSpan);
+                tournamentDiv.appendChild(playersDiv);
+    
+                container.appendChild(tournamentDiv);
+            };
+    
+            // Функция для отображения турниров по частям
+            const displayTournamentsInParts = async (tournaments, container, className, start, end) => {
+                container.dataset.currentDay = '';
+                for (let i = start; i < end; i++) {
+                    if (i >= tournaments.length) break;
+                    await renderTournament(tournaments[i], container, className);
+                }
+            };
+    
+            // Изначально отображаем по 12 турниров
+            await displayTournamentsInParts(upcomingTournaments, upcomingContainer, 'upcommingTable', 0, 12);
+            await displayTournamentsInParts(pastTournaments, pastContainer, 'lastTournamentsTable', 0, 12);
+    
+            // Добавляем кнопки "See more"
+            let moreButtonUpcoming = document.createElement('a');
+            moreButtonUpcoming.className = 'upcommingTable_btn';
+            moreButtonUpcoming.href = '#';
+            let showMore = {
+                'english': 'See more',
+                'thai': 'ดูเพิ่มเติม',
+                'russian': 'Смотреть еще'
+            };
+            moreButtonUpcoming.textContent = showMore[localStorage.clientLang] || 'See more';
+            upcomingContainer.appendChild(moreButtonUpcoming);
+    
+            let moreButtonPast = document.createElement('a');
+            moreButtonPast.className = 'lastTournamentsTable_btn';
+            moreButtonPast.href = '#';
+            moreButtonPast.textContent = showMore[localStorage.clientLang] || 'See more';
+            pastContainer.appendChild(moreButtonPast);
+    
+            // Обработчики кликов на кнопки "See more"
+            moreButtonUpcoming.addEventListener('click', async (event) => {
+                event.preventDefault();
+                upcomingContainer.innerHTML = '';
+                await displayTournamentsInParts(upcomingTournaments, upcomingContainer, 'upcommingTable', 0, upcomingTournaments.length);
+                moreButtonUpcoming.style.display = 'none';
+            });
+    
+            moreButtonPast.addEventListener('click', async (event) => {
+                event.preventDefault();
+                pastContainer.innerHTML = '';
+                await displayTournamentsInParts(pastTournaments, pastContainer, 'lastTournamentsTable', 0, pastTournaments.length);
+                moreButtonPast.style.display = 'none';
+            });
+    
+        } catch (error) {
+            console.error('Произошла ошибка при отображении турниров:', error);
+            showErrorModal('Error while displaying tournaments', 'Ops!');
+        }
+    }
+    
+    
 }

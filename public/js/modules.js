@@ -98,7 +98,7 @@ export function createHeader(language) {
                             Clubs
                         </p>
                     </a>
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAllPlayers">
                         <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
                         <p class="header_bottom_category-text">
                             Players
@@ -160,7 +160,7 @@ export function createHeader(language) {
                     Clubs
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAllPlayers">
                 <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
                 <p class="header_bottom_category-text">
                     Players
@@ -263,7 +263,7 @@ export function createHeader(language) {
                         Клубы
                         </p>
                     </a>
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAllPlayers">
                         <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
                         <p class="header_bottom_category-text">
                         Игроки
@@ -325,7 +325,7 @@ export function createHeader(language) {
                     Клубы
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAllPlayers">
                 <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
                 <p class="header_bottom_category-text">
                     Игроки
@@ -428,7 +428,7 @@ export function createHeader(language) {
                             สโมสร
                         </p>
                     </a>
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAllPlayers">
                         <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
                         <p class="header_bottom_category-text">
                             ผู้เล่น
@@ -490,7 +490,7 @@ export function createHeader(language) {
                     สโมสร
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAllPlayers">
                 <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
                 <p class="header_bottom_category-text">
                     ผู้เล่น
@@ -550,7 +550,7 @@ export function createFooter(language) {
                     <div class="footer_menu_path">
                         <a class="goToAllTournaments" href="#">Tournaments</a>
                         <a class="goToAllClubs" href="#">Clubs</a>
-                        <a href="#">Players</a>
+                        <a class="goToAllPlayers" href="#">Players</a>
                     </div>
                     <div class="footer_menu_path">
                         <a href="#">Training</a>
@@ -594,7 +594,7 @@ export function createFooter(language) {
                     <div class="footer_menu_path">
                         <a class="goToAllTournaments" href="#">Турниры</a>
                         <a class="goToAllClubs" href="#">Клубы</a>
-                        <a href="#">Игроки</a>
+                        <a class="goToAllPlayers" href="#">Игроки</a>
                     </div>
                     <div class="footer_menu_path">
                         <a href="#">Тренировки</a>
@@ -638,7 +638,7 @@ export function createFooter(language) {
                     <div class="footer_menu_path">
                         <a class="goToAllTournaments" href="#">การแข่งขัน</a>
                         <a class="goToAllClubs" href="#">สโมสร</a>
-                        <a href="#">ผู้เล่น</a>
+                        <a class="goToAllPlayers" href="#">ผู้เล่น</a>
                     </div>
                     <div class="footer_menu_path">
                         <a href="#">เทรนกับโค้ช</a>
@@ -737,7 +737,7 @@ export function fetchPastTournaments() {
                 winnerImg.src = `/icons/${player.place}st-medal.svg`;
                 winnerImg.alt = `${player.place} place`;
                 let winnerSpan = document.createElement('span');
-                winnerSpan.textContent = player.name;
+                winnerSpan.textContent = player.fullname;
                 winnerLink.appendChild(winnerImg);
                 winnerLink.appendChild(winnerSpan);
                 winnersDiv.appendChild(winnerLink);
@@ -1821,8 +1821,8 @@ export function loginForm() {
     const translations = {
         english: {
             title: "Log in",
-            emailLabel: "E-mail or login*",
-            emailPlaceholder: "Enter your email or login",
+            emailLabel: "E-mail*",
+            emailPlaceholder: "Enter your email",
             passwordLabel: "Password*",
             passwordPlaceholder: "Enter password",
             forgotPassword: "Forgot your password?",
@@ -1830,8 +1830,8 @@ export function loginForm() {
         },
         thai: {
             title: "เข้าสู่ระบบ",
-            emailLabel: "อีเมล์หรือเข้าสู่ระบบ*",
-            emailPlaceholder: "กรอกอีเมลหรือข้อมูลเข้าสู่ระบบของคุณ",
+            emailLabel: "อีเมล์หรือ*",
+            emailPlaceholder: "กรอกอีเมลหรือ",
             passwordLabel: "รหัสผ่าน*",
             passwordPlaceholder: "ใส่รหัสผ่าน",
             forgotPassword: "คุณลืมรหัสผ่านหรือไม่?",
@@ -1839,8 +1839,8 @@ export function loginForm() {
         },
         russian: {
             title: "Вход",
-            emailLabel: "E-mail или логин*",
-            emailPlaceholder: "Введите e-mail или логин",
+            emailLabel: "E-mail*",
+            emailPlaceholder: "Введите e-mail",
             passwordLabel: "Пароль*",
             passwordPlaceholder: "Введите пароль",
             forgotPassword: "Забыли пароль?",
@@ -1872,23 +1872,23 @@ export function restoreAccesForm() {
     const translations = {
         english: {
             title: "RESTORE Access",
-            description: "If you have forgotten your password, enter your username or email and we will send you a link to reset your password.",
-            label: "E-mail or login*",
-            placeholder: "Enter your email or login",
+            description: "If you have forgotten your password, enter your email and we will send you a link to reset your password.",
+            label: "E-mail*",
+            placeholder: "Enter your email",
             button: "Restore"
         },
         thai: {
             title: "คืนค่าการเข้าถึง",
-            description: "หากคุณลืมรหัสผ่าน ให้กรอกชื่อผู้ใช้หรืออีเมลของคุณ แล้วเราจะส่งลิงก์เพื่อรีเซ็ตรหัสผ่านไปให้คุณ.",
-            label: "อีเมล์หรือเข้าสู่ระบบ*",
-            placeholder: "กรอกอีเมลหรือข้อมูลเข้าสู่ระบบของคุณ",
+            description: "หากคุณลืมรหัสผ่าน ให้กรอกอีเมลของคุณ แล้วเราจะส่งลิงก์เพื่อรีเซ็ตรหัสผ่านไปให้คุณ.",
+            label: "อีเมล์หรือ*",
+            placeholder: "กรอกอีเมลหรือ",
             button: "คืนค่า"
         },
         russian: {
             title: "Восстановление доступа",
-            description: "Если вы забыли свой пароль, введите свой логин или e-mail и мы отправим вам ссылку для восстановления пароля.",
-            label: "E-mail или логин*",
-            placeholder: "Введите email или логин",
+            description: "Если вы забыли свой пароль, введите свой e-mail и мы отправим вам ссылку для восстановления пароля.",
+            label: "E-mail*",
+            placeholder: "Введите email",
             button: "Восстановить"
         }
     };
@@ -1921,8 +1921,8 @@ export function registrationForm() {
             title: "Registration on the WEBsite",
             emailLabel: "Email*",
             emailPlaceholder: "Enter email",
-            loginLabel: "Login*",
-            loginPlaceholder: "Enter login",
+            nicknameLabel: "Nickname",
+            loginPlaceholder: "Enter nickname",
             passwordLabel: "Password*",
             passwordPlaceholder: "Enter password",
             confirmPasswordPlaceholder: "Confirm password",
@@ -1949,8 +1949,8 @@ export function registrationForm() {
             title: "การลงทะเบียนบนเว็บไซต์",
             emailLabel: "อีเมลล์*",
             emailPlaceholder: "กรอกอีเมลล์",
-            loginLabel: "เข้าสู่ระบบ*",
-            loginPlaceholder: "กดเข้าสู่ระบบ",
+            nicknameLabel: "ชือเล่น",
+            loginPlaceholder: "กด ชือเล่น",
             passwordLabel: "รหัสผ่าน*",
             passwordPlaceholder: "ใส่รหัสผ่าน",
             confirmPasswordPlaceholder: "ยืนยันรหัสผ่าน",
@@ -1977,8 +1977,8 @@ export function registrationForm() {
             title: "Регистрация на сайте",
             emailLabel: "E-mail*",
             emailPlaceholder: "Введите e-mail",
-            loginLabel: "Логин*",
-            loginPlaceholder: "Введите логин",
+            nicknameLabel: "Никнейм",
+            loginPlaceholder: "Введите никнейм",
             passwordLabel: "Пароль*",
             passwordPlaceholder: "Введите пароль",
             confirmPasswordPlaceholder: "Подтвердите пароль",
@@ -2016,8 +2016,8 @@ export function registrationForm() {
                             <label for="email">${translation.emailLabel}</label>
                             <input type="email" id="emailRegInput" placeholder="${translation.emailPlaceholder}" name="email" required>
                             <div id="emailError"  class="error-message"></div>
-                            <label for="login">${translation.loginLabel}</label>
-                            <input type="text" id="loginRegInput" placeholder="${translation.loginPlaceholder}" name="login" autocomplete="username" required>
+                            <label for="login">${translation.nicknameLabel}</label>
+                            <input type="text" id="loginRegInput" placeholder="${translation.loginPlaceholder}" name="login" autocomplete="username">
                             <div id="loginError" class="error-message"></div>
                             <span>${translation.parameterPassword}</span>
                             <label for="password">${translation.passwordLabel}</label>
@@ -2181,7 +2181,7 @@ export function registrationForm() {
 
     // check unique email and login
     const emailRegInput = document.querySelector('#emailRegInput');
-    const loginRegInput = document.querySelector('#loginRegInput');
+    // const loginRegInput = document.querySelector('#loginRegInput');
     const emailError = document.querySelector('#emailError');
     const loginError = document.querySelector('#loginError');
 
@@ -2197,17 +2197,17 @@ export function registrationForm() {
         });
     });
     
-    loginRegInput.addEventListener('input', function() {
-        fetch(`/check-login?login=${this.value}`)
-        .then(response => response.json())
-        .then(data => {
-            if (!data.unique) {
-                formErrorMessage(translation.loginRegisteredError, loginError);
-            } else {
-                formClearMessage(loginError);
-            }
-        });
-    });
+    // loginRegInput.addEventListener('input', function() {
+    //     fetch(`/check-login?login=${this.value}`)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         if (!data.unique) {
+    //             formErrorMessage(translation.loginRegisteredError, loginError);
+    //         } else {
+    //             formClearMessage(loginError);
+    //         }
+    //     });
+    // });
 
     document.querySelector('form').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -2222,7 +2222,7 @@ export function registrationForm() {
         // console.log(clientLang);
         const data = {
             email: document.getElementById('emailRegInput').value,
-            login: document.getElementById('loginRegInput').value,
+            nickname: document.getElementById('loginRegInput').value,
             password: document.getElementById('password').value,
             confirm_password: document.getElementById('confirm_password').value,
             city: document.getElementById('city').value,
@@ -2312,7 +2312,8 @@ export function breadCrumb() {
             'aboutus': 'About us',
             'tournament': 'About the Tournament',
             'tournaments': 'Tournaments',
-            'alltournaments': 'Tournaments'
+            'alltournaments': 'Tournaments',
+            'allplayers': 'Players'
         },
         'ru': {
             'home': 'Главная',
@@ -2326,7 +2327,8 @@ export function breadCrumb() {
             'aboutus': 'О нас',
             'tournament': 'О Турнире',
             'tournaments': 'Турниры',
-            'alltournaments': 'Турниры'
+            'alltournaments': 'Турниры',
+            'allplayers': 'Игроки'
         },
         'th': {
             'home': 'หน้าหลัก',
@@ -2340,7 +2342,8 @@ export function breadCrumb() {
             'aboutus': 'เกี่ยวกับเรา',
             'tournament': 'เกี่ยวกับการแข่งขัน',
             'tournaments': 'การแข่งขัน',
-            'alltournaments': 'การแข่งขัน'
+            'alltournaments': 'การแข่งขัน',
+            'allplayers': 'ผู้เล่น'
         }
     };
 
@@ -2401,6 +2404,10 @@ export function listenerOfButtons() {
 
         if (event.target.closest('.goToAllClubs')) {
             window.location.href = `/${languageMap[localStorage.clientLang]}/allclubs`;
+        }
+
+        if (event.target.closest('.goToAllPlayers')) {
+            window.location.href = `/${languageMap[localStorage.clientLang]}/allplayers`;
         }
 
         if (event.target.closest('.goToAllTournaments')) {
@@ -2522,6 +2529,357 @@ export function controlTextAreaCoach(area, note) {
 // }
 
 
+// export async function getAllTournaments() {
+//     const dateFromInput = document.getElementById('dateFromInput');
+//     const dateUntilInput = document.getElementById('dateUntilInput');
+//     const clubInput = document.getElementById('clubInput');
+//     const cityInput = document.getElementById('cityInput');
+
+//     const clubDropdown = document.getElementById('clubDropdown');
+//     const cityDropdown = document.getElementById('cityDropdown');
+//     const searchButton = document.getElementById('filterTournaments_btnSearch');
+
+//     const upcomingBlock = document.querySelector('.upcommingTable_content');
+//     const pastBlock = document.querySelector('.lastTournamentsTable_content');
+
+//     if (!upcomingBlock) {
+//         console.error('Контейнеры будущих турниров не найден');
+//         return;
+//     }
+//     if (!pastBlock) {
+//         console.error('Контейнеры прошедших турниров не найден');
+//         return;
+//     }
+
+    
+//     const languageMap = {
+//         'russian': 'ru',
+//         'english': 'en',
+//         'thai': 'th'
+//     };
+
+//     const currentLang = localStorage.getItem('clientLang') || 'english';
+//     const langKey = languageMap[currentLang];
+
+//     let allTournaments = [];
+//     let cities = {};
+
+//     await fetchAllTournaments();
+//     await fetchCities();
+
+//     async function fetchAllTournaments() {
+//         try {
+//             const response = await fetch(`/get-future-tournaments`);
+//             const tournaments = await response.json();
+//             allTournaments = tournaments;
+
+//             // Display first 12 tournaments initially
+//             displayTournaments(tournaments.slice(0, 12), upcomingBlock, pastBlock);
+
+//             const clubs = [...new Set(tournaments.map(tournament => tournament.club.name))];
+//             const cityIds = [...new Set(tournaments.map(tournament => tournament.city._id))];
+//             clubs.sort();
+//             // console.log(cityIds);
+//             // Retrieve city names from MongoDB collection 'cities'
+//             const cityNames = await Promise.all(cityIds.map(cityId => getCityName(cityId)));
+//             cityNames.sort();
+            
+
+//             createDropdown(clubDropdown, clubs, clubInput);
+//             createDropdown(cityDropdown, cityNames, cityInput);
+//         } catch (error) {
+//             console.error('Произошла ошибка:', error);
+//             showErrorModal('Database connection error', 'Ops!');
+//         }
+//     }
+
+//     let debounceTimeout;
+
+//     dateFromInput.addEventListener('input', () => formatInputDate(dateFromInput));
+//     dateUntilInput.addEventListener('input', () => formatInputDate(dateUntilInput));
+//     clubInput.addEventListener('input', () => debounceFilterTournaments(updateClubDropdown));
+//     cityInput.addEventListener('input', () => debounceFilterTournaments(updateCityDropdown));
+
+//     dateFromInput.addEventListener('blur', validateDates);
+//     dateUntilInput.addEventListener('blur', validateDates);
+
+//     clubInput.addEventListener('focus', () => clubDropdown.style.display = 'block');
+//     cityInput.addEventListener('focus', () => cityDropdown.style.display = 'block');
+
+//     clubInput.addEventListener('blur', () => setTimeout(() => clubDropdown.style.display = 'none', 200));
+//     cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
+
+//     searchButton.addEventListener('click', function(event) {
+//         event.preventDefault();
+//         filterTournaments();
+//     });
+
+//     function debounceFilterTournaments(updateDropdown) {
+//         clearTimeout(debounceTimeout);
+//         debounceTimeout = setTimeout(() => {
+//             updateDropdown();
+//             filterTournaments();
+//         }, 300);
+//     }
+
+//     function updateClubDropdown() {
+//         updateDropdownList(clubDropdown, [...new Set(allTournaments.map(tournament => tournament.club.name))], clubInput);
+//     }
+
+//     function updateCityDropdown() {
+//         const cityNames = Object.values(cities);
+//         updateDropdownList(cityDropdown, cityNames, cityInput);
+//     }
+
+//     async function getCityName(cityId) {
+//         try {
+//             const response = await fetch(`/cities/${cityId}`);
+//             if (!response.ok) {
+//                 throw new Error('City data not found');
+//             }
+//             const city = await response.json();
+    
+//             return city[currentLang] || city['english']; // Возвращаем название города на заданном языке или английском (по умолчанию)
+//         } catch (error) {
+//             console.error('Ошибка при получении названия города:', error);
+//             return 'Unknown City'; // Возвращение запасного значения в случае ошибки
+//         }
+//     }
+
+//     function createDropdown(dropdown, options, inputElement) {
+//         dropdown.innerHTML = '';
+//         options.forEach(option => {
+//             const div = document.createElement('div');
+//             div.textContent = option;
+//             div.addEventListener('click', () => {
+//                 inputElement.value = option;
+//                 dropdown.style.display = 'none';
+//                 filterTournaments();
+//             });
+//             dropdown.appendChild(div);
+//         });
+//     }
+
+//     function updateDropdownList(dropdown, options, inputElement) {
+//         dropdown.innerHTML = '';
+//         const currentText = inputElement.value.toLowerCase();
+//         const filteredOptions = options.filter(option => option.toLowerCase().includes(currentText));
+
+//         filteredOptions.forEach(option => {
+//             const div = document.createElement('div');
+//             div.textContent = option;
+//             div.addEventListener('click', () => {
+//                 inputElement.value = option;
+//                 dropdown.style.display = 'none';
+//                 filterTournaments();
+//             });
+//             dropdown.appendChild(div);
+//         });
+//         dropdown.style.display = 'block';
+//     }
+
+//     async function filterTournaments() {
+//         const dateFromValue = dateFromInput.value;
+//         const dateUntilValue = dateUntilInput.value;
+//         const clubValue = clubInput.value.toLowerCase();
+//         const cityValue = cityInput.value.toLowerCase();
+
+//         const filteredTournaments = await Promise.all(allTournaments.map(async tournament => {
+//             const dateFromMatch = !dateFromValue || new Date(tournament.date) >= new Date(dateFromValue.split('.').reverse().join('-'));
+//             const dateUntilMatch = !dateUntilValue || new Date(tournament.date) <= new Date(dateUntilValue.split('.').reverse().join('-'));
+//             const clubMatch = !clubValue || tournament.club.name.toLowerCase().includes(clubValue);
+
+//             const cityName = await getCityName(tournament.city._id, langKey);
+//             const cityMatch = !cityValue || cityValue === 'all' || cityName.toLowerCase().includes(cityValue);
+
+//             return dateFromMatch && dateUntilMatch && clubMatch && cityMatch ? tournament : null;
+//         }));
+
+//         const validTournaments = filteredTournaments.filter(tournament => tournament !== null);
+//         displayTournaments(validTournaments, upcomingBlock, pastBlock);
+//     }
+
+//     function validateDates() {
+//         const dateFromInput = document.getElementById('dateFromInput');
+//         const dateUntilInput = document.getElementById('dateUntilInput');
+
+//         const dateFromParts = dateFromInput.value.split('.');
+//         const dateUntilParts = dateUntilInput.value.split('.');
+
+//         const dateFrom = new Date(`${dateFromParts[2]}-${dateFromParts[1]}-${dateFromParts[0]}`);
+//         const dateUntil = new Date(`${dateUntilParts[2]}-${dateUntilParts[1]}-${dateUntilParts[0]}`);
+
+//         if (dateFrom > dateUntil) {
+//             alert('The "From" date cannot be later than the "Until" date.');
+//             return false;
+//         }
+//         return true;
+//     }
+
+//     function formatInputDate(input) {
+//         input.addEventListener('input', function (e) {
+//             let value = e.target.value.replace(/\D/g, '');
+//             if (value.length > 2 && value.length <= 4) {
+//                 value = value.replace(/^(\d{2})(\d{1,2})$/, '$1.$2');
+//             } else if (value.length > 4) {
+//                 value = value.replace(/^(\d{2})(\d{2})(\d{1,4})$/, '$1.$2.$3');
+//             }
+//             e.target.value = value;
+//         });
+//     }
+
+//     async function displayTournaments(tournaments, upcomingContainer, pastContainer) {
+//         try {
+//             // Очистим содержимое контейнеров перед отрисовкой новых данных
+//             upcomingContainer.innerHTML = '';
+//             pastContainer.innerHTML = '';
+    
+//             const languageMap = {
+//                 'russian': 'ru',
+//                 'english': 'en',
+//                 'thai': 'th'
+//             };
+    
+//             const currentLang = localStorage.getItem('clientLang') || 'english';
+//             const langKey = languageMap[currentLang];
+    
+//             let upcomingTournaments = tournaments.filter(tournament => new Date(tournament.datetime) >= new Date());
+//             let pastTournaments = tournaments.filter(tournament => new Date(tournament.datetime) < new Date());
+    
+//             // Сортируем турниры по дате
+//             upcomingTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+//             pastTournaments.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+    
+//             const renderTournament = async (tournament, container, className) => {
+//                 let tournamentDate = new Date(tournament.datetime);
+//                 let langMap = { 'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU' };
+                
+//                 let lang = langMap[localStorage.clientLang] || 'en-US';
+//                 let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
+//                 let formattedDate = `${dayOfWeek} ${String(tournamentDate.getDate()).padStart(2, '0')}.${String(tournamentDate.getMonth() + 1).padStart(2, '0')}.${tournamentDate.getFullYear()}`;
+    
+//                 if (container.dataset.currentDay !== formattedDate) {
+//                     container.dataset.currentDay = formattedDate;
+//                     let weekdayDiv = document.createElement('div');
+//                     weekdayDiv.className = `${className}_weekday`;
+//                     let dateSpan = document.createElement('span');
+//                     dateSpan.textContent = formattedDate;
+//                     weekdayDiv.appendChild(dateSpan);
+//                     container.appendChild(weekdayDiv);
+//                 }
+    
+//                 let tournamentDiv = document.createElement('a');
+//                 tournamentDiv.className = `${className}_tournament`;
+//                 tournamentDiv.href = `/${languageMap[currentLang]}/tournaments/${tournament._id}`;
+    
+//                 let timeDiv = document.createElement('div');
+//                 timeDiv.className = 'cell tournament_time';
+//                 timeDiv.textContent = tournament.datetime.split('T')[1].substring(0, 5);
+//                 tournamentDiv.appendChild(timeDiv);
+    
+//                 let clubDiv = document.createElement('div');
+//                 clubDiv.className = 'cell tournament_club';
+//                 let clubLogoDiv = document.createElement('div');
+//                 clubLogoDiv.className = 'clubLogo';
+//                 clubLogoDiv.style.cssText = `background-image: url('${tournament.club.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
+//                 clubDiv.appendChild(clubLogoDiv);
+    
+//                 let clubNameSpan = document.createElement('span');
+//                 clubNameSpan.textContent = tournament.club.name;
+//                 clubDiv.appendChild(clubNameSpan);
+//                 tournamentDiv.appendChild(clubDiv);
+    
+//                 let restrictionsDiv = document.createElement('div');
+//                 restrictionsDiv.className = 'cell tournament_restrict';
+//                 let restrictionStatusDiv = document.createElement('div');
+//                 restrictionStatusDiv.className = 'restrictionStatus';
+    
+//                 if (new Date(tournament.datetime) > new Date()) {
+//                     restrictionStatusDiv.style.background = '#007026';
+//                 } else {
+//                     restrictionStatusDiv.style.background = '#ADADAD';
+//                 }
+    
+//                 let restrictionDiv = document.createElement('div');
+//                 restrictionDiv.className = 'restriction';
+//                 restrictionDiv.textContent = tournament.restrictions;
+//                 restrictionStatusDiv.appendChild(restrictionDiv);
+//                 restrictionsDiv.appendChild(restrictionStatusDiv);
+//                 tournamentDiv.appendChild(restrictionsDiv);
+    
+//                 let ratingDiv = document.createElement('div');
+//                 ratingDiv.className = 'cell tournament_rating';
+//                 ratingDiv.textContent = tournament.rating;
+//                 tournamentDiv.appendChild(ratingDiv);
+    
+//                 let playersDiv = document.createElement('a');
+//                 playersDiv.className = 'cell tournament_players';
+//                 let playersImg = document.createElement('img');
+//                 playersImg.src = '/icons/user.svg';
+//                 playersImg.alt = 'person';
+//                 playersDiv.appendChild(playersImg);
+//                 let playersSpan = document.createElement('span');
+//                 playersSpan.textContent = tournament.players.length - 1;
+//                 playersDiv.appendChild(playersSpan);
+//                 tournamentDiv.appendChild(playersDiv);
+    
+//                 container.appendChild(tournamentDiv);
+//             };
+    
+//             // Функция для отображения турниров по частям
+//             const displayTournamentsInParts = async (tournaments, container, className, start, end) => {
+//                 container.dataset.currentDay = '';
+//                 for (let i = start; i < end; i++) {
+//                     if (i >= tournaments.length) break;
+//                     await renderTournament(tournaments[i], container, className);
+//                 }
+//             };
+    
+//             // Изначально отображаем по 12 турниров
+//             await displayTournamentsInParts(upcomingTournaments, upcomingContainer, 'upcommingTable', 0, 12);
+//             await displayTournamentsInParts(pastTournaments, pastContainer, 'lastTournamentsTable', 0, 12);
+    
+//             // Добавляем кнопки "See more"
+//             let moreButtonUpcoming = document.createElement('a');
+//             moreButtonUpcoming.className = 'upcommingTable_btn';
+//             moreButtonUpcoming.href = '#';
+//             let showMore = {
+//                 'english': 'See more',
+//                 'thai': 'ดูเพิ่มเติม',
+//                 'russian': 'Смотреть еще'
+//             };
+//             moreButtonUpcoming.textContent = showMore[localStorage.clientLang] || 'See more';
+//             upcomingContainer.appendChild(moreButtonUpcoming);
+    
+//             let moreButtonPast = document.createElement('a');
+//             moreButtonPast.className = 'lastTournamentsTable_btn';
+//             moreButtonPast.href = '#';
+//             moreButtonPast.textContent = showMore[localStorage.clientLang] || 'See more';
+//             pastContainer.appendChild(moreButtonPast);
+    
+//             // Обработчики кликов на кнопки "See more"
+//             moreButtonUpcoming.addEventListener('click', async (event) => {
+//                 event.preventDefault();
+//                 upcomingContainer.innerHTML = '';
+//                 await displayTournamentsInParts(upcomingTournaments, upcomingContainer, 'upcommingTable', 0, upcomingTournaments.length);
+//                 moreButtonUpcoming.style.display = 'none';
+//             });
+    
+//             moreButtonPast.addEventListener('click', async (event) => {
+//                 event.preventDefault();
+//                 pastContainer.innerHTML = '';
+//                 await displayTournamentsInParts(pastTournaments, pastContainer, 'lastTournamentsTable', 0, pastTournaments.length);
+//                 moreButtonPast.style.display = 'none';
+//             });
+    
+//         } catch (error) {
+//             console.error('Произошла ошибка при отображении турниров:', error);
+//             showErrorModal('Error while displaying tournaments', 'Ops!');
+//         }
+//     } 
+// }
+
+
 export async function getAllTournaments() {
     const dateFromInput = document.getElementById('dateFromInput');
     const dateUntilInput = document.getElementById('dateUntilInput');
@@ -2544,7 +2902,6 @@ export async function getAllTournaments() {
         return;
     }
 
-    
     const languageMap = {
         'russian': 'ru',
         'english': 'en',
@@ -2555,7 +2912,7 @@ export async function getAllTournaments() {
     const langKey = languageMap[currentLang];
 
     let allTournaments = [];
-    let cities = {};
+    let cities = [];
 
     await fetchAllTournaments();
     await fetchCities();
@@ -2570,19 +2927,24 @@ export async function getAllTournaments() {
             displayTournaments(tournaments.slice(0, 12), upcomingBlock, pastBlock);
 
             const clubs = [...new Set(tournaments.map(tournament => tournament.club.name))];
-            const cityIds = [...new Set(tournaments.map(tournament => tournament.city._id))];
             clubs.sort();
-            // console.log(cityIds);
-            // Retrieve city names from MongoDB collection 'cities'
-            const cityNames = await Promise.all(cityIds.map(cityId => getCityName(cityId)));
-            cityNames.sort();
-            
 
             createDropdown(clubDropdown, clubs, clubInput);
-            createDropdown(cityDropdown, cityNames, cityInput);
         } catch (error) {
             console.error('Произошла ошибка:', error);
             showErrorModal('Database connection error', 'Ops!');
+        }
+    }
+
+    async function fetchCities() {
+        try {
+            const response = await fetch(`/cities?language=${currentLang}`);
+            const data = await response.json();
+            cities = data.sort();
+            
+            createDropdown(cityDropdown, cities, cityInput);
+        } catch (error) {
+            console.error('Произошла ошибка при получении городов:', error);
         }
     }
 
@@ -2620,23 +2982,7 @@ export async function getAllTournaments() {
     }
 
     function updateCityDropdown() {
-        const cityNames = Object.values(cities);
-        updateDropdownList(cityDropdown, cityNames, cityInput);
-    }
-
-    async function getCityName(cityId) {
-        try {
-            const response = await fetch(`/cities/${cityId}`);
-            if (!response.ok) {
-                throw new Error('City data not found');
-            }
-            const city = await response.json();
-    
-            return city[currentLang] || city['english']; // Возвращаем название города на заданном языке или английском (по умолчанию)
-        } catch (error) {
-            console.error('Ошибка при получении названия города:', error);
-            return 'Unknown City'; // Возвращение запасного значения в случае ошибки
-        }
+        updateDropdownList(cityDropdown, cities, cityInput);
     }
 
     function createDropdown(dropdown, options, inputElement) {
@@ -2681,9 +3027,7 @@ export async function getAllTournaments() {
             const dateFromMatch = !dateFromValue || new Date(tournament.date) >= new Date(dateFromValue.split('.').reverse().join('-'));
             const dateUntilMatch = !dateUntilValue || new Date(tournament.date) <= new Date(dateUntilValue.split('.').reverse().join('-'));
             const clubMatch = !clubValue || tournament.club.name.toLowerCase().includes(clubValue);
-
-            const cityName = await getCityName(tournament.city._id, langKey);
-            const cityMatch = !cityValue || cityValue === 'all' || cityName.toLowerCase().includes(cityValue);
+            const cityMatch = !cityValue || cityValue === 'all' || cities.includes(tournament.city._id) && cities[tournament.city._id].toLowerCase().includes(cityValue);
 
             return dateFromMatch && dateUntilMatch && clubMatch && cityMatch ? tournament : null;
         }));
@@ -2721,167 +3065,36 @@ export async function getAllTournaments() {
         });
     }
 
-
-    // async function displayTournaments(tournaments, upcomingContainer, pastContainer) {
-    //     try {
-    //         // Очистим содержимое контейнеров перед отрисовкой новых данных
-    //         upcomingContainer.innerHTML = '';
-    //         pastContainer.innerHTML = '';
-    
-    //         const languageMap = {
-    //             'russian': 'ru',
-    //             'english': 'en',
-    //             'thai': 'th'
-    //         };
-    
-    //         const currentLang = localStorage.getItem('clientLang') || 'english';
-    //         const langKey = languageMap[currentLang];
-    
-    //         let upcomingTournaments = tournaments.filter(tournament => new Date(tournament.datetime) >= new Date());
-    //         let pastTournaments = tournaments.filter(tournament => new Date(tournament.datetime) < new Date());
-    
-    //         // Сортируем турниры по дате
-    //         upcomingTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
-    //         pastTournaments.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
-    
-    //         const renderTournament = async (tournament, container, className) => {
-    //             let tournamentDate = new Date(tournament.datetime);
-    //             let langMap = { 'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU' };
-                
-    //             let lang = langMap[localStorage.clientLang] || 'en-US';
-    //             let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
-    //             let formattedDate = `${dayOfWeek} ${String(tournamentDate.getDate()).padStart(2, '0')}.${String(tournamentDate.getMonth() + 1).padStart(2, '0')}.${tournamentDate.getFullYear()}`;
-    
-    //             if (container.dataset.currentDay !== formattedDate) {
-    //                 container.dataset.currentDay = formattedDate;
-    //                 let weekdayDiv = document.createElement('div');
-    //                 weekdayDiv.className = `${className}_weekday`;
-    //                 let dateSpan = document.createElement('span');
-    //                 dateSpan.textContent = formattedDate;
-    //                 weekdayDiv.appendChild(dateSpan);
-    //                 container.appendChild(weekdayDiv);
-    //             }
-    
-    //             let tournamentDiv = document.createElement('a');
-    //             tournamentDiv.className = `${className}_tournament`;
-    //             tournamentDiv.href = `${languageMap[currentLang]}/tournaments/${tournament._id}`;
-    
-    //             let timeDiv = document.createElement('div');
-    //             timeDiv.className = 'cell tournament_time';
-    //             timeDiv.textContent = tournament.datetime.split('T')[1].substring(0, 5);
-    //             tournamentDiv.appendChild(timeDiv);
-    
-    //             let clubDiv = document.createElement('div');
-    //             clubDiv.className = 'cell tournament_club';
-    //             let clubLogoDiv = document.createElement('div');
-    //             clubLogoDiv.className = 'clubLogo';
-    //             clubLogoDiv.style.cssText = `background-image: url('${tournament.club.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
-    //             clubDiv.appendChild(clubLogoDiv);
-    
-    //             let clubNameSpan = document.createElement('span');
-    //             clubNameSpan.textContent = tournament.club.name;
-    //             clubDiv.appendChild(clubNameSpan);
-    //             tournamentDiv.appendChild(clubDiv);
-    
-    //             let restrictionsDiv = document.createElement('div');
-    //             restrictionsDiv.className = 'cell tournament_restrict';
-    //             let restrictionStatusDiv = document.createElement('div');
-    //             restrictionStatusDiv.className = 'restrictionStatus';
-    
-    //             if (new Date(tournament.datetime) > new Date()) {
-    //                 restrictionStatusDiv.style.background = '#007026';
-    //             } else {
-    //                 restrictionStatusDiv.style.background = '#ADADAD';
-    //             }
-    
-    //             let restrictionDiv = document.createElement('div');
-    //             restrictionDiv.className = 'restriction';
-    //             restrictionDiv.textContent = tournament.restrictions;
-    //             restrictionStatusDiv.appendChild(restrictionDiv);
-    //             restrictionsDiv.appendChild(restrictionStatusDiv);
-    //             tournamentDiv.appendChild(restrictionsDiv);
-    
-    //             let ratingDiv = document.createElement('div');
-    //             ratingDiv.className = 'cell tournament_rating';
-    //             ratingDiv.textContent = tournament.rating;
-    //             tournamentDiv.appendChild(ratingDiv);
-    
-    //             let playersDiv = document.createElement('a');
-    //             playersDiv.className = 'cell tournament_players';
-    //             let playersImg = document.createElement('img');
-    //             playersImg.src = '/icons/user.svg';
-    //             playersImg.alt = 'person';
-    //             playersDiv.appendChild(playersImg);
-    //             let playersSpan = document.createElement('span');
-    //             playersSpan.textContent = tournament.players.length - 1;
-    //             playersDiv.appendChild(playersSpan);
-    //             tournamentDiv.appendChild(playersDiv);
-    
-    //             container.appendChild(tournamentDiv);
-    //         };
-    
-    //         for (let tournament of upcomingTournaments) {
-    //             await renderTournament(tournament, upcomingContainer, 'upcommingTable');
-    //         }
-    
-    //         let moreButton = document.createElement('a');
-    //         moreButton.className = 'upcommingTable_btn';
-    //         moreButton.href = '#';
-    //         let showMore = {
-    //             'english': 'See more',
-    //             'thai': 'ดูเพิ่มเติม',
-    //             'russian': 'Смотреть еще'
-    //         };
-    //         moreButton.textContent = showMore[localStorage.clientLang] || 'See more';
-    //         upcomingContainer.appendChild(moreButton);
-    
-    //         for (let tournament of pastTournaments) {
-    //             await renderTournament(tournament, pastContainer, 'lastTournamentsTable');
-    //         }
-    
-    //         let pastMoreButton = document.createElement('a');
-    //         pastMoreButton.className = 'lastTournamentsTable_btn';
-    //         pastMoreButton.href = '#';
-    //         pastMoreButton.textContent = showMore[localStorage.clientLang] || 'See more';
-    //         pastContainer.appendChild(pastMoreButton);
-    
-    //     } catch (error) {
-    //         console.error('Произошла ошибка при отображении турниров:', error);
-    //         showErrorModal('Error while displaying tournaments', 'Ops!');
-    //     }
-    // }
-
-
     async function displayTournaments(tournaments, upcomingContainer, pastContainer) {
         try {
             // Очистим содержимое контейнеров перед отрисовкой новых данных
             upcomingContainer.innerHTML = '';
             pastContainer.innerHTML = '';
-    
+
             const languageMap = {
                 'russian': 'ru',
                 'english': 'en',
                 'thai': 'th'
             };
-    
+
             const currentLang = localStorage.getItem('clientLang') || 'english';
             const langKey = languageMap[currentLang];
-    
+
             let upcomingTournaments = tournaments.filter(tournament => new Date(tournament.datetime) >= new Date());
             let pastTournaments = tournaments.filter(tournament => new Date(tournament.datetime) < new Date());
-    
+
             // Сортируем турниры по дате
             upcomingTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
             pastTournaments.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
-    
+
             const renderTournament = async (tournament, container, className) => {
                 let tournamentDate = new Date(tournament.datetime);
                 let langMap = { 'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU' };
-                
+
                 let lang = langMap[localStorage.clientLang] || 'en-US';
                 let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
                 let formattedDate = `${dayOfWeek} ${String(tournamentDate.getDate()).padStart(2, '0')}.${String(tournamentDate.getMonth() + 1).padStart(2, '0')}.${tournamentDate.getFullYear()}`;
-    
+
                 if (container.dataset.currentDay !== formattedDate) {
                     container.dataset.currentDay = formattedDate;
                     let weekdayDiv = document.createElement('div');
@@ -2891,51 +3104,51 @@ export async function getAllTournaments() {
                     weekdayDiv.appendChild(dateSpan);
                     container.appendChild(weekdayDiv);
                 }
-    
+
                 let tournamentDiv = document.createElement('a');
                 tournamentDiv.className = `${className}_tournament`;
                 tournamentDiv.href = `/${languageMap[currentLang]}/tournaments/${tournament._id}`;
-    
+
                 let timeDiv = document.createElement('div');
                 timeDiv.className = 'cell tournament_time';
                 timeDiv.textContent = tournament.datetime.split('T')[1].substring(0, 5);
                 tournamentDiv.appendChild(timeDiv);
-    
+
                 let clubDiv = document.createElement('div');
                 clubDiv.className = 'cell tournament_club';
                 let clubLogoDiv = document.createElement('div');
                 clubLogoDiv.className = 'clubLogo';
                 clubLogoDiv.style.cssText = `background-image: url('${tournament.club.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
                 clubDiv.appendChild(clubLogoDiv);
-    
+
                 let clubNameSpan = document.createElement('span');
                 clubNameSpan.textContent = tournament.club.name;
                 clubDiv.appendChild(clubNameSpan);
                 tournamentDiv.appendChild(clubDiv);
-    
+
                 let restrictionsDiv = document.createElement('div');
                 restrictionsDiv.className = 'cell tournament_restrict';
                 let restrictionStatusDiv = document.createElement('div');
                 restrictionStatusDiv.className = 'restrictionStatus';
-    
+
                 if (new Date(tournament.datetime) > new Date()) {
                     restrictionStatusDiv.style.background = '#007026';
                 } else {
                     restrictionStatusDiv.style.background = '#ADADAD';
                 }
-    
+
                 let restrictionDiv = document.createElement('div');
                 restrictionDiv.className = 'restriction';
                 restrictionDiv.textContent = tournament.restrictions;
                 restrictionStatusDiv.appendChild(restrictionDiv);
                 restrictionsDiv.appendChild(restrictionStatusDiv);
                 tournamentDiv.appendChild(restrictionsDiv);
-    
+
                 let ratingDiv = document.createElement('div');
                 ratingDiv.className = 'cell tournament_rating';
                 ratingDiv.textContent = tournament.rating;
                 tournamentDiv.appendChild(ratingDiv);
-    
+
                 let playersDiv = document.createElement('a');
                 playersDiv.className = 'cell tournament_players';
                 let playersImg = document.createElement('img');
@@ -2946,10 +3159,10 @@ export async function getAllTournaments() {
                 playersSpan.textContent = tournament.players.length - 1;
                 playersDiv.appendChild(playersSpan);
                 tournamentDiv.appendChild(playersDiv);
-    
+
                 container.appendChild(tournamentDiv);
             };
-    
+
             // Функция для отображения турниров по частям
             const displayTournamentsInParts = async (tournaments, container, className, start, end) => {
                 container.dataset.currentDay = '';
@@ -2958,11 +3171,11 @@ export async function getAllTournaments() {
                     await renderTournament(tournaments[i], container, className);
                 }
             };
-    
+
             // Изначально отображаем по 12 турниров
             await displayTournamentsInParts(upcomingTournaments, upcomingContainer, 'upcommingTable', 0, 12);
             await displayTournamentsInParts(pastTournaments, pastContainer, 'lastTournamentsTable', 0, 12);
-    
+
             // Добавляем кнопки "See more"
             let moreButtonUpcoming = document.createElement('a');
             moreButtonUpcoming.className = 'upcommingTable_btn';
@@ -2974,13 +3187,13 @@ export async function getAllTournaments() {
             };
             moreButtonUpcoming.textContent = showMore[localStorage.clientLang] || 'See more';
             upcomingContainer.appendChild(moreButtonUpcoming);
-    
+
             let moreButtonPast = document.createElement('a');
             moreButtonPast.className = 'lastTournamentsTable_btn';
             moreButtonPast.href = '#';
             moreButtonPast.textContent = showMore[localStorage.clientLang] || 'See more';
             pastContainer.appendChild(moreButtonPast);
-    
+
             // Обработчики кликов на кнопки "See more"
             moreButtonUpcoming.addEventListener('click', async (event) => {
                 event.preventDefault();
@@ -2988,19 +3201,300 @@ export async function getAllTournaments() {
                 await displayTournamentsInParts(upcomingTournaments, upcomingContainer, 'upcommingTable', 0, upcomingTournaments.length);
                 moreButtonUpcoming.style.display = 'none';
             });
-    
+
             moreButtonPast.addEventListener('click', async (event) => {
                 event.preventDefault();
                 pastContainer.innerHTML = '';
                 await displayTournamentsInParts(pastTournaments, pastContainer, 'lastTournamentsTable', 0, pastTournaments.length);
                 moreButtonPast.style.display = 'none';
             });
-    
+
         } catch (error) {
             console.error('Произошла ошибка при отображении турниров:', error);
             showErrorModal('Error while displaying tournaments', 'Ops!');
         }
     }
-    
-    
 }
+
+
+
+
+export async function getAllPlayers() {
+    const ratingFromInput = document.getElementById('dateFromInput');
+    const ratingUntilInput = document.getElementById('dateUntilInput');
+    const nameInput = document.getElementById('clubInput');
+    const cityInput = document.getElementById('cityInput');
+
+    const nameDropdown = document.getElementById('clubDropdown');
+    const cityDropdown = document.getElementById('cityDropdown');
+    const searchButton = document.getElementById('filterPlayers_btnSearch');
+
+    const playersContainer = document.querySelector('.playersTable_content');
+
+    if (!playersContainer) {
+        console.error('Контейнер для игроков не найден');
+        return;
+    }
+
+    let allPlayers = [];
+    let cities = {};
+    let isFiltered = false; // Логическая переменная для отслеживания состояния фильтрации
+
+    await fetchAllPlayers();
+
+    let debounceTimeout;
+
+    nameInput.addEventListener('input', () => {
+        updateNameDropdown();
+        debounceFilterPlayers();
+    });
+
+    cityInput.addEventListener('input', () => {
+        updateCityDropdown();
+        debounceFilterPlayers();
+    });
+
+    nameInput.addEventListener('focus', () => {
+        nameDropdown.style.display = 'block';
+        cityDropdown.style.display = 'none'; // Скрыть дропдаун городов при фокусе на поле имени
+    });
+
+    cityInput.addEventListener('focus', () => {
+        cityDropdown.style.display = 'block';
+        nameDropdown.style.display = 'none'; // Скрыть дропдаун имен при фокусе на поле города
+    });
+
+    nameInput.addEventListener('blur', () => setTimeout(() => nameDropdown.style.display = 'none', 200));
+    cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
+
+    searchButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        isFiltered = true; // Устанавливаем состояние фильтрации
+        filterPlayers();
+    });
+
+    function debounceFilterPlayers() {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            isFiltered = true; // Устанавливаем состояние фильтрации
+            filterPlayers();
+        }, 300);
+    }
+
+    function updateNameDropdown() {
+        const names = [...new Set(allPlayers.map(player => player.fullname).filter(Boolean))];
+        const nicknames = [...new Set(allPlayers.map(player => player.nickname).filter(Boolean))];
+        updateDropdownList(nameDropdown, [...names, ...nicknames], nameInput);
+    }
+
+    function updateCityDropdown() {
+        const cityNames = Object.values(cities);
+        updateDropdownList(cityDropdown, cityNames, cityInput);
+    }
+
+    async function fetchAllPlayers() {
+        try {
+            const response = await fetch(`/get-players`);
+            const players = await response.json();
+            allPlayers = players;
+
+            displayPlayers(players.slice(0, 16), playersContainer);
+
+            const names = [...new Set(players.map(player => player.fullname).filter(Boolean))];
+            const nicknames = [...new Set(players.map(player => player.nickname).filter(Boolean))];
+            const cityIds = [...new Set(players.map(player => player.city))];
+
+            createDropdown(nameDropdown, [...names, ...nicknames], nameInput);
+
+            for (const cityId of cityIds) {
+                await getCityName(cityId);
+            }
+
+            const cityNames = Object.values(cities).filter(Boolean);
+            createDropdown(cityDropdown, cityNames, cityInput);
+
+            // Скрыть дропдаун меню при инициализации
+            nameDropdown.style.display = 'none';
+            cityDropdown.style.display = 'none';
+
+        } catch (error) {
+            console.error('Произошла ошибка:', error);
+            showErrorModal('Database connection error', 'Ops!');
+        }
+    }
+
+    async function getCityName(cityId) {
+        let currentLang = localStorage.getItem('clientLang');
+        if (cities[cityId]) {
+            return cities[cityId];
+        }
+        try {
+            const response = await fetch(`/cities/${cityId}`);
+            if (!response.ok) {
+                throw new Error('City data not found');
+            }
+            const city = await response.json();
+            cities[cityId] = city[currentLang] || city['english'];
+            updateCityDropdown(); // Update dropdown as cities are fetched
+            return cities[cityId];
+        } catch (error) {
+            console.error('Ошибка при получении названия города:', error);
+            return 'Unknown City';
+        }
+    }
+
+    function createDropdown(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        options.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                isFiltered = true; // Устанавливаем состояние фильтрации
+                filterPlayers();
+            });
+            dropdown.appendChild(div);
+        });
+    }
+
+    function updateDropdownList(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        const currentText = (inputElement.value || '').toLowerCase();
+        // console.log('Filtered options:', options);
+        const filteredOptions = options.filter(option => option && option.toLowerCase().includes(currentText));
+
+        filteredOptions.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                isFiltered = true; // Устанавливаем состояние фильтрации
+                filterPlayers();
+            });
+            dropdown.appendChild(div);
+        });
+
+        dropdown.style.display = filteredOptions.length > 0 ? 'block' : 'none'; // Отображаем дропдаун только если есть совпадения
+    }
+
+    async function filterPlayers() {
+        const ratingFromValue = ratingFromInput.value;
+        const ratingUntilValue = ratingUntilInput.value;
+        const nameValue = (nameInput.value || '').toLowerCase();
+        const cityValue = (cityInput.value || '').toLowerCase();
+
+        const filteredPlayers = await Promise.all(allPlayers.map(async player => {
+            const ratingFromMatch = !ratingFromValue || player.rating >= parseInt(ratingFromValue, 10);
+            const ratingUntilMatch = !ratingUntilValue || player.rating <= parseInt(ratingUntilValue, 10);
+            const nameMatch = !nameValue || (player.fullname && player.fullname.toLowerCase().includes(nameValue)) || (player.nickname && player.nickname.toLowerCase().includes(nameValue));
+
+            const cityName = await getCityName(player.city);
+            const cityMatch = !cityValue || cityValue === 'all' || (cityName && cityName.toLowerCase().includes(cityValue));
+
+            return ratingFromMatch && ratingUntilMatch && nameMatch && cityMatch ? player : null;
+        }));
+
+        const validPlayers = filteredPlayers.filter(player => player !== null);
+        displayPlayers(validPlayers, playersContainer);
+    }
+
+    async function displayPlayers(players, container) {
+        try {
+            container.innerHTML = '';
+    
+            const cityNamesPromises = players.map(player => getCityName(player.city));
+            const cityNames = await Promise.all(cityNamesPromises);
+    
+            players.forEach((player, index) => {
+                let playerDiv = document.createElement('a');
+                playerDiv.className = 'playersTable_player';
+                playerDiv.href = `/en/players/${player._id}`;
+    
+                let numberDiv = document.createElement('div');
+                numberDiv.className = 'cell player_number';
+                numberDiv.textContent = index + 1;
+                playerDiv.appendChild(numberDiv);
+    
+                let nameDiv = document.createElement('div');
+                nameDiv.className = 'cell player_player';
+                let playerLogoDiv = document.createElement('div');
+                playerLogoDiv.className = 'playerLogo';
+                playerLogoDiv.style.cssText = `background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
+                nameDiv.appendChild(playerLogoDiv);
+    
+                let playerNameSpan = document.createElement('span');
+                playerNameSpan.textContent = player.fullname;
+                nameDiv.appendChild(playerNameSpan);
+                playerDiv.appendChild(nameDiv);
+    
+                let nicknameDiv = document.createElement('div');
+                nicknameDiv.className = 'cell player_login';
+                nicknameDiv.textContent = player.nickname ? player.nickname : ' ';
+                playerDiv.appendChild(nicknameDiv);
+    
+                let cityDiv = document.createElement('div');
+                cityDiv.className = 'cell player_city';
+                cityDiv.textContent = cityNames[index];
+                playerDiv.appendChild(cityDiv);
+    
+                let ratingDiv = document.createElement('div');
+                ratingDiv.className = 'cell player_rating';
+                ratingDiv.textContent = player.rating ? player.rating : '-';
+                playerDiv.appendChild(ratingDiv);
+    
+                container.appendChild(playerDiv);
+            });
+    
+            // Управление кнопкой "See more"
+            if (!isFiltered && players.length < allPlayers.length) {
+                // Если не фильтруем и отображаем меньше всех игроков, показываем кнопку "See more"            
+                let moreButton = document.createElement('a');
+                moreButton.className = 'playersTable_btn';
+                moreButton.href = '#';
+                let showMore = {
+                    'english': 'See more',
+                    'thai': 'ดูเพิ่มเติม',
+                    'russian': 'Смотреть еще'
+                };
+                moreButton.textContent = showMore[localStorage.clientLang] || 'See more';
+                moreButton.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    displayAllPlayers();
+                    moreButton.remove();
+                });
+                container.appendChild(moreButton);
+            }
+    
+        } catch (error) {
+            console.error('Произошла ошибка при отображении игроков:', error);
+            showErrorModal('Error while displaying players', 'Ops!');
+        }
+    }
+    
+    async function displayAllPlayers() {
+        try {
+            displayPlayers(allPlayers, playersContainer);
+        } catch (error) {
+            console.error('Произошла ошибка при отображении всех игроков:', error);
+            showErrorModal('Error while displaying all players', 'Ops!');
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

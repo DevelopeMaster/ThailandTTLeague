@@ -50,17 +50,11 @@ app.get('/:lang/allclubs/:clubId', (req, res) => {
   res.render(`${lang}/allclubs/club`);
 });
 
-app.use((req, res, next) => {
-  console.log('Incoming request:', req.url);
-  next();
-});
-
-// app.get('/:lang/tournaments/:tournamentId', async (req, res) => {
-//   const { lang, tournamentId } = req.params;
-//   console.log(lang, tournamentId);
-//   // console.log(`Requested Tournament ID: ${tournamentId}`);
-//   await renderTournament(tournamentId, lang, res);
+// app.use((req, res, next) => {
+//   console.log('Incoming request:', req.url);
+//   next();
 // });
+
 
 app.get('/:lang/tournaments/:tournamentId', async (req, res) => {
   try {
@@ -233,9 +227,9 @@ async function createRoutes() {
   
     const defaultLogo = '/icons/playerslogo/default_avatar.svg';
   
-    const { email, login, password, confirm_password, city, fullname, hand, date, registeredDate, policy, clientLang } = req.body;
+    const { email, nickname, password, confirm_password, city, fullname, hand, date, registeredDate, policy, clientLang } = req.body;
   
-    if (!email || !login || !password || !confirm_password || !city || !fullname || !hand || !date || !registeredDate || !policy) {
+    if (!email || !password || !confirm_password || !city || !fullname || !hand || !date || !registeredDate || !policy) {
       res.status(400).json({ error: 'Something wrong. Please come back to homepage and try again' });
       return;
     }
@@ -257,7 +251,7 @@ async function createRoutes() {
   
       await db.collection('users').insertOne({
         email,
-        login,
+        nickname,
         password,
         city: cityId,
         fullname,
@@ -285,7 +279,7 @@ async function createRoutes() {
         text: `
           A new user has registered
           E-mail: ${email}, 
-          Login: ${login},  
+          Nickname: ${nickname},  
           City: ${city}, 
           Name: ${fullname}, 
           Playing hand: ${hand}, 
@@ -301,8 +295,7 @@ async function createRoutes() {
         subject: 'Congratulations!',
         text: `
           You have successfully registered at https://thailandttleague.com
-          E-mail: ${email}, 
-          Login: ${login}
+          E-mail: ${email}
         `
       };
   
@@ -369,6 +362,14 @@ async function createRoutes() {
   //     res.status(404).json({ error: 'Tournament not found' });
   //   }
   // });
+  app.get('/get-players', async function(req, res) {
+    const players = await db.collection('users').find().toArray();
+    if (players) {
+      res.json(players);
+    } else {
+      res.status(404).json({ error: 'Players not found' });
+    }
+  });
   
   app.get('/clubs', async function(req, res) {
     const clubs = await db.collection('clubs').find().toArray();
@@ -388,17 +389,6 @@ async function createRoutes() {
     }
   });
   
-  app.get('/cities', async function(req, res) {
-    const language = req.query.language || 'english';
-    try {
-      const cities = await db.collection('cities').find({}, { projection: { _id: 0, [language]: 1 } }).toArray();
-      
-      res.json(cities.map(city => city[language]));
-    } catch (err) {
-      console.error('Error when loading the list of cities from the database:', err);
-    }
-  });
-
   app.get('/cities/:cityId', async (req, res) => {
     const cityId = req.params.cityId;
 
@@ -415,6 +405,19 @@ async function createRoutes() {
         res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+  app.get('/cities', async function(req, res) {
+    const language = req.query.language || 'english';
+    try {
+      const cities = await db.collection('cities').find({}, { projection: { _id: 0, [language]: 1 } }).toArray();
+      
+      res.json(cities.map(city => city[language]));
+    } catch (err) {
+      console.error('Error when loading the list of cities from the database:', err);
+    }
+  });
+
+  
 
 
   app.get('/adv', async function(req, res) {

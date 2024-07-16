@@ -273,10 +273,11 @@ h2 {
           width: 100%;
           height: 100%;
           box-sizing: border-box; }
+      .header_bottom_mob .header_bottom_category {
+        width: 100%; }
     .header_bottom_category {
       display: flex;
       align-items: center;
-      width: 100%;
       gap: 6px;
       cursor: pointer; }
       .header_bottom_category img {

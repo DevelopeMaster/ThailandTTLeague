@@ -50,10 +50,21 @@ app.get('/:lang/allclubs/:clubId', (req, res) => {
   res.render(`${lang}/allclubs/club`);
 });
 
-// app.use((req, res, next) => {
-//   console.log('Incoming request:', req.url);
-//   next();
-// });
+app.get('/:lang/trainings/:trainingId', async (req, res) => {
+  try {
+    const { lang, trainingId } = req.params;
+    // console.log('Route matched:', lang, tournamentId);
+    res.render(`${lang}/tournaments/training`);
+  } catch (error) {
+    console.error('Error in route handler:', error);
+    res.status(500).send('Server error');
+  }
+});
+
+app.use((req, res, next) => {
+  console.log('Incoming request:', req.url);
+  next();
+});
 
 
 app.get('/:lang/tournaments/:tournamentId', async (req, res) => {
@@ -122,6 +133,18 @@ app.get('/:lang(en|ru|th)/tournaments', function(req, res) {
   res.render(`${lang}/alltournaments`);
 });
 
+app.get('/:lang(en|ru|th)/alltrainings', function(req, res) {
+  const lang = req.params.lang;
+  res.render(`${lang}/alltrainings`);
+});
+
+app.use((req, res, next) => {
+  if (req.url.includes('undefined')) {
+      console.error(`Undefined route accessed: ${req.url}`);
+  }
+  next();
+});
+
 app.get('/:lang(en|ru|th)/:page', function(req, res) {
   const lang = req.params.lang;
   const page = req.params.page;
@@ -177,7 +200,7 @@ async function run() {
 
 
 async function createRoutes() {
-    
+  
   app.get('/get-data-club', async (req, res) => {
     const { lang, clubId } = req.query;
     // console.log(lang, clubId);
@@ -362,6 +385,18 @@ async function createRoutes() {
   //     res.status(404).json({ error: 'Tournament not found' });
   //   }
   // });
+  
+
+
+  app.get('/get-trainings', async function(req, res) {
+    const trainings = await db.collection('trainings').find().toArray();
+    if (trainings) {
+      res.json(trainings);
+    } else {
+      res.status(404).json({ error: 'Trainings not found' });
+    }
+  });
+
   app.get('/get-players', async function(req, res) {
     const players = await db.collection('users').find().toArray();
     if (players) {

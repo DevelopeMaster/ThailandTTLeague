@@ -104,15 +104,15 @@ export function createHeader(language) {
                             Players
                         </p>
                     </a>
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAllTrainings">
                         <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                         <p class="header_bottom_category-text">
                             Training
                         </p>
                     </a>
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAboutUs">
                         <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                        <p class="header_bottom_category-text goToAboutUs">
+                        <p class="header_bottom_category-text">
                             About Us
                         </p>
                     </a>                
@@ -166,15 +166,15 @@ export function createHeader(language) {
                     Players
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAllTrainings">
                 <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                 <p class="header_bottom_category-text">
                     Training
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAboutUs">
                 <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                <p class="header_bottom_category-text goToAboutUs">
+                <p class="header_bottom_category-text">
                     About Us
                 </p>
             </a>
@@ -269,7 +269,7 @@ export function createHeader(language) {
                         Игроки
                         </p>
                     </a>
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAllTrainings">
                         <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                         <p class="header_bottom_category-text">
                         Тренировки
@@ -277,7 +277,7 @@ export function createHeader(language) {
                     </a>
                     <a class="header_bottom_category goToAboutUs">
                         <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                        <p class="header_bottom_category-text goToAboutUs">
+                        <p class="header_bottom_category-text">
                         О Нас
                         </p>
                     </a>                
@@ -331,15 +331,15 @@ export function createHeader(language) {
                     Игроки
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAllTrainings">
                 <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                 <p class="header_bottom_category-text">
                     Тренировки
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAboutUs">
                 <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                <p class="header_bottom_category-text goToAboutUs">
+                <p class="header_bottom_category-text">
                     О Нас
                 </p>
             </a>
@@ -434,15 +434,15 @@ export function createHeader(language) {
                             ผู้เล่น
                         </p>
                     </a>
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAllTrainings">
                         <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                         <p class="header_bottom_category-text">
                             เทรนกับโค้ช
                         </p>
                     </a>
-                    <a class="header_bottom_category">
+                    <a class="header_bottom_category goToAboutUs">
                         <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                        <p class="header_bottom_category-text goToAboutUs">
+                        <p class="header_bottom_category-text">
                             เกี่ยวกับเรา
                         </p>
                     </a>                
@@ -496,15 +496,15 @@ export function createHeader(language) {
                     ผู้เล่น
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAllTrainings">
                 <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                 <p class="header_bottom_category-text">
                     เทรนกับโค้ช
                 </p>
             </a>
-            <a class="header_bottom_category">
+            <a class="header_bottom_category goToAboutUs">
                 <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                <p class="header_bottom_category-text goToAboutUs">
+                <p class="header_bottom_category-text">
                     เกี่ยวกับเรา
                 </p>
             </a>
@@ -2313,7 +2313,8 @@ export function breadCrumb() {
             'tournament': 'About the Tournament',
             'tournaments': 'Tournaments',
             'alltournaments': 'Tournaments',
-            'allplayers': 'Players'
+            'allplayers': 'Players',
+            'alltrainings': 'Training'
         },
         'ru': {
             'home': 'Главная',
@@ -2328,7 +2329,8 @@ export function breadCrumb() {
             'tournament': 'О Турнире',
             'tournaments': 'Турниры',
             'alltournaments': 'Турниры',
-            'allplayers': 'Игроки'
+            'allplayers': 'Игроки',
+            'alltrainings': 'Тренировки'
         },
         'th': {
             'home': 'หน้าหลัก',
@@ -2343,7 +2345,8 @@ export function breadCrumb() {
             'tournament': 'เกี่ยวกับการแข่งขัน',
             'tournaments': 'การแข่งขัน',
             'alltournaments': 'การแข่งขัน',
-            'allplayers': 'ผู้เล่น'
+            'allplayers': 'ผู้เล่น',
+            'alltrainings': 'เทรนกับโค้ช'
         }
     };
 
@@ -2418,6 +2421,11 @@ export function listenerOfButtons() {
             window.location.href = `/${languageMap[localStorage.clientLang]}/aboutus`;
         }
 
+        if (event.target.closest('.goToAllTrainings')) {
+            event.preventDefault();
+            window.location.href = `/${languageMap[localStorage.clientLang]}/alltrainings`;
+        }
+
         // if (event.target.classList.contains('header_bottom_mob_cross')) {
         //     console.log('cross');
         //     document.getElementById('headerMob').style.display = 'none';
@@ -2456,11 +2464,14 @@ export function listenerOfButtons() {
         if (event.target.closest('.header_bottom_mob_cross')) {
             document.querySelector('.header_bottom_mob').classList.toggle('header_bottom_mob_openMenu');
         }
+
+
+        if (!event.target.closest('#burger') && !event.target.closest('.header_bottom header_bottom_mob')) {
+            document.querySelector('.header_bottom_mob').classList.remove('header_bottom_mob_openMenu');
+        }
+
         
-        // if (event.target.classList.contains('header_bottom_mob_cross')) {
-        //     event.preventDefault();
-        //     document.querySelector('.header_bottom_mob').classList.toggle('header_bottom_mob_openMenu');
-        // }
+        
     });
 
     // Modal window
@@ -3486,13 +3497,580 @@ export async function getAllPlayers() {
 
 
 
+export async function getAllTrainings() {
+    const dateFromInput = document.getElementById('dateFromInput');
+    const dateUntilInput = document.getElementById('dateUntilInput');
+    const clubInput = document.getElementById('clubInput');
+    const cityInput = document.getElementById('cityInput');
+    const trainerNameInput = document.getElementById('trainerNameInput');
+
+    const clubDropdown = document.getElementById('clubDropdown');
+    const cityDropdown = document.getElementById('cityDropdown');
+    const trainerNameDropdown = document.getElementById('trainerNameDropdown');
+    const searchButton = document.getElementById('filterTrainings_btnSearch');
+
+    const trainingsContainer = document.querySelector('.trainingsTable_content');
+
+    if (!trainingsContainer) {
+        console.error('Контейнеры для тренировок не найдены');
+        return;
+    }
+
+    const languageMap = {
+        'russian': 'ru',
+        'english': 'en',
+        'thai': 'th'
+    };
+
+    const currentLang = localStorage.getItem('clientLang') || 'english';
+    const langKey = languageMap[currentLang];
+
+    let allTrainings = [];
+    let cities = [];
+    let trainers = [];
+    let checkCities = {};
+
+    await fetchAllTrainings();
+
+    async function fetchAllTrainings() {
+        try {
+            const response = await fetch(`/get-trainings`);
+            const trainings = await response.json();
+            allTrainings = trainings;
+
+            // Создание объекта checkCities и получение названий городов
+            const cityIds = [...new Set(trainings.map(training => training.city._id))];
+            const cityNamesPromises = cityIds.map(cityId => getCityNameById(cityId));
+            const cityNames = await Promise.all(cityNamesPromises);
+
+            // Заполнение объекта checkCities
+            cityIds.forEach((cityId, index) => {
+                checkCities[cityId] = cityNames[index];
+            });
+
+            // Заполнение массива городов
+            cities = cityNames.filter(city => city !== 'Unknown City'); // Удаление запасного значения
+
+            // Display first 5 trainings initially
+            displayTrainings(trainings.slice(0, 5), trainingsContainer);
+
+            const clubs = [...new Set(trainings.map(training => training.club.name))];
+            clubs.sort();
+
+            trainers = [...new Set(trainings.map(training => training.trainer.name))];
+            trainers.sort();
+            
+            createDropdown(cityDropdown, cities, cityInput);
+            createDropdown(clubDropdown, clubs, clubInput);
+            createDropdown(trainerNameDropdown, trainers, trainerNameInput);
+        } catch (error) {
+            console.error('Произошла ошибка:', error);
+            showErrorModal('Database connection error', 'Ops!');
+        }
+    }
+
+    async function getCityNameById(cityId) {
+        try {
+            const response = await fetch(`/cities/${cityId}`);
+            if (!response.ok) {
+                throw new Error('City data not found');
+            }
+            const city = await response.json();
+            return city[currentLang] || 'Unknown City'; // Возвращает имя города на выбранном языке или "Unknown City"
+        } catch (error) {
+            console.error('Ошибка при получении названия города:', error);
+            return 'Unknown City'; // Возвращение запасного значения в случае ошибки
+        }
+    }
+
+    let debounceTimeout;
+
+    dateFromInput.addEventListener('input', () => formatInputDate(dateFromInput));
+    dateUntilInput.addEventListener('input', () => formatInputDate(dateUntilInput));
+    clubInput.addEventListener('input', () => debounceFilterTrainings(updateClubDropdown));
+    cityInput.addEventListener('input', () => debounceFilterTrainings(updateCityDropdown));
+    trainerNameInput.addEventListener('input', () => debounceFilterTrainings(updateTrainerNameDropdown));
+
+    dateFromInput.addEventListener('blur', validateDates);
+    dateUntilInput.addEventListener('blur', validateDates);
+
+    clubInput.addEventListener('focus', () => clubDropdown.style.display = 'block');
+    cityInput.addEventListener('focus', () => {
+        updateCityDropdown();
+        cityDropdown.style.display = 'block';
+    });
+    trainerNameInput.addEventListener('focus', () => trainerNameDropdown.style.display = 'block');
+
+    clubInput.addEventListener('blur', () => setTimeout(() => clubDropdown.style.display = 'none', 200));
+    cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
+    trainerNameInput.addEventListener('blur', () => setTimeout(() => trainerNameDropdown.style.display = 'none', 200));
+
+    searchButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        filterTrainings();
+    });
+
+    function debounceFilterTrainings(updateDropdown) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            updateDropdown();
+            filterTrainings();
+        }, 300);
+    }
+
+    function updateClubDropdown() {
+        updateDropdownList(clubDropdown, [...new Set(allTrainings.map(training => training.club.name))], clubInput);
+    }
+
+    function updateCityDropdown() {
+        updateDropdownList(cityDropdown, cities, cityInput);
+    }
+
+    function updateTrainerNameDropdown() {
+        updateDropdownList(trainerNameDropdown, trainers, trainerNameInput);
+    }
+
+    function createDropdown(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        options.forEach(option => {
+            if (option) {
+                const div = document.createElement('div');
+                div.textContent = option;
+                div.addEventListener('click', () => {
+                    inputElement.value = option;
+                    dropdown.style.display = 'none';
+                    filterTrainings();
+                });
+                dropdown.appendChild(div);
+            }
+        });
+    }
+
+    function updateDropdownList(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        const currentText = inputElement.value.toLowerCase();
+        const filteredOptions = options.filter(option => option.toLowerCase().includes(currentText));
+
+        filteredOptions.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                filterTrainings();
+            });
+            dropdown.appendChild(div);
+        });
+
+        dropdown.style.display = 'block';
+    }
+
+    function validateDates() {
+        const dateFromValue = new Date(dateFromInput.value.split('.').reverse().join('-'));
+        const dateUntilValue = new Date(dateUntilInput.value.split('.').reverse().join('-'));
+
+        if (dateFromValue && dateUntilValue && dateFromValue > dateUntilValue) {
+            showErrorModal('Date Until must be later than Date From', 'Ops!');
+        }
+    }
+
+    function formatInputDate(inputElement) {
+        const inputValue = inputElement.value.replace(/\D/g, '').slice(0, 8);
+        const formattedDate = inputValue.replace(/(\d{2})(\d{2})(\d{4})/, '$1.$2.$3');
+        inputElement.value = formattedDate;
+    }
+
+    function filterTrainings() {
+        const dateFromValue = dateFromInput.value;
+        const dateUntilValue = dateUntilInput.value;
+        const clubValue = clubInput.value.toLowerCase();
+        const cityValue = cityInput.value.toLowerCase();
+        const trainerNameValue = trainerNameInput.value.toLowerCase();
+
+        const filteredTrainings = allTrainings.filter(training => {
+            const trainingDate = new Date(training.date).toLocaleDateString('ru-RU');
+            const clubName = training.club.name.toLowerCase();
+            const cityId = training.city._id;
+            const cityName = checkCities[cityId] ? checkCities[cityId].toLowerCase() : 'unknown city';
+            const trainerName = training.trainer.name.toLowerCase();
+
+            const isDateMatch = (!dateFromValue || new Date(trainingDate) >= new Date(dateFromValue.split('.').reverse().join('-'))) &&
+                (!dateUntilValue || new Date(trainingDate) <= new Date(dateUntilValue.split('.').reverse().join('-')));
+            const isClubMatch = !clubValue || clubName.includes(clubValue);
+            const isCityMatch = !cityValue || cityName.includes(cityValue);
+            const isTrainerNameMatch = !trainerNameValue || trainerName.includes(trainerNameValue);
+
+            return isDateMatch && isClubMatch && isCityMatch && isTrainerNameMatch;
+        });
+
+        displayTrainings(filteredTrainings, trainingsContainer);
+    }
+
+    function displayTrainings(trainings, container) {
+        container.innerHTML = '';
+
+        const langMap = {
+            'english': 'en-US',
+            'thai': 'th-TH',
+            'russian': 'ru-RU'
+        };
+
+        const langKey = localStorage.clientLang || 'english';
+        const lang = langMap[langKey] || 'en-US';
+
+        const trainingsByWeekday = {};
+
+        trainings.forEach(training => {
+            const trainingDate = new Date(training.date);
+            const dayOfWeek = trainingDate.toLocaleDateString(lang, { weekday: 'long' });
+
+            const trainingTime = trainingDate.toLocaleTimeString(lang, {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+                timeZone: 'UTC'
+            });
+
+            const formattedDate = `${dayOfWeek} ${String(trainingDate.getDate()).padStart(2, '0')}.${String(trainingDate.getMonth() + 1).padStart(2, '0')}.${trainingDate.getFullYear()} ${trainingTime}`;
+
+            if (!trainingsByWeekday[formattedDate]) {
+                trainingsByWeekday[formattedDate] = [];
+            }
+
+            trainingsByWeekday[formattedDate].push(training);
+        });
+
+        Object.keys(trainingsByWeekday).forEach(formattedDate => {
+            const trainingsOnDay = trainingsByWeekday[formattedDate];
+
+            const weekdayDiv = document.createElement('div');
+            weekdayDiv.className = 'trainingsTable_weekday';
+            weekdayDiv.innerHTML = `<span>${formattedDate}</span>`;
+            container.appendChild(weekdayDiv);
+
+            trainingsOnDay.forEach(training => {
+                const trainingDiv = document.createElement('a');
+                trainingDiv.className = 'trainingsTable_training';
+                trainingDiv.href = `/en/trainings/${training._id}`;
+
+                trainingDiv.innerHTML = `
+                    <div class="cell training_club">
+                        <div class="clubLogo" style="background-image: url(${training.club.logo}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
+                        <span>${training.club.name}</span>
+                    </div>
+                    <div class="cell training_trainer">
+                        <div class="trainerLogo" style="background-image: url(${training.trainer.logo || '/icons/playerslogo/default_avatar.svg'}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
+                        <span>${training.trainer.name}</span>
+                    </div>
+                    <div class="cell training_rating">${training.trainer.rating}</div>
+                    <div class="cell training_price">${training.price}฿</div>
+                `;
+                container.appendChild(trainingDiv);
+            });
+        });
+    }
+}
 
 
 
 
 
 
+// export async function getAllTrainings() {
+//     const dateFromInput = document.getElementById('dateFromInput');
+//     const dateUntilInput = document.getElementById('dateUntilInput');
+//     const clubInput = document.getElementById('clubInput');
+//     const cityInput = document.getElementById('cityInput');
+//     const trainerNameInput = document.getElementById('trainerNameInput');
 
+//     const clubDropdown = document.getElementById('clubDropdown');
+//     const cityDropdown = document.getElementById('cityDropdown');
+//     const trainerNameDropdown = document.getElementById('trainerNameDropdown');
+//     const searchButton = document.getElementById('filterTrainings_btnSearch');
+
+//     const trainingsContainer = document.querySelector('.trainingsTable_content');
+
+//     if (!trainingsContainer) {
+//         console.error('Контейнеры для тренировок не найдены');
+//         return;
+//     }
+
+//     const languageMap = {
+//         'russian': 'ru',
+//         'english': 'en',
+//         'thai': 'th'
+//     };
+
+//     const currentLang = localStorage.getItem('clientLang') || 'english';
+//     const langKey = languageMap[currentLang];
+
+//     let allTrainings = [];
+//     let cities = [];
+//     let trainers = [];
+//     let checkCities = {};
+
+//     await fetchAllTrainings();
+
+//     async function fetchAllTrainings() {
+//         try {
+//             const response = await fetch(`/get-trainings`);
+//             const trainings = await response.json();
+//             allTrainings = trainings;
+//             let lang = localStorage.getItem('clientLang');
+            
+
+//             // Display first 5 trainings initially
+//             displayTrainings(trainings.slice(0, 5), trainingsContainer);
+
+//             const clubs = [...new Set(trainings.map(training => training.club.name))];
+//             clubs.sort();
+
+//             trainers = [...new Set(trainings.map(training => training.trainer.name))];
+//             trainers.sort();
+
+//             const cityIds = [...new Set(trainings.map(training => training.city._id))];
+//             const cityNamesPromises = cityIds.map(cityId => getCityNameById(cityId));
+//             cities = await Promise.all(cityNamesPromises);
+
+//             console.log(allTrainings);
+
+//             allTrainings.forEach(training => {
+//                 console.log(training);
+//                 const cityName = training[lang] || 'Unknown City'; // Если имя города на данном языке не найдено, использовать 'Unknown City'
+//                 // checkCities[training._id] = cityName;
+//             });
+            
+//             console.log(checkCities);
+
+//             createDropdown(cityDropdown, cities.filter(city => city !== 'Unknown City'), cityInput);
+//             createDropdown(clubDropdown, clubs, clubInput);
+//             createDropdown(trainerNameDropdown, trainers, trainerNameInput);
+//         } catch (error) {
+//             console.error('Произошла ошибка:', error);
+//             showErrorModal('Database connection error', 'Ops!');
+//         }
+//     }
+
+//     async function getCityNameById(cityId) {
+//         try {
+//             const response = await fetch(`/cities/${cityId}`);
+//             if (!response.ok) {
+//                 throw new Error('City data not found');
+//             }
+//             const city = await response.json();
+//             return city[currentLang] || 'Unknown City'; // Возвращает имя города на выбранном языке или "Unknown City"
+//         } catch (error) {
+//             console.error('Ошибка при получении названия города:', error);
+//             return 'Unknown City'; // Возвращение запасного значения в случае ошибки
+//         }
+//     }
+
+//     let debounceTimeout;
+
+//     dateFromInput.addEventListener('input', () => formatInputDate(dateFromInput));
+//     dateUntilInput.addEventListener('input', () => formatInputDate(dateUntilInput));
+//     clubInput.addEventListener('input', () => debounceFilterTrainings(updateClubDropdown));
+//     cityInput.addEventListener('input', () => debounceFilterTrainings(updateCityDropdown));
+//     trainerNameInput.addEventListener('input', () => debounceFilterTrainings(updateTrainerNameDropdown));
+
+//     dateFromInput.addEventListener('blur', validateDates);
+//     dateUntilInput.addEventListener('blur', validateDates);
+
+//     clubInput.addEventListener('focus', () => clubDropdown.style.display = 'block');
+//     cityInput.addEventListener('focus', () => cityDropdown.style.display = 'block');
+//     trainerNameInput.addEventListener('focus', () => trainerNameDropdown.style.display = 'block');
+
+//     clubInput.addEventListener('blur', () => setTimeout(() => clubDropdown.style.display = 'none', 200));
+//     cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
+//     trainerNameInput.addEventListener('blur', () => setTimeout(() => trainerNameDropdown.style.display = 'none', 200));
+
+//     searchButton.addEventListener('click', function(event) {
+//         event.preventDefault();
+//         filterTrainings();
+//     });
+
+//     function debounceFilterTrainings(updateDropdown) {
+//         clearTimeout(debounceTimeout);
+//         debounceTimeout = setTimeout(() => {
+//             updateDropdown();
+//             filterTrainings();
+//         }, 300);
+//     }
+
+//     function updateClubDropdown() {
+//         updateDropdownList(clubDropdown, [...new Set(allTrainings.map(training => training.club.name))], clubInput);
+//     }
+
+//     function updateCityDropdown() {
+//         updateDropdownList(cityDropdown, cities, cityInput);
+//     }
+
+//     function updateTrainerNameDropdown() {
+//         updateDropdownList(trainerNameDropdown, trainers, trainerNameInput);
+//     }
+
+//     function createDropdown(dropdown, options, inputElement) {
+//         dropdown.innerHTML = '';
+//         options.forEach(option => {
+//             if (option) {
+//                 const div = document.createElement('div');
+//                 div.textContent = option;
+//                 div.addEventListener('click', () => {
+//                     inputElement.value = option;
+//                     dropdown.style.display = 'none';
+//                     filterTrainings();
+//                 });
+//                 dropdown.appendChild(div);
+//             }
+//         });
+//     }
+
+//     function updateDropdownList(dropdown, options, inputElement) {
+//         dropdown.innerHTML = '';
+//         const currentText = inputElement.value.toLowerCase();
+//         const filteredOptions = options.filter(option => option.toLowerCase().includes(currentText));
+
+//         filteredOptions.forEach(option => {
+//             const div = document.createElement('div');
+//             div.textContent = option;
+//             div.addEventListener('click', () => {
+//                 inputElement.value = option;
+//                 dropdown.style.display = 'none';
+//                 filterTrainings();
+//             });
+//             dropdown.appendChild(div);
+//         });
+
+//         dropdown.style.display = 'block';
+//     }
+
+//     function validateDates() {
+//         const dateFromValue = new Date(dateFromInput.value.split('.').reverse().join('-'));
+//         const dateUntilValue = new Date(dateUntilInput.value.split('.').reverse().join('-'));
+
+//         if (dateFromValue && dateUntilValue && dateFromValue > dateUntilValue) {
+//             showErrorModal('Date Until must be later than Date From', 'Ops!');
+//         }
+//     }
+
+//     function formatInputDate(inputElement) {
+//         const inputValue = inputElement.value.replace(/\D/g, ''); // Удаляем все нецифровые символы
+//         let formattedValue = '';
+    
+//         // Добавляем первые два символа, если они есть
+//         if (inputValue.length > 0) {
+//             formattedValue += inputValue.substring(0, 2);
+//         }
+    
+//         // Добавляем точку после первых двух символов, если есть следующие два символа
+//         if (inputValue.length > 2) {
+//             formattedValue += '.' + inputValue.substring(2, 4);
+//         }
+    
+//         // Добавляем точку и оставшиеся символы, если они есть
+//         if (inputValue.length > 4) {
+//             formattedValue += '.' + inputValue.substring(4, inputValue.length);
+//         }
+    
+//         // Устанавливаем отформатированное значение обратно в поле ввода
+//         inputElement.value = formattedValue;
+//     }
+
+//     // Обновленная функция filterTrainings
+//     async function filterTrainings() {
+//         const dateFromValue = dateFromInput.value;
+//         const dateUntilValue = dateUntilInput.value;
+//         const clubValue = clubInput.value.toLowerCase();
+//         const cityValue = cityInput.value; // cityInput.value уже приведен к нижнему регистру при фильтрации
+//         const trainerValue = trainerNameInput.value.toLowerCase();
+    
+//         console.log('Filters:', dateFromValue, dateUntilValue, clubValue, cityValue, trainerValue);
+    
+//         const filteredTrainings = allTrainings.filter(training => {
+//             const dateFromMatch = !dateFromValue || new Date(training.date) >= new Date(dateFromValue.split('.').reverse().join('-'));
+//             const dateUntilMatch = !dateUntilValue || new Date(training.date) <= new Date(dateUntilValue.split('.').reverse().join('-'));
+//             const clubMatch = !clubValue || training.club.name.toLowerCase().includes(clubValue);
+//             const cityMatch = !cityValue || cityValue === 'all' || training.city._id === cityValue; // Сравниваем _id города
+//             const trainerMatch = !trainerValue || (training.trainer && training.trainer.name.toLowerCase().includes(trainerValue));
+    
+//             return dateFromMatch && dateUntilMatch && clubMatch && cityMatch && trainerMatch;
+//         });
+    
+//         console.log('Filtered Trainings:', filteredTrainings);
+    
+//         displayTrainings(filteredTrainings, trainingsContainer);
+//     }
+
+//     // Обновленная функция displayTrainings
+//     function displayTrainings(trainings, container) {
+//         container.innerHTML = '';
+
+//         const langMap = {
+//             'english': 'en-US',
+//             'thai': 'th-TH',
+//             'russian': 'ru-RU'
+//         };
+
+//         const langKey = localStorage.clientLang || 'english';
+//         const lang = langMap[langKey] || 'en-US';
+
+//         // Создаем объект для группировки тренировок по дням недели
+//         const trainingsByWeekday = {};
+
+//         trainings.forEach(training => {
+//             const trainingDate = new Date(training.date);
+//             const dayOfWeek = trainingDate.toLocaleDateString(lang, { weekday: 'long' });
+
+//             // Форматируем время из UTC в локальное время с учетом языка
+//             const trainingTime = trainingDate.toLocaleTimeString(lang, {
+//                 hour: '2-digit',
+//                 minute: '2-digit',
+//                 hour12: false, // Используем 24-часовой формат времени
+//                 timeZone: 'UTC' // Указываем, что время в UTC
+//             });
+
+//             const formattedDate = `${dayOfWeek} ${String(trainingDate.getDate()).padStart(2, '0')}.${String(trainingDate.getMonth() + 1).padStart(2, '0')}.${trainingDate.getFullYear()} ${trainingTime}`;
+
+//             if (!trainingsByWeekday[formattedDate]) {
+//                 trainingsByWeekday[formattedDate] = [];
+//             }
+
+//             trainingsByWeekday[formattedDate].push(training);
+//         });
+
+//         // Отображаем тренировки с группировкой по дням недели
+//         Object.keys(trainingsByWeekday).forEach(formattedDate => {
+//             const trainingsOnDay = trainingsByWeekday[formattedDate];
+
+//             // Создаем элемент для дня недели
+//             const weekdayDiv = document.createElement('div');
+//             weekdayDiv.className = 'trainingsTable_weekday';
+//             weekdayDiv.innerHTML = `<span>${formattedDate}</span>`;
+//             container.appendChild(weekdayDiv);
+
+//             // Отображаем тренировки в этот день
+//             trainingsOnDay.forEach(training => {
+//                 const trainingDiv = document.createElement('div');
+//                 trainingDiv.className = 'trainingsTable_training';
+//                 trainingDiv.setAttribute('data-city-id', training.city._id);
+    
+//                 trainingDiv.innerHTML = `
+//                     <div class="cell training_club">
+//                         <div class="clubLogo" style="background-image: url(${training.club.logo}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
+//                         <span>${training.club.name}</span>
+//                     </div>
+//                     <div class="cell training_trainer">
+//                         <div class="trainerLogo" style="background-image: url(${training.trainer.logo || '/icons/playerslogo/default_avatar.svg'}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
+//                         <span>${training.trainer.name}</span>
+//                     </div>
+//                     <div class="cell training_rating">${training.trainer.rating}</div>
+//                     <div class="cell training_price">${training.price}฿</div>
+//                 `;
+//                 container.appendChild(trainingDiv);
+//             });
+//         });
+//     }
+// }
 
 
 

@@ -1320,7 +1320,8 @@ h2 {
       .last_tournaments_tournament span {
         font-size: 14px; }
       .last_tournaments_tournament_clubDate {
-        gap: 12px; }
+        gap: 12px;
+        width: 65%; }
       .last_tournaments_tournament_winners {
         gap: 8px; }
       .last_tournaments_tournament_aditInfo_playersLimit {

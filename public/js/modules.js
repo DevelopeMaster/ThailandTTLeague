@@ -2314,7 +2314,9 @@ export function breadCrumb() {
             'tournaments': 'Tournaments',
             'alltournaments': 'Tournaments',
             'allplayers': 'Players',
-            'alltrainings': 'Training'
+            'alltrainings': 'Trainings',
+            'training': 'About the Training',
+            'trainings': 'Trainings'
         },
         'ru': {
             'home': 'Главная',
@@ -2330,7 +2332,9 @@ export function breadCrumb() {
             'tournaments': 'Турниры',
             'alltournaments': 'Турниры',
             'allplayers': 'Игроки',
-            'alltrainings': 'Тренировки'
+            'alltrainings': 'Тренировки',
+            'training': 'О Тренировке',
+            'trainings': 'Тренировки'
         },
         'th': {
             'home': 'หน้าหลัก',
@@ -2346,7 +2350,9 @@ export function breadCrumb() {
             'tournaments': 'การแข่งขัน',
             'alltournaments': 'การแข่งขัน',
             'allplayers': 'ผู้เล่น',
-            'alltrainings': 'เทรนกับโค้ช'
+            'alltrainings': 'เทรนกับโค้ช',
+            'training': 'เกี่ยวกับการฝึกอบรม',
+            'trainings': 'เทรนกับโค้ช'
         }
     };
 
@@ -2368,6 +2374,8 @@ export function breadCrumb() {
             translatedPath = translations[currentLang]['player'];
         } else if (containsNumbers && filteredPathArray[index - 1] === 'tournaments') {
             translatedPath = translations[currentLang]['tournament'];
+        } else if (containsNumbers && filteredPathArray[index - 1] === 'trainings') {
+            translatedPath = translations[currentLang]['training'];
         } else {
             translatedPath = translations[currentLang][path] || capitalize(path);
         }
@@ -2376,6 +2384,8 @@ export function breadCrumb() {
             breadcrumbHTML += `<li class="navigate_breadcrumb_item navigate_breadcrumb_item_active" aria-current="page">${translatedPath}</li>`;
         } else {
             breadcrumbHTML += `<li class="navigate_breadcrumb_item"><a href="${urlPath}">${translatedPath}</a></li>`;
+            // const href = (translatedPath === translations[currentLang]['trainings']) ? '/alltrainings' : urlPath;
+            // breadcrumbHTML += `<li class="navigate_breadcrumb_item"><a href="${href}">${translatedPath}</a></li>`;
         }
     });
 
@@ -2448,6 +2458,7 @@ export function listenerOfButtons() {
             }
            
         }
+
 
         if (event.target.closest('.logo')) {
             event.preventDefault();
@@ -3238,6 +3249,7 @@ export async function getAllPlayers() {
 
     const nameDropdown = document.getElementById('clubDropdown');
     const cityDropdown = document.getElementById('cityDropdown');
+    cityDropdown.style.display = 'none';
     const searchButton = document.getElementById('filterPlayers_btnSearch');
 
     const playersContainer = document.querySelector('.playersTable_content');

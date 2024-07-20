@@ -57,7 +57,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/main.min.css">
-    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 
 <body>
@@ -73,81 +73,81 @@
             </nav>
         </div>
     </div>
-
-
-
-    <section class="filterPlayers">
+    
+    <section class="training">
         <div class="container">
             <div class="contentWrapper">
-                <h2>Search for a Player</h2>
-                <div class="filterPlayers_filter">
-                    <div class="filterPlayers_wrapper">
-                        <div class="dropdownForm raitingsForm">
-                            <label for="ratingFrom">Rating</label>
-                            <input type="text" name="ratingFrom" id="dateFromInput" placeholder="From">
-                            <input type="text" name="ratingUntil" id="dateUntilInput" placeholder="To">
-                        </div>
-                        <div class="dropdownForm">
-                            <label for="club">Name / Nickname</label>
-                            <input type="text" name="club" id="clubInput" placeholder="Player name or login">
-                            <div id="clubDropdown" class="dropdown-content"></div>
-                        </div>
-                    </div>
-                    <div class="filterPlayers_wrapper">
-                        <div class="dropdownForm">
-                            <label for="city">Search by city</label>
-                            <input type="text" name="city" id="cityInput" placeholder="City">
-                            <div id="cityDropdown" class="dropdown-content" style="display: none"></div>
-                        </div>
-                        <button id="filterPlayers_btnSearch" class="header_btn-sign btnSbmt filterCoaches_sbmt" type="submit" fdprocessedid="c3chv">Search</button>
+                <div class="training_mainInfo">
+                    <!-- add from js -->
+                </div>
+                <div class="training_buttonWrapp">
+                    <button id="signUpToTraining" class="header_btn-sign training_buttonWrapp_btn" fdprocessedid="c3chv">Записаться</button>
+                    <div class="training_buttonWrapp_booked">
+                        <img src="/icons/booked.svg" alt="booked">
+                        <p>Вы записаны на тренировку </p>
                     </div>
                 </div>
                 
+                <div class="training_about">
+                    <!-- add from js -->
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="players">
+    <section class="trainingLocation">
         <div class="container">
-          <div class="contentWrapper">
-            <h2>List of Players</h2>
-            <div class="playersTable">
-                <div class="playersTable_header">
-                    <span class="player_number">№</span>
-                    <span class="player_player">Player name</span>
-                    <span class="player_login">Nickname</span>
-                    <span class="player_city">City</span>
-                    <span class="player_rating">Rating</span>
-                </div>
-                <div id="upcoming-tournaments" class="playersTable_content">
-                    
-                </div>
+            <div class="contentWrapper">
+                <h2>ЛОКАЦИЯ клуба</h2>
+                <div id="map"></div>
             </div>
-          </div>
         </div>
     </section>
 
+    <section class="bookedPlayers">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>Список зарегистрированных</h2>
+                <div class="bookedPlayers_table">
+                    <div class="bookedPlayers_table_header">
+                        <span class="bookedPlayers_number">№</span>
+                        <span class="bookedPlayers_player">Имя игрока</span>
+                        <span class="bookedPlayers_rating">Рейтинг</span>
+                       
+                    </div>
+                    <div id="bookedPlayersList" class="bookedPlayers_table_content"><div class="upcomingTournament_table_player">
+                    <!-- add from js-->
+                    </div>
 
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
 
 
 
 
     <footer class="footer">
         <!-- from js -->
-      </footer>
-      
-      <div class="adv">
+    </footer>
+    
+    <div class="adv">
+    <!-- add from DB -->
+    </div>
+    
+    
+    <!-- Модальное окно -->
+    <div id="myModal" class="modal">    
+        <div class="modal-content">
         <!-- add from DB -->
-      </div>
-      
+        </div>
+    </div>
     
-    
-      <!-- Модальное окно -->
-      <div id="myModal" class="modal">    
-          <div class="modal-content">
-            <!-- add from DB -->
-          </div>
-      </div>
-      <script type="module" src="/js/allplayers.js"></script> 
+    <script type="module" src="/js/training.js"></script> 
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </body>
 </html>

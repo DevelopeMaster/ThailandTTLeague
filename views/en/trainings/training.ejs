@@ -57,7 +57,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/main.min.css">
-    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 
 <body>
@@ -73,97 +73,112 @@
             </nav>
         </div>
     </div>
-
-
-
-    <!-- <section class="filterTrainings">
+    
+    <section class="training">
         <div class="container">
             <div class="contentWrapper">
-                <h2>FIND a TRAINING</h2>
-                <div class="filterTrainings_filter">
-                    <div class="filterTrainings_wrapper">
-                        <div class="dropdownForm datesForm">
-                            <label for="dateFrom">Training date</label>
-                            <input type="text" name="dateFrom" id="dateFromInput" placeholder="Date from">
-                            <input type="text" name="dateUntil" id="dateUntilInput" placeholder="Date until">
-                        </div>
-                        <div class="dropdownForm">
-                            <label for="club">Club</label>
-                            <input type="text" name="club" id="clubInput" placeholder="Club name">
-                            <div id="clubDropdown" class="dropdown-content"></div>
-                        </div>
-                    </div>
-                    <div class="filterTrainings_wrapper">
-                        <div class="dropdownForm">
-                            <label for="city">Search by city</label>
-                            <input type="text" name="city" id="cityInput" placeholder="City">
-                            <div id="cityDropdown" class="dropdown-content"></div>
-                        </div>
-                        <div class="dropdownForm">
-                            <label for="city">Search by name</label>
-                            <input type="text" name="trainerName" id="trainerNameInput" placeholder="Trainer name">
-                            <div id="trainerNameDropdown" class="dropdown-content"></div>
-                        </div>
-                        <button id="filterTrainings_btnSearch" class="header_btn-sign btnSbmt filterCoaches_sbmt" type="submit" fdprocessedid="c3chv">Search</button>
+                <div class="training_mainInfo">
+                    <!-- add from js -->
+                </div>
+                <div class="training_buttonWrapp">
+                    <button id="signUpToTraining" class="header_btn-sign training_buttonWrapp_btn" fdprocessedid="c3chv">Sign up</button>
+                    <div class="training_buttonWrapp_booked">
+                        <img src="/icons/booked.svg" alt="booked">
+                        <p>Your training is booked</p>
                     </div>
                 </div>
                 
-            </div>
-        </div>
-    </section> -->
-
-    <section class="trainings">
-        <div class="container">
-          <div class="contentWrapper">
-            <h2>TRAINING SESSIONS</h2>
-            <div class="trainingsTable">
-                <div class="trainingsTable_header">
-                    <span class="training_club">Club</span>
-                    <span class="training_trainer">Trainer</span>
-                    <span class="training_rating">Rating</span>
-                    <span class="training_price">Price / hour</span>
-                </div>
-                <div id="upcoming-tournaments" class="trainingsTable_content">
-                    <div class="trainingsTable_weekday"><span>Thursday 05.09.2024</span></div>
-                    <a class="trainingsTable_training" href="/en/players/665500ed32ca3e3a47517872">
-                        <div class="cell training_club">
-                            <div class="clubLogo" style="background-image: url(/icons/clubslogo/HarricaneTT-logo.png); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
-                            <span>HurricaneTT</span>
-                        </div>
-                        <div class="cell training_trainer">
-                            <div class="trainerLogo" style="background-image: url(/icons/playerslogo/default_avatar.svg); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
-                            <span>Oleksandr Ohar</span>
-                        </div>
-                        <div class="cell training_rating">344</div>
-                        <div class="cell training_price">1000฿</div>
-                    </a>
+                <div class="training_about">
+                    <!-- <h3>About the training</h3>
+                    <div class="training_about_wrapp">
+                        <p><span>Address: </span>Phuket, Big C Supercenter, 2nd floor, Ek Wanit Uthit Soi 2, Wichit, Mueang Phuket District, Phuket 83000</p>
+                        <p>Official table tennis club in the Kingdom of Thailand, Phuket Island.<br><br> Certified professional equipment, air-conditioned premises, professional trainers (English, Russian and Thai).<br><br>We provide individual training services and tournaments of various skill levels.</p>
+                    </div> -->
                 </div>
             </div>
-          </div>
         </div>
     </section>
 
+    <section class="trainingLocation">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>Club LOCATION</h2>
+                <div id="map"></div>
+            </div>
+        </div>
+    </section>
 
+    <section class="bookedPlayers">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>List of registered</h2>
+                <div class="bookedPlayers_table">
+                    <div class="bookedPlayers_table_header">
+                        <span class="bookedPlayers_number">№</span>
+                        <span class="bookedPlayers_player">Player name</span>
+                        <span class="bookedPlayers_rating">Rating</span>
+                       
+                    </div>
+                    <div id="bookedPlayersList" class="bookedPlayers_table_content"><div class="upcomingTournament_table_player">
+                    <!-- <div class="bookedPlayers_number">1</div>
+                    <div class="cell bookedPlayers_player">
+                        <div class="playerLogo" style="background-image: url('/icons/playerslogo/petrov_aleksandr.svg'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                        <span>Aleksandr Petrov</span>
+                    </div>
+                    <div class="cell bookedPlayers_rating">300</div>
+                    </div><div class="bookedPlayers_table_player">
+                        <div class="bookedPlayers_number">2</div>
+                        <div class="cell bookedPlayers_player">
+                            <div class="playerLogo" style="background-image: url('/icons/playerslogo/default_avatar.svg'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span>Andrew Sidorov</span>
+                        </div>
+                        <div class="cell upcomingTournament_rating">310</div>
+                    </div><div class="upcomingTournament_table_player">
+                        <div class="upcomingTournament_number">3</div>
+                        <div class="cell upcomingTournament_player">
+                            <div class="playerLogo" style="background-image: url('/icons/playerslogo/petrov_aleksandr.svg'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span>Vasiliy Pechkin</span>
+                        </div>
+                        <div class="cell upcomingTournament_rating">350</div>
+                    </div><div class="upcomingTournament_table_player">
+                        <div class="upcomingTournament_number">4</div>
+                        <div class="cell upcomingTournament_player">
+                            <div class="playerLogo" style="background-image: url('/icons/playerslogo/default_avatar.svg'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span>Aleksandr Kozlov</span>
+                        </div>
+                        <div class="cell upcomingTournament_rating">290</div> -->
+                        <!-- </div> -->
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
 
 
 
 
     <footer class="footer">
         <!-- from js -->
-      </footer>
-      
-      <div class="adv">
+    </footer>
+    
+    <div class="adv">
+    <!-- add from DB -->
+    </div>
+    
+    
+    <!-- Модальное окно -->
+    <div id="myModal" class="modal">    
+        <div class="modal-content">
         <!-- add from DB -->
-      </div>
-      
+        </div>
+    </div>
     
-    
-      <!-- Модальное окно -->
-      <div id="myModal" class="modal">    
-          <div class="modal-content">
-            <!-- add from DB -->
-          </div>
-      </div>
-      <!-- <script type="module" src="/js/alltrainings.js"></script>  -->
+    <script type="module" src="/js/training.js"></script> 
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </body>
 </html>

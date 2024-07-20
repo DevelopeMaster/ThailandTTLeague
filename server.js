@@ -54,7 +54,18 @@ app.get('/:lang/trainings/:trainingId', async (req, res) => {
   try {
     const { lang, trainingId } = req.params;
     // console.log('Route matched:', lang, tournamentId);
-    res.render(`${lang}/tournaments/training`);
+    res.render(`${lang}/trainings/training`);
+  } catch (error) {
+    console.error('Error in route handler:', error);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/:lang/trainings', async (req, res) => {
+  try {
+    const { lang } = req.params;
+
+    res.render(`${lang}/alltrainings`);
   } catch (error) {
     console.error('Error in route handler:', error);
     res.status(500).send('Server error');
@@ -200,6 +211,24 @@ async function run() {
 
 
 async function createRoutes() {
+
+  app.get('/get-data-training', async (req, res) => {
+    const { lang, trainingId } = req.query;
+    // console.log(lang, trainingId);
+    // res.render(`/${lang}/club`);
+    try {
+        const dataTraining = await db.collection('trainings').findOne({ _id: new ObjectId(trainingId) });
+        if (!dataTraining) {
+            return res.status(404).send('Training not found');
+        }
+
+        res.json(dataTraining);
+        // , { clubId }
+    } catch (error) {
+        console.error('Error fetching training data:', error);
+        res.status(500).send('Internal Server Error');
+    }
+  });
   
   app.get('/get-data-club', async (req, res) => {
     const { lang, clubId } = req.query;
@@ -415,12 +444,38 @@ async function createRoutes() {
     }
   });
 
+  // app.get('/clubs/clubId', async function(req, res) {
+  //   const club = await db.collection('clubs').findOne({ _id: new ObjectId(clubId) });
+  //   if (club) {
+  //     res.json(club);
+  //   } else {
+  //     res.status(404).json({ error: 'Clubs not found' });
+  //   }
+  // });
+
   app.get('/coaches', async function(req, res) {
     const coaches = await db.collection('coaches').find().toArray();
     if (coaches) {
       res.json(coaches);
     } else {
       res.status(404).json({ error: 'Coaches not found' });
+    }
+  });
+
+  app.get('/trainer/:trainerId', async (req, res) => {
+    const trainerId = req.params.trainerId;
+
+    try {
+        const trainer = await db.collection('coaches').findOne({ _id: new ObjectId(trainerId) });
+        // console.log(trainer);
+        if (!trainer) {
+            return res.status(404).json({ error: 'Trainer not found' });
+        }
+
+        res.json(trainer);
+    } catch (err) {
+        console.error('Error fetching trainer:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
   });
   

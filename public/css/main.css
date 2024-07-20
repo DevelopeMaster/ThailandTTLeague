@@ -3200,7 +3200,7 @@ h2 {
       display: block;
       width: 100%; }
       .filterPlayers_filter .dropdownForm .dropdown-content {
-        display: none;
+        display: none !important;
         position: absolute;
         width: 100%;
         z-index: 2;
@@ -3765,3 +3765,283 @@ h2 {
         justify-content: flex-end; }
       .trainings .trainingsTable .training_price {
         display: none; } }
+
+.training {
+  margin-top: 40px; }
+  .training_mainInfo {
+    border-radius: 14px;
+    background: #262630;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    gap: 20px; }
+    .training_mainInfo_logo {
+      aspect-ratio: 1/1;
+      width: 160px;
+      height: auto;
+      border-radius: 50%; }
+    .training_mainInfo_info {
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      width: 100%; }
+      .training_mainInfo_info_header {
+        display: flex;
+        position: relative;
+        gap: 20px; }
+        .training_mainInfo_info_header_name {
+          color: #FFF;
+          font-family: Inter;
+          font-size: 20px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+          width: 100%; }
+        .training_mainInfo_info_header_date {
+          color: #fff;
+          font-family: Inter;
+          font-size: 20px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+          width: 100%; }
+          .training_mainInfo_info_header_date::first-letter {
+            text-transform: uppercase; }
+        .training_mainInfo_info_header::after {
+          content: '';
+          position: absolute;
+          display: block;
+          height: 1px;
+          width: 100%;
+          background-color: #3F3F4C;
+          bottom: -10px;
+          left: 0; }
+      .training_mainInfo_info_descr {
+        display: flex;
+        gap: 20px; }
+        .training_mainInfo_info_descr_path {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          width: 100%; }
+          .training_mainInfo_info_descr_path p {
+            color: #FFF;
+            font-family: Inter;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; }
+            .training_mainInfo_info_descr_path p span {
+              font-weight: 400; }
+              .training_mainInfo_info_descr_path p span a {
+                text-decoration: none;
+                color: #FFF; }
+          .training_mainInfo_info_descr_path .trainingPrice span {
+            color: #FA6400; }
+  .training_buttonWrapp {
+    margin-top: 16px;
+    display: flex;
+    gap: 20px;
+    align-items: center; }
+    .training_buttonWrapp_btn {
+      width: 221px; }
+      .training_buttonWrapp_btn:focus-visible {
+        width: 221px; }
+      .training_buttonWrapp_btn:focus {
+        width: 221px; }
+    .training_buttonWrapp_booked {
+      display: none;
+      gap: 13px;
+      align-items: center; }
+      .training_buttonWrapp_booked img {
+        width: 28px;
+        height: 28px; }
+      .training_buttonWrapp_booked p {
+        color: #007026;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal; }
+  .training_about {
+    margin-top: 60px;
+    border-radius: 14px;
+    background: #262630;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box; }
+    .training_about h3 {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal; }
+    .training_about_wrapp {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px; }
+      .training_about_wrapp p {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 130%; }
+        .training_about_wrapp p span {
+          font-weight: 500; }
+
+.trainingLocation {
+  margin-top: 80px; }
+  .trainingLocation #map {
+    border-radius: 14px;
+    aspect-ratio: 2/1;
+    width: 100%;
+    height: auto;
+    z-index: 3; }
+
+.bookedPlayers {
+  margin-top: 60px; }
+  .bookedPlayers_table {
+    border-radius: 14px;
+    background: #262630;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    box-sizing: border-box; }
+    .bookedPlayers_table_content {
+      width: 100%; }
+    .bookedPlayers_table_header {
+      border-radius: 8px;
+      background: #3F3F4C;
+      padding: 15px 30px;
+      display: grid;
+      grid-template-columns: 20px auto 50px;
+      gap: 35px;
+      color: #fff;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 130%; }
+    .bookedPlayers_table_player {
+      position: relative;
+      padding: 15px 30px;
+      display: grid;
+      grid-template-columns: 20px auto 50px;
+      gap: 35px;
+      color: #fff;
+      font-family: Inter;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 130%; }
+      .bookedPlayers_table_player::after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        content: '';
+        display: block;
+        height: 1px;
+        width: 100%;
+        background: #3F3F4C; }
+  .bookedPlayers_number {
+    align-content: center; }
+  .bookedPlayers_player {
+    display: flex;
+    justify-content: flex-start;
+    align-content: center;
+    gap: 12px; }
+    .bookedPlayers_player .playerLogo {
+      width: 36px;
+      height: 36px; }
+    .bookedPlayers_player span {
+      align-content: center; }
+  .bookedPlayers_rating {
+    align-content: center;
+    font-size: 16px; }
+
+@media (max-width: 768px) {
+  .training_mainInfo div {
+    align-content: center; }
+  .training_mainInfo_logo {
+    width: 250px; }
+  .training_mainInfo_info_header {
+    flex-direction: column; }
+  .training_mainInfo_info_descr {
+    flex-direction: column; }
+    .training_mainInfo_info_descr_path p {
+      font-size: 14px;
+      line-height: 130%; }
+  .training_about_wrapp p {
+    font-size: 14px;
+    line-height: 130%; }
+  .bookedPlayers_table_player {
+    font-size: 16px; } }
+
+@media (max-width: 576px) {
+  .training {
+    margin-top: 20px; }
+    .training_mainInfo {
+      flex-direction: column;
+      align-items: center; }
+      .training_mainInfo_logo {
+        width: 160px; }
+      .training_mainInfo_info {
+        gap: 22px; }
+        .training_mainInfo_info_header_name {
+          font-size: 18px; }
+        .training_mainInfo_info_header_date {
+          font-size: 16px; }
+        .training_mainInfo_info_descr {
+          flex-direction: column;
+          gap: 14px; }
+    .training_buttonWrapp {
+      flex-direction: column; }
+      .training_buttonWrapp_btn {
+        width: 100%; }
+        .training_buttonWrapp_btn:focus-visible {
+          width: 100%; }
+        .training_buttonWrapp_btn:focus {
+          width: 100%; }
+    .training_about {
+      margin-top: 20px; }
+      .training_about h3 {
+        font-size: 18px; }
+  .trainingLocation {
+    margin-top: 40px; }
+    .trainingLocation h2 {
+      font-size: 18px; }
+  .bookedPlayers {
+    margin-top: 40px; }
+    .bookedPlayers_table {
+      padding: 12px 8px; }
+      .bookedPlayers_table_header {
+        display: none;
+        font-size: 14px;
+        gap: 16px;
+        padding: 8px 12px; }
+      .bookedPlayers_table_player {
+        gap: 5px;
+        line-height: normal;
+        padding: 8px 0px; }
+    .bookedPlayers_player {
+      font-size: 14px;
+      line-height: normal;
+      font-weight: 400; }
+      .bookedPlayers_player .playerLogo {
+        width: 20px;
+        height: 20px; }
+    .bookedPlayers_number {
+      font-size: 14px;
+      width: 7px;
+      font-weight: 400; }
+    .bookedPlayers_rating {
+      font-size: 14px;
+      font-weight: 400;
+      text-align: right; } }

@@ -46,7 +46,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             'contacts': 'Contacts',
             'tables': 'Number of tables',
             'about': 'About the club',
-            'address': 'Address'
+            'address': 'Address',
+            'Parking': 'Parking',
+            'Shop': 'Shop',
+            'WI-FI': 'WI-FI',
+            'Air conditioner': 'Air conditioner'
         },
         'ru': {
             'representative': 'Представитель',
@@ -56,7 +60,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             'contacts': 'Контакты',
             'tables': 'Количество столов',
             'about': 'О клубе',
-            'address': 'Адрес'
+            'address': 'Адрес',
+            'Parking': 'Парковка',
+            'Shop': 'Магазин',
+            'WI-FI': 'Wi-Fi',
+            'Air conditioner': 'Кондиционер'
         },
         'th': {
             'representative': 'ตัวแทน',
@@ -66,7 +74,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             'contacts': 'ติดต่อเรา',
             'tables': 'จำนวนโต๊ะ',
             'about': 'เกี่ยวกับสโมสร',
-            'address': 'ที่อยู่'
+            'address': 'ที่อยู่',
+            'Parking': 'ที่จอดรถ',
+            'Shop': 'ร้านค้า',
+            'WI-FI': 'ไวไฟ',
+            'Air conditioner': 'แอร์'
         }
     };
 
@@ -109,7 +121,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    
+
     function renderClubData() {
+        const clubSupplements = document.querySelector('.supplements');
+        club.supplements.forEach(item => {
+            console.log(item);
+            const supplement = document.createElement('div');
+            supplement.classList.add('supplements_item');
+            const supplText = document.createElement('p');
+            supplText.innerHTML = `${getTranslation(item)}`;
+            supplement.appendChild(supplText);
+            clubSupplements.appendChild(supplement);
+        })
+
         const clubMainInfo = document.querySelector('.club_mainInfo');
         clubMainInfo.innerHTML = `
             <div class="club_mainInfo_logo" style="background-image: url(${club.logo}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>

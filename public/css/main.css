@@ -178,6 +178,60 @@ h2 {
           display: block; }
     .header_langs .openLangsMenu {
       display: flex; }
+  .header_account {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background-color: transparent;
+    padding-left: 10px;
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 400;
+    color: #fff;
+    font-style: normal;
+    line-height: normal;
+    text-transform: none;
+    border: none;
+    cursor: pointer; }
+    .header_account .accountName {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal; }
+    .header_account_avatar {
+      width: 46px;
+      height: 46px; }
+    .header_account_content {
+      margin-top: 50px;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 30px;
+      position: absolute;
+      width: 202px;
+      padding: 30px;
+      border-radius: 0px 0px 14px 14px;
+      background: #262630;
+      box-sizing: border-box;
+      z-index: 1; }
+      .header_account_content a {
+        color: #fff;
+        font-family: Inter;
+        font-size: 16px;
+        font-weight: 500;
+        font-style: normal;
+        line-height: normal;
+        text-decoration: none;
+        display: flex;
+        gap: 6px; }
+        .header_account_content a:hover {
+          color: #FF7A00; }
+          .header_account_content a:hover p {
+            color: #FF7A00; }
+      .header_account_content_openMenu {
+        display: flex; }
   .header_buttons {
     display: flex;
     gap: 20px; }
@@ -318,6 +372,16 @@ h2 {
     .header_footer_contacts a {
       text-decoration: none;
       color: #fff; }
+
+.loginFormError {
+  padding: 1px 6px;
+  margin-top: 11px;
+  font-family: Inter;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+  text-align: left; }
 
 .info {
   position: relative;
@@ -488,6 +552,7 @@ h2 {
       position: relative;
       grid-column: 5/7;
       padding-left: 50px;
+      padding-right: 10px;
       box-sizing: border-box; }
     .tournaments .upcommingTable .tournament_rating {
       grid-column: 7/8; }
@@ -914,7 +979,9 @@ h2 {
         align-items: center;
         gap: 8px; }
       .modal form .hands label, .modal form .hands input {
-        margin-top: 0; }
+        margin-top: 0;
+        font-weight: 400;
+        font-size: 14px; }
     .modal form .policy {
       display: flex;
       align-items: center;
@@ -2244,6 +2311,28 @@ h2 {
         .club_about_wrapp p span {
           font-weight: 500; }
 
+.supplements {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px; }
+  .supplements_item {
+    display: flex;
+    padding: 4px 9px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--orange, #FA6400);
+    background: rgba(250, 100, 0, 0.36);
+    cursor: default; }
+    .supplements_item p {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal; }
+
 .clubLocation {
   margin-top: 80px; }
   .clubLocation #map {
@@ -3025,7 +3114,8 @@ h2 {
       position: relative;
       grid-column: 5/7;
       padding-left: 50px;
-      box-sizing: border-box; }
+      box-sizing: border-box;
+      padding-right: 10px; }
     .tournaments .lastTournamentsTable .tournament_rating {
       grid-column: 7/8; }
     .tournaments .lastTournamentsTable .tournament_players {
@@ -3200,8 +3290,10 @@ h2 {
       position: relative;
       display: block;
       width: 100%; }
+      .filterPlayers_filter .dropdownForm #cityDropdown {
+        display: none !important; }
       .filterPlayers_filter .dropdownForm .dropdown-content {
-        display: none !important;
+        display: none;
         position: absolute;
         width: 100%;
         z-index: 2;
@@ -3396,8 +3488,10 @@ h2 {
       width: 100%; }
     .filterPlayers label {
       font-size: 14px; }
-    .filterPlayers_filter .ratingForm {
+    .filterPlayers_filter .raitingsForm {
       width: 100%; }
+      .filterPlayers_filter .raitingsForm input {
+        width: 100%; }
   .players {
     margin-top: 40px; }
     .players .playersTable {
@@ -3769,6 +3863,22 @@ h2 {
 
 .training {
   margin-top: 40px; }
+  .training .statusFinished {
+    margin-bottom: 40px;
+    display: flex;
+    width: 100%;
+    padding: 24px 0;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    background: rgba(0, 112, 38, 0.17); }
+    .training .statusFinished h5 {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal; }
   .training_mainInfo {
     border-radius: 14px;
     background: #262630;
@@ -3868,6 +3978,14 @@ h2 {
         font-style: normal;
         font-weight: 400;
         line-height: normal; }
+    .training_buttonWrapp a {
+      color: #FA6400;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      text-decoration-line: underline; }
   .training_about {
     margin-top: 60px;
     border-radius: 14px;
@@ -4046,3 +4164,209 @@ h2 {
       font-size: 14px;
       font-weight: 400;
       text-align: right; } }
+
+section {
+  margin-top: 60px; }
+  section h2 {
+    margin-bottom: 40px; }
+
+.account {
+  margin-top: 40px; }
+  .account_mainInfo {
+    border-radius: 14px;
+    background: #262630;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    gap: 20px; }
+    .account_mainInfo_logo {
+      aspect-ratio: 1/1;
+      width: 160px;
+      height: auto;
+      border-radius: 50%; }
+    .account_mainInfo_info {
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      width: 100%; }
+      .account_mainInfo_info_header {
+        display: flex;
+        position: relative;
+        gap: 20px; }
+        .account_mainInfo_info_header_name {
+          color: #FFF;
+          font-family: Inter;
+          font-size: 20px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+          width: 100%; }
+        .account_mainInfo_info_header_date {
+          color: #fff;
+          font-family: Inter;
+          font-size: 20px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+          width: 100%; }
+          .account_mainInfo_info_header_date::first-letter {
+            text-transform: uppercase; }
+        .account_mainInfo_info_header::after {
+          content: '';
+          position: absolute;
+          display: block;
+          height: 1px;
+          width: 100%;
+          background-color: #3F3F4C;
+          bottom: -10px;
+          left: 0; }
+      .account_mainInfo_info_descr {
+        display: flex;
+        gap: 20px; }
+        .account_mainInfo_info_descr_path {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          width: 100%; }
+          .account_mainInfo_info_descr_path p {
+            color: #FFF;
+            font-family: Inter;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; }
+            .account_mainInfo_info_descr_path p span {
+              font-weight: 400; }
+              .account_mainInfo_info_descr_path p span a {
+                text-decoration: none;
+                color: #FFF; }
+          .account_mainInfo_info_descr_path .trainingPrice span {
+            color: #FA6400; }
+  .account_buttonWrapp {
+    margin-top: 16px;
+    display: flex;
+    gap: 20px;
+    align-items: center; }
+    .account_buttonWrapp_btn {
+      width: 221px; }
+      .account_buttonWrapp_btn:focus-visible {
+        width: 221px; }
+      .account_buttonWrapp_btn:focus {
+        width: 221px; }
+    .account_buttonWrapp_share {
+      display: block;
+      gap: 13px;
+      align-items: center;
+      cursor: pointer; }
+      .account_buttonWrapp_share p {
+        color: #FA6400;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        text-decoration-line: underline;
+        cursor: pointer; }
+
+.restorePassword {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center; }
+  .restorePassword_wrapp {
+    box-sizing: border-box;
+    width: 598px;
+    padding: 40px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: #262630; }
+    .restorePassword_wrapp h2 {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 30px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      text-transform: uppercase;
+      margin-bottom: 20px; }
+    .restorePassword_wrapp form {
+      display: flex;
+      color: #fff;
+      gap: 0px;
+      flex-direction: column;
+      width: 100%; }
+      .restorePassword_wrapp form input[type='radio'] {
+        -webkit-appearance: none;
+        width: 21px;
+        height: 21px;
+        border-radius: 10%;
+        outline: none;
+        background-color: #ffffff00;
+        box-shadow: 0 0 0 2px #fff; }
+      .restorePassword_wrapp form input[type='checkbox'] {
+        -webkit-appearance: none;
+        width: 21px;
+        height: 21px;
+        border-radius: 10%;
+        outline: none;
+        background-color: #ffffff00;
+        box-shadow: 0 0 0 2px #3F3F4C; }
+      .restorePassword_wrapp form input[type='radio']:checked, .restorePassword_wrapp form input[type='checkbox']:checked {
+        background-image: url("/icons/radio-checked.svg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-color: #fff;
+        box-shadow: 0 0 0 2px #fff; }
+      .restorePassword_wrapp form label {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        margin-top: 16px; }
+        .restorePassword_wrapp form label a {
+          text-decoration: none;
+          color: #666877;
+          font-family: Inter;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 130%; }
+      .restorePassword_wrapp form input {
+        width: 100%;
+        margin-top: 10px;
+        display: flex;
+        padding: 8px 13px 8px 8px;
+        align-items: center;
+        border: none;
+        border-radius: 6px;
+        background: #3F3F4C;
+        color: #fff;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal; }
+        .restorePassword_wrapp form input::placeholder {
+          color: #666877;
+          font-family: Inter;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal; }
+      .restorePassword_wrapp form input:focus {
+        outline: none; }
+      .restorePassword_wrapp form input:-webkit-autofill,
+      .restorePassword_wrapp form input:-webkit-autofill:hover,
+      .restorePassword_wrapp form input:-webkit-autofill:focus {
+        -webkit-text-fill-color: #fff;
+        transition: background-color 5000s ease-in-out 0s; }
+    .restorePassword_wrapp .btnRestorePassword {
+      width: 200px;
+      margin-top: 20px; }

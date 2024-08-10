@@ -35,507 +35,1062 @@ export function fetchAdvertisements(block) {
         });
 };
 
-export function createHeader(language) {
-    const headerTag = document.querySelector('.header');
-    // console.log(language);
-    if (language === 'english') {
-        headerTag.innerHTML = `
-            <div class="header_wrapper">
-                <div class="container">
-                    <div class="header_top">
-                        <div class="header_top_left">
-                            <a class="logo" href="/">
-                                <img class="logo_img" src="/icons/logo.svg" alt="logo">
-                            </a>
-                            <label class="header_top_left_label" id="headerPC">
-                                <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                                <button type="submit" class="header_top_left_search">
-                                    <img src="/icons/search.svg" alt="search icon">
-                                </button>
-                            </label>
-                        </div>
-                        <div class="header_top_right" id="headerPC">
-                            
-                            <div class="header_langs">
-                                <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
-                                    <span class="languageText">ENG</span>
-                                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
-                                </button>
-                                <div class="header_langs_dropbtnLangs_content dropdown">
-                                <a href="#" data-lang="english">ENG</a>
-                                <a href="#" data-lang="russian">RUS</a>
-                                <a href="#" data-lang="thai">ไทย</a>
-                                </div>
-                            </div>
-                            <div class="header_buttons">
-                                <button class="header_btn-log btnLogin">
-                                    Log in
-                                </button>
-                                <button class="header_btn-sign btnRegister">
-                                    Sign in
-                                </button>
-                            </div>
-                        </div>
-                        <button class="burger-btn" id="burger">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="header_bottom header_bottom_pc" id="headerPC">
-                    <a class="header_bottom_category goToAllTournaments">
-                        <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
-                        <p class="header_bottom_category-text">
-                            Tournaments
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAllClubs">
-                        <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
-                        <p class="header_bottom_category-text">
-                            Clubs
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAllPlayers">
-                        <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
-                        <p class="header_bottom_category-text">
-                            Players
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAllTrainings">
-                        <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
-                        <p class="header_bottom_category-text">
-                            Training
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAboutUs">
-                        <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                        <p class="header_bottom_category-text">
-                            About Us
-                        </p>
-                    </a>                
-                </div>
-
-                
-            </div>
-            <div class="header_bottom header_bottom_mob" id="headerMob">
-            <button class="header_bottom_mob_cross">
-                <img  src="/icons/x-circle.svg" alt="cross">
-            </button>
-            
-            <label class="header_top_left_label">
-                <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                <button class="header_top_left_search">
-                    <img src="/icons/search.svg" alt="search icon">
-                </button>
-            </label>
-            <a class="header_bottom_category guest">
-                <p class="header_category-text btnLogin">
-                    Log in
-                </p>
-            </a>
-            <a class="header_bottom_category guest">
-                <p class="header_bottom_category-text btnRegister">
-                    Sign in
-                </p>
-            </a>
-
-            <a class="header_bottom_category logedIn">
-                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
-                <p class="header_bottom_category-text">
-                    My profile
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllTournaments">
-                <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Tournaments
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllClubs">
-                <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Clubs
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllPlayers">
-                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Players
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllTrainings">
-                <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Training
-                </p>
-            </a>
-            <a class="header_bottom_category goToAboutUs">
-                <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                <p class="header_bottom_category-text">
-                    About Us
-                </p>
-            </a>
-            <div class="header_langs">
-                <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
-                    <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
-                    <span class="languageText">ENG</span>
-                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
-                </button>
-                <div class="header_langs_dropbtnLangs_content dropdown">
-                    <a href="#" data-lang="english">ENG</a>
-                    <a href="#" data-lang="russian">RUS</a>
-                    <a href="#" data-lang="thai">ไทย</a>
-                </div>
-            </div>
-            <div class="header_footer_contacts">
-                <div class="header_footer_contacts_title">
-                    contacts
-                </div>
-                <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
-                    thailandttleague@gmail.com
-                </a>
-                <a class="footer_cantacts-phone" href="tel:+66951954053">
-                    +66 95 195 4053
-                </a>
-            </div>
-        </div>
-        `;
-    } else if ( language === 'russian') {
-        headerTag.innerHTML = `
-            <div class="header_wrapper">
-                <div class="container">
-                    <div class="header_top">
-                        <div class="header_top_left">
-                            <a class="logo" href="/">
-                                <img class="logo_img" src="/icons/logo.svg" alt="logo">
-                            </a>
-                            <label class="header_top_left_label" id="headerPC">
-                                <input class="header_top_left_input" type="text" placeholder="Поиск игрока">
-                                <button type="submit" class="header_top_left_search">
-                                    <img src="/icons/search.svg" alt="search icon">
-                                </button>
-                            </label>
-                        </div>
-                        <div class="header_top_right" id="headerPC">
-                            
-                            <div class="header_langs">
-                                <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
-                                    <span class="languageText">RUS</span>
-                                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
-                                </button>
-                                <div class="header_langs_dropbtnLangs_content dropdown">
-                                <a href="#" data-lang="english">ENG</a>
-                                <a href="#" data-lang="russian">RUS</a>
-                                <a href="#" data-lang="thai">ไทย</a>
-                                </div>
-                            </div>
-                            <div class="header_buttons">
-                                <button class="header_btn-log btnLogin">
-                                    Войти
-                                </button>
-                                <button class="header_btn-sign btnRegister">
-                                    Регистрация
-                                </button>
-                            </div>
-                        </div>
-                        <button class="burger-btn" id="burger">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="header_bottom header_bottom_pc" id="headerPC">
-                    <a class="header_bottom_category goToAllTournaments">
-                        <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
-                        <p class="header_bottom_category-text">
-                        Турниры
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAllClubs">
-                        <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
-                        <p class="header_bottom_category-text">
-                        Клубы
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAllPlayers">
-                        <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
-                        <p class="header_bottom_category-text">
-                        Игроки
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAllTrainings">
-                        <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
-                        <p class="header_bottom_category-text">
-                        Тренировки
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAboutUs">
-                        <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                        <p class="header_bottom_category-text">
-                        О Нас
-                        </p>
-                    </a>                
-                </div>
-
-                
-            </div>
-            <div class="header_bottom header_bottom_mob" id="headerMob">
-            <button class="header_bottom_mob_cross">
-                <img  src="/icons/x-circle.svg" alt="cross">
-            </button>
-            
-            <label class="header_top_left_label">
-                <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                <button class="header_top_left_search">
-                    <img src="/icons/search.svg" alt="search icon">
-                </button>
-            </label>
-            <a class="header_bottom_category guest">
-                <p class="header_category-text btnLogin">
-                    Войти
-                </p>
-            </a>
-            <a class="header_bottom_category guest">
-                <p class="header_bottom_category-text btnRegister">
-                    Регистрация
-                </p>
-            </a>
-
-            <a class="header_bottom_category logedIn">
-                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Мой профиль
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllTournaments">
-                <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Турниры
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllClubs">
-                <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Клубы
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllPlayers">
-                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Игроки
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllTrainings">
-                <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Тренировки
-                </p>
-            </a>
-            <a class="header_bottom_category goToAboutUs">
-                <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                <p class="header_bottom_category-text">
-                    О Нас
-                </p>
-            </a>
-            <div class="header_langs">
-                <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
-                    <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
-                    <span class="languageText">RUS</span>
-                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
-                </button>
-                <div class="header_langs_dropbtnLangs_content dropdown">
-                    <a href="#" data-lang="english">ENG</a>
-                    <a href="#" data-lang="russian">RUS</a>
-                    <a href="#" data-lang="thai">ไทย</a>
-                </div>
-            </div>
-            <div class="header_footer_contacts">
-                <div class="header_footer_contacts_title">
-                    Контакты
-                </div>
-                <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
-                    thailandttleague@gmail.com
-                </a>
-                <a class="footer_cantacts-phone" href="tel:+66951954053">
-                    +66 95 195 4053
-                </a>
-            </div>
-        </div>
-        `;
-    } else if ( language === 'thai') {
-        headerTag.innerHTML = `
-            <div class="header_wrapper">
-                <div class="container">
-                    <div class="header_top">
-                        <div class="header_top_left">
-                            <a class="logo" href="/">
-                                <img class="logo_img" src="/icons/logo.svg" alt="logo">
-                            </a>
-                            <label class="header_top_left_label" id="headerPC">
-                                <input class="header_top_left_input" type="text" placeholder="ค้นหาผู้เล่น">
-                                <button type="submit" class="header_top_left_search">
-                                    <img src="/icons/search.svg" alt="search icon">
-                                </button>
-                            </label>
-                        </div>
-                        <div class="header_top_right" id="headerPC">
-                            
-                            <div class="header_langs">
-                                <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
-                                    <span class="languageText">ไทย</span>
-                                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
-                                </button>
-                                <div class="header_langs_dropbtnLangs_content dropdown">
-                                <a href="#" data-lang="english">ENG</a>
-                                <a href="#" data-lang="russian">RUS</a>
-                                <a href="#" data-lang="thai">ไทย</a>
-                                </div>
-                            </div>
-                            <div class="header_buttons">
-                                <button class="header_btn-log btnLogin">
-                                    เข้าสู่ระบบ
-                                </button>
-                                <button class="header_btn-sign btnRegister">
-                                    ลงทะเบียน
-                                </button>
-                            </div>
-                        </div>
-                        <button class="burger-btn" id="burger">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="header_bottom header_bottom_pc" id="headerPC">
-                    <a class="header_bottom_category goToAllTournaments">
-                        <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
-                        <p class="header_bottom_category-text">
-                            การแข่งขัน
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAllClubs">
-                        <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
-                        <p class="header_bottom_category-text">
-                            สโมสร
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAllPlayers">
-                        <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
-                        <p class="header_bottom_category-text">
-                            ผู้เล่น
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAllTrainings">
-                        <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
-                        <p class="header_bottom_category-text">
-                            เทรนกับโค้ช
-                        </p>
-                    </a>
-                    <a class="header_bottom_category goToAboutUs">
-                        <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                        <p class="header_bottom_category-text">
-                            เกี่ยวกับเรา
-                        </p>
-                    </a>                
-                </div>
-
-                
-            </div>
-            <div class="header_bottom header_bottom_mob" id="headerMob">
-            <button class="header_bottom_mob_cross">
-                <img  src="/icons/x-circle.svg" alt="cross">
-            </button>
-            
-            <label class="header_top_left_label">
-                <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                <button class="header_top_left_search">
-                    <img src="/icons/search.svg" alt="search icon">
-                </button>
-            </label>
-            <a class="header_bottom_category guest">
-                <p class="header_category-text btnLogin">
-                    เข้าสู่ระบบ
-                </p>
-            </a>
-            <a class="header_bottom_category guest">
-                <p class="header_bottom_category-text btnRegister">
-                    ลงทะเบียน
-                </p>
-            </a>
-
-            <a class="header_bottom_category logedIn">
-                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
-                <p class="header_bottom_category-text">
-                    ประวัติของฉัน
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllTournaments">
-                <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
-                <p class="header_bottom_category-text">
-                    การแข่งขัน
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllClubs">
-                <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
-                <p class="header_bottom_category-text">
-                    สโมสร
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllPlayers">
-                <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
-                <p class="header_bottom_category-text">
-                    ผู้เล่น
-                </p>
-            </a>
-            <a class="header_bottom_category goToAllTrainings">
-                <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
-                <p class="header_bottom_category-text">
-                    เทรนกับโค้ช
-                </p>
-            </a>
-            <a class="header_bottom_category goToAboutUs">
-                <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
-                <p class="header_bottom_category-text">
-                    เกี่ยวกับเรา
-                </p>
-            </a>
-            <div class="header_langs">
-                <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
-                    <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
-                    <span class="languageText">ไทย</span>
-                    <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
-                </button>
-                <div class="header_langs_dropbtnLangs_content dropdown">
-                    <a href="#" data-lang="english">ENG</a>
-                    <a href="#" data-lang="russian">RUS</a>
-                    <a href="#" data-lang="thai">ไทย</a>
-                </div>
-            </div>
-            <div class="header_footer_contacts">
-                <div class="header_footer_contacts_title">
-                    ติดต่อเรา
-                </div>
-                <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
-                    thailandttleague@gmail.com
-                </a>
-                <a class="footer_cantacts-phone" href="tel:+66951954053">
-                    +66 95 195 4053
-                </a>
-            </div>
-        </div>
-        `;
-    };
-    
+const languageMap = {
+    'russian': 'ru',
+    'english': 'en',
+    'thai': 'th'
 };
+
+async function checkSession() {
+    try {
+        const response = await fetch('/check-session');
+        if (!response.ok) {
+            throw new Error('Failed to fetch session status');
+        }
+        const data = await response.json();
+        console.log('чек сессион', data);
+        return data;
+    } catch (error) {
+        console.error('Error fetching session status:', error);
+        return { loggedIn: false };
+    }
+}
+
+
+export async function createHeader(language) {
+    const headerTag = document.querySelector('.header');
+
+    // Запрос к серверу для получения информации о сессии
+    const sessionStatus = await checkSession();
+    
+    console.log(sessionStatus.loggedIn);
+    console.log(language);
+    
+    if (!sessionStatus.loggedIn) {
+        console.log('хедер не залогинен');
+        if (language === 'english') {
+            headerTag.innerHTML = `
+                <div class="header_wrapper">
+                    <div class="container">
+                        <div class="header_top">
+                            <div class="header_top_left">
+                                <a class="logo" href="/">
+                                    <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                                </a>
+                                <label class="header_top_left_label" id="headerPC">
+                                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                                    <button type="submit" class="header_top_left_search">
+                                        <img src="/icons/search.svg" alt="search icon">
+                                    </button>
+                                </label>
+                            </div>
+                            <div class="header_top_right" id="headerPC">
+                                
+                                <div class="header_langs">
+                                    <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                        <span class="languageText">ENG</span>
+                                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                    </button>
+                                    <div class="header_langs_dropbtnLangs_content dropdown">
+                                    <a href="#" data-lang="english">ENG</a>
+                                    <a href="#" data-lang="russian">RUS</a>
+                                    <a href="#" data-lang="thai">ไทย</a>
+                                    </div>
+                                </div>
+                                <div class="header_buttons">
+                                    <button class="header_btn-log btnLogin">
+                                        Log in
+                                    </button>
+                                    <button class="header_btn-sign btnRegister">
+                                        Sign in
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="burger-btn" id="burger">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="header_bottom header_bottom_pc" id="headerPC">
+                        <a class="header_bottom_category goToAllTournaments">
+                            <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                Tournaments
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllClubs">
+                            <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                Clubs
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllPlayers">
+                            <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                Players
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllTrainings">
+                            <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                Training
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAboutUs">
+                            <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                About Us
+                            </p>
+                        </a>                
+                    </div>
+    
+                    
+                </div>
+                <div class="header_bottom header_bottom_mob" id="headerMob">
+                <button class="header_bottom_mob_cross">
+                    <img  src="/icons/x-circle.svg" alt="cross">
+                </button>
+                
+                <label class="header_top_left_label">
+                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button class="header_top_left_search">
+                        <img src="/icons/search.svg" alt="search icon">
+                    </button>
+                </label>
+                <a class="header_bottom_category guest">
+                    <p class="header_category-text btnLogin">
+                        Log in
+                    </p>
+                </a>
+                <a class="header_bottom_category guest">
+                    <p class="header_bottom_category-text btnRegister">
+                        Sign in
+                    </p>
+                </a>
+    
+              
+                <a class="header_bottom_category goToAllTournaments">
+                    <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Tournaments
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllClubs">
+                    <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Clubs
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllPlayers">
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Players
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllTrainings">
+                    <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Training
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAboutUs">
+                    <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        About Us
+                    </p>
+                </a>
+                <div class="header_langs">
+                    <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                        <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                        <span class="languageText">ENG</span>
+                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                    </button>
+                    <div class="header_langs_dropbtnLangs_content dropdown">
+                        <a href="#" data-lang="english">ENG</a>
+                        <a href="#" data-lang="russian">RUS</a>
+                        <a href="#" data-lang="thai">ไทย</a>
+                    </div>
+                </div>
+                <div class="header_footer_contacts">
+                    <div class="header_footer_contacts_title">
+                        contacts
+                    </div>
+                    <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                        thailandttleague@gmail.com
+                    </a>
+                    <a class="footer_cantacts-phone" href="tel:+66951954053">
+                        +66 95 195 4053
+                    </a>
+                </div>
+            </div>
+            `;
+        } else if ( language === 'russian') {
+            headerTag.innerHTML = `
+                <div class="header_wrapper">
+                    <div class="container">
+                        <div class="header_top">
+                            <div class="header_top_left">
+                                <a class="logo" href="/">
+                                    <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                                </a>
+                                <label class="header_top_left_label" id="headerPC">
+                                    <input class="header_top_left_input" type="text" placeholder="Поиск игрока">
+                                    <button type="submit" class="header_top_left_search">
+                                        <img src="/icons/search.svg" alt="search icon">
+                                    </button>
+                                </label>
+                            </div>
+                            <div class="header_top_right" id="headerPC">
+                                
+                                <div class="header_langs">
+                                    <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                        <span class="languageText">RUS</span>
+                                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                    </button>
+                                    <div class="header_langs_dropbtnLangs_content dropdown">
+                                    <a href="#" data-lang="english">ENG</a>
+                                    <a href="#" data-lang="russian">RUS</a>
+                                    <a href="#" data-lang="thai">ไทย</a>
+                                    </div>
+                                </div>
+                                <div class="header_buttons">
+                                    <button class="header_btn-log btnLogin">
+                                        Войти
+                                    </button>
+                                    <button class="header_btn-sign btnRegister">
+                                        Регистрация
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="burger-btn" id="burger">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="header_bottom header_bottom_pc" id="headerPC">
+                        <a class="header_bottom_category goToAllTournaments">
+                            <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                            <p class="header_bottom_category-text">
+                            Турниры
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllClubs">
+                            <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                            <p class="header_bottom_category-text">
+                            Клубы
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllPlayers">
+                            <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                            <p class="header_bottom_category-text">
+                            Игроки
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllTrainings">
+                            <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                            <p class="header_bottom_category-text">
+                            Тренировки
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAboutUs">
+                            <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                            <p class="header_bottom_category-text">
+                            О Нас
+                            </p>
+                        </a>                
+                    </div>
+    
+                    
+                </div>
+                <div class="header_bottom header_bottom_mob" id="headerMob">
+                <button class="header_bottom_mob_cross">
+                    <img  src="/icons/x-circle.svg" alt="cross">
+                </button>
+                
+                <label class="header_top_left_label">
+                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button class="header_top_left_search">
+                        <img src="/icons/search.svg" alt="search icon">
+                    </button>
+                </label>
+                <a class="header_bottom_category guest">
+                    <p class="header_category-text btnLogin">
+                        Войти
+                    </p>
+                </a>
+                <a class="header_bottom_category guest">
+                    <p class="header_bottom_category-text btnRegister">
+                        Регистрация
+                    </p>
+                </a>
+    
+                
+                <a class="header_bottom_category goToAllTournaments">
+                    <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Турниры
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllClubs">
+                    <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Клубы
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllPlayers">
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Игроки
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllTrainings">
+                    <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Тренировки
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAboutUs">
+                    <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        О Нас
+                    </p>
+                </a>
+                <div class="header_langs">
+                    <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                        <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                        <span class="languageText">RUS</span>
+                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                    </button>
+                    <div class="header_langs_dropbtnLangs_content dropdown">
+                        <a href="#" data-lang="english">ENG</a>
+                        <a href="#" data-lang="russian">RUS</a>
+                        <a href="#" data-lang="thai">ไทย</a>
+                    </div>
+                </div>
+                <div class="header_footer_contacts">
+                    <div class="header_footer_contacts_title">
+                        Контакты
+                    </div>
+                    <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                        thailandttleague@gmail.com
+                    </a>
+                    <a class="footer_cantacts-phone" href="tel:+66951954053">
+                        +66 95 195 4053
+                    </a>
+                </div>
+            </div>
+            `;
+        } else if ( language === 'thai') {
+            headerTag.innerHTML = `
+                <div class="header_wrapper">
+                    <div class="container">
+                        <div class="header_top">
+                            <div class="header_top_left">
+                                <a class="logo" href="/">
+                                    <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                                </a>
+                                <label class="header_top_left_label" id="headerPC">
+                                    <input class="header_top_left_input" type="text" placeholder="ค้นหาผู้เล่น">
+                                    <button type="submit" class="header_top_left_search">
+                                        <img src="/icons/search.svg" alt="search icon">
+                                    </button>
+                                </label>
+                            </div>
+                            <div class="header_top_right" id="headerPC">
+                                
+                                <div class="header_langs">
+                                    <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                        <span class="languageText">ไทย</span>
+                                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                    </button>
+                                    <div class="header_langs_dropbtnLangs_content dropdown">
+                                    <a href="#" data-lang="english">ENG</a>
+                                    <a href="#" data-lang="russian">RUS</a>
+                                    <a href="#" data-lang="thai">ไทย</a>
+                                    </div>
+                                </div>
+                                <div class="header_buttons">
+                                    <button class="header_btn-log btnLogin">
+                                        เข้าสู่ระบบ
+                                    </button>
+                                    <button class="header_btn-sign btnRegister">
+                                        ลงทะเบียน
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="burger-btn" id="burger">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="header_bottom header_bottom_pc" id="headerPC">
+                        <a class="header_bottom_category goToAllTournaments">
+                            <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                การแข่งขัน
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllClubs">
+                            <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                สโมสร
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllPlayers">
+                            <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                ผู้เล่น
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllTrainings">
+                            <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                เทรนกับโค้ช
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAboutUs">
+                            <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                เกี่ยวกับเรา
+                            </p>
+                        </a>                
+                    </div>
+    
+                    
+                </div>
+                <div class="header_bottom header_bottom_mob" id="headerMob">
+                <button class="header_bottom_mob_cross">
+                    <img  src="/icons/x-circle.svg" alt="cross">
+                </button>
+                
+                <label class="header_top_left_label">
+                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button class="header_top_left_search">
+                        <img src="/icons/search.svg" alt="search icon">
+                    </button>
+                </label>
+                <a class="header_bottom_category guest">
+                    <p class="header_category-text btnLogin">
+                        เข้าสู่ระบบ
+                    </p>
+                </a>
+                <a class="header_bottom_category guest">
+                    <p class="header_bottom_category-text btnRegister">
+                        ลงทะเบียน
+                    </p>
+                </a>
+    
+                <a class="header_bottom_category goToAllTournaments">
+                    <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        การแข่งขัน
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllClubs">
+                    <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        สโมสร
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllPlayers">
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        ผู้เล่น
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllTrainings">
+                    <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        เทรนกับโค้ช
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAboutUs">
+                    <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        เกี่ยวกับเรา
+                    </p>
+                </a>
+                <div class="header_langs">
+                    <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                        <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                        <span class="languageText">ไทย</span>
+                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                    </button>
+                    <div class="header_langs_dropbtnLangs_content dropdown">
+                        <a href="#" data-lang="english">ENG</a>
+                        <a href="#" data-lang="russian">RUS</a>
+                        <a href="#" data-lang="thai">ไทย</a>
+                    </div>
+                </div>
+                <div class="header_footer_contacts">
+                    <div class="header_footer_contacts_title">
+                        ติดต่อเรา
+                    </div>
+                    <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                        thailandttleague@gmail.com
+                    </a>
+                    <a class="footer_cantacts-phone" href="tel:+66951954053">
+                        +66 95 195 4053
+                    </a>
+                </div>
+            </div>
+            `;
+        };
+    } 
+    
+    else if (sessionStatus.loggedIn) {
+        // console.log('хедер залогинен');
+        if (language === 'english') {
+            headerTag.innerHTML = `
+                <div class="header_wrapper">
+                    <div class="container">
+                        <div class="header_top">
+                            <div class="header_top_left">
+                                <a class="logo" href="/">
+                                    <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                                </a>
+                                <label class="header_top_left_label" id="headerPC">
+                                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                                    <button type="submit" class="header_top_left_search">
+                                        <img src="/icons/search.svg" alt="search icon">
+                                    </button>
+                                </label>
+                            </div>
+                            <div class="header_top_right" id="headerPC">
+                        
+                                <div class="header_langs">
+                                    <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                        <span class="languageText">ENG</span>
+                                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                    </button>
+                                    <div class="header_langs_dropbtnLangs_content dropdown">
+                                        <a href="#" data-lang="english">ENG</a>
+                                        <a href="#" data-lang="russian">RUS</a>
+                                        <a href="#" data-lang="thai">ไทย</a>
+                                    </div>
+                                </div>
+                                <div class="header_buttons">
+                                    <button class="header_account">
+                                        <span class="accountName">${localStorage.getItem('userName')}</span>
+                                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                        <img class="header_account_avatar" src="${localStorage.getItem('userLogo')}" alt="avatar">
+                                    </button>
+                                    
+                                    <div class="header_account_content profileMenu">
+                                        <a href="#" class="header_bottom_category logedIn myProfile" id="myProfile">
+                                            <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                                            <p class="header_bottom_category-text">
+                                                My profile
+                                            </p>
+                                        </a>
+                                        <a href="#" class="logOut">Exit</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="burger-btn" id="burger">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="header_bottom header_bottom_pc" id="headerPC">
+                        <a class="header_bottom_category goToAllTournaments">
+                            <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                Tournaments
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllClubs">
+                            <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                Clubs
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllPlayers">
+                            <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                Players
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllTrainings">
+                            <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                Training
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAboutUs">
+                            <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                About Us
+                            </p>
+                        </a>                
+                    </div>
+    
+                    
+                </div>
+                <div class="header_bottom header_bottom_mob" id="headerMob">
+                <button class="header_bottom_mob_cross">
+                    <img  src="/icons/x-circle.svg" alt="cross">
+                </button>
+                
+                <label class="header_top_left_label">
+                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button class="header_top_left_search">
+                        <img src="/icons/search.svg" alt="search icon">
+                    </button>
+                </label>
+    
+                <a class="header_bottom_category logedIn myProfile">
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        My profile
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllTournaments">
+                    <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Tournaments
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllClubs">
+                    <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Clubs
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllPlayers">
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Players
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllTrainings">
+                    <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Training
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAboutUs">
+                    <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        About Us
+                    </p>
+                </a>
+                <div class="header_langs">
+                    <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                        <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                        <span class="languageText">ENG</span>
+                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                    </button>
+                    <div class="header_langs_dropbtnLangs_content dropdown">
+                        <a href="#" data-lang="english">ENG</a>
+                        <a href="#" data-lang="russian">RUS</a>
+                        <a href="#" data-lang="thai">ไทย</a>
+                    </div>
+                </div>
+                <div class="header_footer_contacts">
+                    <div class="header_footer_contacts_title">
+                        contacts
+                    </div>
+                    <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                        thailandttleague@gmail.com
+                    </a>
+                    <a class="footer_cantacts-phone" href="tel:+66951954053">
+                        +66 95 195 4053
+                    </a>
+                </div>
+            </div>
+            `;
+        } else if ( language === 'russian') {
+            headerTag.innerHTML = `
+                <div class="header_wrapper">
+                    <div class="container">
+                        <div class="header_top">
+                            <div class="header_top_left">
+                                <a class="logo" href="/">
+                                    <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                                </a>
+                                <label class="header_top_left_label" id="headerPC">
+                                    <input class="header_top_left_input" type="text" placeholder="Поиск игрока">
+                                    <button type="submit" class="header_top_left_search">
+                                        <img src="/icons/search.svg" alt="search icon">
+                                    </button>
+                                </label>
+                            </div>
+                            <div class="header_top_right" id="headerPC">
+                                
+                                <div class="header_langs">
+                                    <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                        <span class="languageText">RUS</span>
+                                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                    </button>
+                                    <div class="header_langs_dropbtnLangs_content dropdown">
+                                    <a href="#" data-lang="english">ENG</a>
+                                    <a href="#" data-lang="russian">RUS</a>
+                                    <a href="#" data-lang="thai">ไทย</a>
+                                    </div>
+                                </div>
+                                <div class="header_buttons">
+                                    <button class="header_account">
+                                        <span class="accountName">${localStorage.getItem('userName')}</span>
+                                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                        <img class="header_account_avatar" src="${localStorage.getItem('userLogo')}" alt="avatar">
+                                    </button>
+                                    
+                                    <div class="header_account_content profileMenu">
+                                        <a href="#" class="header_bottom_category logedIn myProfile" id="myProfile">
+                                            <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                                            <p class="header_bottom_category-text">
+                                                Мой профиль
+                                            </p>
+                                        </a>
+                                        <a href="#" class="logOut">Выход</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="burger-btn" id="burger">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="header_bottom header_bottom_pc" id="headerPC">
+                        <a class="header_bottom_category goToAllTournaments">
+                            <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                            <p class="header_bottom_category-text">
+                            Турниры
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllClubs">
+                            <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                            <p class="header_bottom_category-text">
+                            Клубы
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllPlayers">
+                            <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                            <p class="header_bottom_category-text">
+                            Игроки
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllTrainings">
+                            <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                            <p class="header_bottom_category-text">
+                            Тренировки
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAboutUs">
+                            <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                            <p class="header_bottom_category-text">
+                            О Нас
+                            </p>
+                        </a>                
+                    </div>
+    
+                    
+                </div>
+                <div class="header_bottom header_bottom_mob" id="headerMob">
+                <button class="header_bottom_mob_cross">
+                    <img  src="/icons/x-circle.svg" alt="cross">
+                </button>
+                
+                <label class="header_top_left_label">
+                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button class="header_top_left_search">
+                        <img src="/icons/search.svg" alt="search icon">
+                    </button>
+                </label>
+    
+                <a class="header_bottom_category logedIn myProfile">
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Мой профиль
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllTournaments">
+                    <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Турниры
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllClubs">
+                    <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Клубы
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllPlayers">
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Игроки
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllTrainings">
+                    <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        Тренировки
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAboutUs">
+                    <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        О Нас
+                    </p>
+                </a>
+                <div class="header_langs">
+                    <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                        <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                        <span class="languageText">RUS</span>
+                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                    </button>
+                    <div class="header_langs_dropbtnLangs_content dropdown">
+                        <a href="#" data-lang="english">ENG</a>
+                        <a href="#" data-lang="russian">RUS</a>
+                        <a href="#" data-lang="thai">ไทย</a>
+                    </div>
+                </div>
+                <div class="header_footer_contacts">
+                    <div class="header_footer_contacts_title">
+                        Контакты
+                    </div>
+                    <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                        thailandttleague@gmail.com
+                    </a>
+                    <a class="footer_cantacts-phone" href="tel:+66951954053">
+                        +66 95 195 4053
+                    </a>
+                </div>
+            </div>
+            `;
+        } else if ( language === 'thai') {
+            headerTag.innerHTML = `
+                <div class="header_wrapper">
+                    <div class="container">
+                        <div class="header_top">
+                            <div class="header_top_left">
+                                <a class="logo" href="/">
+                                    <img class="logo_img" src="/icons/logo.svg" alt="logo">
+                                </a>
+                                <label class="header_top_left_label" id="headerPC">
+                                    <input class="header_top_left_input" type="text" placeholder="ค้นหาผู้เล่น">
+                                    <button type="submit" class="header_top_left_search">
+                                        <img src="/icons/search.svg" alt="search icon">
+                                    </button>
+                                </label>
+                            </div>
+                            <div class="header_top_right" id="headerPC">
+                                
+                                <div class="header_langs">
+                                    <button class="header_langs_dropbtnLangs selectedLanguage" id="selectedLanguage">
+                                        <span class="languageText">ไทย</span>
+                                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                    </button>
+                                    <div class="header_langs_dropbtnLangs_content dropdown">
+                                    <a href="#" data-lang="english">ENG</a>
+                                    <a href="#" data-lang="russian">RUS</a>
+                                    <a href="#" data-lang="thai">ไทย</a>
+                                    </div>
+                                </div>
+                                <div class="header_buttons">
+                                    <button class="header_account">
+                                        <span class="accountName">${localStorage.getItem('userName')}</span>
+                                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                                        <img class="header_account_avatar" src="${localStorage.getItem('userLogo')}" alt="avatar">
+                                    </button>
+                                    
+                                    <div class="header_account_content profileMenu">
+                                        <a href="#" class="header_bottom_category logedIn myProfile" id="myProfile">
+                                            <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                                            <p class="header_bottom_category-text">
+                                                ประวัติของฉัน
+                                            </p>
+                                        </a>
+                                        <a href="#" class="logOut">ออก</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="burger-btn" id="burger">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="header_bottom header_bottom_pc" id="headerPC">
+                        <a class="header_bottom_category goToAllTournaments">
+                            <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                การแข่งขัน
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllClubs">
+                            <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                สโมสร
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllPlayers">
+                            <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                ผู้เล่น
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAllTrainings">
+                            <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                เทรนกับโค้ช
+                            </p>
+                        </a>
+                        <a class="header_bottom_category goToAboutUs">
+                            <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                            <p class="header_bottom_category-text">
+                                เกี่ยวกับเรา
+                            </p>
+                        </a>                
+                    </div>
+    
+                    
+                </div>
+                <div class="header_bottom header_bottom_mob" id="headerMob">
+                <button class="header_bottom_mob_cross">
+                    <img  src="/icons/x-circle.svg" alt="cross">
+                </button>
+                
+                <label class="header_top_left_label">
+                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button class="header_top_left_search">
+                        <img src="/icons/search.svg" alt="search icon">
+                    </button>
+                </label>
+    
+                <a class="header_bottom_category logedIn myProfile" >
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        ประวัติของฉัน
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllTournaments">
+                    <img class="header_bottom_category-icon" src="/icons/tour.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        การแข่งขัน
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllClubs">
+                    <img class="header_bottom_category-icon" src="/icons/clubs.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        สโมสร
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllPlayers">
+                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        ผู้เล่น
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAllTrainings">
+                    <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        เทรนกับโค้ช
+                    </p>
+                </a>
+                <a class="header_bottom_category goToAboutUs">
+                    <img class="header_bottom_category-icon" src="/icons/about.svg" alt="">
+                    <p class="header_bottom_category-text">
+                        เกี่ยวกับเรา
+                    </p>
+                </a>
+                <div class="header_langs">
+                    <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
+                        <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
+                        <span class="languageText">ไทย</span>
+                        <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
+                    </button>
+                    <div class="header_langs_dropbtnLangs_content dropdown">
+                        <a href="#" data-lang="english">ENG</a>
+                        <a href="#" data-lang="russian">RUS</a>
+                        <a href="#" data-lang="thai">ไทย</a>
+                    </div>
+                </div>
+                <div class="header_footer_contacts">
+                    <div class="header_footer_contacts_title">
+                        ติดต่อเรา
+                    </div>
+                    <a class="header_footer_contacts-mail" href="mailto:thailandttleague@gmail.com">
+                        thailandttleague@gmail.com
+                    </a>
+                    <a class="footer_cantacts-phone" href="tel:+66951954053">
+                        +66 95 195 4053
+                    </a>
+                </div>
+            </div>
+            `;
+        };
+    }
+    
+    document.addEventListener('click', function(event) {
+        if (event.target.closest('.logOut')) {
+            event.preventDefault();
+            logout();
+        }
+        
+        if (event.target.closest('.header_account')) {
+            document.querySelector('.profileMenu').classList.toggle('header_account_content_openMenu');
+
+        }
+        if (event.target.closest('.myProfile')) {
+            event.preventDefault();
+            const userType = localStorage.getItem('userType');
+            if (userType === 'user') {
+                redirectToDashboard(userType);
+                // window.location.href = `/${languageMap[localStorage.clientLang]}/user_dashboard`;
+            } else if (userType === 'coach') {
+                redirectToDashboard(userType);
+                // window.location.href = `/${languageMap[localStorage.clientLang]}/coach_dashboard`;
+            } else if (userType === 'club') {
+                redirectToDashboard(userType);
+                // window.location.href = `/${languageMap[localStorage.clientLang]}/club_dashboard`;
+            } else if (userType === 'admin') {
+                redirectToDashboard(userType);
+                // window.location.href = `/${languageMap[localStorage.clientLang]}/admin_dashboard`;
+            }
+            
+        }
+    })
+    languageControl();
+};
+
+function redirectToDashboard(userType) {
+    const languageMap = {
+        'russian': 'ru',
+        'english': 'en',
+        'thai': 'th'
+    };
+    const clientLang = localStorage.getItem('clientLang') || 'english';
+    // Логи для проверки значений
+    console.log('Client Language:', languageMap[clientLang]);
+    console.log('User Type:', userType);
+    window.location.href = `${languageMap[clientLang]}/dashboard/${userType}`;
+}
 
 export function createFooter(language) {
     const footerTag = document.querySelector('.footer');
@@ -672,6 +1227,8 @@ export function createFooter(language) {
             </div>
         `;
     }
+
+    
 }
 
 export function fetchPastTournaments() {
@@ -1851,21 +2408,150 @@ export function loginForm() {
     const clientLang = localStorage.getItem('clientLang') || 'english';
     const translation = translations[clientLang] || translations['english'];
 
+    // content.innerHTML = `<button class="modal_close" onclick="closeModal()">
+    //                         <img src="/icons/x-circle.svg" alt="кнопка закрыть">
+    //                     </button>
+    //                     <h2>${translation.title}</h2>
+    //                     <form  id="loginForm" action="/login" method="POST" enctype="application/x-www-form-urlencoded">
+    //                         <label for="username">${translation.emailLabel}</label>
+    //                         <input type="text" name="username" autocomplete="username" placeholder="${translation.emailPlaceholder}" id="email" required>
+    //                         <label for="password">${translation.passwordLabel}</label>
+    //                         <input type="password" placeholder="${translation.passwordPlaceholder}" id="password" name="password" autocomplete="new-password" required>
+    //                         <button class='btnFogot' type="button">${translation.forgotPassword}</button>
+    //                         <button id="logIn" class='header_btn-sign btnSbmt header_btn-login' type="submit">${translation.submitButton}</button>
+    //                     </form>`;
     content.innerHTML = `<button class="modal_close" onclick="closeModal()">
                             <img src="/icons/x-circle.svg" alt="кнопка закрыть">
                         </button>
                         <h2>${translation.title}</h2>
-                        <form action="/login" method="POST" enctype="application/x-www-form-urlencoded">
-                            <label for="username">${translation.emailLabel}</label>
-                            <input type="text" name="username" autocomplete="username" placeholder="${translation.emailPlaceholder}" id="email" required>
+                        <form id="loginForm" action="/login" method="POST" enctype="application/x-www-form-urlencoded">
+                            <label for="email">${translation.emailLabel}</label>
+                            <input type="text" name="email" autocomplete="username" placeholder="${translation.emailPlaceholder}" id="email" required>
                             <label for="password">${translation.passwordLabel}</label>
                             <input type="password" placeholder="${translation.passwordPlaceholder}" id="password" name="password" autocomplete="new-password" required>
+                            <div class="loginFormError" id="error-message" style="color: red; display: none;"></div>
                             <button class='btnFogot' type="button">${translation.forgotPassword}</button>
                             <button id="logIn" class='header_btn-sign btnSbmt header_btn-login' type="submit">${translation.submitButton}</button>
                         </form>`;
     document.body.style = 'overflow: hidden;';
     modal.style.display = "block";
+
+
+    const languageMap = {
+        'russian': 'ru',
+        'english': 'en',
+        'thai': 'th'
+    };
+
+    // async function login(data) {
+    //     console.log('есть');
+
+    //     try {
+    //         const response = await fetch('/login', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify(data),
+    //             credentials: 'same-origin'
+    //         });
+    //         // console.log(data);
+    //         if (response.ok) {
+    //             console.log('есть ответ', data);
+    //             const data = await response.json();
+    //             const userId = data.userId;
+    //             const name = data.name;
+    //             const logo = data.logo;
+    //             localStorage.setItem('userId', userId);
+    //             localStorage.setItem('userName', name);
+    //             localStorage.setItem('userLogo', logo);
+                
+    //             window.location.href = `/${languageMap[clientLang]}/dashboard`;
+    //         } else {
+    //             console.error('Login failed');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error during login:', error);
+    //     }
+    // }
+
+    // document.getElementById('loginForm').addEventListener('submit', function(event) {
+    //     event.preventDefault(); // Отменяем стандартное поведение формы
+
+
+    //     const formData = new FormData(event.target);
+    //     const data = {
+    //         email: formData.get('username'),
+    //         password: formData.get('password'),
+    //         language: languageMap[clientLang] // Передаем выбранный язык
+            
+    //     };
+    //     // console.log(data);
+    //     login(data);
+
+    // });
+
+    async function login(data) {
+        console.log('Sending login request with data:', data);
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+                credentials: 'same-origin'
+            });
+            if (response.ok) {
+                console.log('Login successful');
+                const responseData = await response.json(); // изменено имя переменной на responseData
+                const userId = responseData.userId;
+                const name = responseData.name;
+                const logo = responseData.logo;
+                const userType = responseData.userType;
+                localStorage.setItem('userId', userId);
+                localStorage.setItem('userName', name);
+                localStorage.setItem('userLogo', logo);
+                localStorage.setItem('userType', userType);
+                console.log(userType);
+                let redirectUrl = `/${languageMap[clientLang]}/dashboard/${userType}`;
+               
+                console.log(redirectUrl);
+                window.location.href = redirectUrl;
+            } else {
+                const errorData = await response.json();
+                displayError(errorData.message);
+            }
+                
+        } catch (error) {
+            console.error('Error during login:', error);
+            displayError(errorData.message);
+        }
+    }
+
+    function displayError(message) {
+        const errorMessageElement = document.getElementById('error-message');
+        errorMessageElement.textContent = message;
+        errorMessageElement.style.display = 'block';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Отменяем стандартное поведение формы
+
+        const formData = new FormData(event.target);
+        const data = {
+            email: formData.get('email'),
+            password: formData.get('password'),
+            language: languageMap[clientLang] // Передаем выбранный язык
+        };
+
+        console.log('Form data:', data);
+        login(data);
+    });
 }
+
+
 
 export function restoreAccesForm() {
     const content = document.querySelector('.modal-content');
@@ -1902,7 +2588,7 @@ export function restoreAccesForm() {
                             <img src="/icons/x-circle.svg" alt="кнопка закрыть">
                         </button>
                         <h2>${translation.title}</h2>
-                        <form action="/forgot-password" method="POST" enctype="application/x-www-form-urlencoded">
+                        <form id="restoreForm">
                             <p>${translation.description}</p>
                             <label for="login">${translation.label}</label>
                             <input type="text" placeholder="${translation.placeholder}" id="email" name="email" required>
@@ -1910,6 +2596,37 @@ export function restoreAccesForm() {
                         </form>`;
     document.body.style = 'overflow: hidden;';
     modal.style.display = "block";
+
+    document.getElementById('restoreForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        try {
+            const response = await fetch('/api/restore-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
+
+            if (response.ok) {
+                alert('A link to reset your password has been sent to your email.');
+                closeModal(); // Закрыть модальное окно
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.');
+        }
+    });
+}
+
+function closeModal() {
+    const modal = document.getElementById("myModal");
+    modal.style.display = "none";
+    document.body.style = 'overflow: auto;';
 }
 
 export function registrationForm() {
@@ -2032,7 +2749,7 @@ export function registrationForm() {
                                 </div>
                             </div>
                             <label for="fullname">${translation.playerNameLabel}</label>
-                            <input type="text" placeholder="${translation.playerNamePlaceholder}" id="fullname" name="fullname" required><br>
+                            <input type="text" placeholder="${translation.playerNamePlaceholder}" id="fullname" name="fullname" required>
                             <label>${translation.playingHandLabel}</label>
                             <div class="hands">
                                 <div class="hands_left">
@@ -2316,7 +3033,12 @@ export function breadCrumb() {
             'allplayers': 'Players',
             'alltrainings': 'Trainings',
             'training': 'About the Training',
-            'trainings': 'Trainings'
+            'trainings': 'Trainings',
+            'dashboard': 'My profile',
+            'user_dashboard': 'My profile',
+            'admin_dashboard': 'Admin Dashboard',
+            'club_dashboard': 'Club Dashboard',
+            'trainer_dashboard': 'Coach Dashboard'
         },
         'ru': {
             'home': 'Главная',
@@ -2334,7 +3056,12 @@ export function breadCrumb() {
             'allplayers': 'Игроки',
             'alltrainings': 'Тренировки',
             'training': 'О Тренировке',
-            'trainings': 'Тренировки'
+            'trainings': 'Тренировки',
+            'dashboard': 'Мой профиль',
+            'user_dashboard': 'Мой профиль',
+            'admin_dashboard': 'Панель администратора',
+            'club_dashboard': 'Панель клуба',
+            'trainer_dashboard': 'Панель тренера'
         },
         'th': {
             'home': 'หน้าหลัก',
@@ -2352,7 +3079,13 @@ export function breadCrumb() {
             'allplayers': 'ผู้เล่น',
             'alltrainings': 'เทรนกับโค้ช',
             'training': 'เกี่ยวกับการฝึกอบรม',
-            'trainings': 'เทรนกับโค้ช'
+            'trainings': 'เทรนกับโค้ช',
+            'dashboard': 'ข้อมูลส่วนบุคคล',
+            'user_dashboard': 'ข้อมูลส่วนบุคคล',
+            'admin_dashboard': 'แดชบอร์ดผู้ดูแลระบบ',
+            'club_dashboard': 'แดชบอร์ดสโมสร',
+            'trainer_dashboard': 'แดชบอร์ดโค้ช'
+            
         }
     };
 
@@ -2396,12 +3129,40 @@ function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+
+async function logout() {
+    try {
+        const response = await fetch('/logout', {
+            method: 'POST',
+            credentials: 'same-origin' // Убедитесь, что куки отправляются с запросом
+        });
+        if (!response.ok) {
+            throw new Error('Logout failed');
+        }
+        window.location.href = '/'; // Перенаправление на главную страницу
+    } catch (error) {
+        console.error('Error during logout:', error);
+    }
+}
+
+
 export function listenerOfButtons() {
     const languageMap = {
         'russian': 'ru',
         'english': 'en',
         'thai': 'th'
     };
+
+    if (document.querySelector('#myProfile')) {
+        const accountBtnMenu = document.querySelector('#myProfile');
+        const accountMenu = document.querySelector('.profileMenu');
+        accountBtnMenu.addEventListener('click', (event) => {
+            event.preventDefault();
+            accountMenu.classList.toggle('header_account_content_openMenu');
+        })
+    }
+
+
     document.addEventListener('click', function(event) {
         if (event.target.classList.contains('btnRegister')) {
             registrationForm();
@@ -2415,9 +3176,18 @@ export function listenerOfButtons() {
             loginForm();
         }
 
+        // if (event.target.closest('.logOut')) {
+        //     logout();
+        // }
+        
+        // if (event.target.id === 'myProfile') {
+        //     window.location.href = `/${languageMap[localStorage.clientLang]}/dashboard`;
+        // }
+
         if (event.target.closest('.goToAllClubs')) {
             window.location.href = `/${languageMap[localStorage.clientLang]}/allclubs`;
         }
+
 
         if (event.target.closest('.goToAllPlayers')) {
             window.location.href = `/${languageMap[localStorage.clientLang]}/allplayers`;
@@ -3246,10 +4016,10 @@ export async function getAllPlayers() {
     const ratingUntilInput = document.getElementById('dateUntilInput');
     const nameInput = document.getElementById('clubInput');
     const cityInput = document.getElementById('cityInput');
-
+    
     const nameDropdown = document.getElementById('clubDropdown');
     const cityDropdown = document.getElementById('cityDropdown');
-    cityDropdown.style.display = 'none';
+    // cityDropdown.style.display = 'none';
     const searchButton = document.getElementById('filterPlayers_btnSearch');
 
     const playersContainer = document.querySelector('.playersTable_content');
@@ -3279,11 +4049,13 @@ export async function getAllPlayers() {
 
     nameInput.addEventListener('focus', () => {
         nameDropdown.style.display = 'block';
-        cityDropdown.style.display = 'none'; // Скрыть дропдаун городов при фокусе на поле имени
+        // cityDropdown.style.display = 'none'; // Скрыть дропдаун городов при фокусе на поле имени
+        cityDropdown.style = 'display: none !important';
     });
 
     cityInput.addEventListener('focus', () => {
-        cityDropdown.style.display = 'block';
+        // cityDropdown.style.display = 'block';
+        cityDropdown.style = 'display: block !important';
         nameDropdown.style.display = 'none'; // Скрыть дропдаун имен при фокусе на поле города
     });
 
@@ -3337,8 +4109,8 @@ export async function getAllPlayers() {
             createDropdown(cityDropdown, cityNames, cityInput);
 
             // Скрыть дропдаун меню при инициализации
-            nameDropdown.style.display = 'none';
-            cityDropdown.style.display = 'none';
+            // nameDropdown.style.display = 'none';
+            // cityDropdown.style.display = 'none';
 
         } catch (error) {
             console.error('Произошла ошибка:', error);
@@ -3398,8 +4170,9 @@ export async function getAllPlayers() {
             });
             dropdown.appendChild(div);
         });
+        dropdown.style.display = 'block';
 
-        dropdown.style.display = filteredOptions.length > 0 ? 'block' : 'none'; // Отображаем дропдаун только если есть совпадения
+        // dropdown.style.display = filteredOptions.length > 0 ? 'block' : 'none'; // Отображаем дропдаун только если есть совпадения
     }
 
     async function filterPlayers() {
@@ -4083,8 +4856,5 @@ export async function getAllTrainings() {
 //         });
 //     }
 // }
-
-
-
 
 

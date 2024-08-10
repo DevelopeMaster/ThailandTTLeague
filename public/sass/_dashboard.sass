@@ -1,0 +1,112 @@
+
+section
+    margin-top: 60px
+    h2
+        margin-bottom: 40px
+.account
+    margin-top: 40px
+    &_mainInfo
+        border-radius: 14px
+        background: #262630
+        padding: 10px
+        box-sizing: border-box
+        width: 100%
+        display: flex
+        gap: 20px
+        // height: 194px
+        &_logo
+            aspect-ratio: 1/1
+            width: 160px
+            height: auto
+            // width: auto
+            // height: 100%
+            border-radius: 50%
+        &_info
+            display: flex
+            flex-direction: column
+            gap: 26px
+            width: 100%
+            &_header
+                display: flex
+                position: relative
+                gap: 20px
+
+                &_name
+                    color: #FFF
+                    font-family: Inter
+                    font-size: 20px
+                    font-style: normal
+                    font-weight: 500
+                    line-height: normal
+                    width: 100%
+                &_date
+                    color: #fff
+                    font-family: Inter
+                    font-size: 20px
+                    font-style: normal
+                    font-weight: 400
+                    line-height: normal
+                    width: 100%
+                    &::first-letter
+                        text-transform: uppercase
+                &::after
+                    content: ''
+                    position: absolute
+                    display: block
+                    height: 1px
+                    width: 100%
+                    background-color: #3F3F4C
+                    bottom: -10px
+                    left: 0
+            &_descr
+                display: flex
+                gap: 20px
+                &_path
+                    display: flex
+                    flex-direction: column
+                    gap: 14px
+                    width: 100%
+                    p
+                        color: #FFF
+                        font-family: Inter
+                        font-size: 16px
+                        font-style: normal
+                        font-weight: 500
+                        line-height: normal
+
+                        white-space: nowrap
+                        overflow: hidden
+                        text-overflow: ellipsis
+                        span
+                            font-weight: 400
+                            a
+                                text-decoration: none
+                                color: #FFF
+                    .trainingPrice
+                        span
+                            color: #FA6400
+    &_buttonWrapp
+        margin-top: 16px
+        display: flex
+        gap: 20px
+        align-items: center
+        &_btn
+            width: 221px
+            &:focus-visible
+                width: 221px
+            &:focus
+                width: 221px
+        &_share
+            display: block
+            gap: 13px
+            align-items: center
+            cursor: pointer
+            p
+                color: #FA6400
+                font-family: Inter
+                font-size: 14px
+                font-style: normal
+                font-weight: 500
+                line-height: normal
+                text-decoration-line: underline
+                cursor: pointer

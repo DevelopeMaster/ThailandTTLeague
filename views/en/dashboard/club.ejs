@@ -57,12 +57,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/main.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
 </head>
 
 <body>
     <header class="header" id="scroll">
-       <!-- from js -->
+        <!-- from js -->
     </header>
     <div class="navigate">
         <div class="container">
@@ -73,83 +73,80 @@
             </nav>
         </div>
     </div>
-    
-    <section class="club">
+    <section class="account">
         <div class="container">
             <div class="contentWrapper">
-                <div class="supplements">
+                <div class="account_mainInfo">
                     <!-- add from js -->
                 </div>
-                <div class="club_mainInfo">
-                    <!-- <div class="club_mainInfo_logo" style="background-image: url(/icons/clubsLogo/TT_CLUB.png); ; background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
-                    <div class="club_mainInfo_info">
-                        <div class="club_mainInfo_info_name">
-                            PHUKET TT CLUB
-                        </div>
-                        <div class="club_mainInfo_info_descr">
-                            <div class="club_mainInfo_info_descr_path">
-                                <p>Representative: <span>Zhgulev Ilya</span></p>
-                                <p>Website: <span><a href="https://worldtabletennissite">https://worldtabletennissite</a></span></p>
-                                <p>Working hours: <span>10:00-20:00</span></p>
-                            </div>
-                            <div class="club_mainInfo_info_descr_path">
-                                <p>City: <span>Phuket</span></p>
-                                <p>Contacts: <span><a href="tel:+66951954053">+66951954053</a></span></p>
-                                <p>Number of tables: <span>6</span></p>
-                            </div>
-                        </div>
-                    </div> -->
-                </div>
-                <div class="club_about">
-                    <!-- <h3>About the club</h3>
-                    <div class="club_about_wrapp">
-                        <p><span>Address: </span>Phuket, Big C Supercenter, 2nd floor, Ek Wanit Uthit Soi 2, Wichit, Mueang Phuket District, Phuket 83000</p>
-                        <p>Official table tennis club in the Kingdom of Thailand, Phuket Island.<br><br> Certified professional equipment, air-conditioned premises, professional trainers (English, Russian and Thai).<br><br>We provide individual training services and tournaments of various skill levels.</p>
-                    </div> -->
+                <div class="account_buttonWrapp">
+                    <button id="editProfile" class="header_btn-sign account_buttonWrapp_btn" fdprocessedid="c3chv">Edit profile</button>
+                    <div class="account_buttonWrapp_share">
+                        <p>Share profile</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="clubLocation">
+    <section class="account_statistics">
         <div class="container">
             <div class="contentWrapper">
-                <h2>ЛОКАЦИЯ клуба</h2>
-                <div id="map"></div>
+                <h2>general Statistics</h2>
+                
             </div>
         </div>
     </section>
 
-    <section class="clubPhotos">
+    <section class="account_bestVictories">
         <div class="container">
-            <div id="clubsPhotoContainer" class="contentWrapper">
-                <h2>Фото клуба</h2>
-                <!-- from js -->
+            <div class="contentWrapper">
+                <h2>best victories</h2>
 
             </div>
         </div>
     </section>
+
+    <section class="account_bestVictories">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>awards</h2>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="account_bestVictories">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>results</h2>
+
+            </div>
+        </div>
+    </section>
+
+
+
 
 
 
 
     <footer class="footer">
         <!-- from js -->
-    </footer>
-    
-    <div class="adv">
-    <!-- add from DB -->
-    </div>
-    
-    
-    <!-- Модальное окно -->
-    <div id="myModal" class="modal">    
-        <div class="modal-content">
+      </footer>
+      
+      <div class="adv">
         <!-- add from DB -->
-        </div>
-    </div>
+      </div>
+      
     
-    <script type="module" src="/js/club.js"></script> 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
+      <!-- Модальное окно -->
+      <div id="myModal" class="modal">    
+          <div class="modal-content">
+            <!-- add from DB -->
+          </div>
+      </div>
+      <script type="module" src="/js/dashboard.js"></script> 
 </body>
 </html>

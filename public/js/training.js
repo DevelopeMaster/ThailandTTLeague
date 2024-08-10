@@ -51,7 +51,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             'hour': 'h',
             'about': 'About the training',
             'address': 'Address',
-            'cancel': 'Cancel booking'
+            'cancel': 'Cancel booking',
+            'finished': 'Training has finished',
+            'viewAll': 'View other trainings'
             
         },
         'ru': {
@@ -64,7 +66,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             'hour': 'ч',
             'about': 'Подробнее о тренировке',
             'address': 'Адрес',
-            'cancel': 'Отменить заявку'
+            'cancel': 'Отменить заявку',
+            'finished': 'Тренировка завершена',
+            'viewAll': 'Смотреть другие тренировки'
 
         },
         'th': {
@@ -77,7 +81,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             'hour': 'h',
             'about': 'เกี่ยวกับการฝึกอบรม',
             'address': 'ที่อยู่',
-            'cancel': 'ยกเลิกการจอง'
+            'cancel': 'ยกเลิกการจอง',
+            'finished': 'การฝึกอบรมเสร็จสิ้นแล้ว',
+            'viewAll': 'ดูการอบรมอื่นๆ'
 
         }
     };
@@ -132,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 'th': 'thai'
             };
             const cityKey = languageKeyMap[lang] || 'english';
-            
+            // console.log(city[cityKey]);
             return city[cityKey] || city['english'];
         } catch (error) {
             console.error('Ошибка при получении названия города:', error);
@@ -156,21 +162,53 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     function renderTrainingData() {
-        console.log(coachData);
-        const trainingDate = new Date(training.date);
-        const dayOfWeek = trainingDate.toLocaleDateString(lang, { weekday: 'long' });
+        // console.log(training);
+        const trainingDate = new Date(training.date.toLocaleString());
+        
+        // const dayOfWeek = trainingDate.toLocaleDateString(lang, { weekday: 'long' });
 
-        const trainingTime = trainingDate.toLocaleTimeString(lang, {
+        // const trainingTime = trainingDate.toLocaleTimeString(lang, {
+        //     hour: '2-digit',
+        //     minute: '2-digit',
+        //     hour12: false,
+        //     timeZone: 'UTC'
+        // });
+
+        const dayOfWeek = new Intl.DateTimeFormat(lang, { weekday: 'long' }).format(trainingDate);
+
+        const trainingTime = new Intl.DateTimeFormat(lang, {
             hour: '2-digit',
             minute: '2-digit',
-            hour12: false,
-            timeZone: 'UTC'
-        });
+            hour12: false
+        }).format(trainingDate);
 
         const formattedDate = `${dayOfWeek} ${String(trainingDate.getDate()).padStart(2, '0')}.${String(trainingDate.getMonth() + 1).padStart(2, '0')} ${trainingTime}`;
         
+        const now = new Date();
+        const trainingEndDate = new Date(trainingDate.getTime() + training.duration * 60000);
+
+        // Приведение времени тренировки к локальному времени
+        const localTrainingEndDate = new Date(trainingEndDate.toLocaleString());
+        const localNow = new Date(now.toLocaleString());
+
+        const isPast = localNow > localTrainingEndDate;
+        
+        
+        console.log(localTrainingEndDate);
+        console.log(localNow);
+        // console.log(trainingDate.getTime() + training.duration * 60000);
+
+        if (isPast) {
+            const trainingStatus = document.querySelector('.trainingStatus');
+            trainingStatus.classList.add('statusFinished');
+            const trainingStatusMassage = document.createElement('h5');
+            trainingStatusMassage.innerText = `${getTranslation('finished')}`;
+            trainingStatus.appendChild(trainingStatusMassage);
+        }
+        
+
         const clubMainInfo = document.querySelector('.training_mainInfo');
-        console.log(clubMainInfo);
+        // console.log(clubMainInfo);
         clubMainInfo.innerHTML = '';
         clubMainInfo.innerHTML = `
             <div>
@@ -203,13 +241,25 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
         `;
 
-        const bookTrainingBtn = document.getElementById('signUpToTraining'); 
-        bookTrainingBtn.addEventListener('click', () => {
-            document.querySelector('.training_buttonWrapp_booked').style = 'display: flex';
-            bookTrainingBtn.innerText = getTranslation('cancel');
-            // доработать когда будут готовы личные кабинеты
-        })
+        if (isPast) {
+            const btnsWrapper = document.querySelector('.training_buttonWrapp');
+            const signUpBtn = document.querySelector('#signUpToTraining');
+            signUpBtn.style.display = 'none';
+            const information = document.querySelector('.training_buttonWrapp_booked');
+            information.style.display = 'none';
+            const linkToAllTraining = document.createElement('a');
+            linkToAllTraining.setAttribute('href', `/${lang}/trainings`);
+            linkToAllTraining.textContent = `${getTranslation('viewAll')}`;
+            btnsWrapper.appendChild(linkToAllTraining);
+        } else {
+            const bookTrainingBtn = document.getElementById('signUpToTraining'); 
+            bookTrainingBtn.addEventListener('click', () => {
+                document.querySelector('.training_buttonWrapp_booked').style = 'display: flex';
+                bookTrainingBtn.innerText = getTranslation('cancel');
+            });
+        }
         
+        // доработать когда будут готовы личные кабинеты
 
         const trainingAbout = document.querySelector('.training_about');
     
@@ -229,7 +279,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 ${infoBlocks}
             </div>
         `;
-        console.log(training);
+        // console.log(training);
         renderMap();
 
         // style="background-image: url(&quot;/icons/playerslogo/default_avatar.svg&quot;); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"

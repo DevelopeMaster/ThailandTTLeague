@@ -100,8 +100,71 @@
                     line-height: normal
                     text-decoration: none
                     display: block
+            
         .openLangsMenu
             display: flex
+    &_account
+        display: flex
+        gap: 16px
+        align-items: center
+        background-color: transparent
+        padding-left: 10px
+        font-family: Inter
+        font-size: 16px
+        font-weight: 400
+        color: #fff
+        font-style: normal
+        line-height: normal
+        
+        text-transform: none
+        border: none
+        cursor: pointer
+        .accountName
+                color: #FFF
+                font-family: Inter
+                font-size: 20px
+                font-style: normal
+                font-weight: 500
+                line-height: normal
+        &_avatar
+            width: 46px
+            height: 46px
+        &_content
+            margin-top: 50px
+            display: none
+            flex-direction: column
+            justify-content: center
+            // align-items: center
+            gap: 30px
+            position: absolute
+            width: 202px
+            // height: 131px
+            padding: 30px
+            border-radius: 0px 0px 14px 14px
+            background: #262630
+            box-sizing: border-box
+            z-index: 1;
+            a
+                color: #fff
+                font-family: Inter
+                font-size: 16px
+                font-weight: 500
+                font-style: normal
+                line-height: normal
+                text-decoration: none
+                display: flex
+                gap: 6px
+                &:hover
+                    color: #FF7A00
+                    p
+                        color: #FF7A00
+            // .profileMenu
+            //     width: 202px
+            //     height: 131px
+            //     // display: flex
+            //     flex-direction: column
+            &_openMenu
+                display: flex
     &_buttons
         display: flex
         gap: 20px
@@ -245,7 +308,15 @@
         a
             text-decoration: none
             color: #fff
-
+.loginFormError
+    padding: 1px 6px
+    margin-top: 11px
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+    text-align: left;
 .info
     position: relative
     display: block
@@ -434,6 +505,7 @@
             position: relative
             grid-column: 5/7
             padding-left: 50px
+            padding-right: 10px
             box-sizing: border-box
             
         .tournament_rating
@@ -887,6 +959,8 @@
                 gap: 8px
             label, input
                 margin-top: 0
+                font-weight: 400
+                font-size: 14px
         .policy
             display: flex
             align-items: center
@@ -1520,3 +1594,5 @@
 @import 'allplayers';
 @import 'alltrainings';
 @import 'training';
+@import 'dashboard';
+@import 'restorepassword';

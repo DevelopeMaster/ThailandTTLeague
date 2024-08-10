@@ -1089,7 +1089,7 @@ function redirectToDashboard(userType) {
     // Логи для проверки значений
     console.log('Client Language:', languageMap[clientLang]);
     console.log('User Type:', userType);
-    window.location.href = `${languageMap[clientLang]}/dashboard/${userType}`;
+    window.location.href = `/${languageMap[clientLang]}/dashboard/${userType}`;
 }
 
 export function createFooter(language) {

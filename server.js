@@ -215,14 +215,12 @@ app.get('/:lang(en|ru|th)/alltrainings', (req, res) => {
 
 app.get('/:lang/dashboard/:userType', ensureAuthenticated, (req, res) => {
   const { lang, userType } = req.params;
-  // console.log('задействован нужный маршрут');
-  console.log(`Current URL: ${req.originalUrl}`);
-  console.log(`Target URL: /${lang}/dashboard/${userType}`);
-
-  // Проверьте, если текущий пользователь совпадает с userType
+  const link = `${lang}/dashboard/${userType}`;
+  
   if (req.session.userType === userType) {
+    console.log(link);
+    return res.render(link);
     
-    return res.render(`/${lang}/dashboard/${userType}`);
   } else {
     console.log('ошибка');
     return res.status(403).send('Forbidden');

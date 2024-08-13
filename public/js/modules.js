@@ -2606,7 +2606,7 @@ export function restoreAccesForm() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ email, clientLang })
             });
 
             if (response.ok) {

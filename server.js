@@ -46,7 +46,7 @@ const store = MongoStore.create({
   stringify: false,
   autoRemove: 'native',
   cookie: { secure: true, httpOnly: true },
-  ttl: 14 * 24 * 60 * 60 * 1000
+  ttl: 7 * 24 * 60 * 60 // Время жизни сессии в секундах (14 дней)
 });
 
 // потом включить 
@@ -246,17 +246,24 @@ app.get('/:lang/dashboard/:userType', ensureAuthenticated, (req, res) => {
 
 // Маршрут для запроса восстановления пароля
 app.post('/api/restore-password', async (req, res) => {
-  const { email } = req.body;
+  const { email, clientLang } = req.body;
+  
   try {
       const db = getDB();
+      let collection;
+
       // Поиск в коллекции пользователей
       let user = await db.collection('users').findOne({ email });
 
-      if (!user) {
+      if (user) {
+          collection = 'users';
+      } else {
           // Если не найдено, поиск в коллекции тренеров
           user = await db.collection('coaches').findOne({ email });
 
-          if (!user) {
+          if (user) {
+              collection = 'coaches';
+          } else {
               return res.status(404).json({ message: 'User with this email not found' });
           }
       }
@@ -265,9 +272,6 @@ app.post('/api/restore-password', async (req, res) => {
       const token = crypto.randomBytes(20).toString('hex');
       const resetPasswordToken = token;
       const resetPasswordExpires = Date.now() + 3600000; // 1 час
-
-      // Определение, в какой коллекции обновить данные
-      const collection = user.collection === 'users' ? 'users' : 'coaches';
 
       await db.collection(collection).updateOne(
           { email },
@@ -278,7 +282,7 @@ app.post('/api/restore-password', async (req, res) => {
       const resetUrl = `http://${req.headers.host}/reset-password/${token}`;
 
       // Отправка письма
-      const mailOptions = {
+      let mailOptions = {
           to: email,
           from: notificateEmail,
           subject: 'Password Reset',
@@ -286,15 +290,38 @@ app.post('/api/restore-password', async (req, res) => {
                  Please click on the following link, or paste this into your browser to complete the process:\n
                  ${resetUrl}\n
                  If you did not request this, please ignore this email and your password will remain unchanged.\n`
+        };
+
+      if (clientLang === 'russian') {
+        mailOptions = {
+          to: email,
+          from: notificateEmail,
+          subject: 'Сброс пароля',
+          text: `Вы получили это сообщение, потому что вы (или кто-то другой) запросили сброс пароля для вашего аккаунта.\n
+                Пожалуйста, нажмите на следующую ссылку или вставьте её в браузер, чтобы завершить процесс:\n
+                ${resetUrl}\n
+                Если вы не запрашивали это, просто проигнорируйте это письмо, и ваш пароль останется без изменений.\n`
+        };
       };
 
-      await transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-              console.error('Error sending email:', error);
-          } else {
-              console.log('Email sent:', info.response);
-          }
-      });
+      if (clientLang === 'thai') {
+        mailOptions = {
+          to: email,
+          from: notificateEmail,
+          subject: 'รีเซ็ตรหัสผ่าน',
+          text: `คุณได้รับอีเมลนี้เนื่องจากคุณ (หรือบุคคลอื่น) ได้ร้องขอให้รีเซ็ตรหัสผ่านสำหรับบัญชีของคุณ\n
+                โปรดคลิกที่ลิงก์ต่อไปนี้หรือวางลิงก์นี้ในเบราว์เซอร์ของคุณเพื่อดำเนินการให้เสร็จสิ้น:\n
+                ${resetUrl}\n
+                หากคุณไม่ได้ร้องขอสิ่งนี้ โปรดเพิกเฉยต่ออีเมลนี้และรหัสผ่านของคุณจะยังคงไม่เปลี่ยนแปลง\n`
+        };
+      };
+
+      try {
+          const info = await transporter.sendMail(mailOptions);
+          // console.log('Email sent:', info.response);
+      } catch (error) {
+          console.error('Error sending email:', error);
+      }
 
       res.status(200).json({ message: 'Password reset link sent to your email' });
   } catch (error) {
@@ -992,7 +1019,8 @@ app.get('/check-session', (req, res) => {
 
 app.get('/api/session', async (req, res) => {
   try {
-      const session = await Session.findOne({ sessionId: req.sessionID });
+      const db = getDB();
+      const session = await db.collection('sessions').findOne({ sessionId: req.sessionID });
       if (session) {
           res.json({ loggedIn: Boolean(session.userId) });
       } else {

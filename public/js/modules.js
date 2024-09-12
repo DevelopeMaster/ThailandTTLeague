@@ -67,7 +67,7 @@ export async function createHeader(language) {
     console.log(language);
     
     if (!sessionStatus.loggedIn) {
-        console.log('хедер не залогинен');
+        // console.log('хедер не залогинен');
         if (language === 'english') {
             headerTag.innerHTML = `
                 <div class="header_wrapper">
@@ -552,6 +552,11 @@ export async function createHeader(language) {
     
     else if (sessionStatus.loggedIn) {
         // console.log('хедер залогинен');
+        const userId = localStorage.getItem('userId');
+        const userType = localStorage.getItem('userType');
+        const userData = await getUserData(userId, userType);
+        
+
         if (language === 'english') {
             headerTag.innerHTML = `
                 <div class="header_wrapper">
@@ -583,9 +588,9 @@ export async function createHeader(language) {
                                 </div>
                                 <div class="header_buttons">
                                     <button class="header_account">
-                                        <span class="accountName">${localStorage.getItem('userName')}</span>
+                                        <span class="accountName">${userData.fullname || userData.name || localStorage.getItem('userName')}</span>
                                         <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
-                                        <img class="header_account_avatar" src="${localStorage.getItem('userLogo')}" alt="avatar">
+                                        <img class="header_account_avatar" src="${userData.logo || localStorage.getItem('userLogo') || '/icons/playerslogo/default_avatar.svg'}" alt="avatar">
                                     </button>
                                     
                                     <div class="header_account_content profileMenu">
@@ -595,7 +600,7 @@ export async function createHeader(language) {
                                                 My profile
                                             </p>
                                         </a>
-                                        <a href="#" class="logOut">Exit</a>
+                                        <a href="#" class="logOut">Log out</a>
                                     </div>
                                 </div>
                             </div>
@@ -747,9 +752,9 @@ export async function createHeader(language) {
                                 </div>
                                 <div class="header_buttons">
                                     <button class="header_account">
-                                        <span class="accountName">${localStorage.getItem('userName')}</span>
+                                        <span class="accountName">${userData.fullname || userData.name || localStorage.getItem('userName')}</span>
                                         <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
-                                        <img class="header_account_avatar" src="${localStorage.getItem('userLogo')}" alt="avatar">
+                                        <img class="header_account_avatar" src="${userData.logo || localStorage.getItem('userLogo') || '/icons/playerslogo/default_avatar.svg'}" alt="avatar">
                                     </button>
                                     
                                     <div class="header_account_content profileMenu">
@@ -911,9 +916,9 @@ export async function createHeader(language) {
                                 </div>
                                 <div class="header_buttons">
                                     <button class="header_account">
-                                        <span class="accountName">${localStorage.getItem('userName')}</span>
+                                        <span class="accountName">${userData.fullname || userData.name || localStorage.getItem('userName')}</span>
                                         <img src="/icons/chevron-down.svg" class="arrowLangs" alt="arrow">
-                                        <img class="header_account_avatar" src="${localStorage.getItem('userLogo')}" alt="avatar">
+                                        <img class="header_account_avatar" src="${userData.logo || localStorage.getItem('userLogo') || '/icons/playerslogo/default_avatar.svg'}" alt="avatar">
                                     </button>
                                     
                                     <div class="header_account_content profileMenu">
@@ -1046,7 +1051,13 @@ export async function createHeader(language) {
             `;
         };
     }
+
+    // function chevronRotate(chevron) {
+    //     chevron.style.transform = 'rotateZ(180deg)';
+    // }
     
+    
+
     document.addEventListener('click', function(event) {
         if (event.target.closest('.logOut')) {
             event.preventDefault();
@@ -1054,8 +1065,12 @@ export async function createHeader(language) {
         }
         
         if (event.target.closest('.header_account')) {
+            if (document.querySelector('.profileMenu').classList.contains('header_account_content_openMenu')) {
+                chevronRotate(document.querySelector('.header_account img'), false);
+            } else {
+                chevronRotate(document.querySelector('.header_account img'), true);
+            }
             document.querySelector('.profileMenu').classList.toggle('header_account_content_openMenu');
-
         }
         if (event.target.closest('.myProfile')) {
             event.preventDefault();
@@ -1079,6 +1094,54 @@ export async function createHeader(language) {
     languageControl();
 };
 
+function chevronRotate(chevron, rotate = true) {
+    chevron.style.transform = rotate ? 'rotateX(180deg)' : 'rotateX(0deg)';
+    
+}
+
+async function getUserData(userId, userType) {
+    const cachedUser = localStorage.getItem('userData');
+
+    if (cachedUser) {
+        const userData = JSON.parse(cachedUser);
+        if (userData.userId === userId) {
+            // console.log("Using cached data");
+            // return userData;
+            if (userData.logo === localStorage.getItem('userLogo')) {
+                console.log("Using cached data");
+                return userData;
+            }
+        }
+
+        // if (userData.logo !== localStorage.getItem('userLogo')) {
+        //     console.log("Using cached data");
+        //     return userData;
+        // }
+    }
+
+    try {
+        const response = await fetch(`/userForHeader/${userId}/${userType}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+        }
+
+        const userData = await response.json();
+
+        // Сохраняем данные в localStorage
+        localStorage.setItem('userData', JSON.stringify({
+            userId: userId,
+            fullname: userData.fullname || userData.name,
+            nickname: userData.nickname,
+            logo: userData.logo
+        }));
+
+        return userData;
+    } catch (error) {
+        console.error('Error fetching user data:', error.message);
+        return null; // Можно обработать ошибку, если требуется
+    }
+}
+
 function redirectToDashboard(userType) {
     const languageMap = {
         'russian': 'ru',
@@ -1086,10 +1149,11 @@ function redirectToDashboard(userType) {
         'thai': 'th'
     };
     const clientLang = localStorage.getItem('clientLang') || 'english';
+    const userId = localStorage.getItem('userId');
     // Логи для проверки значений
     console.log('Client Language:', languageMap[clientLang]);
     console.log('User Type:', userType);
-    window.location.href = `/${languageMap[clientLang]}/dashboard/${userType}`;
+    window.location.href = `/${languageMap[clientLang]}/dashboard/${userType}/${userId}`;
 }
 
 export function createFooter(language) {
@@ -1839,7 +1903,7 @@ export async function fetchCoaches() {
 
             let nameH4 = document.createElement('h4');
             nameH4.className = 'coaches_content_coach_info_name';
-            nameH4.textContent = coach.name;
+            nameH4.textContent = coach.name || coach.fullname;
 
             let clubDiv = document.createElement('div');
             clubDiv.className = 'coaches_content_coach_info_club';
@@ -2266,9 +2330,15 @@ export function languageControl() {
 
     document.querySelectorAll('.selectedLanguage').forEach(function(button) {
         button.addEventListener('click', function() {
+            // this.nextElementSibling.classList.toggle('openLangsMenu');
+            // this.querySelector('.arrowLangs').style.transform = 'rotateX(180deg)';
+            // statusLangsMenu = true;
+
             this.nextElementSibling.classList.toggle('openLangsMenu');
-            this.querySelector('.arrowLangs').style.transform = 'rotateX(180deg)';
-            statusLangsMenu = true;
+
+            const arrowElement = this.querySelector('.arrowLangs');
+            statusLangsMenu = !statusLangsMenu; // Меняем статус меню
+            chevronRotate(arrowElement, statusLangsMenu);
         });
     });
 
@@ -2291,7 +2361,12 @@ export function languageControl() {
 
             dropdown.previousElementSibling.querySelector('.languageText').innerText = shortLang;
             dropdown.style.display = 'none';
-            dropdown.previousElementSibling.querySelector('.arrowLangs').style.transform = 'rotateX(360deg)';
+
+            // dropdown.previousElementSibling.querySelector('.arrowLangs').style.transform = 'rotateX(0deg)';
+            // statusLangsMenu = false;
+            const arrowElement = dropdown.previousElementSibling.querySelector('.arrowLangs');
+            chevronRotate(arrowElement, false); // Возвращаем стрелку в начальное положение
+
             statusLangsMenu = false;
 
             // Replace the current language in the path with the selected language
@@ -2505,7 +2580,7 @@ export function loginForm() {
             });
             if (response.ok) {
                 console.log('Login successful');
-                const responseData = await response.json(); // изменено имя переменной на responseData
+                const responseData = await response.json(); 
                 const userId = responseData.userId;
                 const name = responseData.name;
                 const logo = responseData.logo;
@@ -2515,7 +2590,7 @@ export function loginForm() {
                 localStorage.setItem('userLogo', logo);
                 localStorage.setItem('userType', userType);
                 console.log(userType);
-                let redirectUrl = `/${languageMap[clientLang]}/dashboard/${userType}`;
+                let redirectUrl = `/${languageMap[clientLang]}/dashboard/${userType}/${userId}`;
                
                 console.log(redirectUrl);
                 window.location.href = redirectUrl;
@@ -2767,7 +2842,7 @@ export function registrationForm() {
                                 <input class="checkbox" type="checkbox" id="policy" name="policy" required>
                                 <label for="policy"><a href="\policy">${translation.policyText}</a></label>
                             </div>
-                            <button id="signIn" class='header_btn-sign btnSbmt' type="submit">${translation.submitButton}</button>
+                            <button  class='header_btn-sign btnSbmt' type="submit">${translation.submitButton}</button>
                         </form>`;
 
     document.body.style = 'overflow: hidden;';
@@ -2848,16 +2923,25 @@ export function registrationForm() {
     const passwordError = document.getElementById('passwordError');
     const submitButton = document.querySelector('.btnSbmt');
 
+    let hasPasswordError = false;
+    let hasEmailError = false;
+
+    function updateSubmitButtonState() {
+        // Отключаем кнопку, если есть хотя бы одна ошибка
+        submitButton.disabled = hasPasswordError || hasEmailError;
+    }
+
     // submitButton.addEventListener('click', validateForm);
     function formErrorMessage(text, block) {
         block.textContent = text;
         block.style.display = 'block';
-        submitButton.disabled = true;
+        // submitButton.disabled = true;
+        // console.log(submitButton.disabled);
     }
     function formClearMessage(block) {
         block.textContent = '';
         block.style.display = 'none';
-        submitButton.disabled = false;
+        // submitButton.disabled = false;
     }
 
     function validatePasswordMatch() {
@@ -2866,12 +2950,15 @@ export function registrationForm() {
                 formErrorMessage(translation.passwordMatchError, passwordError);
                 password.classList.add('error');
                 confirm_password.classList.add('error');
+                hasPasswordError = true;
             } else {
                 formClearMessage(passwordError);
                 password.classList.remove('error');
                 confirm_password.classList.remove('error');
+                hasPasswordError = false;
             }
         }
+        updateSubmitButtonState();
     }
 
     function validatePasswordStrength() {
@@ -2882,25 +2969,30 @@ export function registrationForm() {
             formErrorMessage(translation.passwordLengthError, passwordError);
             password.classList.add('error');
             confirm_password.classList.add('error');
+            hasPasswordError = true;
         } else if (!passwordRegex.test(password.value)) {
             formErrorMessage(translation.passwordStrengthError, passwordError);
             password.classList.add('error');
             confirm_password.classList.add('error');
+            hasPasswordError = true;
         } else {
             formClearMessage(passwordError);
             password.classList.remove('error');
             confirm_password.classList.remove('error');
+            hasPasswordError = false;
         }
+        updateSubmitButtonState();
     }
     
     password.addEventListener('blur', validatePasswordStrength);
     confirm_password.addEventListener('blur', validatePasswordMatch);
+    
 
     // check unique email and login
     const emailRegInput = document.querySelector('#emailRegInput');
     // const loginRegInput = document.querySelector('#loginRegInput');
     const emailError = document.querySelector('#emailError');
-    const loginError = document.querySelector('#loginError');
+    // const loginError = document.querySelector('#loginError');
 
     emailRegInput.addEventListener('input', function() {
         fetch(`/check-email?email=${this.value}`)
@@ -2908,9 +3000,13 @@ export function registrationForm() {
         .then(data => {
             if (!data.unique) {
                 formErrorMessage(translation.emailRegisteredError, emailError);
+                hasEmailError = true;
+
             } else {
                 formClearMessage(emailError);
+                hasEmailError = false;
             }
+            updateSubmitButtonState();
         });
     });
     
@@ -2928,6 +3024,12 @@ export function registrationForm() {
 
     document.querySelector('form').addEventListener('submit', function(event) {
         event.preventDefault();
+        
+        if (submitButton.disabled) {
+            console.log('не отправляем форму');
+            return; // Прекращаем выполнение, если кнопка отключена
+        }
+        
         const city = document.getElementById('city').innerText;
 
         if (city === 'Not chosen' || city === 'Не выбрано' || city === 'ไม่ได้ถูกเลือก') {
@@ -3011,9 +3113,9 @@ export function breadCrumb() {
     const pathArray = currentUrl.split('/').filter(el => el);
 
     const languageMap = {
-        'ru': 'Russian',
-        'en': 'English',
-        'th': 'Thai'
+        'ru': 'russian',
+        'en': 'english',
+        'th': 'thai'
     };
 
     const translations = {
@@ -3038,7 +3140,8 @@ export function breadCrumb() {
             'user_dashboard': 'My profile',
             'admin_dashboard': 'Admin Dashboard',
             'club_dashboard': 'Club Dashboard',
-            'trainer_dashboard': 'Coach Dashboard'
+            'trainer_dashboard': 'Coach Dashboard',
+            'editclub': 'Edit club data'
         },
         'ru': {
             'home': 'Главная',
@@ -3061,7 +3164,8 @@ export function breadCrumb() {
             'user_dashboard': 'Мой профиль',
             'admin_dashboard': 'Панель администратора',
             'club_dashboard': 'Панель клуба',
-            'trainer_dashboard': 'Панель тренера'
+            'trainer_dashboard': 'Панель тренера',
+            'editclub': 'Редактирование данных клуба'
         },
         'th': {
             'home': 'หน้าหลัก',
@@ -3084,7 +3188,8 @@ export function breadCrumb() {
             'user_dashboard': 'ข้อมูลส่วนบุคคล',
             'admin_dashboard': 'แดชบอร์ดผู้ดูแลระบบ',
             'club_dashboard': 'แดชบอร์ดสโมสร',
-            'trainer_dashboard': 'แดชบอร์ดโค้ช'
+            'trainer_dashboard': 'แดชบอร์ดโค้ช',
+            'editclub': 'แก้ไขรายละเอียดสโมสร'
             
         }
     };
@@ -3094,34 +3199,52 @@ export function breadCrumb() {
 
     let breadcrumbHTML = `<li class="navigate_breadcrumb_item"><a href="/${currentLang}">${translations[currentLang]['home']}</a></li>`;
 
-    filteredPathArray.forEach((path, index) => {
-        const isLast = index === filteredPathArray.length - 1;
-        const containsNumbers = /\d/.test(path); // Check if the path contains numbers
-        const urlPath = '/' + [currentLang, ...filteredPathArray.slice(0, index + 1)].join('/');
+    const dashboardIndex = filteredPathArray.indexOf('dashboard');
+
+    if (dashboardIndex !== -1) {
+        const nextSegment = filteredPathArray[dashboardIndex + 1]; // Сегмент после "dashboard"
 
         let translatedPath;
+        const dashboardPath = `/${currentLang}/dashboard`;
 
-        if (containsNumbers && filteredPathArray[index - 1] === 'allclubs') {
-            translatedPath = translations[currentLang]['club'];
-        } else if (containsNumbers && filteredPathArray[index - 1] === 'players') {
-            translatedPath = translations[currentLang]['player'];
-        } else if (containsNumbers && filteredPathArray[index - 1] === 'tournaments') {
-            translatedPath = translations[currentLang]['tournament'];
-        } else if (containsNumbers && filteredPathArray[index - 1] === 'trainings') {
-            translatedPath = translations[currentLang]['training'];
-        } else {
-            translatedPath = translations[currentLang][path] || capitalize(path);
+        if (nextSegment === 'club') {
+            translatedPath = translations[currentLang]['club_dashboard'];
+        } else if (nextSegment === 'player' || nextSegment === 'trainer') {
+            translatedPath = translations[currentLang]['user_dashboard'];
+        } else if (nextSegment === 'editclub') {
+            translatedPath = translations[currentLang]['editclub'];
+        }else {
+            translatedPath = translations[currentLang]['dashboard'];
         }
 
-        if (isLast) {
-            breadcrumbHTML += `<li class="navigate_breadcrumb_item navigate_breadcrumb_item_active" aria-current="page">${translatedPath}</li>`;
-        } else {
-            breadcrumbHTML += `<li class="navigate_breadcrumb_item"><a href="${urlPath}">${translatedPath}</a></li>`;
-            // const href = (translatedPath === translations[currentLang]['trainings']) ? '/alltrainings' : urlPath;
-            // breadcrumbHTML += `<li class="navigate_breadcrumb_item"><a href="${href}">${translatedPath}</a></li>`;
-        }
-    });
+        breadcrumbHTML += `<li class="navigate_breadcrumb_item"><a href="${dashboardPath}/${nextSegment}">${translatedPath}</a></li>`;
+    } else {
+        filteredPathArray.forEach((path, index) => {
+            const isLast = index === filteredPathArray.length - 1;
+            const containsNumbers = /\d/.test(path);
+            const urlPath = '/' + [currentLang, ...filteredPathArray.slice(0, index + 1)].join('/');
 
+            let translatedPath;
+
+            if (containsNumbers && filteredPathArray[index - 1] === 'allclubs') {
+                translatedPath = translations[currentLang]['club'];
+            } else if (containsNumbers && filteredPathArray[index - 1] === 'allplayers') {
+                translatedPath = translations[currentLang]['player'];
+            } else if (containsNumbers && filteredPathArray[index - 1] === 'tournaments') {
+                translatedPath = translations[currentLang]['tournament'];
+            } else if (containsNumbers && filteredPathArray[index - 1] === 'trainings') {
+                translatedPath = translations[currentLang]['training'];
+            } else {
+                translatedPath = translations[currentLang][path] || capitalize(path);
+            }
+
+            if (isLast) {
+                breadcrumbHTML += `<li class="navigate_breadcrumb_item navigate_breadcrumb_item_active" aria-current="page">${translatedPath}</li>`;
+            } else {
+                breadcrumbHTML += `<li class="navigate_breadcrumb_item"><a href="${urlPath}">${translatedPath}</a></li>`;
+            }
+        });
+    }
     breadcrumbContainer.innerHTML = breadcrumbHTML;
 }
 
@@ -4010,7 +4133,7 @@ export async function getAllTournaments() {
 
 
 
-
+// оптимизированая функция ниже этой, но ее нужно проверить
 export async function getAllPlayers() {
     const ratingFromInput = document.getElementById('dateFromInput');
     const ratingUntilInput = document.getElementById('dateUntilInput');
@@ -4197,6 +4320,12 @@ export async function getAllPlayers() {
     }
 
     async function displayPlayers(players, container) {
+        let currentLang = localStorage.getItem('clientLang') || 'english';
+        const languageMap = {
+            'russian': 'ru',
+            'english': 'en',
+            'thai': 'th'
+        };
         try {
             container.innerHTML = '';
     
@@ -4206,7 +4335,7 @@ export async function getAllPlayers() {
             players.forEach((player, index) => {
                 let playerDiv = document.createElement('a');
                 playerDiv.className = 'playersTable_player';
-                playerDiv.href = `/en/players/${player._id}`;
+                playerDiv.href = `/${languageMap[currentLang]}/allplayers/${player._id}`;
     
                 let numberDiv = document.createElement('div');
                 numberDiv.className = 'cell player_number';
@@ -4278,6 +4407,263 @@ export async function getAllPlayers() {
         }
     }
 }
+
+// export async function getAllPlayers() {
+//     const ratingFromInput = document.getElementById('dateFromInput');
+//     const ratingUntilInput = document.getElementById('dateUntilInput');
+//     const nameInput = document.getElementById('clubInput');
+//     const cityInput = document.getElementById('cityInput');
+    
+//     const nameDropdown = document.getElementById('clubDropdown');
+//     const cityDropdown = document.getElementById('cityDropdown');
+//     const searchButton = document.getElementById('filterPlayers_btnSearch');
+
+//     const playersContainer = document.querySelector('.playersTable_content');
+
+//     if (!playersContainer) {
+//         console.error('Контейнер для игроков не найден');
+//         return;
+//     }
+
+//     let allPlayers = [];
+//     let cities = {};
+//     let isFiltered = false;
+
+//     await fetchAllPlayers();
+
+//     let debounceTimeout;
+
+//     nameInput.addEventListener('input', () => {
+//         updateNameDropdown();
+//         debounceFilterPlayers();
+//     });
+
+//     cityInput.addEventListener('input', () => {
+//         updateCityDropdown();
+//         debounceFilterPlayers();
+//     });
+
+//     nameInput.addEventListener('focus', () => {
+//         nameDropdown.style.display = 'block';
+//         cityDropdown.style = 'display: none !important';
+//     });
+
+//     cityInput.addEventListener('focus', () => {
+//         cityDropdown.style = 'display: block !important';
+//         nameDropdown.style.display = 'none';
+//     });
+
+//     nameInput.addEventListener('blur', () => setTimeout(() => nameDropdown.style.display = 'none', 200));
+//     cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
+
+//     searchButton.addEventListener('click', function (event) {
+//         event.preventDefault();
+//         isFiltered = true;
+//         filterPlayers();
+//     });
+
+//     function debounceFilterPlayers() {
+//         clearTimeout(debounceTimeout);
+//         debounceTimeout = setTimeout(() => {
+//             isFiltered = true;
+//             filterPlayers();
+//         }, 300);
+//     }
+
+//     function updateNameDropdown() {
+//         const names = [...new Set(allPlayers.map(player => player.fullname).filter(Boolean))];
+//         const nicknames = [...new Set(allPlayers.map(player => player.nickname).filter(Boolean))];
+//         updateDropdownList(nameDropdown, [...names, ...nicknames], nameInput);
+//     }
+
+//     function updateCityDropdown() {
+//         const cityNames = Object.values(cities);
+//         updateDropdownList(cityDropdown, cityNames, cityInput);
+//     }
+
+//     async function fetchAllPlayers() {
+//         try {
+//             const response = await fetch(`/get-players`);
+//             const players = await response.json();
+//             allPlayers = players;
+
+//             // Загрузка только первых 16 игроков для начального отображения
+//             displayPlayers(players.slice(0, 16), playersContainer);
+
+//             const names = [...new Set(players.map(player => player.fullname).filter(Boolean))];
+//             const nicknames = [...new Set(players.map(player => player.nickname).filter(Boolean))];
+//             const cityIds = [...new Set(players.map(player => player.city))];
+
+//             createDropdown(nameDropdown, [...names, ...nicknames], nameInput);
+
+//             // Одновременное получение всех городов, а не по одному для каждого игрока
+//             const cityPromises = cityIds.map(cityId => getCityName(cityId));
+//             await Promise.all(cityPromises);
+
+//             const cityNames = Object.values(cities).filter(Boolean);
+//             createDropdown(cityDropdown, cityNames, cityInput);
+//         } catch (error) {
+//             console.error('Произошла ошибка:', error);
+//             showErrorModal('Database connection error', 'Ops!');
+//         }
+//     }
+
+//     async function getCityName(cityId) {
+//         if (cities[cityId]) {
+//             return cities[cityId];
+//         }
+//         try {
+//             const response = await fetch(`/cities/${cityId}`);
+//             if (!response.ok) {
+//                 throw new Error('City data not found');
+//             }
+//             const city = await response.json();
+//             cities[cityId] = city[localStorage.getItem('clientLang')] || city['english'];
+//             return cities[cityId];
+//         } catch (error) {
+//             console.error('Ошибка при получении названия города:', error);
+//             return 'Unknown City';
+//         }
+//     }
+
+//     function createDropdown(dropdown, options, inputElement) {
+//         dropdown.innerHTML = '';
+//         options.forEach(option => {
+//             const div = document.createElement('div');
+//             div.textContent = option;
+//             div.addEventListener('click', () => {
+//                 inputElement.value = option;
+//                 dropdown.style.display = 'none';
+//                 isFiltered = true;
+//                 filterPlayers();
+//             });
+//             dropdown.appendChild(div);
+//         });
+//     }
+
+//     function updateDropdownList(dropdown, options, inputElement) {
+//         dropdown.innerHTML = '';
+//         const currentText = (inputElement.value || '').toLowerCase();
+//         const filteredOptions = options.filter(option => option && option.toLowerCase().includes(currentText));
+
+//         filteredOptions.forEach(option => {
+//             const div = document.createElement('div');
+//             div.textContent = option;
+//             div.addEventListener('click', () => {
+//                 inputElement.value = option;
+//                 dropdown.style.display = 'none';
+//                 isFiltered = true;
+//                 filterPlayers();
+//             });
+//             dropdown.appendChild(div);
+//         });
+//         dropdown.style.display = 'block';
+//     }
+
+//     async function filterPlayers() {
+//         const ratingFromValue = ratingFromInput.value;
+//         const ratingUntilValue = ratingUntilInput.value;
+//         const nameValue = (nameInput.value || '').toLowerCase();
+//         const cityValue = (cityInput.value || '').toLowerCase();
+
+//         const filteredPlayers = await Promise.all(allPlayers.map(async player => {
+//             const ratingFromMatch = !ratingFromValue || player.rating >= parseInt(ratingFromValue, 10);
+//             const ratingUntilMatch = !ratingUntilValue || player.rating <= parseInt(ratingUntilValue, 10);
+//             const nameMatch = !nameValue || (player.fullname && player.fullname.toLowerCase().includes(nameValue)) || (player.nickname && player.nickname.toLowerCase().includes(nameValue));
+
+//             const cityName = await getCityName(player.city);
+//             const cityMatch = !cityValue || cityValue === 'all' || (cityName && cityName.toLowerCase().includes(cityValue));
+
+//             return ratingFromMatch && ratingUntilMatch && nameMatch && cityMatch ? player : null;
+//         }));
+
+//         const validPlayers = filteredPlayers.filter(player => player !== null);
+//         displayPlayers(validPlayers, playersContainer);
+//     }
+
+//     async function displayPlayers(players, container) {
+//         try {
+//             container.innerHTML = '';
+//             const fragment = document.createDocumentFragment(); // Используем фрагмент для улучшения производительности
+//             const cityNamesPromises = players.map(player => getCityName(player.city));
+//             const cityNames = await Promise.all(cityNamesPromises);
+
+//             players.forEach((player, index) => {
+//                 let playerDiv = document.createElement('a');
+//                 playerDiv.className = 'playersTable_player';
+//                 playerDiv.href = `/en/allplayers/${player._id}`;
+
+//                 let numberDiv = document.createElement('div');
+//                 numberDiv.className = 'cell player_number';
+//                 numberDiv.textContent = index + 1;
+//                 playerDiv.appendChild(numberDiv);
+
+//                 let nameDiv = document.createElement('div');
+//                 nameDiv.className = 'cell player_player';
+//                 let playerLogoDiv = document.createElement('div');
+//                 playerLogoDiv.className = 'playerLogo';
+//                 playerLogoDiv.style.cssText = `background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
+//                 nameDiv.appendChild(playerLogoDiv);
+
+//                 let playerNameSpan = document.createElement('span');
+//                 playerNameSpan.textContent = player.fullname;
+//                 nameDiv.appendChild(playerNameSpan);
+//                 playerDiv.appendChild(nameDiv);
+
+//                 let nicknameDiv = document.createElement('div');
+//                 nicknameDiv.className = 'cell player_login';
+//                 nicknameDiv.textContent = player.nickname ? player.nickname : ' ';
+//                 playerDiv.appendChild(nicknameDiv);
+
+//                 let cityDiv = document.createElement('div');
+//                 cityDiv.className = 'cell player_city';
+//                 cityDiv.textContent = cityNames[index];
+//                 playerDiv.appendChild(cityDiv);
+
+//                 let ratingDiv = document.createElement('div');
+//                 ratingDiv.className = 'cell player_rating';
+//                 ratingDiv.textContent = player.rating ? player.rating : '-';
+//                 playerDiv.appendChild(ratingDiv);
+
+//                 fragment.appendChild(playerDiv);
+//             });
+
+//             container.appendChild(fragment);
+
+//             // Управление кнопкой "See more"
+//             if (!isFiltered && players.length < allPlayers.length) {
+//                 let moreButton = document.createElement('a');
+//                 moreButton.className = 'playersTable_btn';
+//                 moreButton.href = '#';
+//                 let showMore = {
+//                     'english': 'See more',
+//                     'thai': 'ดูเพิ่มเติม',
+//                     'russian': 'Смотреть еще'
+//                 };
+//                 moreButton.textContent = showMore[localStorage.clientLang] || 'See more';
+//                 moreButton.addEventListener('click', function (event) {
+//                     event.preventDefault();
+//                     displayAllPlayers();
+//                     moreButton.remove();
+//                 });
+//                 container.appendChild(moreButton);
+//             }
+
+//         } catch (error) {
+//             console.error('Произошла ошибка при отображении игроков:', error);
+//             showErrorModal('Error while displaying players', 'Ops!');
+//         }
+//     }
+
+//     async function displayAllPlayers() {
+//         try {
+//             displayPlayers(allPlayers, playersContainer);
+//         } catch (error) {
+//             console.error('Произошла ошибка при отображении всех игроков:', error);
+//             showErrorModal('Error while displaying all players', 'Ops!');
+//         }
+//     }
+// }
 
 
 

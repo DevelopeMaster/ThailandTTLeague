@@ -3,10 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>404 Not Found</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icons/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/manifest.json">
+
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="ThailandTTLeague">
+    <meta property="og:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta property="og:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta property="og:url" content="https://thailandttleague.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Thailand TT League">
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ThailandTTLeague">
+    <meta name="twitter:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta name="twitter:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta name="twitter:url" content="https://thailandttleague.com/">
+
+    <!-- Favicon and other icons -->
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/icons/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/icons/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-config" content="/icons/favicons/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icons/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#262630">
+    <!-- Для iOS установка цвета шторки (status bar) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#262630">
+    <!-- Для Android установка цвета шторки -->
+    <meta name="theme-color" content="#000817"> 
+
+    <link rel="icon" type="image/png" href="/icons/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
+
 <body>
-    <h1>404 - Page Not Found</h1>
-    <p>The page you are looking for does not exist.</p>
+    <section>
+        <div class="container">
+            <div class="notFoundContainer">
+                <div class="notFoundContainer_code">
+                    <h6>4</h6>
+                    <img src="/icons/ball404.png" alt="tennis ball">
+                    <h6>4</h6>
+                </div>
+                <h2 id="errorMessage">Упс, страница не найдена</h2>
+                <h4 id="errorDescription">В адресе есть ошибка или страница удалена</h4>
+                <h3><span id="backTo">Вернуться на </span><a href="/" id="mainPageLink">Главную</a></h3>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        
+        const translations = {
+            english: {
+                errorMessage: "Oops, page not found",
+                errorDescription: "The address is incorrect or the page has been removed",
+                backTo: "Back to ",
+                mainPageLinkText: "Main Page"
+            },
+            russian: {
+                errorMessage: "Упс, страница не найдена",
+                errorDescription: "В адресе есть ошибка или страница удалена",
+                backTo: "Вернутся на ",
+                mainPageLinkText: "Главную"
+            },
+            thai: {
+                errorMessage: "อุ๊บส์ ไม่พบหน้าที่คุณค้นหา",
+                errorDescription: "ที่อยู่ไม่ถูกต้องหรือหน้าถูกลบไปแล้ว",
+                backTo: "กลับไปที่ ",
+                mainPageLinkText: "หน้าหลัก"
+            }
+            
+        };
+
+        // Получение языка из localStorage
+        const language = localStorage.getItem('clientLang') || 'english';
+
+        // Получение элементов на странице
+        const errorMessageEl = document.getElementById('errorMessage');
+        const errorDescriptionEl = document.getElementById('errorDescription');
+        const mainPageLinkEl = document.getElementById('mainPageLink');
+        const backTo = document.getElementById('backTo');
+
+        // Применение переводов на страницу
+        if (translations[language]) {
+            errorMessageEl.textContent = translations[language].errorMessage;
+            errorDescriptionEl.textContent = translations[language].errorDescription;
+            mainPageLinkEl.textContent = translations[language].mainPageLinkText;
+            backTo.textContent = translations[language].backTo;
+        }
+    </script>
 </body>
 </html>

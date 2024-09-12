@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TTLeague</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icons/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/manifest.json">
+
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="ThailandTTLeague">
+    <meta property="og:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta property="og:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta property="og:url" content="https://thailandttleague.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Thailand TT League">
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ThailandTTLeague">
+    <meta name="twitter:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta name="twitter:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta name="twitter:url" content="https://thailandttleague.com/">
+
+    <!-- Favicon and other icons -->
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/icons/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/icons/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-config" content="/icons/favicons/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icons/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#262630">
+    <!-- Для iOS установка цвета шторки (status bar) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#262630">
+    <!-- Для Android установка цвета шторки -->
+    <meta name="theme-color" content="#000817"> 
+
+    <link rel="icon" type="image/png" href="/icons/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+
+<body>
+    <header class="header" id="scroll">
+       <!-- from js -->
+    </header>
+    <div class="navigate">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol id="breadcrumb" class="navigate_breadcrumb">
+                    <!-- from js -->
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="contentWrapper">
+            
+        </div>
+    </div>
+    
+    
+    <section class="player" data-userid="<%= userId %>" data-usertype="<%= userType %>">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>личные данные</h2>
+                <form id="editUserForm" action="/savePlayerProfile" method="POST" enctype="multipart/form-data">
+                    <div class="editclub_formContainer">
+                        <div class="editclub_formContainer_logoSection">
+                            <img id="playerLogo" src="/icons/playerslogo/default_avatar.svg" alt="Player Logo">
+                            <input type="file" id="logoInput" name="logo" style="display: none;">
+                            <label for="logoInput" id="customLogoButton" class="editclub_formContainer_logoSection_btn">Добавить фото</label>
+                            <span class="remove-photo" onclick="removePhoto(event)"><img src="/icons/cross.svg" alt="cross"></span>
+                        </div>
+                        <div class="editclub_formContainer_formSection">
+                            <label for="playerName">Имя игрока</label>
+                            <input type="text" id="playerName" name="playerName" placeholder="Введите фамилию и имя"  required>
+                            
+                            
+                            <label for="city">Город</label>
+                            <input type="text" id="city" name="city" placeholder="Выбрать  город" style="background-image: url('/icons/chevron-down.svg'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 30px;">
+                            <div class="dropdownForm">
+                                <div class="dropdown-content" id="cityDropdown">
+                                <!-- options add from JS -->
+                                </div>
+                            </div>
+
+                            <label for="city">Имя тренера</label>
+                            <input type="text" id="coach" name="coach" placeholder="Выбрать тренера" style="background-image: url('/icons/chevron-down.svg'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 30px;">
+                            <div class="dropdownForm">
+                                <div class="dropdown-content" id="coachDropdown">
+                                <!-- options add from JS -->
+                                </div>
+                            </div>
+
+                            <label for="coachName">Имя тренера (если нет в списке)</label>
+                            <input type="text" id="coachNameAdditional" name="coachName" placeholder="Фамилия и имя тренера">
+                            
+                            <label for="date">Дата рождения</label>
+                            <input type="text" name="date" id="date" placeholder="Дата" oninput="addDots(this)" maxlength="10" required>
+                
+                            <label for="email">Е-mail</label>
+                            <input type="email" id="emailRegInput" placeholder="Введите e-mail" name="email" readonly>
+                            <div id="emailError"  class="error-message"></div>
+
+                            <label for="phoneNumber">Номер телефона</label>
+                            <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Введите ваш номер телефона">
+
+                            <label>Игровая рука</label>
+                            <div class="hands">
+                                <div class="hands_left">
+                                    <input class="hands_radio" type="radio" id="left" name="hand" value="left" required>
+                                    <label for="left">Левая</label>
+                                </div>
+                                <div class="hands_right">
+                                    <input class="hands_radio" type="radio" id="right" name="hand" value="right" required>
+                                    <label for="right">Правая</label>
+                                </div>
+                            </div>
+
+                            <label for="city">Основание</label>
+                            <input type="text" id="blade" name="blade" placeholder="Выбрать основание" style="background-image: url('/icons/chevron-down.svg'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 30px;">
+                            <div class="dropdownForm">
+                                <div class="dropdown-content" id="bladeDropdown">
+                                <!-- options add from JS -->
+                                </div>
+                            </div>
+
+                            <label for="city">Накладка справа</label>
+                            <input type="text" id="forehand" name="forehand" placeholder="Выбрать накладку" style="background-image: url('/icons/chevron-down.svg'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 30px;">
+                            <div class="dropdownForm">
+                                <div class="dropdown-content" id="forehandDropdown">
+                                <!-- options add from JS -->
+                                </div>
+                            </div>
+                            <label for="city">Накладка слева</label>
+                            <input type="text" id="backhand" name="backhand" placeholder="Выбрать накладку" style="background-image: url('/icons/chevron-down.svg'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 30px;">
+                            <div class="dropdownForm">
+                                <div class="dropdown-content" id="backhandDropdown">
+                                <!-- options add from JS -->
+                                </div>
+                            </div>         
+                                
+                            <div class="inp-label-pare">
+                                <label for="info">О себе</label>
+                                <textarea id="description" placeholder="Напишите информацию о себе" id="info" name="info" rows="7"></textarea>
+                            </div>
+                
+                            <button class="header_btn-sign editclub_formContainer_submit" type="submit">Сохранить</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <!-- <section class="clubPhotos">
+        <div class="container">
+            <div id="clubsPhotoContainer" class="contentWrapper">
+                <h2>photoS</h2>
+                
+
+            </div>
+        </div>
+    </section> -->
+
+    
+
+  
+
+
+
+
+    <footer class="footer">
+        <!-- from js -->
+    </footer>
+    
+    <div class="adv">
+    <!-- add from DB -->
+    </div>
+    
+    
+    <!-- Модальное окно -->
+    <div id="myModal" class="modal">    
+        <div class="modal-content">
+        <!-- add from DB -->
+        </div>
+    </div>
+    
+    <script type="module" src="/js/edituser.js"></script>  
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</body>
+</html>

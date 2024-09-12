@@ -8,8 +8,12 @@
         width: 100%
         display: flex
         gap: 20px
+        align-items: flex-start
+        overflow: hidden
+        box-sizing: border-box
         // height: 194px
         &_logo
+            flex-shrink: 0
             aspect-ratio: 1.74/1.54
             width: 174px
             height: auto
@@ -17,10 +21,15 @@
             // height: 100%
             border-radius: 14px
         &_info
+            flex-grow: 1
+            position: relative
             display: flex
             flex-direction: column
             gap: 16px
-            width: 100%
+            min-width: 0
+            overflow: hidden
+            box-sizing: border-box
+            // width: 100%
             &_name
                 color: #FFF
                 font-family: Inter
@@ -38,10 +47,20 @@
             &_descr
                 display: flex
                 gap: 20px
+                white-space: nowrap
+                // overflow: hidden
+                // text-overflow: ellipsis
+                // width: 100%
                 &_path
                     display: flex
                     flex-direction: column
                     gap: 14px
+                    white-space: nowrap
+                    overflow: hidden
+                    text-overflow: ellipsis
+                    // width: calc(50% - 10px)
+                    width: 100% // Теперь этот блок занимает всю ширину
+                    max-width: 100% // Ограничиваем блок, чтобы он не вылезал за пределы
                     p
                         color: #FFF
                         font-family: Inter
@@ -89,10 +108,36 @@
                     
 
 .supplements
-    // margin-top: 40px
     display: flex
-    gap: 8px
-    margin-bottom: 24px
+    flex-direction: column
+    gap: 10px
+    &_free
+        display: flex
+        gap: 8px
+        align-items: center
+        // margin-bottom: 24px
+        p
+            color: #FFF
+            font-family: Inter
+            font-size: 16px
+            font-style: normal
+            font-weight: 400
+            line-height: normal
+    &_paid
+        display: flex
+        gap: 8px
+        align-items: center
+        margin-bottom: 24px
+        .supplements_item
+            background: var(--blue, #081B3E)
+            border: none
+        p
+            color: #FFF
+            font-family: Inter
+            font-size: 16px
+            font-style: normal
+            font-weight: 400
+            line-height: normal
     &_item
         display: flex
         padding: 4px 9px
@@ -151,7 +196,7 @@
         &_mainInfo
             // flex-direction: column
             &_logo
-                width: 380px
+                width: 270px
             &_info_descr
                 flex-direction: column
                 &_path
@@ -175,6 +220,7 @@
             &_logo
                 width: 100%
             &_info
+                width: 100%
                 gap: 14px
                 &_name
                     font-size: 18px

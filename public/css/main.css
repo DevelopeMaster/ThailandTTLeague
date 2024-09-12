@@ -120,7 +120,8 @@ h2 {
         font-size: 16px;
         font-weight: 500;
         line-height: normal;
-        outline: none; }
+        outline: none;
+        margin-top: 0; }
       .header_top_left_search {
         position: absolute;
         background-color: #3f3f4c;
@@ -180,7 +181,7 @@ h2 {
       display: flex; }
   .header_account {
     display: flex;
-    gap: 16px;
+    gap: 6px;
     align-items: center;
     background-color: transparent;
     padding-left: 10px;
@@ -192,7 +193,10 @@ h2 {
     line-height: normal;
     text-transform: none;
     border: none;
-    cursor: pointer; }
+    cursor: pointer;
+    padding: 0; }
+    .header_account img {
+      margin-right: 10px; }
     .header_account .accountName {
       color: #FFF;
       font-family: Inter;
@@ -202,7 +206,9 @@ h2 {
       line-height: normal; }
     .header_account_avatar {
       width: 46px;
-      height: 46px; }
+      height: 46px;
+      border-radius: 50%;
+      margin-right: 0; }
     .header_account_content {
       margin-top: 50px;
       display: none;
@@ -388,7 +394,8 @@ h2 {
   display: block;
   width: 100%;
   padding-top: 228px;
-  overflow: hidden; }
+  overflow: hidden;
+  margin-top: 0; }
   .info_wrapper {
     position: relative;
     width: 100%;
@@ -1079,6 +1086,10 @@ h2 {
       line-height: normal; }
     .modal form .btnSbmt {
       margin-top: 20px; }
+      .modal form .btnSbmt:disabled {
+        background: #A6A6A6;
+        color: #CACACA;
+        border: none; }
   .modal .error {
     border: 1px solid red;
     border-radius: 6px; }
@@ -2235,17 +2246,25 @@ h2 {
     box-sizing: border-box;
     width: 100%;
     display: flex;
-    gap: 20px; }
+    gap: 20px;
+    align-items: flex-start;
+    overflow: hidden;
+    box-sizing: border-box; }
     .club_mainInfo_logo {
+      flex-shrink: 0;
       aspect-ratio: 1.74/1.54;
       width: 174px;
       height: auto;
       border-radius: 14px; }
     .club_mainInfo_info {
+      flex-grow: 1;
+      position: relative;
       display: flex;
       flex-direction: column;
       gap: 16px;
-      width: 100%; }
+      min-width: 0;
+      overflow: hidden;
+      box-sizing: border-box; }
       .club_mainInfo_info_name {
         color: #FFF;
         font-family: Inter;
@@ -2262,11 +2281,17 @@ h2 {
           margin-top: 10px; }
       .club_mainInfo_info_descr {
         display: flex;
-        gap: 20px; }
+        gap: 20px;
+        white-space: nowrap; }
         .club_mainInfo_info_descr_path {
           display: flex;
           flex-direction: column;
-          gap: 14px; }
+          gap: 14px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 100%;
+          max-width: 100%; }
           .club_mainInfo_info_descr_path p {
             color: #FFF;
             font-family: Inter;
@@ -2313,8 +2338,34 @@ h2 {
 
 .supplements {
   display: flex;
-  gap: 8px;
-  margin-bottom: 24px; }
+  flex-direction: column;
+  gap: 10px; }
+  .supplements_free {
+    display: flex;
+    gap: 8px;
+    align-items: center; }
+    .supplements_free p {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal; }
+  .supplements_paid {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 24px; }
+    .supplements_paid .supplements_item {
+      background: var(--blue, #081B3E);
+      border: none; }
+    .supplements_paid p {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal; }
   .supplements_item {
     display: flex;
     padding: 4px 9px;
@@ -2353,7 +2404,7 @@ h2 {
 
 @media (max-width: 768px) {
   .club_mainInfo_logo {
-    width: 380px; }
+    width: 270px; }
   .club_mainInfo_info_descr {
     flex-direction: column; }
     .club_mainInfo_info_descr_path p {
@@ -2372,6 +2423,7 @@ h2 {
       .club_mainInfo_logo {
         width: 100%; }
       .club_mainInfo_info {
+        width: 100%;
         gap: 14px; }
         .club_mainInfo_info_name {
           font-size: 18px; }
@@ -3406,7 +3458,8 @@ h2 {
         display: flex; }
         .players .playersTable_player .player_player .playerLogo {
           width: 36px;
-          height: 36px; }
+          height: 36px;
+          border-radius: 50%; }
       .players .playersTable_player .player_login {
         color: #ADADAD; }
       .players .playersTable_player .player_city {
@@ -3533,6 +3586,555 @@ h2 {
           padding-left: 0px;
           padding-right: 0px;
           margin-right: 0px; } }
+
+.player {
+  margin-top: 40px; }
+  .player_mainInfo {
+    border-radius: 14px;
+    background: #262630;
+    padding: 20px;
+    font-size: 16px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px; }
+    .player_mainInfo_logo {
+      aspect-ratio: 1/1;
+      min-width: 160px;
+      height: auto;
+      border-radius: 50%; }
+    .player_mainInfo_info {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%; }
+      .player_mainInfo_info_name {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal; }
+        .player_mainInfo_info_name::after {
+          content: '';
+          display: block;
+          height: 1px;
+          width: 100%;
+          background-color: #3F3F4C;
+          margin-top: 10px; }
+      .player_mainInfo_info_descr {
+        display: flex;
+        gap: 10px; }
+        .player_mainInfo_info_descr_path {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          width: 50%; }
+          .player_mainInfo_info_descr_path p {
+            color: #FFF;
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; }
+            .player_mainInfo_info_descr_path p span {
+              font-weight: 400;
+              white-space: normal; }
+              .player_mainInfo_info_descr_path p span a {
+                text-decoration: none;
+                color: #FFF; }
+  .player_about, .player_statistics {
+    margin-top: 20px;
+    border-radius: 14px;
+    background: #262630;
+    font-size: 16px;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box; }
+    .player_about h3, .player_statistics h3 {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      margin-bottom: 16px; }
+    .player_about_wrapp, .player_statistics_wrapp {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px; }
+      .player_about_wrapp p, .player_statistics_wrapp p {
+        color: #FFF;
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 130%; }
+        .player_about_wrapp p span, .player_statistics_wrapp p span {
+          font-weight: 500; }
+    .player_about_info, .player_statistics_info {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%; }
+      .player_about_info_name, .player_statistics_info_name {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal; }
+        .player_about_info_name::after, .player_statistics_info_name::after {
+          content: '';
+          display: block;
+          height: 1px;
+          width: 100%;
+          background-color: #3F3F4C;
+          margin-top: 10px; }
+      .player_about_info_descr, .player_statistics_info_descr {
+        display: flex;
+        gap: 40px; }
+        .player_about_info_descr_path, .player_statistics_info_descr_path {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          width: 45%; }
+          .player_about_info_descr_path p, .player_statistics_info_descr_path p {
+            color: #FFF;
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 130%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; }
+            .player_about_info_descr_path p span, .player_statistics_info_descr_path p span {
+              font-weight: 400;
+              white-space: normal; }
+              .player_about_info_descr_path p span a, .player_statistics_info_descr_path p span a {
+                text-decoration: none;
+                color: #FFF; }
+          .player_about_info_descr_path .raitingWrapp, .player_statistics_info_descr_path .raitingWrapp {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            color: #FFF;
+            font-family: Inter;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal; }
+        .player_about_info_descr .statisticsSeparateLine, .player_statistics_info_descr .statisticsSeparateLine {
+          position: relative; }
+          .player_about_info_descr .statisticsSeparateLine::before, .player_statistics_info_descr .statisticsSeparateLine::before {
+            content: '';
+            display: block;
+            width: 1px;
+            height: 100%;
+            background: #3F3F4C;
+            position: absolute;
+            top: 0px;
+            left: -20px; }
+
+.bestVictories {
+  margin-top: 60px; }
+  .bestVictories_table {
+    border-radius: 14px;
+    background: #262630;
+    font-size: 16px;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    box-sizing: border-box; }
+    .bestVictories_table_content {
+      width: 100%; }
+    .bestVictories_table_victory {
+      position: relative;
+      height: 38px;
+      color: #fff;
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 130%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px; }
+      .bestVictories_table_victory::after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        content: '';
+        display: block;
+        height: 1px;
+        width: 100%;
+        background: #3F3F4C; }
+      .bestVictories_table_victory_left {
+        display: flex;
+        gap: 14px;
+        align-items: center; }
+      .bestVictories_table_victory_right {
+        display: flex;
+        gap: 28px;
+        align-items: center; }
+      .bestVictories_table_victory .shortcut {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 85px; }
+      .bestVictories_table_victory .bestVictories_number {
+        align-content: center;
+        font-style: normal;
+        font-weight: 400;
+        color: #FFF; }
+      .bestVictories_table_victory .bestVictories_player {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        justify-content: flex-start;
+        align-content: center;
+        gap: 8px; }
+        .bestVictories_table_victory .bestVictories_player .playerLogo {
+          width: 27px;
+          height: 27px; }
+        .bestVictories_table_victory .bestVictories_player span {
+          align-content: center; }
+      .bestVictories_table_victory .bestVictories_city {
+        color: #ADADAD;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
+      .bestVictories_table_victory .bestVictories_avarage {
+        color: #007026; }
+    .bestVictories_table_btn {
+      display: block;
+      margin-top: 20px;
+      color: #FA6400;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      text-decoration-line: underline; }
+  .bestVictories .cell {
+    font-size: 16px;
+    font-weight: 400;
+    align-content: center; }
+  .bestVictories_club {
+    display: flex;
+    justify-content: flex-start;
+    align-content: center;
+    gap: 8px; }
+    .bestVictories_club .clubLogo {
+      width: 27px;
+      height: 27px; }
+    .bestVictories_club span {
+      align-content: center; }
+  .bestVictories_score {
+    color: #007026; }
+  .bestVictories_sets {
+    padding-left: 15px; }
+  .bestVictories_avarage {
+    color: #007026; }
+  .bestVictories_before {
+    text-align: center; }
+  .bestVictories_after {
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400; }
+
+.awards .awardsTable {
+  position: relative;
+  border-radius: 14px;
+  background: #262630;
+  padding: 20px;
+  color: #FFF;
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; }
+  .awards .awardsTable h3 {
+    margin-bottom: 20px; }
+  .awards .awardsTable_item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    justify-content: space-between; }
+    .awards .awardsTable_item::after {
+      position: absolute;
+      left: 0;
+      bottom: -10px;
+      content: '';
+      display: block;
+      width: 100%;
+      height: 1px;
+      background-color: #3F3F4C; }
+    .awards .awardsTable_item span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+    .awards .awardsTable_item_medalBlock {
+      display: flex;
+      gap: 10px; }
+  .awards .awardsTable_btn {
+    display: block;
+    margin-top: 20px;
+    color: #FA6400;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-decoration-line: underline; }
+    .awards .awardsTable_btn:hover {
+      color: #FF7A00; }
+
+.results .resultsTable {
+  position: relative;
+  border-radius: 14px;
+  background: #262630;
+  padding: 20px;
+  color: #FFF;
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%; }
+  .results .resultsTable h3 {
+    margin-bottom: 20px; }
+  .results .resultsTable_mainInfo {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    margin-bottom: 20px; }
+    .results .resultsTable_mainInfo_place {
+      display: flex;
+      gap: 10px; }
+    .results .resultsTable_mainInfo_weekday {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      border-radius: 6px;
+      height: 31px;
+      background: #081B3E;
+      font-size: 16px;
+      box-sizing: border-box; }
+  .results .resultsTable_header {
+    border-radius: 8px;
+    background: #3F3F4C;
+    padding: 15px 30px;
+    font-weight: 400;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px; }
+    .results .resultsTable_header span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+  .results .resultsTable_content_steps {
+    position: relative;
+    padding: 20px 30px 10px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px; }
+    .results .resultsTable_content_steps span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+    .results .resultsTable_content_steps:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0px;
+      display: block;
+      width: 100%;
+      height: 1px;
+      background-color: #3F3F4C; }
+  .results .resultsTable .results_start {
+    grid-column: 1/2;
+    color: #fff;
+    font-weight: 500; }
+  .results .resultsTable .results_stage {
+    grid-column: 2/3;
+    align-items: center;
+    gap: 12px;
+    display: block; }
+  .results .resultsTable .results_rival {
+    grid-column: 3/7;
+    align-items: center; }
+    .results .resultsTable .results_rival img {
+      width: 14px;
+      height: 14px; }
+  .results .resultsTable .results_rating {
+    text-align: center;
+    grid-column: 7/8; }
+  .results .resultsTable .results_score {
+    text-align: center;
+    grid-column: 8/-1; }
+  .results .resultsTable .resultsTable_content_steps .results_score {
+    color: #007026; }
+  .results .resultsTable_total {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+    margin-top: 16px;
+    padding: 0 30px; }
+    .results .resultsTable_total_title {
+      grid-column: 1/8; }
+    .results .resultsTable_total_score {
+      text-align: center;
+      grid-column: 8/-1; }
+  .results .resultsTable .cell {
+    height: 30px;
+    display: flex;
+    gap: 14px;
+    align-items: center; }
+    .results .resultsTable .cell span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+  .results .resultsTable_btn {
+    display: block;
+    margin-top: 20px;
+    color: #FA6400;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-decoration-line: underline; }
+    .results .resultsTable_btn:hover {
+      color: #FF7A00; }
+
+@media (max-width: 1025px) {
+  .playerStatistics, .awards, .results {
+    margin-top: 40px; }
+    .playerStatistics h2, .awards h2, .results h2 {
+      margin-bottom: 20px; } }
+
+@media (max-width: 768px) {
+  .bestVictories_number {
+    display: none; } }
+
+@media (max-width: 650px) {
+  .bestVictories_table_victory .bestVictories_player {
+    display: none; } }
+
+@media (max-width: 576px) {
+  .player {
+    margin-top: 40px; }
+    .player h2 {
+      margin-bottom: 20px; }
+    .player_mainInfo {
+      flex-direction: column;
+      font-size: 14px;
+      padding: 16px; }
+      .player_mainInfo_logo {
+        width: 50%;
+        height: auto;
+        margin: 0 auto; }
+      .player_mainInfo_info_descr {
+        flex-direction: column; }
+        .player_mainInfo_info_descr_path {
+          width: 100%; }
+      .player_mainInfo_info_name {
+        font-size: 18px; }
+    .player_about {
+      font-size: 14px;
+      padding: 16px; }
+      .player_about h3 {
+        font-size: 18px; }
+      .player_about_info_descr {
+        flex-direction: column;
+        gap: 14px; }
+        .player_about_info_descr_path {
+          width: 100%; }
+    .player_statistics {
+      font-size: 14px;
+      padding: 16px; }
+      .player_statistics_info_descr {
+        flex-direction: column;
+        gap: 24px; }
+        .player_statistics_info_descr_path {
+          width: 100%; }
+        .player_statistics_info_descr .statisticsSeparateLine:before {
+          width: 100%;
+          height: 1px;
+          top: -12px;
+          left: 0px; }
+  .playerStatistics {
+    margin-top: 40px; }
+    .playerStatistics h2 {
+      margin-bottom: 20px; }
+  .bestVictories {
+    margin-top: 40px; }
+    .bestVictories h2 {
+      margin-bottom: 20px; }
+    .bestVictories .cell {
+      font-size: 14px; }
+    .bestVictories_table {
+      padding: 16px; }
+      .bestVictories_table_victory {
+        font-size: 14px;
+        gap: 13px; }
+        .bestVictories_table_victory_left {
+          gap: 13px; }
+        .bestVictories_table_victory_right {
+          gap: 13px; }
+    .bestVictories_before {
+      display: none; }
+  .awards .awardsTable {
+    font-size: 14px;
+    padding: 16px; }
+    .awards .awardsTable h3 {
+      margin-bottom: 20px; }
+    .awards .awardsTable_item {
+      flex-direction: column;
+      align-items: start;
+      gap: 6px; }
+      .awards .awardsTable_item .bestVictories_club {
+        padding-bottom: 4px; }
+  .results .resultsTable {
+    font-size: 14px;
+    padding: 16px; }
+    .results .resultsTable_mainInfo {
+      gap: 15px;
+      margin-bottom: 0; }
+      .results .resultsTable_mainInfo_weekday {
+        font-size: 14px;
+        height: 29px; }
+    .results .resultsTable_header {
+      display: none; }
+    .results .resultsTable_content_steps {
+      padding: 20px 0px 10px;
+      grid-template-columns: repeat(6, 1fr); }
+    .results .resultsTable .results_start {
+      grid-column: 1/2; }
+    .results .resultsTable .results_stage {
+      grid-column: 2/3; }
+    .results .resultsTable .results_rival {
+      grid-column: 3/5; }
+    .results .resultsTable .results_rating {
+      grid-column: 5/6; }
+    .results .resultsTable .results_score {
+      grid-column: 6/-1; }
+    .results .resultsTable .resultsTable_total {
+      padding: 0px;
+      grid-template-columns: repeat(6, 1fr); }
+      .results .resultsTable .resultsTable_total_title {
+        grid-column: 1/6; }
+      .results .resultsTable .resultsTable_total_score {
+        grid-column: 6/-1; } }
 
 .filterTrainings {
   margin-top: 40px; }
@@ -4247,7 +4849,7 @@ section {
           .account_mainInfo_info_descr_path .trainingPrice span {
             color: #FA6400; }
   .account_buttonWrapp {
-    margin-top: 16px;
+    margin-top: 20px;
     display: flex;
     gap: 20px;
     align-items: center; }
@@ -4271,6 +4873,850 @@ section {
         line-height: normal;
         text-decoration-line: underline;
         cursor: pointer; }
+
+.editclub_formContainer {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 30px;
+  border-radius: 14px;
+  background: #262630;
+  color: white; }
+  .editclub_formContainer_logoSection {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 19%; }
+    .editclub_formContainer_logoSection img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 0px; }
+    .editclub_formContainer_logoSection_btn {
+      cursor: pointer;
+      color: #FFF;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      margin-top: 0;
+      text-align: center; }
+    .editclub_formContainer_logoSection .remove-photo {
+      position: absolute;
+      top: 0px;
+      right: 0;
+      width: 6px;
+      height: 6px;
+      margin: 0;
+      display: flex;
+      cursor: pointer; }
+      .editclub_formContainer_logoSection .remove-photo img {
+        max-height: 100%;
+        object-fit: cover; }
+  .editclub_formContainer_formSection {
+    display: flex;
+    color: #fff;
+    gap: 0px;
+    flex-direction: column;
+    width: 100%; }
+    .editclub_formContainer_formSection .hands {
+      display: flex;
+      gap: 42px;
+      margin-top: 10px;
+      padding-left: 3px; }
+      .editclub_formContainer_formSection .hands_left, .editclub_formContainer_formSection .hands_right {
+        display: flex;
+        align-items: center;
+        gap: 8px; }
+      .editclub_formContainer_formSection .hands label, .editclub_formContainer_formSection .hands input {
+        margin-top: 0;
+        font-weight: 400;
+        font-size: 14px; }
+    .editclub_formContainer_formSection .policy {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding-left: 3px; }
+      .editclub_formContainer_formSection .policy label {
+        margin-top: 0; }
+      .editclub_formContainer_formSection .policy .checkbox {
+        margin-top: 0; }
+    .editclub_formContainer_formSection input[type='radio'] {
+      -webkit-appearance: none;
+      width: 21px;
+      height: 21px;
+      border-radius: 10%;
+      outline: none;
+      background-color: #ffffff00;
+      box-shadow: 0 0 0 2px #fff; }
+    .editclub_formContainer_formSection input[type='checkbox'] {
+      -webkit-appearance: none;
+      width: 21px;
+      height: 21px;
+      border-radius: 10%;
+      outline: none;
+      background-color: #ffffff00;
+      box-shadow: 0 0 0 2px #3F3F4C; }
+    .editclub_formContainer_formSection input[type='radio']:checked, .editclub_formContainer_formSection input[type='checkbox']:checked {
+      background-image: url("/icons/radio-checked.svg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-color: #fff;
+      box-shadow: 0 0 0 2px #fff; }
+    .editclub_formContainer_formSection label {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      margin-top: 16px; }
+      .editclub_formContainer_formSection label a {
+        text-decoration: none;
+        color: #666877;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 130%; }
+    .editclub_formContainer_formSection textarea {
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #3F3F4C;
+      padding: 8px;
+      color: #ffffff;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      width: 100%;
+      resize: vertical;
+      overflow: hidden;
+      box-sizing: border-box; }
+    .editclub_formContainer_formSection textarea:focus {
+      outline: none; }
+    .editclub_formContainer_formSection textarea:-webkit-autofill,
+    .editclub_formContainer_formSection textarea:-webkit-autofill:hover,
+    .editclub_formContainer_formSection textarea:-webkit-autofill:focus {
+      -webkit-text-fill-color: #fff;
+      transition: background-color 5000s ease-in-out 0s; }
+    .editclub_formContainer_formSection .textareaInfoLimit {
+      width: 100%;
+      display: none;
+      justify-content: space-between; }
+      .editclub_formContainer_formSection .textareaInfoLimit_charNotificate {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 130%; }
+      .editclub_formContainer_formSection .textareaInfoLimit_charLimit {
+        color: #ffffff;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; }
+    .editclub_formContainer_formSection .formWrapper {
+      width: 100%;
+      display: flex;
+      gap: 20px; }
+    .editclub_formContainer_formSection .inp-label-pare {
+      width: 100%;
+      margin-top: 16px; }
+    .editclub_formContainer_formSection .dropdownForm {
+      position: relative;
+      margin-top: 8px;
+      display: block;
+      width: 100%; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content {
+        display: none;
+        position: absolute;
+        width: 100%;
+        z-index: 2;
+        max-height: 165px;
+        overflow-y: auto;
+        background-color: #3F3F4C;
+        border-radius: 0px 0px 14px 14px; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content div {
+        color: black;
+        padding: 8px 13px 8px 8px;
+        text-decoration: none;
+        display: block;
+        color: #FFF;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        cursor: default; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content div:hover {
+        background-color: #343643; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content::-webkit-scrollbar {
+        padding-right: 8px;
+        width: 2px; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content::-webkit-scrollbar-track {
+        background: #262630; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content::-webkit-scrollbar-thumb {
+        background: #666877; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content::-webkit-scrollbar-thumb:hover {
+        background: #666877; }
+    .editclub_formContainer_formSection .dropbtnCities:hover, .editclub_formContainer_formSection .dropbtnCities:focus {
+      background-color: #3F3F4C; }
+    .editclub_formContainer_formSection span {
+      margin-top: 4px;
+      color: #666877;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal; }
+  .editclub_formContainer_submit {
+    margin-top: 20px; }
+
+.error {
+  border: 1px solid red;
+  border-radius: 6px; }
+
+.error-message {
+  color: #D10000;
+  font-family: Inter;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin-top: 5px;
+  display: none; }
+
+input {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  padding: 8px 13px 8px 8px;
+  align-items: center;
+  border: none;
+  border-radius: 6px;
+  background: #3F3F4C;
+  color: #fff;
+  font-family: Inter;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal; }
+  input::placeholder {
+    color: #666877;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal; }
+
+input:focus {
+  outline: none; }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fff;
+  transition: background-color 5000s ease-in-out 0s; }
+
+.editclub_formContainer {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 30px;
+  border-radius: 14px;
+  background: #262630;
+  color: white; }
+  .editclub_formContainer_logoSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 19%; }
+    .editclub_formContainer_logoSection img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 0px; }
+    .editclub_formContainer_logoSection_btn {
+      cursor: pointer;
+      color: #FFF;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      margin-top: 0; }
+  .editclub_formContainer_formSection {
+    display: flex;
+    color: #fff;
+    gap: 0px;
+    flex-direction: column;
+    width: 100%; }
+    .editclub_formContainer_formSection .freeServices, .editclub_formContainer_formSection .paidServices {
+      display: flex;
+      gap: 16px;
+      margin-top: 10px;
+      padding-left: 3px;
+      flex-wrap: wrap; }
+      .editclub_formContainer_formSection .freeServices_item, .editclub_formContainer_formSection .paidServices_item {
+        display: flex;
+        align-items: center;
+        gap: 8px; }
+      .editclub_formContainer_formSection .freeServices label, .editclub_formContainer_formSection .freeServices input, .editclub_formContainer_formSection .paidServices label, .editclub_formContainer_formSection .paidServices input {
+        margin-top: 0;
+        font-weight: 400;
+        font-size: 14px; }
+    .editclub_formContainer_formSection .policy {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding-left: 3px; }
+      .editclub_formContainer_formSection .policy label {
+        margin-top: 0; }
+      .editclub_formContainer_formSection .policy .checkbox {
+        margin-top: 0; }
+    .editclub_formContainer_formSection input[type='radio'] {
+      -webkit-appearance: none;
+      width: 21px;
+      height: 21px;
+      border-radius: 10%;
+      outline: none;
+      background-color: #ffffff00;
+      box-shadow: 0 0 0 2px #fff; }
+    .editclub_formContainer_formSection input[type='checkbox'] {
+      -webkit-appearance: none;
+      width: 21px;
+      height: 21px;
+      border-radius: 10%;
+      outline: none;
+      background-color: #ffffff00;
+      box-shadow: 0 0 0 2px #3F3F4C; }
+    .editclub_formContainer_formSection input[type='radio']:checked, .editclub_formContainer_formSection input[type='checkbox']:checked {
+      background-image: url("/icons/radio-checked.svg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-color: #fff;
+      box-shadow: 0 0 0 2px #fff; }
+    .editclub_formContainer_formSection label {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      margin-top: 16px; }
+      .editclub_formContainer_formSection label a {
+        text-decoration: none;
+        color: #666877;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 130%; }
+    .editclub_formContainer_formSection textarea {
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #3F3F4C;
+      padding: 8px;
+      color: #ffffff;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      width: 100%;
+      resize: vertical;
+      overflow: hidden;
+      box-sizing: border-box; }
+    .editclub_formContainer_formSection textarea:focus {
+      outline: none; }
+    .editclub_formContainer_formSection textarea:-webkit-autofill,
+    .editclub_formContainer_formSection textarea:-webkit-autofill:hover,
+    .editclub_formContainer_formSection textarea:-webkit-autofill:focus {
+      -webkit-text-fill-color: #fff;
+      transition: background-color 5000s ease-in-out 0s; }
+    .editclub_formContainer_formSection .textareaInfoLimit {
+      width: 100%;
+      display: none;
+      justify-content: space-between; }
+      .editclub_formContainer_formSection .textareaInfoLimit_charNotificate {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 130%; }
+      .editclub_formContainer_formSection .textareaInfoLimit_charLimit {
+        color: #ffffff;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; }
+    .editclub_formContainer_formSection .formWrapper {
+      width: 100%;
+      display: flex;
+      gap: 20px; }
+    .editclub_formContainer_formSection .inp-label-pare {
+      width: 100%;
+      margin-top: 16px; }
+    .editclub_formContainer_formSection .dropdownForm {
+      position: relative;
+      margin-top: 8px;
+      display: block;
+      width: 100%; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content {
+        display: none;
+        position: absolute;
+        width: 100%;
+        z-index: 2;
+        max-height: 165px;
+        overflow-y: auto;
+        background-color: #3F3F4C;
+        border-radius: 0px 0px 14px 14px; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content div {
+        color: black;
+        padding: 8px 13px 8px 8px;
+        text-decoration: none;
+        display: block;
+        color: #FFF;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        cursor: default; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content div:hover {
+        background-color: #343643; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content::-webkit-scrollbar {
+        padding-right: 8px;
+        width: 2px; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content::-webkit-scrollbar-track {
+        background: #262630; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content::-webkit-scrollbar-thumb {
+        background: #666877; }
+      .editclub_formContainer_formSection .dropdownForm .dropdown-content::-webkit-scrollbar-thumb:hover {
+        background: #666877; }
+    .editclub_formContainer_formSection .dropbtnCities:hover, .editclub_formContainer_formSection .dropbtnCities:focus {
+      background-color: #3F3F4C; }
+    .editclub_formContainer_formSection span {
+      margin-top: 4px;
+      color: #666877;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal; }
+    .editclub_formContainer_formSection .photoUploadContainer {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+      gap: 10px; }
+      .editclub_formContainer_formSection .photoUploadContainer_preview {
+        position: relative;
+        display: flex;
+        width: 136px;
+        height: 91px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        border-radius: 8px;
+        background: #3F3F4C; }
+        .editclub_formContainer_formSection .photoUploadContainer_preview img {
+          max-height: 100%;
+          object-fit: cover; }
+        .editclub_formContainer_formSection .photoUploadContainer_preview span {
+          position: absolute;
+          top: -10px;
+          right: 0px;
+          width: 6px;
+          height: 6px;
+          margin: 0;
+          display: flex; }
+          .editclub_formContainer_formSection .photoUploadContainer_preview span img {
+            width: 6px;
+            height: 6px; }
+      .editclub_formContainer_formSection .photoUploadContainer_descr {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 130%; }
+    .editclub_formContainer_formSection .upload-button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #ff6b6b;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center; }
+    .editclub_formContainer_formSection .imageHide {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px; }
+    .editclub_formContainer_formSection .upload-button:hover {
+      background-color: #ff4b4b; }
+  .editclub_formContainer_submit {
+    margin-top: 20px; }
+
+.error {
+  border: 1px solid red;
+  border-radius: 6px; }
+
+.error-message {
+  color: #D10000;
+  font-family: Inter;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin-top: 5px;
+  display: none; }
+
+input {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  padding: 8px 13px 8px 8px;
+  align-items: center;
+  border: none;
+  border-radius: 6px;
+  background: #3F3F4C;
+  color: #fff;
+  font-family: Inter;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal; }
+  input::placeholder {
+    color: #666877;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal; }
+
+input:focus {
+  outline: none; }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fff;
+  transition: background-color 5000s ease-in-out 0s; }
+
+@media (max-width: 768px) {
+  .editclub_formContainer_formSection .photoUploadContainer {
+    justify-content: flex-start; } }
+
+@media (max-width: 576px) {
+  .editclub_formContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px; }
+    .editclub_formContainer_formSection .formWrapper {
+      flex-direction: column;
+      gap: 0px; } }
+
+.clubStatistics .tournamentsTable, .clubStatistics .victoriesTable {
+  position: relative;
+  border-radius: 14px;
+  background: #262630;
+  padding: 20px;
+  color: #FFF;
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; }
+  .clubStatistics .tournamentsTable h3, .clubStatistics .victoriesTable h3 {
+    margin-bottom: 20px; }
+  .clubStatistics .tournamentsTable_header, .clubStatistics .victoriesTable_header {
+    border-radius: 8px;
+    background: #3F3F4C;
+    padding: 15px 0px;
+    display: grid;
+    grid-template-columns: 50px repeat(6, 1fr);
+    gap: 30px; }
+    .clubStatistics .tournamentsTable_header span, .clubStatistics .victoriesTable_header span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+  .clubStatistics .tournamentsTable .player_number, .clubStatistics .victoriesTable .player_number {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    margin-left: 30px; }
+  .clubStatistics .tournamentsTable .player_player, .clubStatistics .victoriesTable .player_player {
+    grid-column: 2/6;
+    align-items: center;
+    gap: 12px;
+    display: block; }
+  .clubStatistics .tournamentsTable .player_tournaments, .clubStatistics .victoriesTable .player_tournaments {
+    grid-column: 6/7; }
+  .clubStatistics .tournamentsTable .player_rating, .clubStatistics .victoriesTable .player_rating {
+    grid-column: 7/-1; }
+  .clubStatistics .tournamentsTable_player, .clubStatistics .victoriesTable_player {
+    border-radius: 8px;
+    padding: 15px 0px;
+    display: grid;
+    grid-template-columns: 50px repeat(6, 1fr);
+    column-gap: 30px;
+    height: 30px;
+    align-items: center;
+    color: #FFF;
+    text-decoration: none;
+    padding-top: 20px; }
+    .clubStatistics .tournamentsTable_player::after, .clubStatistics .victoriesTable_player::after {
+      margin-top: 11px;
+      content: '';
+      display: block;
+      grid-column: 1/-1;
+      height: 1px;
+      background-color: #3F3F4C; }
+    .clubStatistics .tournamentsTable_player .player_number, .clubStatistics .victoriesTable_player .player_number {
+      font-weight: 400;
+      margin-left: 30px; }
+    .clubStatistics .tournamentsTable_player .player_player, .clubStatistics .victoriesTable_player .player_player {
+      font-size: 16px;
+      font-weight: 400;
+      display: flex; }
+      .clubStatistics .tournamentsTable_player .player_player .playerLogo, .clubStatistics .victoriesTable_player .player_player .playerLogo {
+        width: 36px;
+        height: 36px; }
+    .clubStatistics .tournamentsTable_player .player_login, .clubStatistics .victoriesTable_player .player_login {
+      color: #ADADAD; }
+    .clubStatistics .tournamentsTable_player .player_city, .clubStatistics .victoriesTable_player .player_city {
+      font-weight: 400; }
+    .clubStatistics .tournamentsTable_player .player_rating, .clubStatistics .victoriesTable_player .player_rating {
+      font-weight: 400;
+      margin-right: 30px; }
+  .clubStatistics .tournamentsTable .cell, .clubStatistics .victoriesTable .cell {
+    height: 30px;
+    display: flex;
+    gap: 14px;
+    align-items: center; }
+    .clubStatistics .tournamentsTable .cell span, .clubStatistics .victoriesTable .cell span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+  .clubStatistics .tournamentsTable_btn, .clubStatistics .victoriesTable_btn {
+    display: block;
+    margin-top: 20px;
+    color: #FA6400;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-decoration-line: underline; }
+    .clubStatistics .tournamentsTable_btn:hover, .clubStatistics .victoriesTable_btn:hover {
+      color: #FF7A00; }
+
+.clubStatistics .victoriesTable {
+  margin-top: 20px; }
+
+.clubWinners .winnersTable {
+  position: relative;
+  border-radius: 14px;
+  background: #262630;
+  padding: 20px;
+  color: #FFF;
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; }
+  .clubWinners .winnersTable h3 {
+    margin-bottom: 20px; }
+  .clubWinners .winnersTable_header {
+    border-radius: 8px;
+    background: #3F3F4C;
+    padding: 15px 0px;
+    display: grid;
+    grid-template-columns: 50px repeat(6, 1fr);
+    gap: 30px; }
+    .clubWinners .winnersTable_header span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+  .clubWinners .winnersTable .player_number {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    margin-left: 30px; }
+  .clubWinners .winnersTable .player_player {
+    grid-column: 2/4;
+    align-items: center;
+    gap: 12px;
+    display: block; }
+  .clubWinners .winnersTable .player_places {
+    grid-column: 4/6;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: end;
+    align-items: center; }
+    .clubWinners .winnersTable .player_places img {
+      width: 14px;
+      height: 14px; }
+  .clubWinners .winnersTable .player_tournaments {
+    grid-column: 6/7; }
+  .clubWinners .winnersTable .player_rating {
+    grid-column: 7/-1; }
+  .clubWinners .winnersTable_player {
+    border-radius: 8px;
+    padding: 15px 0px;
+    display: grid;
+    grid-template-columns: 50px repeat(6, 1fr);
+    column-gap: 30px;
+    height: 30px;
+    align-items: center;
+    color: #FFF;
+    text-decoration: none;
+    padding-top: 20px; }
+    .clubWinners .winnersTable_player::after {
+      margin-top: 11px;
+      content: '';
+      display: block;
+      grid-column: 1/-1;
+      height: 1px;
+      background-color: #3F3F4C; }
+    .clubWinners .winnersTable_player .player_number {
+      font-weight: 400;
+      margin-left: 30px; }
+    .clubWinners .winnersTable_player .player_player {
+      font-size: 16px;
+      font-weight: 400;
+      display: flex; }
+      .clubWinners .winnersTable_player .player_player .playerLogo {
+        width: 36px;
+        height: 36px; }
+    .clubWinners .winnersTable_player .player_login {
+      color: #ADADAD; }
+    .clubWinners .winnersTable_player .player_city {
+      font-weight: 400; }
+    .clubWinners .winnersTable_player .player_rating {
+      font-weight: 400;
+      margin-right: 30px; }
+  .clubWinners .winnersTable .cell {
+    height: 30px;
+    display: flex;
+    gap: 14px;
+    align-items: center; }
+    .clubWinners .winnersTable .cell span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+  .clubWinners .winnersTable_btn {
+    display: block;
+    margin-top: 20px;
+    color: #FA6400;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-decoration-line: underline; }
+    .clubWinners .winnersTable_btn:hover {
+      color: #FF7A00; }
+
+@media (max-width: 768px) {
+  .clubStatistics {
+    margin-top: 60px; }
+    .clubStatistics .tournamentsTable, .clubStatistics .victoriesTable {
+      padding: 16px 8px;
+      font-size: 14px; }
+      .clubStatistics .tournamentsTable_header, .clubStatistics .victoriesTable_header {
+        padding-top: 20px;
+        gap: 10px; }
+      .clubStatistics .tournamentsTable_player, .clubStatistics .victoriesTable_player {
+        grid-template-columns: 50px repeat(6, 1fr);
+        gap: 10px;
+        padding-top: 20px; }
+        .clubStatistics .tournamentsTable_player_number, .clubStatistics .victoriesTable_player_number {
+          margin-left: 30px; }
+      .clubStatistics .tournamentsTable .cell, .clubStatistics .victoriesTable .cell {
+        gap: 8px; }
+      .clubStatistics .tournamentsTable .player_number, .clubStatistics .victoriesTable .player_number {
+        padding-left: 0;
+        margin-left: 30px; }
+      .clubStatistics .tournamentsTable .player_player, .clubStatistics .victoriesTable .player_player {
+        grid-column: 2/4;
+        padding-left: 0px; }
+        .clubStatistics .tournamentsTable .player_player .playerLogo, .clubStatistics .victoriesTable .player_player .playerLogo {
+          width: 30px;
+          height: 30px; }
+      .clubStatistics .tournamentsTable .player_tournaments, .clubStatistics .victoriesTable .player_tournaments {
+        padding-left: 0px;
+        margin-right: 0;
+        padding-right: 0; }
+      .clubStatistics .tournamentsTable .player_rating, .clubStatistics .victoriesTable .player_rating {
+        justify-content: flex-end;
+        padding-left: 0px;
+        padding-right: 0px; } }
+
+@media (max-width: 576px) {
+  .clubStatistics {
+    margin-top: 40px; }
+    .clubStatistics .tournamentsTable, .clubStatistics .victoriesTable {
+      padding: 16px 8px;
+      font-size: 14px; }
+      .clubStatistics .tournamentsTable_header, .clubStatistics .victoriesTable_header {
+        display: none; }
+      .clubStatistics .tournamentsTable_player, .clubStatistics .victoriesTable_player {
+        grid-template-columns: 20px repeat(5, 1fr);
+        gap: 6px;
+        padding-top: 0; }
+      .clubStatistics .tournamentsTable .cell, .clubStatistics .victoriesTable .cell {
+        gap: 8px; }
+      .clubStatistics .tournamentsTable .player, .clubStatistics .victoriesTable .player {
+        font-size: 14px; }
+        .clubStatistics .tournamentsTable .player_number, .clubStatistics .victoriesTable .player_number {
+          font-size: 14px;
+          padding-left: 0;
+          margin-left: 0; }
+        .clubStatistics .tournamentsTable .player_player, .clubStatistics .victoriesTable .player_player {
+          width: auto;
+          font-size: 14px;
+          grid-column: 2/5;
+          padding-left: 0px; }
+          .clubStatistics .tournamentsTable .player_player .playerLogo, .clubStatistics .victoriesTable .player_player .playerLogo {
+            width: 20px;
+            height: 20px; }
+        .clubStatistics .tournamentsTable .player_tournaments, .clubStatistics .victoriesTable .player_tournaments {
+          font-size: 14px;
+          padding-left: 0px;
+          margin-right: 0;
+          padding-right: 0; }
+        .clubStatistics .tournamentsTable .player_rating, .clubStatistics .victoriesTable .player_rating {
+          font-size: 14px;
+          justify-content: flex-end;
+          padding-left: 0px;
+          padding-right: 0px;
+          margin-right: 0px; } }
 
 .restorePassword {
   width: 100%;
@@ -4367,6 +5813,123 @@ section {
       .restorePassword_wrapp form input:-webkit-autofill:focus {
         -webkit-text-fill-color: #fff;
         transition: background-color 5000s ease-in-out 0s; }
+      .restorePassword_wrapp form .error-message {
+        color: #D10000;
+        font-family: Inter;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        margin-top: 5px;
+        display: none; }
     .restorePassword_wrapp .btnRestorePassword {
       width: 200px;
       margin-top: 20px; }
+  .restorePassword h3 {
+    color: #007026;
+    font-family: Inter;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-transform: uppercase;
+    text-align: center; }
+
+.notFoundContainer {
+  position: relative;
+  width: 100%;
+  padding-bottom: 20px; }
+  .notFoundContainer_code {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center; }
+    .notFoundContainer_code h6 {
+      color: #FA6400;
+      font-family: Inter;
+      font-size: 400px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 130%;
+      text-transform: uppercase; }
+  .notFoundContainer h2 {
+    color: #FFF;
+    text-align: center;
+    font-family: Inter;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 135%;
+    margin-bottom: 16px; }
+  .notFoundContainer h4 {
+    color: #FFF;
+    text-align: center;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; }
+  .notFoundContainer h3 {
+    text-align: center;
+    margin-top: 30px; }
+    .notFoundContainer h3 span {
+      color: #FFF;
+      text-align: center;
+      font-family: Inter;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%; }
+    .notFoundContainer h3 a {
+      color: #FA6400;
+      text-align: center;
+      font-family: Inter;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 150%;
+      text-decoration-line: underline; }
+
+@media (max-width: 1300px) {
+  .notFoundContainer_code h6 {
+    font-size: 270px;
+    line-height: 100%; }
+  .notFoundContainer_code img {
+    aspect-ratio: 1 / 1;
+    width: auto;
+    height: 220px; } }
+
+@media (max-width: 992px) {
+  .notFoundContainer_code h6 {
+    font-size: 250px; }
+  .notFoundContainer_code img {
+    height: 210px; } }
+
+@media (max-width: 768px) {
+  .notFoundContainer_code h6 {
+    font-size: 200px; }
+  .notFoundContainer_code img {
+    height: 180px; }
+  .notFoundContainer h2 {
+    font-size: 32px;
+    margin-bottom: 12px; }
+  .notFoundContainer h3 span {
+    font-size: 18px; }
+  .notFoundContainer h3 a {
+    font-size: 18px;
+    margin-top: 20px; } }
+
+@media (max-width: 576px) {
+  .notFoundContainer_code h6 {
+    font-size: 150px; }
+  .notFoundContainer_code img {
+    height: 113px; }
+  .notFoundContainer h2 {
+    font-size: 24px;
+    margin-bottom: 8px; }
+  .notFoundContainer h3 {
+    margin-top: 20px; }
+    .notFoundContainer h3 span {
+      font-size: 14px; }
+    .notFoundContainer h3 a {
+      font-size: 16px; } }

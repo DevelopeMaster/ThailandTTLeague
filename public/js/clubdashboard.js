@@ -14,6 +14,9 @@ async function initializeApp() {
 document.addEventListener('DOMContentLoaded', async function() {
     createHeader(localStorage.getItem('clientLang') || 'english');
     createFooter(localStorage.getItem('clientLang') || 'english');
+    const userId = document.querySelector('.club').dataset.userid;
+    const userType = document.querySelector('.club').dataset.usertype;
+    // console.log(userId, userType);
     initializeApp();
 
     btnGoUp();
@@ -32,10 +35,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     const parts = currentPath.split('/');
     const lang = parts[1];
-    const clubId = parts[3];
+    const clubId = userId;
 
     let club;
     let clubCity;
+    
 
     const translations = {
         'en': {
@@ -121,6 +125,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             club = await response.json();
             clubCity = await getCityName(club.city);
+            if (club.logo) {
+                localStorage.setItem('userLogo', club.logo);
+            } else {
+                localStorage.setItem('userLogo', 'icons/clubslogo/default_avatar.svg');
+            }
+                
             renderClubData();
         } catch (error) {
             console.error('Error fetching club data:', error);
@@ -148,8 +158,25 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    const editClubProfile = document.querySelector('#editClubProfile');
+    editClubProfile.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = `/${lang}/dashboard/editclub/${clubId}`;
+    });
     
-
+    function renderPhotos() {
+        const photoContainer = document.querySelector('#clubsPhotoContainer');
+        const photos = club.photos;
+        if (photos) {
+            photos.forEach(item => {
+                const photo = document.createElement('div');
+                photo.classList.add('clubPhotos_item');
+                photo.style = `background-image: url(${item}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;`;
+                photoContainer.appendChild(photo);
+            });
+        }
+    }
+    
     function renderClubData() {
         const clubSupplements = document.querySelector('.supplements');
         if (club.supplements.free) {
@@ -158,11 +185,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             clubSupplements.appendChild(supplFreeContainer);
 
             const supplementsName = document.createElement('p');
-            supplementsName.innerText = `Free: `;
+            supplementsName.innerText = `${getTranslation('Free')}: `;
             supplFreeContainer.appendChild(supplementsName);
 
             club.supplements.free.forEach(item => {
-                console.log(item);
+                // console.log(item);
                 const supplement = document.createElement('div');
                 supplement.classList.add('supplements_item');
                 const supplText = document.createElement('p');
@@ -178,7 +205,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             clubSupplements.appendChild(supplPaidContainer);
 
             const supplementsName = document.createElement('p');
-            supplementsName.innerText = `Paid: `;
+            supplementsName.innerText =  `${getTranslation('Extra charge')}: `;
             supplPaidContainer.appendChild(supplementsName);
 
             club.supplements.paid.forEach(item => {
@@ -191,15 +218,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 supplPaidContainer.appendChild(supplement);
             })
         }
-        // club.supplements.forEach(item => {
-        //     console.log(item);
-        //     const supplement = document.createElement('div');
-        //     supplement.classList.add('supplements_item');
-        //     const supplText = document.createElement('p');
-        //     supplText.innerHTML = `${getTranslation(item)}`;
-        //     supplement.appendChild(supplText);
-        //     clubSupplements.appendChild(supplement);
-        // })
 
         const clubMainInfo = document.querySelector('.club_mainInfo');
         clubMainInfo.innerHTML = `
@@ -233,7 +251,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         `;
         
         renderMap();
-        renderPhotos();
+        renderPhotos();  //  жду дизайн
     }
 
     function nl2br(str) {
@@ -270,49 +288,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     fetchClubData();
 
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // {
-    //     "_id": {
-    //       "$oid": "6666060689e93dc1fd6e7a66"
-    //     },
-    //     "name": "Phuket TT Club",
-    //     "city": {
-    //       "$oid": "667019e9ae77584c46f03b07"
-    //     },
-    //     "logo": "/icons/clubslogo/TT_CLUB.png",
-    //     "representative": "Zhgulev Ilya",
-    //       "website": "https://worldtabletennissite",
-    //       "workingHours": "10:00-20:00",
-    //       "tables": "6",
-    //       "address": "Phuket, Big C Supercenter, 2nd floor, Ek Wanit Uthit Soi 2, Wichit, Mueang Phuket District, Phuket 83000",
-    //       "location": [
-    //         7.896233788633527, 
-    //         98.3673743360749
-    //       ],
-    //       "info": "Official table tennis club in the Kingdom of Thailand, Phuket Island.<br><br> Certified professional equipment, air-conditioned premises, professional trainers (English, Russian and Thai).<br><br>We provide individual training services and tournaments of various skill levels.",
-    //       "photos": [
-    //           "/images/phuketttclub/clubsphoto-one.jpg",
-    //           "/images/phuketttclub/clubsphoto-two.png",
-    //           "/images/phuketttclub/clubsphoto-three.png",
-    //           "/images/phuketttclub/clubsphoto-four.png"
-    //       ],
-    //   }
 
 
 

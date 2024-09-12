@@ -1,0 +1,738 @@
+.player
+    margin-top: 40px
+    &_mainInfo
+        border-radius: 14px
+        background: #262630
+        padding: 20px
+        font-size: 16px
+        box-sizing: border-box
+        width: 100%
+        display: flex
+        justify-content: flex-start
+        gap: 20px
+        // height: 194px
+        &_logo
+            aspect-ratio: 1/1
+            // width: 160px
+            min-width: 160px
+            height: auto
+            // width: auto
+            // height: 100%
+            border-radius: 50%
+        &_info
+            display: flex
+            flex-direction: column
+            gap: 16px
+            width: 100%
+            &_name
+                color: #FFF
+                font-family: Inter
+                font-size: 24px
+                font-style: normal
+                font-weight: 500
+                line-height: normal
+                &::after
+                    content: ''
+                    display: block
+                    height: 1px
+                    width: 100%
+                    background-color: #3F3F4C
+                    margin-top: 10px
+            &_descr
+                display: flex
+                gap: 10px
+                // justify-content: space-between
+                &_path
+                    display: flex
+                    flex-direction: column
+                    gap: 14px
+                    width: 50%
+                    // min-width: 30%
+                    p
+                        color: #FFF
+                        font-family: Inter
+                        
+                        font-style: normal
+                        font-weight: 500
+                        line-height: normal
+
+                        white-space: nowrap
+                        overflow: hidden
+                        text-overflow: ellipsis
+                        span
+                            font-weight: 400
+                            white-space: normal
+                            // word-wrap: break-word
+                            // word-break: break-word
+                            a
+                                text-decoration: none
+                                color: #FFF
+                   
+    &_about, &_statistics
+        margin-top: 20px
+        border-radius: 14px
+        background: #262630
+        font-size: 16px
+        padding: 20px
+        width: 100%
+        box-sizing: border-box
+        h3
+            color: #FFF
+            font-family: Inter
+            font-size: 24px
+            font-style: normal
+            font-weight: 500
+            line-height: normal
+            margin-bottom: 16px
+        &_wrapp
+            margin-top: 16px
+            display: flex
+            flex-direction: column
+            gap: 14px
+            p
+                color: #FFF
+                font-family: Inter
+                
+                font-style: normal
+                font-weight: 400
+                line-height: 130%
+                span
+                    font-weight: 500
+        &_info
+            display: flex
+            flex-direction: column
+            gap: 16px
+            width: 100%
+            &_name
+                color: #FFF
+                font-family: Inter
+                font-size: 24px
+                font-style: normal
+                font-weight: 500
+                line-height: normal
+                &::after
+                    content: ''
+                    display: block
+                    height: 1px
+                    width: 100%
+                    background-color: #3F3F4C
+                    margin-top: 10px
+            &_descr
+                display: flex
+                gap: 40px
+                // justify-content: space-between
+                &_path
+                    display: flex
+                    flex-direction: column
+                    gap: 14px
+                    width: 45%
+                    // min-width: 30%
+                    p
+                        color: #FFF
+                        font-family: Inter
+                        
+                        font-style: normal
+                        font-weight: 500
+                        line-height: 130%
+
+                        white-space: nowrap
+                        overflow: hidden
+                        text-overflow: ellipsis
+                        span
+                            font-weight: 400
+                            white-space: normal
+                            // word-wrap: break-word
+                            // word-break: break-word
+                            a
+                                text-decoration: none
+                                color: #FFF
+                    .raitingWrapp
+                        display: flex
+                        gap: 10px
+                        align-items: center
+                        color: #FFF
+                        font-family: Inter
+                        font-size: 16px
+                        font-style: normal
+                        font-weight: 500
+                        line-height: normal
+                .statisticsSeparateLine
+                    position: relative
+                    &::before
+                        content: ''
+                        display: block
+                        width: 1px
+                        height: 100%
+                        background: #3F3F4C
+                        position: absolute
+                        top: 0px
+                        left: -20px
+
+
+.bestVictories
+    margin-top: 60px
+    &_table
+        border-radius: 14px
+        background: #262630
+        font-size: 16px
+        width: 100%
+        height: auto
+        padding: 20px
+        box-sizing: border-box
+        &_content
+            width: 100%
+        
+        &_victory
+            position: relative
+            height: 38px
+
+            // display: grid
+            // grid-template-columns: 1fr 3fr 1fr 1fr 2fr 40px 40px 40px
+            // gap: 16px
+            // align-items: center
+
+            color: #fff
+            font-family: Inter
+            
+            font-style: normal
+            font-weight: 500
+            line-height: 130%
+
+            display: flex
+            justify-content: space-between
+            align-items: center
+            gap: 14px
+            &::after
+                position: absolute
+                bottom: 0
+                left: 0
+                content: ''
+                display: block
+                height: 1px
+                width: 100%
+                background: #3F3F4C
+            &_left
+                display: flex
+                gap: 14px
+                align-items: center
+            &_right
+                display: flex
+                gap: 28px
+                align-items: center
+            .shortcut
+                white-space: nowrap
+                overflow: hidden
+                text-overflow: ellipsis
+                // display: flex
+                // flex: 1
+                min-width: 85px
+            
+            .bestVictories_number
+                align-content: center
+                
+                font-style: normal
+                font-weight: 400
+                color: #FFF
+            .bestVictories_player
+                white-space: nowrap
+                overflow: hidden
+                text-overflow: ellipsis
+                display: flex
+                justify-content: flex-start
+                align-content: center
+                gap: 8px
+                .playerLogo
+                    width: 27px
+                    height: 27px
+                span
+                    align-content: center
+            .bestVictories_city
+                color: #ADADAD
+                white-space: nowrap
+                overflow: hidden
+                text-overflow: ellipsis
+            .bestVictories_avarage
+                color: #007026
+            // &:nth-child(1)
+            //     .bestVictories_number
+            //         color: #E0A100
+            // &:nth-child(2)
+            //     .bestVictories_number
+            //         color: #ADADAD
+            // &:nth-child(3)
+            //     .bestVictories_number
+            //         color: #966C00
+                
+        &_btn
+            display: block
+            margin-top: 20px
+            color: #FA6400
+            font-family: Inter
+            font-size: 14px
+            font-style: normal
+            font-weight: 500
+            line-height: normal
+            text-decoration-line: underline
+    .cell
+        font-size: 16px
+        font-weight: 400
+        align-content: center
+        
+
+    // &_number
+        
+    &_club
+        display: flex
+        justify-content: flex-start
+        align-content: center
+        gap: 8px
+        .clubLogo
+            width: 27px
+            height: 27px
+        span
+            align-content: center
+    // &_player
+
+    &_score
+        color: #007026
+    //     grid-column: 5 / 7
+    // &_oponentsrating
+        // grid-column: 7 / 8
+    &_sets
+        padding-left: 15px
+        // text-align: center
+    &_avarage
+        color: #007026
+    &_before
+        text-align: center
+    &_after
+        text-align: center
+        font-size: 16px
+        font-style: normal
+        font-weight: 400
+
+.awards
+    .awardsTable
+        position: relative
+        border-radius: 14px
+        background: #262630
+        padding: 20px
+
+        color: #FFF
+        font-family: Inter
+        font-size: 16px
+        font-style: normal
+        font-weight: 500
+        line-height: 130%
+        h3
+            margin-bottom: 20px
+        &_item
+            position: relative
+            display: flex
+            align-items: center
+            gap: 30px
+            justify-content: space-between
+            &::after
+                position: absolute
+                left: 0
+                bottom: -10px
+                content: ''
+                display: block
+                width: 100%
+                height: 1px
+                background-color: #3F3F4C
+            span
+                white-space: nowrap
+                overflow: hidden
+                text-overflow: ellipsis
+            &_medalBlock
+                display: flex
+                gap: 10px
+        // .player
+        //     &_number
+        //         color: #fff
+        //         font-size: 16px
+        //         font-weight: 500
+        //         margin-left: 30px
+        //     &_player
+        //         grid-column: 2/4
+        //         align-items: center
+        //         gap: 12px
+        //         display: block
+        //     &_places
+        //         grid-column: 4/6
+        //         display: grid
+        //         grid-template-columns: repeat(3, 1fr)
+        //         justify-items: end
+        //         align-items: center
+        //         img
+        //             width: 14px
+        //             height: 14px
+                    
+            
+        //     &_tournaments
+        //         grid-column: 6/7
+        //     &_rating
+        //         // margin-right: 30px
+        //         grid-column: 7/-1
+
+        // &_player
+        //     border-radius: 8px
+        //     padding: 15px 0px
+        //     display: grid
+        //     grid-template-columns: 50px repeat(6, 1fr)
+        //     column-gap: 30px
+
+        //     height: 30px
+        //     align-items: center
+        //     color: #FFF
+        //     text-decoration: none
+        //     padding-top: 20px
+        //     &::after
+        //         margin-top: 11px
+        //         content: ''
+        //         display: block
+        //         grid-column: 1/-1
+        //         height: 1px
+        //         background-color: #3F3F4C
+
+        //     .player
+        //         &_number
+        //             font-weight: 400
+        //             margin-left: 30px
+        //         &_player
+        //             font-size: 16px
+        //             font-weight: 400
+        //             display: flex
+        //             .playerLogo
+        //                 width: 36px
+        //                 height: 36px
+        //         &_login
+        //             color: #ADADAD
+        //         &_city
+        //             font-weight: 400
+        //         &_rating
+        //             font-weight: 400
+        //             margin-right: 30px
+        // .cell
+        //     height: 30px
+        //     display: flex
+        //     gap: 14px
+        //     align-items: center
+        //     span
+        //         white-space: nowrap
+        //         overflow: hidden
+        //         text-overflow: ellipsis
+
+        &_btn
+            display: block
+            margin-top: 20px
+            color: #FA6400
+            font-family: Inter
+            font-size: 14px
+            font-style: normal
+            font-weight: 500
+            line-height: normal
+            text-decoration-line: underline
+            &:hover
+                color: #FF7A00
+
+.results
+    .resultsTable
+        position: relative
+        border-radius: 14px
+        background: #262630
+        padding: 20px
+
+        color: #FFF
+        font-family: Inter
+        font-size: 16px
+        font-style: normal
+        font-weight: 400
+        line-height: 130%
+        h3
+            margin-bottom: 20px
+        &_mainInfo
+            display: flex
+            gap: 30px
+            align-items: center
+            // width: 65%
+            justify-content: center
+            margin: 0 auto
+            margin-bottom: 20px
+            &_place
+                display: flex
+                gap: 10px
+            &_weekday
+                display: flex
+                justify-content: center
+                align-items: center
+                margin-top: 10px
+                border-radius: 6px
+                height: 31px
+                background: #081B3E
+                // text-align: center
+                // align-content: center
+                font-size: 16px
+                box-sizing: border-box
+        &_header
+            border-radius: 8px
+            background: #3F3F4C
+            padding: 15px 30px
+            font-weight: 400
+            // display: flex
+            // justify-content: space-between
+            display: grid
+            grid-template-columns: repeat(8, 1fr)
+            gap: 10px
+            span
+                white-space: nowrap
+                overflow: hidden
+                text-overflow: ellipsis
+        &_content
+            &_steps
+                position: relative
+                padding: 20px 30px 10px
+                display: grid
+                grid-template-columns: repeat(8, 1fr)
+                gap: 10px
+                span
+                    white-space: nowrap
+                    overflow: hidden
+                    text-overflow: ellipsis
+                &:after
+                    content: ''
+                    position: absolute
+                    left: 0
+                    bottom: 0px
+                    display: block
+                    width: 100%
+                    height: 1px
+                    background-color: #3F3F4C
+            
+        .results
+            &_start
+                grid-column: 1/2
+                color: #fff
+                // font-size: 16px
+                font-weight: 500
+                // margin-left: 30px
+            &_stage
+                grid-column: 2/3
+                align-items: center
+                gap: 12px
+                display: block
+            &_rival
+                grid-column: 3/7
+                align-items: center
+                img
+                    width: 14px
+                    height: 14px
+                    
+            &_rating
+                text-align: center
+                grid-column: 7/8
+            &_score
+                text-align: center
+                grid-column: 8/-1
+        .resultsTable_content_steps
+            .results_score
+                color: #007026
+
+        &_total
+            display: grid
+            grid-template-columns: repeat(8, 1fr)
+            gap: 10px
+            margin-top: 16px
+            padding: 0 30px
+            &_title
+                grid-column: 1/8
+            &_score
+                text-align: center
+                grid-column: 8/-1
+        // &_player
+        //     border-radius: 8px
+        //     padding: 15px 0px
+        //     display: grid
+        //     grid-template-columns: 50px repeat(6, 1fr)
+        //     column-gap: 30px
+
+        //     height: 30px
+        //     align-items: center
+        //     color: #FFF
+        //     text-decoration: none
+        //     padding-top: 20px
+        //     &::after
+        //         margin-top: 11px
+        //         content: ''
+        //         display: block
+        //         grid-column: 1/-1
+        //         height: 1px
+        //         background-color: #3F3F4C
+
+        //     .player
+        //         &_number
+        //             font-weight: 400
+        //             margin-left: 30px
+        //         &_player
+        //             font-size: 16px
+        //             font-weight: 400
+        //             display: flex
+        //             .playerLogo
+        //                 width: 36px
+        //                 height: 36px
+        //         &_login
+        //             color: #ADADAD
+        //         &_city
+        //             font-weight: 400
+        //         &_rating
+        //             font-weight: 400
+        //             margin-right: 30px
+        .cell
+            height: 30px
+            display: flex
+            gap: 14px
+            align-items: center
+            span
+                white-space: nowrap
+                overflow: hidden
+                text-overflow: ellipsis
+
+        &_btn
+            display: block
+            margin-top: 20px
+            color: #FA6400
+            font-family: Inter
+            font-size: 14px
+            font-style: normal
+            font-weight: 500
+            line-height: normal
+            text-decoration-line: underline
+            &:hover
+                color: #FF7A00
+
+@media (max-width: 1025px)
+    .playerStatistics, .awards, .results
+        margin-top: 40px
+        h2
+            margin-bottom: 20px
+
+@media (max-width: 768px)
+    .bestVictories_number
+        display: none
+
+@media (max-width: 650px)
+    .bestVictories_table_victory .bestVictories_player
+        display: none
+
+@media (max-width: 576px)
+    .player
+        margin-top: 40px
+        h2
+            margin-bottom: 20px
+        &_mainInfo
+            flex-direction: column
+            font-size: 14px
+            padding: 16px
+            &_logo
+                width: 50%
+                height: auto
+                margin: 0 auto
+            &_info
+                &_descr
+                    flex-direction: column
+                    &_path
+                        width: 100%
+                &_name
+                    font-size: 18px
+        &_about
+            font-size: 14px
+            padding: 16px
+            h3
+                font-size: 18px
+            &_info_descr
+                flex-direction: column
+                gap: 14px
+                &_path
+                    width: 100%
+        &_statistics
+            font-size: 14px
+            padding: 16px
+            &_info_descr
+                flex-direction: column
+                gap: 24px
+                &_path
+                    width: 100%
+                .statisticsSeparateLine
+                    &:before
+                        width: 100%
+                        height: 1px
+                        top: -12px
+                        left: 0px
+    .playerStatistics
+        margin-top: 40px
+        h2
+            margin-bottom: 20px
+    .bestVictories
+        margin-top: 40px
+        h2
+            margin-bottom: 20px
+        .cell
+            font-size: 14px
+        &_table
+            padding: 16px
+            &_victory
+                font-size: 14px
+                gap: 13px
+                &_left
+                    gap: 13px
+                &_right
+                    gap: 13px
+        &_before
+            display: none
+    .awards
+        .awardsTable
+            font-size: 14px
+            padding: 16px
+            h3
+                margin-bottom: 20px
+            &_item
+                flex-direction: column
+                align-items: start
+                gap: 6px
+                .bestVictories_club
+                    padding-bottom: 4px
+    .results 
+        .resultsTable
+            font-size: 14px
+            padding: 16px
+            &_mainInfo
+                gap: 15px
+                margin-bottom: 0
+                &_weekday
+                    font-size: 14px
+                    height: 29px
+            &_header
+                display: none
+            &_content
+                &_steps
+                    padding: 20px 0px 10px
+                    grid-template-columns: repeat(6, 1fr);
+            .results
+                &_start
+                    grid-column: 1/2
+                &_stage
+                    grid-column: 2/3
+                &_rival
+                    grid-column: 3/5   
+                &_rating
+                    grid-column: 5/6
+                &_score
+                    grid-column: 6/-1
+            .resultsTable_total
+                padding: 0px
+                grid-template-columns: repeat(6, 1fr);
+                &_title
+                   grid-column: 1/6
+                &_score
+                    grid-column: 6/-1

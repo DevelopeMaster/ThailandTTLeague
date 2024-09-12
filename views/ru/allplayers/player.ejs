@@ -57,12 +57,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/main.min.css">
-    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 
 <body>
     <header class="header" id="scroll">
-        <!-- from js -->
+       <!-- from js -->
     </header>
     <div class="navigate">
         <div class="container">
@@ -73,19 +73,6 @@
             </nav>
         </div>
     </div>
-    <!-- <section class="account" data-userid="<%= userId %>" data-usertype="<%= userType %>">
-        <div class="container">
-            <div class="contentWrapper">
-                <div class="account_mainInfo">
-                    
-                </div>
-                <div class="account_buttonWrapp">
-                    <button id="editUserProfile" class="header_btn-sign account_buttonWrapp_btn" fdprocessedid="c3chv">Edit profile</button>
-                    
-                </div>
-            </div>
-        </div>
-    </section> -->
 
     <section class="player" data-userid="<%= userId %>"></section>
         <div class="container">
@@ -96,10 +83,7 @@
                 <div class="player_about">
                     <!-- add from js -->
                 </div>
-                <div class="account_buttonWrapp">
-                    <button id="editUserProfile" class="header_btn-sign account_buttonWrapp_btn" fdprocessedid="c3chv">Edit profile</button>
-                    
-                </div>
+
             </div>
         </div>
     </section>
@@ -107,7 +91,7 @@
     <section class="playerStatistics">
         <div class="container">
             <div class="contentWrapper">
-                <h2>General Statistics</h2>
+                <h2>общая статистика</h2>
                 <div class="player_statistics">
                     <!-- add from js -->
                 </div>
@@ -117,7 +101,7 @@
     <section class="bestVictories">
         <div class="container">
             <div class="contentWrapper">
-                <h2>Best victories</h2>
+                <h2>лучшие победы</h2>
                 <div class="bestVictories_table">
                     <div class="bestVictories_table_content">
 
@@ -146,7 +130,7 @@
                         </div>
 
                         <a class="bestVictories_table_btn" href="#">
-                            See more
+                            Смотреть еще
                         </a>
                     </div>
                 </div>
@@ -157,7 +141,7 @@
     <section class="awards">
         <div class="container">
             <div class="contentWrapper">
-                <h2>Awards</h2>
+                <h2>награды</h2>
                 <!-- from js -->
                 <div class="awardsTable">
                     <div class="awardsTable_item">
@@ -181,7 +165,7 @@
                             <span>Bronze</span>
                         </div> 
                     </div>
-                    <a class="awardsTable_btn" href="#">See more</a>
+                    <a class="awardsTable_btn" href="#">Смотреть еще</a>
                 </div>
 
             </div>
@@ -191,7 +175,7 @@
     <section class="results">
         <div class="container">
             <div class="contentWrapper">
-                <h2>Results</h2>
+                <h2>результаты</h2>
                 <!-- from js -->
                 <div class="resultsTable">
                     <div class="resultsTable_mainInfo">
@@ -248,7 +232,7 @@
 
                     </div>
                 </div>
-                <a class="resultsTable_btn" href="#">See more</a>
+                <a class="resultsTable_btn" href="#">Смотреть еще</a>
             </div>
         </div>
     </section>
@@ -257,24 +241,22 @@
 
 
 
-
-
     <footer class="footer">
         <!-- from js -->
-      </footer>
-      
-      <div class="adv">
+    </footer>
+    
+    <div class="adv">
+    <!-- add from DB -->
+    </div>
+    
+    
+    <!-- Модальное окно -->
+    <div id="myModal" class="modal">    
+        <div class="modal-content">
         <!-- add from DB -->
-      </div>
-      
-    
-    
-      <!-- Модальное окно -->
-      <div id="myModal" class="modal">    
-          <div class="modal-content">
-            <!-- add from DB -->
-          </div>
-      </div>
-      <script type="module" src="/js/dashboard.js"></script> 
+        </div>
+    </div>
+
+    <script type="module" src="/js/player.js"></script>  
 </body>
 </html>

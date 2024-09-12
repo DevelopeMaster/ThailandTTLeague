@@ -38,6 +38,8 @@ const uri = `mongodb+srv://${user}:${password}@${host}/?retryWrites=true&w=major
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.set('trust proxy', 1);
+
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -48,9 +50,11 @@ const store = MongoStore.create({
   collectionName: 'sessions',
   stringify: false,
   autoRemove: 'native',
-  cookie: { secure: true, httpOnly: true },
+  // cookie: { secure: true, httpOnly: true },
   ttl: 7 * 24 * 60 * 60 // Время жизни сессии в секундах (14 дней)
 });
+
+
 
 // потом включить 
 // store.on('create', (sid) => {

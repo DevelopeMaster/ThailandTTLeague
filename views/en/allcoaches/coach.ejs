@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TTLeague</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icons/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/manifest.json">
+
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="ThailandTTLeague">
+    <meta property="og:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta property="og:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta property="og:url" content="https://thailandttleague.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Thailand TT League">
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ThailandTTLeague">
+    <meta name="twitter:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta name="twitter:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta name="twitter:url" content="https://thailandttleague.com/">
+
+    <!-- Favicon and other icons -->
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/icons/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/icons/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-config" content="/icons/favicons/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icons/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#262630">
+    <!-- Для iOS установка цвета шторки (status bar) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#262630">
+    <!-- Для Android установка цвета шторки -->
+    <meta name="theme-color" content="#000817"> 
+
+    <link rel="icon" type="image/png" href="/icons/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+
+<body>
+    <header class="header" id="scroll">
+       <!-- from js -->
+    </header>
+    <div class="navigate">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol id="breadcrumb" class="navigate_breadcrumb">
+                    <!-- from js -->
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <section class="player" data-userid="<%= userId %>">
+        <div class="container">
+            <div class="contentWrapper">
+                <div class="player_mainInfo">
+                    <!-- add fom js -->
+                </div>
+                <div class="player_about">
+                    <!-- add from js -->
+                </div>
+                <div class="training_about">
+           
+                    <!-- <h3>About the training</h3> -->
+                    <!-- <div class="training_about_wrapp">
+                        <p><span>Address: </span>Phuket, Big C Supercenter, 2nd floor, Ek Wanit Uthit Soi 2, Wichit, Mueang Phuket District, Phuket 83000</p>
+                        <p>Official table tennis club in the Kingdom of Thailand, Phuket Island.<br><br> Certified professional equipment, air-conditioned premises, professional trainers (English, Russian and Thai).<br><br>We provide individual training services and tournaments of various skill levels.</p>
+                    </div> -->
+                </div>
+                <a id="goToTrainingSchedule" class="header_btn-sign ">Training schedule</a>
+            </div>
+        </div>
+
+    </section>
+
+
+    <section class="clubLocation">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>Club LOCATION</h2>
+                <div id="map"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="playerStatistics">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>General Statistics</h2>
+                <div class="player_statistics">
+                    <!-- add from js -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bestVictories">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>Best victories</h2>
+                <div class="bestVictories_table">
+                    <div class="bestVictories_table_content">
+
+                        <div class="bestVictories_table_victory">
+                            <div class="bestVictories_table_victory_left">
+                                <div class="bestVictories_number">26.08.2023</div>
+                                <div class="cell bestVictories_club">
+                                    <div class="clubLogo" style="background-image: url('/icons/clubslogo/TT_CLUB.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                                    <span class="shortcut" title="Phuket TT Club">Phuket TT Club</span>
+                                </div>
+                                <div class="restrictionStatus bestVictories_before" style="background: rgb(173, 173, 173);">
+                                    <div class="restriction">277</div>
+                                </div>
+                                <div class="cell bestVictories_after">344</div>
+                                <div class="cell bestVictories_player shortcut" title="Logov Nikita">Logov Nikita</div>
+                            </div>
+                            
+
+                            <div class="bestVictories_table_victory_right">
+                                <div class="cell bestVictories_oponentsraiting">988</div>
+                                <div class="cell bestVictories_score">3:2</div>
+                                <div class="cell bestVictories_avarage">+11.1</div>
+                            </div>
+                                
+                                
+                        </div>
+
+                        <a class="bestVictories_table_btn" href="#">
+                            See more
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    <section class="awards">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>Awards</h2>
+                <!-- from js -->
+                <div class="awardsTable">
+                    <div class="awardsTable_item">
+                        <div class="cell bestVictories_club">
+                            <div class="clubLogo" style="background-image: url('/icons/clubslogo/TT_CLUB.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span class="shortcut" title="Phuket TT Club">Phuket TT Club</span>
+                        </div>
+                        <div class="awardsTable_item_medalBlock">
+                            <img src="/icons/1st-medal.svg" alt="gold medal">
+                            <span>(9)</span>
+                            <span>Gold</span>
+                        </div>
+                        <div class="awardsTable_item_medalBlock">
+                            <img src="/icons/2st-medal.svg" alt="silver medal">
+                            <span>(7)</span>
+                            <span>Silver</span>
+                        </div>
+                        <div class="awardsTable_item_medalBlock">
+                            <img src="/icons/3st-medal.svg" alt="bronze medal">
+                            <span>(8)</span>
+                            <span>Bronze</span>
+                        </div> 
+                    </div>
+                    <a class="awardsTable_btn" href="#">See more</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="results">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>Results</h2>
+                <!-- from js -->
+                <div class="resultsTable">
+                    <div class="resultsTable_mainInfo">
+                        <div class="cell bestVictories_club">
+                            <div class="clubLogo" style="background-image: url('/icons/clubslogo/TT_CLUB.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span class="shortcut" title="Phuket TT Club">Phuket TT Club</span>
+                        </div>
+                        <div class="restrictionStatus bestVictories_before" style="background: rgb(173, 173, 173);">
+                            <div class="restriction">277</div>
+                        </div>
+                        <a class="cell tournament_players"><img src="/icons/user.svg" alt="person"><span>2</span></a>
+                        <div class="resultsTable_mainInfo_place">
+                            <img src="/icons/1st-medal.svg" alt="gold medal">
+                            <span>1 place</span>
+                        </div>
+
+                    </div>
+                    <div class="resultsTable_header">
+                        <span class="results_start">Start</span>
+                        <span class="results_stage">Stage</span>
+                        <span class="results_rival">Rival</span>
+                        <span class="results_rating">Rating</span>
+                        <span class="results_score">Score</span>
+                    </div>
+                    <div class="resultsTable_mainInfo_weekday">
+                        <span>06.01.2024 10:00</span>
+                    </div>
+                    <div id="resultsTable" class="resultsTable_content">
+                        <div class="resultsTable_content_steps">
+                            <span class="results_start">15:07</span>
+                            <span class="results_stage">1/4</span>
+                            <span class="results_rival">Chumakov Denis</span>
+                            <span class="results_rating">678</span>
+                            <span class="results_score">2:0</span>
+                        </div>
+                        <div class="resultsTable_content_steps">
+                            <span class="results_start">16:28</span>
+                            <span class="results_stage">1/2</span>
+                            <span class="results_rival">Sychev Andrey</span>
+                            <span class="results_rating">678</span>
+                            <span class="results_score">3:1</span>
+                        </div>
+                        <div class="resultsTable_content_steps">
+                            <span class="results_start">15:07</span>
+                            <span class="results_stage">fin</span>
+                            <span class="results_rival">Smirnov Roma</span>
+                            <span class="results_rating">678</span>
+                            <span class="results_score">2:0</span>
+                        </div>
+                    </div>
+                    <div class="resultsTable_total">
+                        <span class="resultsTable_total_title">Total score:</span>
+                        <span class="resultsTable_total_score">7:1</span>
+
+                    </div>
+                </div>
+                <a class="resultsTable_btn" href="#">See more</a>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    <footer class="footer">
+        <!-- from js -->
+    </footer>
+    
+    <div class="adv">
+    <!-- add from DB -->
+    </div>
+    
+    
+    <!-- Модальное окно -->
+    <div id="myModal" class="modal">    
+        <div class="modal-content">
+        <!-- add from DB -->
+        </div>
+    </div>
+
+    <script type="module" src="/js/coach.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>  
+</body>
+</html>

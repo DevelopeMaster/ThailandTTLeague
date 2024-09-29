@@ -320,10 +320,81 @@ input:-webkit-autofill:focus
     -webkit-text-fill-color: #fff
     transition: background-color 5000s ease-in-out 0s
 
+
+.secondForm
+    margin-top: 40px
+    .editschedule_formContainer
+        position: relative
+        padding: 20px
+        border-radius: 14px
+        background: #262630
+        color: white
+        font-family: Inter
+        font-size: 16px
+        font-style: normal
+        font-weight: 400
+        line-height: normal
+    
+        table
+            margin-top: 20px
+            width: 100%
+            border-collapse: collapse
+        th, td
+            padding: 10px
+            border: 1px solid #ddd
+            text-align: center
+        // thead
+        //     background-color: #f4f4f4
+        td label 
+            display: block
+            margin-bottom: 1px
+            font-size: 12px
+            color: #666
+
+        input[type="time"]
+            width: 80px
+            padding: 4px
+            font-size: 12px
+            border: 1px solid #ccc
+            border-radius: 4px
+            margin-top: 1px
+
+        /* Размещение старт/финиш инпутов рядом по горизонтали */
+        // td 
+        //     display: flex
+        //     justify-content: center
+        //     gap: 10px
+
+        td label
+            margin-bottom: 0
+
 @media (max-width: 768px)
     .editclub_formContainer_formSection
         .photoUploadContainer
             justify-content: flex-start
+    table
+        width: 100%
+    th, td
+        padding: 5px
+    td 
+        display: block
+        text-align: left
+    td input[type="time"] 
+        width: 100%
+        margin-bottom: 10px
+    thead 
+        display: none
+    tbody tr 
+        display: block
+        margin-bottom: 15px
+    tbody td
+        display: block
+        text-align: left
+    tbody td:before
+        content: attr(data-day)
+        font-weight: bold
+        display: block
+        margin-bottom: 5px
 
 @media (max-width: 576px)
     .editclub_formContainer

@@ -554,9 +554,49 @@ export async function createHeader(language) {
         // console.log('хедер залогинен');
         const userId = localStorage.getItem('userId');
         const userType = localStorage.getItem('userType');
-        const userData = await getUserData(userId, userType);
         
+        
+        if (userType === 'admin') {
+            headerTag.style = 'position: fixed; background-color: #F8F8F8; width: 100%; height: 76px; display: flex; justify-content: space-between; z-index: 1000;';
+            headerTag.classList.remove('header');
+            headerTag.classList.add('admin_header');
+            headerTag.innerHTML = `
+                <div class="admin_logoWrapp">
+                    <a class="adminlogo" href="/ru/dashboard/admin">
+                        <img class="adminlogo_img" src="/icons/darklogo.svg" alt="logo">
+                    </a>
+                </div>
+                <div class="admin_user">
+                    <img src='/icons/adminLogo.svg' class="admin_user_img" alt="admin logo">
+                </div>
+                <div class="admin_profileMenu">
+                    <a href="#" id="adminHome" class="logOut">Домой</a>
+                    <a href="#" id="logOut" class="logOut">Выход</a>
+                </div>
+            `;
+            const adminMenuBtn = document.querySelector('.admin_user');
+            const adminMenu = document.querySelector('.admin_profileMenu');
+            const logoutBtn = document.querySelector('#logOut');
+            const adminHomeBtn = document.querySelector('#adminHome');
+            
+            adminMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                adminMenu.classList.toggle('admin_profileMenu_openMenu');
+            });
 
+            adminHomeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '/ru/dashboard/admin';
+            });
+
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+            return;
+        };
+
+        const userData = await getUserData(userId, userType);
         if (language === 'english') {
             headerTag.innerHTML = `
                 <div class="header_wrapper">
@@ -1844,6 +1884,7 @@ export async function getAllClubs() {
 
 
 
+
 export async function fetchCoaches() {
     try {
         const response = await fetch('/coaches');
@@ -1858,6 +1899,28 @@ export async function fetchCoaches() {
             'english': 'en',
             'thai': 'th'
         };
+
+        const currentLang = localStorage.getItem('clientLang') || 'english';
+        const langKey = languageMap[currentLang];
+
+        let allClubs = [];
+
+        await fetchAllClubs();
+
+        async function fetchAllClubs() {
+            try {
+                const response = await fetch(`/clubs`);
+                const clubs = await response.json();
+                allClubs = clubs;
+
+                // const clubNames = [...new Set(clubs.map(club => club.name))];
+                
+
+            } catch (error) {
+                console.error('Произошла ошибка:', error);
+                showErrorModal('Database connection error');
+            }
+        }
 
         async function getCityName(cityId) {
             try {
@@ -1874,12 +1937,13 @@ export async function fetchCoaches() {
             }
         }
 
-        const currentLang = localStorage.getItem('clientLang') || 'english';
-        
+
         let coachesList = coaches.slice(0, 6);
         for (const coach of coachesList) {
-            let coachDiv = document.createElement('div');
+            let coachDiv = document.createElement('a');
             coachDiv.className = 'coaches_content_coach';
+        
+            coachDiv.href = `${languageMap[currentLang]}/allcoaches/${coach._id}`;
 
             let wrapLogoDiv = document.createElement('div');
             wrapLogoDiv.className = 'coaches_content_coach_wrapLogo';
@@ -1917,8 +1981,16 @@ export async function fetchCoaches() {
             };
             clubTitleSpan.textContent = clubTitle[currentLang] || 'Club:';
 
+            const club = allClubs.find(obj => obj._id === coach.club);
+            
             let clubNameP = document.createElement('p');
-            clubNameP.textContent = coach.club;
+
+            if (club) {
+                clubNameP.textContent = club.name;
+            } else {
+                clubNameP.textContent = coach.club;
+            }
+            
 
             clubDiv.appendChild(clubTitleSpan);
             clubDiv.appendChild(clubNameP);
@@ -1995,7 +2067,7 @@ export async function getAllCoaches() {
             displayCoaches(coaches.slice(0, 12));
             viewAllButton.style.display = 'block';
 
-            const names = [...new Set(coaches.flatMap(coach => coach.name))];
+            const names = [...new Set(coaches.flatMap(coach => coach.name || coach.fullname))];
             const clubs = [...new Set(coaches.map(coach => coach.club))];
             const cityIds = [...new Set(coaches.map(coach => coach.city))]; // Now storing city _id
 
@@ -2046,7 +2118,7 @@ export async function getAllCoaches() {
     }
 
     function updateNameDropdown() {
-        updateDropdownList(nameDropdown, [...new Set(allCoaches.flatMap(coach => coach.name))], nameInput);
+        updateDropdownList(nameDropdown, [...new Set(allCoaches.flatMap(coach => coach.name || coach.fullname))], nameInput);
     }
 
     function updateClubDropdown() {
@@ -2132,8 +2204,11 @@ export async function getAllCoaches() {
         container.innerHTML = '';
 
         for (const coach of coaches) {
-            const coachDiv = document.createElement('div');
+            // const coachDiv = document.createElement('div');
+            // coachDiv.className = 'coaches_content_coach';
+            let coachDiv = document.createElement('a');
             coachDiv.className = 'coaches_content_coach';
+            coachDiv.href = `/${languageMap[currentLang]}/allcoaches/${coach._id}`;
 
             const wrapLogoDiv = document.createElement('div');
             wrapLogoDiv.className = 'coaches_content_coach_wrapLogo';
@@ -2157,7 +2232,7 @@ export async function getAllCoaches() {
 
             const nameH4 = document.createElement('h4');
             nameH4.className = 'coaches_content_coach_info_name';
-            nameH4.textContent = coach.name;
+            nameH4.textContent = coach.name || coach.fullname;
 
             const clubDiv = document.createElement('div');
             clubDiv.className = 'coaches_content_coach_info_club';
@@ -2591,7 +2666,11 @@ export function loginForm() {
                 localStorage.setItem('userType', userType);
                 console.log(userType);
                 let redirectUrl = `/${languageMap[clientLang]}/dashboard/${userType}/${userId}`;
-               
+                
+                if (userType === 'admin') {
+                    redirectUrl = `/ru/dashboard/${userType}`;
+                    console.log(redirectUrl);
+                }
                 console.log(redirectUrl);
                 window.location.href = redirectUrl;
             } else {
@@ -3287,6 +3366,7 @@ export function listenerOfButtons() {
 
 
     document.addEventListener('click', function(event) {
+        // console.log(event.target);
         if (event.target.classList.contains('btnRegister')) {
             registrationForm();
         }
@@ -3299,18 +3379,9 @@ export function listenerOfButtons() {
             loginForm();
         }
 
-        // if (event.target.closest('.logOut')) {
-        //     logout();
-        // }
-        
-        // if (event.target.id === 'myProfile') {
-        //     window.location.href = `/${languageMap[localStorage.clientLang]}/dashboard`;
-        // }
-
         if (event.target.closest('.goToAllClubs')) {
             window.location.href = `/${languageMap[localStorage.clientLang]}/allclubs`;
         }
-
 
         if (event.target.closest('.goToAllPlayers')) {
             window.location.href = `/${languageMap[localStorage.clientLang]}/allplayers`;
@@ -3328,10 +3399,20 @@ export function listenerOfButtons() {
             event.preventDefault();
             window.location.href = `/${languageMap[localStorage.clientLang]}/alltrainings`;
         }
+        
+        // if (event.target.closest('.admin_user') || event.target.closest('.admin_user_img')) {
+        //     event.preventDefault();
+        //     document.querySelector('.admin_profileMenu').classList.toggle('admin_profileMenu_openMenu');
+        // } else
 
-        // if (event.target.classList.contains('header_bottom_mob_cross')) {
-        //     console.log('cross');
-        //     document.getElementById('headerMob').style.display = 'none';
+        // if (document.querySelector('.admin_profileMenu').classList.contains('admin_profileMenu_openMenu') && !event.target.closest('.admin_user') && !event.target.closest('.admin_user_img')) {
+        //     document.querySelector('.admin_profileMenu').classList.toggle('admin_profileMenu_openMenu');
+        // } else
+
+        
+        // if (event.target.id === 'logOut') {
+        //     event.preventDefault();
+        //     logout();
         // }
 
         if (event.target.id === 'becomeCoach') {
@@ -3352,7 +3433,6 @@ export function listenerOfButtons() {
            
         }
 
-
         if (event.target.closest('.logo')) {
             event.preventDefault();
             const selectedLanguage = localStorage.getItem('clientLang') || 'english';
@@ -3361,22 +3441,150 @@ export function listenerOfButtons() {
         }
 
         if (event.target.closest('#burger')) {
-            document.querySelector('.header_bottom_mob').classList.toggle('header_bottom_mob_openMenu');
+            document.querySelector('.header_bottom_mob')?.classList.toggle('header_bottom_mob_openMenu');
         }
         
-
         if (event.target.closest('.header_bottom_mob_cross')) {
-            document.querySelector('.header_bottom_mob').classList.toggle('header_bottom_mob_openMenu');
+            document.querySelector('.header_bottom_mob')?.classList.toggle('header_bottom_mob_openMenu');
         }
-
 
         if (!event.target.closest('#burger') && !event.target.closest('.header_bottom header_bottom_mob')) {
-            document.querySelector('.header_bottom_mob').classList.remove('header_bottom_mob_openMenu');
+            if ( document.querySelector('.header_bottom_mob')) {
+                document.querySelector('.header_bottom_mob').classList.remove('header_bottom_mob_openMenu');
+            }
         }
 
-        
+        // if (event.target.closest('.manageAllPlayers')) {
+        //     event.preventDefault();
+        //     console.log('/ru/dashboard/admin');
+        //     window.location.href = '/ru/dashboard/admin';
+        // } else
+
+        // if (event.target.closest('.manageAllClubs')) {
+        //     event.preventDefault();
+        //     console.log('/ru/dashboard/admin/clubs');
+        //     window.location.href = '/ru/dashboard/admin/clubs';
+        // } else
+
+        // if (event.target.closest('.manageAllCoaches')) {
+        //     event.preventDefault();
+        //     console.log('/ru/dashboard/admin/clubs');
+        //     window.location.href = '/ru/dashboard/admin/coaches';
+        // } else
+
+        // if (event.target.closest('.manageAllTournaments')) {
+        //     event.preventDefault();
+        //     console.log('/ru/dashboard/admin/clubs');
+        //     window.location.href = '/ru/dashboard/admin/tournaments';
+        // } else
+
+        // if (event.target.closest('.manageAllTrainings')) {
+        //     event.preventDefault();
+        //     console.log('/ru/dashboard/admin/clubs');
+        //     window.location.href = '/ru/dashboard/admin/trainings';
+        // } else
+
+        // if (event.target.closest('.manageCoachApplications')) {
+        //     event.preventDefault();
+        //     console.log('/ru/dashboard/admin/clubs');
+        //     window.location.href = '/ru/dashboard/admin/coachapply';
+        // } else
+
+        // if (event.target.closest('.manageClubApplications')) {
+        //     event.preventDefault();
+        //     console.log('/ru/dashboard/admin/clubs');
+        //     window.location.href = '/ru/dashboard/admin/clubapply';
+        // } else
+
+        // if (event.target.closest('.manageAdvertisement')) {
+        //     event.preventDefault();
+        //     console.log('/ru/dashboard/admin/clubs');
+        //     window.location.href = '/ru/dashboard/admin/adv';
+        // } else
+
+        // if (event.target.closest('.admin_user')) {
+        //     event.preventDefault();
+        //     document.querySelector('.admin_profileMenu').classList.toggle('admin_profileMenu_openMenu');
+        // }
+
+        // if (document.querySelector('.admin_profileMenu').classList.contains('admin_profileMenu_openMenu') && !event.target.closest('.admin_user')) {
+        //     document.querySelector('.admin_profileMenu').classList.toggle('admin_profileMenu_openMenu');
+        // }
+        // if (document.querySelector('.admin_profileMenu').classList.contains('admin_profileMenu_openMenu') && !event.target.closest('.admin_user') && !event.target.closest('.admin_user_img')) {
+        //     document.querySelector('.admin_profileMenu').classList.toggle('admin_profileMenu_openMenu');
+        // }
+
+        // if (document.querySelector('.admin_profileMenu')) {
+        //     if (document.querySelector('.admin_profileMenu').classList.contains('admin_profileMenu_openMenu') && !event.target.closest('.admin_user') && !event.target.closest('.admin_user_img')) {
+        //         document.querySelector('.admin_profileMenu').classList.toggle('admin_profileMenu_openMenu');
+        //     }
+        // }
+        if (document.querySelector('.admin_profileMenu')) {
+            if (document.querySelector('.admin_profileMenu').classList.contains('admin_profileMenu_openMenu') && !event.target.closest('.admin_user')) {
+                document.querySelector('.admin_profileMenu').classList.remove('admin_profileMenu_openMenu');
+            }
+        }
         
     });
+
+    if (document.querySelector('.admin_header')) {
+        document.querySelector('.admin_header').addEventListener('click', (event) => {
+            if (event.target.closest('.admin_user')) {
+                event.preventDefault();
+                document.querySelector('.admin_profileMenu').classList.toggle('admin_profileMenu_openMenu');
+            }
+            
+
+            if (event.target.id === 'adminHome') {
+                event.preventDefault();
+                window.location.href = '/ru/dashboard/admin';
+            }
+            if (event.target.id === 'logOut') {
+                event.preventDefault();
+                logout();
+            }
+    
+        });
+    }
+    
+    if (document.querySelector('.admin_sidebar')) {
+        document.querySelector('.admin_sidebar').addEventListener('click', (event) => {
+            if (event.target.closest('.manageAllPlayers')) {
+                event.preventDefault();
+                console.log('/ru/dashboard/admin');
+                window.location.href = '/ru/dashboard/admin';
+            } else if (event.target.closest('.manageAllClubs')) {
+                event.preventDefault();
+                console.log('/ru/dashboard/admin/clubs');
+                window.location.href = '/ru/dashboard/admin/clubs';
+            } else if (event.target.closest('.manageAllCoaches')) {
+                event.preventDefault();
+                console.log('/ru/dashboard/admin/coaches');
+                window.location.href = '/ru/dashboard/admin/coaches';
+            } else if (event.target.closest('.manageAllTournaments')) {
+                event.preventDefault();
+                console.log('/ru/dashboard/admin/tournaments');
+                window.location.href = '/ru/dashboard/admin/tournaments';
+            } else if (event.target.closest('.manageAllTrainings')) {
+                event.preventDefault();
+                console.log('/ru/dashboard/admin/trainings');
+                window.location.href = '/ru/dashboard/admin/trainings';
+            } else if (event.target.closest('.manageCoachApplications')) {
+                event.preventDefault();
+                console.log('/ru/dashboard/admin/coachapply');
+                window.location.href = '/ru/dashboard/admin/coachapply';
+            } else if (event.target.closest('.manageClubApplications')) {
+                event.preventDefault();
+                console.log('/ru/dashboard/admin/clubapply');
+                window.location.href = '/ru/dashboard/admin/clubapply';
+            } else if (event.target.closest('.manageAdvertisement')) {
+                event.preventDefault();
+                console.log('/ru/dashboard/admin/adv');
+                window.location.href = '/ru/dashboard/admin/adv';
+            }
+        });
+    }
+    
 
     // Modal window
     const modal = document.getElementById("myModal");

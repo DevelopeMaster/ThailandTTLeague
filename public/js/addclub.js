@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const data = Object.fromEntries(formData.entries());
         data.requestDate = new Date();
 
-        fetch('/addApplicationClub', {
+        fetch('/api/addApplicationClub', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data),

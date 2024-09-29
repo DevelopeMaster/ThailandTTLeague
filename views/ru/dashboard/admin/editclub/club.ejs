@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TTLeague</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icons/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icons/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icons/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/manifest.json">
+
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="ThailandTTLeague">
+    <meta property="og:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta property="og:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta property="og:url" content="https://thailandttleague.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Thailand TT League">
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ThailandTTLeague">
+    <meta name="twitter:description" content="Thailand TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+    <meta name="twitter:image" content="https://thailandttleague.com/icons/favicons/preview.png">
+    <meta name="twitter:url" content="https://thailandttleague.com/">
+
+    <!-- Favicon and other icons -->
+    <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/icons/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/icons/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-config" content="/icons/favicons/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icons/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#262630">
+    <!-- Для iOS установка цвета шторки (status bar) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#262630">
+    <!-- Для Android установка цвета шторки -->
+    <meta name="theme-color" content="#000817"> 
+
+    <link rel="icon" type="image/png" href="/icons/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/main.min.css">
+</head>
+
+<body class="admin_body">
+    <header class="admin_header" id="scroll">
+        <!-- add from js -->
+    </header>
+    <div class="admin_sidebar">
+        <!-- add from js -->
+    </div>
+    
+    
+    <section class="editClub" data-clubid="<%= clubId %>">
+        <div class="adminContainer">
+            <h2>Редактирование клуба</h2>
+            <div class="buttonsTopWrapp">
+                <a id="deleteClubBtnTop" class="deletePlayer" href="#">удалить</a>
+                <button type="submit" id="editclub_formContainer_submitTop" class="header_btn-sign editclub_formContainer_submit">Сохранить</button>
+            </div>
+    
+            <form id="editClubForm" action="/saveClubProfile" method="POST" enctype="multipart/form-data">
+                <div class="editclub_formContainer">
+                    
+                    <div class="editclub_formContainer_logoSection">
+                        <img id="clubLogo" src="/icons/playerslogo/default_avatar.svg" alt="Club Logo">
+                        <input type="file" id="logoInput" name="logo" style="display: none;">
+                        <label for="logoInput" id="customLogoButton" class="editclub_formContainer_logoSection_btn">Добавить лого</label>
+                    </div>
+                    <div class="editclub_formContainer_formSection">
+                        <label for="clubName">Название клуба*</label>
+                        <input type="text" id="clubName" name="clubName">
+
+                        <label for="city">Город*</label>
+                        <input type="text" id="city" name="city" style="background-image: url('/icons/chevron-down.svg'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 30px;">
+                        <div class="dropdownForm">
+                            <div class="dropdown-content" id="cityDropdown">
+                            <!-- options add from JS -->
+                            </div>
+                        </div>
+
+                        <label for="address">Адрес (русский)</label>
+                        <input type="text" id="address" name="address">
+
+                        <label for="addresseng">Адрес (английский)</label>
+                        <input type="text" id="addressEng" name="addresseng">
+
+                        <label for="addressthai">Адрес (тайский)</label>
+                        <input type="text" id="addressThai" name="addressthai">
+                        
+                        <label for="location">Локация*</label>
+                        <input type="text" id="location" name="location" required>
+
+                        <div class="formWrapper">
+                            <div class="inp-label-pare">
+                                <label for="workingHours">Время работы*</label>
+                                <input type="text" id="workingHours" name="workingHours" required>
+                            </div>
+                            <div class="inp-label-pare">
+                                <label for="numberOfTables">Количество столов*</label>
+                                <input type="number" id="numberOfTables" name="numberOfTables" required>
+                            </div>
+                        </div>
+                            
+                        <label for="representative">Представитель*</label>
+                        <input type="text" id="representative" name="representative">
+            
+                        <label for="phoneNumber">Номер телефона*</label>
+                        <input type="text" id="phoneNumber" name="phoneNumber" required>
+            
+                        <label for="website">Сайт клуба</label>
+                        <input type="url" id="website" name="website">
+
+                        <label>Бесплатные услуги</label>
+                        <div class="freeServices">
+                            <div class="freeServices_item">
+                                <input class="hands_radio" type="checkbox" id="wifi" name="freeServices[]" value="Wifi">
+                                <label for="wifi">Wi-Fi</label>
+                            </div>
+                            <div class="freeServices_item">
+                                <input class="hands_radio" type="checkbox" id="airConditioner" name="freeServices[]" value="Shower">
+                                <label for="airConditioner">Душ</label>
+                            </div>
+                            <div class="freeServices_item">
+                                <input class="hands_radio" type="checkbox" id="airConditioner" name="freeServices[]" value="Air conditioning">
+                                <label for="airConditioner">Кондиционер</label>
+                            </div>
+                            <div class="freeServices_item">
+                                <input class="hands_radio" type="checkbox" id="waterCooler" name="freeServices[]" value="Water cooler">
+                                <label for="waterCooler">Кулер</label>
+                            </div>
+                            <div class="freeServices_item">
+                                <input class="hands_radio" type="checkbox" id="parkingFree" name="freeServices[]" value="Parking">
+                                <label for="parkingFree">Парковка</label>
+                            </div>
+                        </div>
+
+                        <label>Платные услуги</label>
+                        <div class="paidServices">
+                            <div class="paidServices_item">
+                                <input class="hands_radio" type="checkbox" id="shop" name="paidServices[]" value="Shop">
+                                <label for="shop">Магазин</label>
+                            </div>
+                            <div class="paidServices_item">
+                                <input class="hands_radio" type="checkbox" id="cafe" name="paidServices[]" value="Cafe">
+                                <label for="cafe">Кафе</label>
+                            </div>
+                            <div class="paidServices_item">
+                                <input class="hands_radio" type="checkbox" id="restaurant" name="paidServices[]" value="Restaurant">
+                                <label for="restaurant">Ресторан</label>
+                            </div>
+                            <div class="paidServices_item">
+                                <input class="hands_radio" type="checkbox" id="parkingPaid" name="paidServices[]" value="Parking">
+                                <label for="parkingPaid">Парковка</label>
+                            </div>
+                            <div class="paidServices_item">
+                                <input class="hands_radio" type="checkbox" id="drinks" name="paidServices[]" value="Beverages">
+                                <label for="drinks">Напитки</label>
+                            </div>
+                            <div class="paidServices_item">
+                                <input class="hands_radio" type="checkbox" id="gym" name="paidServices[]" value="Gym">
+                                <label for="gym">Тренажерный зал</label>
+                            </div>
+                            <div class="paidServices_item">
+                                <input class="hands_radio" type="checkbox" id="storageRoom" name="paidServices[]" value="Lockers">
+                                <label for="storageRoom">Камеры хранения</label>
+                            </div>
+                        </div>
+            
+                        <label>Фото клуба</label>
+                        <div class="photoUploadContainer">
+                            <div class="photoUploadContainer_preview" onclick="triggerFileInput(1)">
+                                <div class="imageHide">
+                                    <img id="preview1" src="/icons/defaultClubPicture.svg" alt="Club Photo 1">
+                                </div>
+                                <span class="remove-photo" onclick="removePhoto(1, event)" style="cursor: pointer;"><img src="/icons/cross.svg" alt="cross"></span>
+                            </div>
+                            <div class="photoUploadContainer_preview" onclick="triggerFileInput(2)">
+                                <div class="imageHide">
+                                    <img id="preview2" src="/icons/defaultClubPicture.svg" alt="Club Photo 2">
+                                </div>
+                                <span class="remove-photo" onclick="removePhoto(2, event)" style="cursor: pointer;"><img src="/icons/cross.svg" alt="cross"></span>
+                            </div>
+                            <div class="photoUploadContainer_preview" onclick="triggerFileInput(3)">
+                                <div class="imageHide">
+                                    <img id="preview3" src="/icons/defaultClubPicture.svg" alt="Club Photo 3">
+                                </div>
+                                <span class="remove-photo" onclick="removePhoto(3, event)" style="cursor: pointer;"><img src="/icons/cross.svg" alt="cross"></span>
+                            </div>
+                            <div class="photoUploadContainer_preview" onclick="triggerFileInput(4)">
+                                <div class="imageHide">
+                                    <img id="preview4" src="/icons/defaultClubPicture.svg" alt="Club Photo 4">
+                                </div>
+                                <span class="remove-photo" onclick="removePhoto(4, event)" style="cursor: pointer;"><img src="/icons/cross.svg" alt="cross"></span>
+                            </div>
+                        </div>
+                    
+                        <input type="file" id="photoInput1" name="photos[]" style="display:none" accept="image/*" onchange="previewPhoto(1)">
+                        <input type="file" id="photoInput2" name="photos[]" style="display:none" accept="image/*" onchange="previewPhoto(2)">
+                        <input type="file" id="photoInput3" name="photos[]" style="display:none" accept="image/*" onchange="previewPhoto(3)">
+                        <input type="file" id="photoInput4" name="photos[]" style="display:none" accept="image/*" onchange="previewPhoto(4)">
+
+                        <p class="photoUploadContainer_descr">Фото не должно превышать 1 Мб</p>
+                        
+                        <div class="inp-label-pare">
+                            <label for="info">О клубе (русский)</label>
+                            <textarea id="description" placeholder="Enter information about your club" id="info" name="info" rows="7"></textarea>
+                        </div>
+                        <div class="inp-label-pare">
+                            <label for="infoeng">О клубе (английский)</label>
+                            <textarea id="descriptionEng" placeholder="Enter information about your club" id="info" name="info" rows="7"></textarea>
+                        </div>
+                        <div class="inp-label-pare">
+                            <label for="infothai">О клубе (тайский)</label>
+                            <textarea id="descriptionThai" placeholder="Enter information about your club" id="info" name="info" rows="7"></textarea>
+                        </div>
+                        <div class="admin_container_buttonsWrapper">
+                            <div></div>
+                            <div class="clubs_down">
+                                <a id="deleteClubBtn" class="deletePlayer" href="#">удалить</a>
+                                <button type="submit" id="editclub_formContainer_submit" class="header_btn-sign editclub_formContainer_submit">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </form>
+
+            
+
+        </div>
+    </section>
+    
+
+
+
+
+    <!-- Модальное окно -->
+    <div id="myModal" class="modal">    
+        <div class="modal-content">
+        <!-- add from DB -->
+        </div>
+    </div>
+    
+    
+    <script type="module" src="/js/admin/clubeditadmin.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> -->
+</body>
+</html>

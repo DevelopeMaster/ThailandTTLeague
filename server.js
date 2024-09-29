@@ -10,12 +10,13 @@ const { ObjectId } = require('mongodb'); // Импортируем ObjectId
 require('dotenv').config();
 const { connectDB, getDB } = require('./db'); // Подключаем функцию для получения базы данных
 const flash = require('connect-flash');
+const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 // const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 
-const { ensureAuthenticated, upload } = require('./middlewares/uploadConfig');
+const { ensureAuthenticated, upload, ensureAdmin } = require('./middlewares/uploadConfig');
 const userRoutes = require('./routes/userRoutes');
 
 // const passport = require('passport');
@@ -47,6 +48,7 @@ app.use(express.json());
 const store = MongoStore.create({
   mongoUrl: uri,
   dbName: 'ttleague',
+  resave: false,
   collectionName: 'sessions',
   stringify: false,
   autoRemove: 'native',
@@ -57,17 +59,17 @@ const store = MongoStore.create({
 
 
 // потом включить 
-// store.on('create', (sid) => {
-//   console.log(`Session created: ${sid}`);
-// });
+store.on('create', (sid) => {
+  console.log(`Session created: ${sid}`);
+});
 
 // store.on('touch', (sid) => {
 //   console.log(`Session touched: ${sid}`);
 // });
 
-// store.on('destroy', (sid) => {
-//   console.log(`Session destroyed: ${sid}`);
-// });
+store.on('destroy', (sid) => {
+  console.log(`Session destroyed: ${sid}`);
+});
 
 app.use(session({
   secret: sessionSecret,
@@ -108,6 +110,53 @@ app.get('/ru', (req, res) => {
   res.render('ru');
 });
 
+app.get('/ru/dashboard/admin', ensureAdmin, (req, res) => {
+  res.render('ru/dashboard/admin');
+});
+
+app.get('/ru/dashboard/admin/:page', ensureAdmin, (req, res) => {
+  const { page } = req.params;
+  res.render(`ru/dashboard/admin/${page}`);
+});
+
+
+
+app.get('/ru/dashboard/admin/edit/:playerId', ensureAuthenticated, ensureAdmin, (req, res) => {
+  const { playerId } = req.params;
+  const link = `ru/dashboard/admin/edit/player`;
+
+  try {  
+    console.log(`Rendering: ${link} for userId: ${playerId}`);
+    res.render(link, {
+      playerId: playerId
+    });
+  } catch (error) {
+    console.error('Error rendering template:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/ru/dashboard/admin/editclub/:clubId', ensureAuthenticated, ensureAdmin, (req, res) => {
+  const { clubId } = req.params;
+  const link = `ru/dashboard/admin/editclub/club`;
+
+  try {  
+    console.log(`Rendering: ${link} for clubId: ${clubId}`);
+    res.render(link, { clubId: clubId });
+    
+  } catch (error) {
+    console.error('Error rendering template:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+
+
 app.get('/th', (req, res) => {
   res.render('th');
 });
@@ -139,6 +188,22 @@ app.get('/:lang(en|ru|th)/allplayers/:userId', async (req, res) => {
   try {
     const { lang, userId } = req.params;
     const link = `${lang}/allplayers/player`;
+        
+    console.log(`Rendering: ${link} for userId: ${userId}`);
+    return res.render(link, {
+        userId: userId,
+    });
+    
+  } catch (error) {
+    console.error('Error in route handler:', error);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/:lang(en|ru|th)/allcoaches/:userId', async (req, res) => {
+  try {
+    const { lang, userId } = req.params;
+    const link = `${lang}/allcoaches/coach`;
         
     console.log(`Rendering: ${link} for userId: ${userId}`);
     return res.render(link, {
@@ -257,264 +322,6 @@ app.get('/:lang/dashboard/:userType/:userId', ensureAuthenticated, (req, res) =>
   }
 });
 
-// сохранение
-// const multer = require('multer');
-// // const path = require('path');
-
-// // Настройка хранения файлов с указанием пути
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//       if (file.fieldname === 'logo') {
-//           cb(null, path.join(__dirname, 'public/icons/clubslogo'));
-//       } else if (file.fieldname === 'photos') {
-//           cb(null, path.join(__dirname, 'public/icons/clubsphotos'));
-//       } else if ( file.fieldname === 'userLogo') {
-//           cb(null, path.join(__dirname, 'public/icons/playerslogo'));
-//       }
-//   },
-//   filename: (req, file, cb) => {
-//       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-//       cb(null, uniqueSuffix + path.extname(file.originalname)); // указываем уникальное имя файла
-//   }
-// });
-
-// const upload = multer({ 
-//   storage: storage,
-//   limits: {
-//       fileSize: 1 * 1024 * 1024 // 1 МБ
-//   }
-// });
-
-
-// const upload = require('./middlewares/uploadConfig');
-
-// app.post('/saveClubProfile', ensureAuthenticated, upload.fields([
-//   { name: 'logo', maxCount: 1 },
-//   { name: 'photos', maxCount: 4 }
-// ]), async (req, res) => {
-//   console.log('Received files:', req.files);
-//   console.log('Received body:', req.body);
-//   // Ваш код здесь
-// // });
-
-// // app.post('/saveClubProfile', ensureAuthenticated, upload.single('logo'), async (req, res) => {
-//   try {
-//       // console.log('запрос получен', req.body);
-//       const db = getDB();
-//       const clubId = new ObjectId(req.body.userId);
-//       console.log(clubId);
-//       // Получение текущих данных клуба
-//       const currentClubData = await db.collection('clubs').findOne({ _id: clubId });
-//       if (!currentClubData) {
-//           return res.status(404).send('Club not found');
-//       }
-//       console.log(currentClubData);
-//       // Объект для хранения изменений
-//       const updates = {};
-
-
-//       // Обновление логотипа (если новый логотип был загружен)
-//       if (req.files['logo']) {
-//           const logoPath = `/icons/clubslogo/${req.files['logo'][0].filename}`;
-//           if (currentClubData.logo !== logoPath) {
-//               updates.logo = logoPath;
-//           }
-//       }
-
-//       if (req.files['photos']) {
-//           const currentPhotos = currentClubData.photos || []; // Загрузить текущие фотографии клуба из базы данных
-//           const updatedPhotos = [...currentPhotos]; // Создаем копию текущего массива фотографий
-      
-//           const photoPaths = req.files['photos'].map(file => `/icons/clubsphotos/${file.filename}`);
-//           const photoIndex = req.body.photoIndex; // Получаем индекс фотографии, которую нужно заменить
-      
-//           // Заменяем только ту фотографию, которая была изменена
-//           if (photoIndex !== undefined && photoIndex < updatedPhotos.length) {
-//               updatedPhotos[photoIndex] = photoPaths[0]; // Меняем фотографию по индексу
-//           }
-      
-//           updates.photos = updatedPhotos; // Обновляем фотографии в данных клуба
-//       }
-
-//       if (req.body.workingHours && req.body.workingHours !== currentClubData.workingHours) {
-//           updates.workingHours = req.body.workingHours;
-//       }
-
-//       if (req.body.numberOfTables && Number(req.body.numberOfTables) !== currentClubData.tables) {
-//           updates.tables = Number(req.body.numberOfTables);
-//       }
-
-//       if (req.body.phoneNumber && req.body.phoneNumber !== currentClubData.phoneNumber) {
-//           updates.phoneNumber = req.body.phoneNumber;
-//       }
-
-//       if (req.body.website && req.body.website !== currentClubData.website) {
-//           updates.website = req.body.website;
-//       }
-
-//       if (req.body.freeServices) {
-//           const newFreeServices = req.body.freeServices.split(',').map(item => item.trim());
-//           const currentFreeServices = currentClubData.supplements.free || [];
-      
-//           // Сравниваем новые и текущие значения
-//           if (JSON.stringify(newFreeServices) !== JSON.stringify(currentFreeServices)) {
-//               updates['supplements.free'] = newFreeServices;
-//           }
-//       }
-      
-//       // Обработка массива платных услуг
-//       if (req.body.paidServices) {
-//           // Преобразуем строку с новыми значениями в массив
-//           const newPaidServices = req.body.paidServices.split(',').map(item => item.trim());
-//           const currentPaidServices = currentClubData.supplements.paid || [];
-      
-//           // Сравниваем новые и текущие значения
-//           if (JSON.stringify(newPaidServices) !== JSON.stringify(currentPaidServices)) {
-//               updates['supplements.paid'] = newPaidServices;
-//           }
-//           // console.log('Новые платные услуги:', newPaidServices);
-//       }
-
-//       // Обновление данных в базе, если есть изменения
-//       if (Object.keys(updates).length > 0) {
-//           await db.collection('clubs').updateOne(
-//               { _id: clubId },
-//               { $set: updates }
-//           );
-//           console.log(`Клуб ${clubId} успешно обновлен`);
-//       } else {
-//           console.log(`Нет изменений для обновления ${clubId}`);
-//       }
-
-//       // Перенаправление после успешного обновления
-//       let link = `/en/dashboard/club/${clubId}`;
-//       res.redirect(link);
-//   } catch (error) {
-//       console.error('Ошибка при сохранении профиля клуба:', error);
-//       res.status(500).send('Internal Server Error');
-//   }
-// });
-
-
-
-// app.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
-//   { name: 'userLogo', maxCount: 1 }
-// ]), async (req, res) => {
-//   console.log('Received files:', req.files);
-//   console.log('Received body:', req.body);
-// // });
-
-// // app.post('/saveClubProfile', ensureAuthenticated, upload.single('logo'), async (req, res) => {
-//   try {
-//       // console.log('запрос получен', req.body);
-//       const db = getDB();
-//       const userId = new ObjectId(req.body.userId);
-//       console.log(userId);
-//       // Получение текущих данных клуба
-//       const currentUserData = await db.collection('users').findOne({ _id: userId });
-//       if (!currentUserData) {
-//           return res.status(404).send('User not found');
-//       }
-//       console.log(currentUserData);
-//       // Объект для хранения изменений
-//       const updates = {};
-
-
-//       // Обновление логотипа (если новый логотип был загружен)
-//       if (req.files['userLogo']) {
-//           const logoPath = `/icons/playerslogo/${req.files['userLogo'][0].filename}`;
-//           if (currentUserData.logo !== logoPath) {
-//               updates.logo = logoPath;
-//           }
-//       }
-
-
-//       if ((req.body.name && req.body.name !== currentUserData.name) || (req.body.fullname && req.body.fullname !== currentUserData.name)) {
-//           updates.fullname = req.body.name || req.body.fullname;
-//       }
-
-//       if (req.body.cityName && req.body.cityName !== currentUserData.cityName) {
-//           // Поиск ID города по названию на любом языке
-//           const city = await db.collection('cities').findOne({
-//               $or: [
-//                   { english: req.body.cityName },
-//                   { russian: req.body.cityName },
-//                   { thai: req.body.cityName }
-//               ]
-//           });
-
-//           if (city) {
-//               const cityId = city._id;
-//               console.log(new ObjectId(cityId));
-//               updates.city = new ObjectId(cityId);
-//           } else {
-//               return res.status(400).send('City not found');
-//           }
-//       }
-
-//       if (req.body.coach && req.body.coach !== currentUserData.coach) {
-//           updates.coach = req.body.coach;
-//       }
-
-//       if (req.body.birthdayDate && req.body.birthdayDate !== currentUserData.birthdayDate) {
-//           updates.birthdayDate = req.body.birthdayDate;
-//       }
-
-//       if (req.body.email && req.body.email !== currentUserData.email) {
-//           updates.email = req.body.email;
-//       }
-
-//       if (req.body.phoneNumber && req.body.phoneNumber !== currentUserData.phoneNumber) {
-//           updates.phoneNumber = req.body.phoneNumber;
-//       }
-
-//       if (req.body.hand && req.body.hand !== currentUserData.hand) {
-//           updates.hand = req.body.hand;
-//       }
-
-//       if (req.body.description && req.body.description !== currentUserData.description) {
-//           updates.description = req.body.description;
-//       }
-
-//       if (req.body.blade && req.body.blade !== currentUserData.blade) {
-//           updates.blade = req.body.blade;
-//       }
-
-//       if (req.body.forehandRubber && req.body.forehandRubber !== currentUserData.forehandRubber) {
-//           updates.forehandRubber = req.body.forehandRubber;
-//       }
-
-//       if (req.body.backhandRubber && req.body.backhandRubber !== currentUserData.backhandRubber) {
-//           updates.backhandRubber = req.body.backhandRubber;
-//       }
-
-//       if (req.body.description && req.body.description !== currentUserData.description) {
-//           updates.description = req.body.description;
-//       }
-
-//       if (Object.keys(updates).length > 0) {
-//           await db.collection('users').updateOne(
-//               { _id: userId },
-//               { $set: updates }
-//           );
-//           console.log(`Игрок ${userId} успешно обновлен`);
-//       } else {
-//           console.log(`Нет изменений для обновления пользователя ${userId}`);
-//       }
-
-//       res.json({
-//         success: true,
-//         logoUrl: updates.logo || '/icons/playerslogo/default_avatar.svg', 
-//         redirectUrl: `/en/dashboard/user/${userId}` 
-//       });
-//       // Перенаправление после успешного обновления
-//       // let link = `/en/dashboard/user/${userId}`;
-//       // res.redirect(link);
-//   } catch (error) {
-//       console.error('Ошибка при сохранении профиля клуба:', error);
-//       res.status(500).send('Internal Server Error');
-//   }
-// });
 
 app.use((err, req, res, next) => {
   if (err.code === 'LIMIT_FILE_SIZE') {
@@ -713,8 +520,6 @@ app.post('/reset-password/:token', async (req, res) => {
           }
       );
 
-      // console.log('User found:', user);
-      // console.log('Update result:', updateResult);
       if (updateResult.modifiedCount === 1) {
           res.status(200).json({ message: 'Password has been successfully reset.' });
       } else {
@@ -918,6 +723,7 @@ app.get('/trainer/:trainerId', async (req, res) => {
 app.get('/get-data-club', async (req, res) => {
   const { clubId } = req.query;
   try {
+    // console.log(ObjectId.isValid(clubId));
     const db = getDB();
     const dataClub = await db.collection('clubs').findOne({ _id: new ObjectId(clubId) });
     if (!dataClub) {
@@ -951,7 +757,24 @@ app.get('/get-data-player', async (req, res) => {
   try {
     const db = getDB();
     const dataPlayer = await db.collection('users').findOne({ _id: new ObjectId(userId) });
-    console.log(dataPlayer);
+    // console.log(dataPlayer);
+    if (!dataPlayer) {
+      return res.status(404).send('Player not found');
+    }
+    res.json(dataPlayer);
+  } catch (error) {
+    console.error('Error fetching player data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/get-data-coach', async (req, res) => {
+  const { userId } = req.query;
+  // console.log(userId);
+  try {
+    const db = getDB();
+    const dataPlayer = await db.collection('coaches').findOne({ _id: new ObjectId(userId) });
+    // console.log(dataPlayer);
     if (!dataPlayer) {
       return res.status(404).send('Player not found');
     }
@@ -1030,147 +853,6 @@ app.get('/get-playerData', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while retrieving player' });
   }
 });
-
-
-
-
-  app.post('/applyCoach', [
-      // Валидация данных
-        body('name').notEmpty().withMessage('Name is required'),
-        body('phone').notEmpty().withMessage('Phone number is required'),
-        body('location').notEmpty().withMessage('Location is required')
-      ],    
-      async function(req, res) {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-          return res.status(400).json({ status: 'error', errors: errors.array() });
-        }
-        const { name, phone, requestDate, profileLink, info, policy } = req.body;
-        if (!name || !phone || !requestDate || !policy ) {
-          res.status(400).json({ error: 'Something wrong. Please renew page and try again' });
-          return;
-        }
-    
-        try {
-          const db = getDB();
-          await db.collection('requestfromcoach')
-            .insertOne({ name, phone, requestDate, profileLink, info, policy });
-          console.log("Заявка успешно отправлена");
-
-          // Отправка email
-          const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              user: notificateEmail,
-              pass: notificatePass
-            }
-          });
-
-          const mailOptions = {
-            from: notificateEmail,
-            to: 'ogarsanya@gmail.com', // получатель ------------------------- ЗАМЕНИТЬ
-            subject: 'New Coach Application',
-            text: `
-              A new coach application has been received:
-              Name: ${name}
-              Phone: ${phone}
-              Date: ${new Date(requestDate).toLocaleString()}
-              Profile Link: ${profileLink}
-              Info: ${info}
-              Policy: 'Agreed'
-            `
-            // Policy: ${policy ? 'Agreed' : 'Not agreed'}
-          };
-
-          transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-              console.error('Error sending email:', error);
-            } else {
-              console.log('Email sent:', info.response);
-            }
-          });
-
-          res.status(200).json({ status: 'success', message: 'Request has been sent' });
-        } catch (err) {
-          console.error('Ошибка при отправке заявки:', err);
-          res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });
-          
-        }
-      }
-    );
-
-  app.post('/addApplicationClub', [
-  // Валидация данных
-    body('name').notEmpty().withMessage('Name is required'),
-    body('phone').notEmpty().withMessage('Phone number is required'),
-    body('city').notEmpty().withMessage('City is required'),
-    body('address').notEmpty().withMessage('Address is required'),
-    body('clubname').notEmpty().withMessage('clubname is required'),
-    body('qtytable').notEmpty().withMessage('Quantity tables is required')
-  ],    
-  async function(req, res) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ status: 'error', errors: errors.array() });
-    }
-    const { name, phone, requestDate, city, address, clubname, qtytable, infotournaments, info, policy } = req.body;
-    if (!name || !phone || !requestDate || !policy || !city || !address || !clubname || !qtytable ) {
-      console.log('данные не дошли до сервера');
-      res.status(400).json({ error: 'Something wrong. Please renew page and try again' });
-      return;
-    }
-
-    try {
-      const db = getDB();
-      await db.collection('requestfromclub')
-        .insertOne({ name, phone, requestDate, city, address, clubname, qtytable, infotournaments, info, policy });
-      console.log("Заявка успешно отправлена");
-
-      // Отправка email
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: notificateEmail,
-          pass: notificatePass
-        }
-      });
-
-      const mailOptions = {
-        from: notificateEmail,
-        to: 'ogarsanya@gmail.com', // получатель ------------------------- ЗАМЕНИТЬ
-        subject: 'New Club Application',
-        text: `
-          A new club application has been received:
-          Name: ${name}
-          Phone: ${phone}
-          Date: ${new Date(requestDate).toLocaleString()}
-            city, address, clubname, qtytable, infotournaments, info,
-          City: ${city}
-          Address: ${address}
-          Clubname: ${clubname}
-          Quantity table: ${qtytable}
-          Info about tournaments: ${infotournaments}
-          Info about club: ${info}
-          Policy: 'Agreed'
-        `
-        // Policy: ${policy ? 'Agreed' : 'Not agreed'}
-      };
-
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error('Error sending email:', error);
-        } else {
-          console.log('Email sent:', info.response);
-        }
-      });
-
-      res.status(200).json({ status: 'success', message: 'Request has been sent' });
-    } catch (err) {
-      console.error('Ошибка при отправке заявки:', err);
-      res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });
-      
-    }
-  });
 
 
 
@@ -1438,61 +1120,146 @@ app.post('/register', [
 //   })(req, res, next);
 // });
 
-
-
-app.post('/login', async (req, res, next) => {
-  const { email, password } = req.body;  // Исправляем на email и password
+passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
   const db = getDB();
-  console.log(req.body);
-  console.log('полученные данные на сервере:', email, password );
-  
-  let user = await db.collection('users').findOne({ email });
-  let userType = user ? (user.role === 'admin' ? 'admin' : 'user') : null;
 
-  if (!user) {
-    user = await db.collection('coaches').findOne({ email });
-    userType = 'coach';
+  try {
+    let user = await db.collection('users').findOne({ email });
+    let userType = user ? (user.role === 'admin' ? 'admin' : 'user') : null;
+
+    if (!user) {
+      user = await db.collection('coaches').findOne({ email });
+      userType = user ? 'coach' : null;
+    }
+
+    if (!user) {
+      user = await db.collection('clubs').findOne({ email });
+      userType = user ? 'club' : null;
+    }
+
+    if (!user) {
+      return done(null, false, { message: 'Invalid email or password' });
+    }
+
+    // Проверяем пароль с использованием bcrypt
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return done(null, false, { message: 'Invalid email or password' });
+    }
+
+    return done(null, { user, userType }); // Возвращаем пользователя и тип
+  } catch (err) {
+    return done(err);
   }
+}));
 
-  if (!user) {
-    user = await db.collection('clubs').findOne({ email });
-    userType = 'club';
+// Сериализация пользователя
+passport.serializeUser((userObj, done) => {
+  done(null, { id: userObj.user._id, userType: userObj.userType });
+});
+
+// Десериализация пользователя
+passport.deserializeUser(async (userObj, done) => {
+  const db = getDB();
+  try {
+    let user;
+
+    if (userObj.userType === 'admin' || userObj.userType === 'user') {
+      user = await db.collection('users').findOne({ _id: userObj.id });
+    } else if (userObj.userType === 'coach') {
+      user = await db.collection('coaches').findOne({ _id: userObj.id });
+    } else if (userObj.userType === 'club') {
+      user = await db.collection('clubs').findOne({ _id: userObj.id });
+    }
+
+    done(null, { user, userType: userObj.userType });
+  } catch (err) {
+    done(err);
   }
+});
 
-  // Если пользователь не найден ни в одной из коллекций
-  if (!user) {
-    return res.status(401).json({ message: 'Invalid email or password' });
-  }
 
-  // Аутентификация с использованием найденного пользователя
-  passport.authenticate('local', (err, user, info) => {
+app.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, userObj, info) => {
     if (err) {
       return res.status(500).json({ message: 'Internal Server Error' });
     }
-    if (!user) {
+    if (!userObj) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-    // console.log('если есть user:', user, userType, user.logo, user.fullname || user.name, user._id);
-    req.logIn(user, (err) => {
+
+    req.logIn(userObj.user, (err) => {
       if (err) {
         return res.status(500).json({ message: 'Internal Server Error' });
       }
-      
-      if (user) {
-        req.session.userId = user._id;
-        req.session.userType = userType;  // Сохранение типа пользователя в сессии
-        res.status(200).json({
-          userId: user._id,
-          name: user.fullname || user.name,
-          logo: user.logo,
-          userType: userType  // Возвращение типа пользователя в ответе
-        });
-      } else {
-        res.status(401).json({ error: 'Invalid credentials' });
-      }
+
+      // Сохраняем информацию в сессии
+      req.session.userId = userObj.user._id;
+      req.session.userType = userObj.userType;
+
+      res.status(200).json({
+        userId: userObj.user._id,
+        name: userObj.user.fullname || userObj.user.name,
+        logo: userObj.user.logo,
+        userType: userObj.userType,
+      });
     });
   })(req, res, next);
 });
+
+// app.post('/login', async (req, res, next) => {
+//   const { email, password } = req.body;  // Исправляем на email и password
+//   const db = getDB();
+//   console.log(req.body);
+//   console.log('полученные данные на сервере:', email, password );
+  
+//   let user = await db.collection('users').findOne({ email });
+//   let userType = user ? (user.role === 'admin' ? 'admin' : 'user') : null;
+
+//   if (!user) {
+//     user = await db.collection('coaches').findOne({ email });
+//     userType = 'coach';
+//   }
+
+//   if (!user) {
+//     user = await db.collection('clubs').findOne({ email });
+//     userType = 'club';
+//   }
+
+//   // Если пользователь не найден ни в одной из коллекций
+//   if (!user) {
+//     return res.status(401).json({ message: 'Invalid email or password' });
+//   }
+
+//   // Аутентификация с использованием найденного пользователя
+//   passport.authenticate('local', (err, user, info) => {
+//     if (err) {
+//       return res.status(500).json({ message: 'Internal Server Error' });
+//     }
+//     if (!user) {
+//       return res.status(401).json({ message: 'Invalid email or password' });
+//     }
+//     // console.log('если есть user:', user, userType, user.logo, user.fullname || user.name, user._id);
+//     req.logIn(user, (err) => {
+//       if (err) {
+//         return res.status(500).json({ message: 'Internal Server Error' });
+//       }
+      
+//       if (user) {
+//         req.session.userId = user._id;
+//         req.session.userType = userType;  // Сохранение типа пользователя в сессии
+//         res.status(200).json({
+//           userId: user._id,
+//           name: user.fullname || user.name,
+//           logo: user.logo,
+//           userType: userType  // Возвращение типа пользователя в ответе
+//         });
+//       } else {
+//         res.status(401).json({ error: 'Invalid credentials' });
+//       }
+//     });
+//   })(req, res, next);
+// });
 
 
 

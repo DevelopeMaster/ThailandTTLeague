@@ -1,5 +1,7 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
 
 function ensureAuthenticated(req, res, next) {
     // console.log(req.isAuthenticated());
@@ -7,7 +9,22 @@ function ensureAuthenticated(req, res, next) {
         return next();
     }
     res.status(401).json({ message: 'Unauthorized' });
-  }
+};
+
+function ensureAdmin(req, res, next) {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+      return next(); // Если пользователь администратор, продолжить выполнение
+    } else {
+      return res.status(403).send('Access denied. Admins only.');
+    }
+};
+
+function ensureAuthenticatedOrAdmin(req, res, next) {
+    if (req.isAuthenticated() || (req.user && req.user.role === 'admin')) {
+        return next();
+    }
+    res.status(403).send('Forbidden');
+}
 
 // Настройка хранения файлов с указанием пути
 const storage = multer.diskStorage({
@@ -26,6 +43,17 @@ const storage = multer.diskStorage({
   }
 });
 
+function deleteFile(filePath) {
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            console.error(`Ошибка при удалении файла: ${filePath}`, err);
+        } else {
+            console.log(`Файл успешно удален: ${filePath}`);
+        }
+    });
+}
+
+
 const upload = multer({ 
   storage: storage,
   limits: {
@@ -36,5 +64,8 @@ const upload = multer({
 // module.exports = upload;
 module.exports = {
     ensureAuthenticated,
-    upload
+    upload,
+    ensureAdmin,
+    ensureAuthenticatedOrAdmin,
+    deleteFile
   };

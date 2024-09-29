@@ -137,14 +137,14 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     console.log(clubdata);
     if (clubdata) {
-        document.getElementById('clubName').value = clubdata.name;
-        document.getElementById('city').value = clubCity;
-        document.getElementById('address').value = clubdata.address[lang];
-        document.getElementById('location').value = clubdata.location.join(', ');
-        document.getElementById('workingHours').value = clubdata.workingHours;
-        document.getElementById('numberOfTables').value = clubdata.tables;
-        document.getElementById('representative').value = clubdata.representative[lang];
-        document.getElementById('phoneNumber').value = clubdata.phoneNumber;
+        document.getElementById('clubName').value = clubdata.name || '';
+        document.getElementById('city').value = clubCity || '';
+        document.getElementById('address').value = clubdata.address[lang] || '';
+        document.getElementById('location').value = clubdata.location.join(', ') || '';
+        document.getElementById('workingHours').value = clubdata.workingHours || '';
+        document.getElementById('numberOfTables').value = clubdata.tables || '';
+        document.getElementById('representative').value = clubdata.representative || '';
+        document.getElementById('phoneNumber').value = clubdata.phoneNumber || '';
         document.getElementById('website').value = clubdata.website || '';
         // document.getElementById('freeServices').value = clubdata.freeServices || '';
         // document.getElementById('paidServices').value = clubdata.paidServices || '';
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             // Проверяем, выбран ли файл и является ли он изображением
             if (file && file.type.startsWith('image/')) {
                 if (file.size > 1 * 1024 * 1024) {
-                    showErrorModal(`${getTranslation('Not image')}`);
+                    showErrorModal(`${getTranslation('File too large')}`);
                     logoInput.value = ''; 
                     return;
                 }
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         
                 reader.readAsDataURL(file);
             } else {
-                showErrorModal(`${getTranslation('File too large')}`);
+                showErrorModal(`${getTranslation('Not image')}`);
                 logoInput.value = '';
             }
         });
@@ -486,7 +486,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         saveClubData();
     });
     
-    
+  
 
     // const container = document.querySelector('.parseContainer');
 

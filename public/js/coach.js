@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     const userId = document.querySelector('.player').dataset.userid;
     let player;
     let playerCity;
+    let clubId;
+    let club;
 
     const translations = {
         'en': {
@@ -59,7 +61,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             'tournaments': 'tournaments',
             'left': 'left',
             'right': 'right',
-            'Coach': 'Coach'
+            'Coach': 'Coach',
+            'Training': 'Training',
+            'hours': 'hours',
+            'Price': 'Price',
+            'club': 'Club',
+            'address': 'Address',
+            'aboutTraining': 'About the training',
+            'scheduleBtn': 'Training schedule'
         },
         'ru': {
             'city': 'Город:',
@@ -81,7 +90,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             'tournaments': 'турниров',
             'left': 'левая',
             'right': 'правая',
-            'Coach': 'Тренер'
+            'Coach': 'Тренер',
+            'Training': 'Тренировка',
+            'hours': 'часа',
+            'Price': 'Стоимость',
+            'club': 'Клуб',
+            'address': 'Адресс',
+            'aboutTraining': 'Подробнее о тренировке',
+            'scheduleBtn': 'График тренировок'
         },
         'th': {
             'city': 'เมือง',
@@ -103,7 +119,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             'tournaments': 'การแข่งขัน',
             'left': 'ซ้าย',
             'right': 'ขวา',
-            'Coach': 'โค้ช'
+            'Coach': 'โค้ช',
+            'Training': 'เทรนกับโค้ช',
+            'hours': 'ชั่วโมง',
+            'Price': 'ราคา',
+            'club': 'สโมสร',
+            'address': 'ที่อยู่',
+            'aboutTraining': 'เกี่ยวกับการฝึกอบรม',
+            'scheduleBtn': 'Training schedule !!!!ПЕРЕВОД'
         }
     };
 
@@ -111,16 +134,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         return translations[lang][key] || translations['en'][key];
     }
 
-    async function fetchPlayerData() {
+    async function fetchCoachData() {
         try {
-            const response = await fetch(`/get-data-player?lang=${lang}&userId=${userId}`);
+            const response = await fetch(`/get-data-coach?lang=${lang}&userId=${userId}`);
             if (!response.ok) {
                 throw new Error('Player not found');
             }
             player = await response.json();
-            console.log(player);
+            // console.log(player);
             playerCity = await getCityName(player.city);
             console.log(playerCity);
+            clubId = player.club;
+            console.log('id клуба', clubId);
+            await fetchClubData();
             renderPlayerData();
         } catch (error) {
             console.error('Error fetching player data:', error);
@@ -148,65 +174,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    function formatDateAndAge(dateString, language) {
-        const date = new Date(dateString);
-    
-        // Форматируем дату в формате DD.MM.YYYY
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-    
-        // Вычисляем возраст
-        const currentDate = new Date();
-        let age = currentDate.getFullYear() - year;
-    
-        if (
-            currentDate.getMonth() < date.getMonth() ||
-            (currentDate.getMonth() === date.getMonth() && currentDate.getDate() < date.getDate())
-        ) {
-            age--;
-        }
-    
-        // Определяем форму слова для возраста
-        let ageText;
-        if (language === 'ru') {
-            ageText = getRussianAgeText(age);
-        } else if (language === 'en') {
-            ageText = `${age} years`;
-        } else if (language === 'th') {
-            ageText = `${age} ปี`; // "ปี" означает "лет" на тайском
-        } else {
-            ageText = `${age} years`; // По умолчанию используем английский
-        }
-    
-        return `${day}.${month}.${year} (${ageText})`;
-    }
-    
-    function getRussianAgeText(age) {
-        const lastDigit = age % 10;
-        const lastTwoDigits = age % 100;
-    
-        if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
-            return `${age} лет`;
-        }
-    
-        switch (lastDigit) {
-            case 1:
-                return `${age} год`;
-            case 2:
-            case 3:
-            case 4:
-                return `${age} года`;
-            default:
-                return `${age} лет`;
+    async function fetchClubData() {
+        try {
+            const response = await fetch(`/get-data-club?lang=${lang}&clubId=${clubId}`);
+            if (!response.ok) {
+                throw new Error('Club not found');
+            }
+            club = await response.json();
+            // clubCity = await getCityName(club.city);
+            
+            // await renderClubData();
+        } catch (error) {
+            console.error('Error fetching club data:', error);
         }
     }
-    
+
+
+    fetchCoachData();
 
     function renderPlayerData() {
-        const formattedDate = formatDateAndAge(player.birthdayDate, lang);
-
         const playerMainInfo = document.querySelector('.player_mainInfo');
+        console.log(playerMainInfo);
         playerMainInfo.innerHTML = `
             <div class="player_mainInfo_logo" style="background-image: url(${player.logo || 'icons/playerslogo/default_avatar.svg'}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
             <div class="player_mainInfo_info">
@@ -217,17 +205,20 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Playing hand')}: <span>${getTranslation(player.hand)}</span></p>
                         <p>${getTranslation('Rating')}: <span>${player.rating || ' - '}</span></p>
-                        <p>${getTranslation('Coach')}: <span>${player.coach || ' - '}</span></p>
+                        <p>${getTranslation('Training')}: <span>${player.trainingDuration / 60 || ' - '} ${getTranslation('hours')}</span></p>
                     </div>
                     <div class="player_mainInfo_info_descr_path">
-                        <p>${getTranslation('city')}: <span>${playerCity}</span></p>
-                        <p>${getTranslation('Birthday')}: <span>${formattedDate}</span></p>
+                        <p>${getTranslation('Price')}: <span>${player.oneTrainingPrice || '-'}฿</span></p>
+                        <p>${getTranslation('club')}: <span>${club.name || '-'}</span></p>
+                        <p>${getTranslation('city')}: <span>${playerCity || '-'}</span></p>
+                        
                     </div>
                 </div>
             </div>
         `;
 
         const playerAbout = document.querySelector('.player_about');
+        console.log(playerAbout);
         playerAbout.innerHTML = `
             <h3>${getTranslation('Racket')}</h3>
             <div class="player_about_info_descr">
@@ -242,6 +233,38 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
             
         `;
+
+        let infoBlocks = ''
+        const trainingAbout = document.querySelector('.training_about');
+        if (player.trainingInfo && player.trainingInfo[lang] && player.trainingInfo[lang].length > 0) {
+            // Формирование HTML строк для каждого блока информации
+            console.log(lang);
+            player.trainingInfo[lang].forEach(block => {
+                infoBlocks += `<p>${block}</p>`;
+            });
+        } else {
+            infoBlocks = `<p>${block}</p>`;
+            // infoBlocks = `<p>нет данных</p>`;
+        }
+        trainingAbout.innerHTML = `
+            <h3>${getTranslation('aboutTraining')}</h3>
+            <div class="training_about_wrapp">
+                <p><span>${getTranslation('address')}: </span>${club.address[lang] || club.address['en']}</p>
+               
+                ${infoBlocks}
+            </div>
+        `;
+
+        const linkToSchedule = document.querySelector('#goToTrainingSchedule');
+        linkToSchedule.innerHTML = `${getTranslation('scheduleBtn')}`;
+        // linkToSchedule.setAttribute('data-club', `${club._id}`);
+
+        linkToSchedule.addEventListener('click', () => {
+            window.location = `/${lang}/allclubs/${club._id}`;
+        })
+
+
+        renderMap();
 
         const playerStatistics = document.querySelector('.player_statistics');
         playerStatistics.innerHTML = `
@@ -268,10 +291,22 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
 
+
+
+    function renderMap() {
+        const mapElement = document.getElementById('map');
+        if (!mapElement) return;
+
+        const map = L.map('map').setView([club.location[0], club.location[1]], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([club.location[0], club.location[1]]).addTo(map)
+            .bindPopup(`${club.address[lang] || club.address['en']}`)
+            .openPopup();
+    }
+
     
-
-    fetchPlayerData();
-
-
-
 });

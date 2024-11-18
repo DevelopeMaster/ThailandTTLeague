@@ -61,92 +61,28 @@
 
 <body class="admin_body">
     <header class="admin_header" id="scroll">
-        <div class="admin_logoWrapp">
-            <a class="adminlogo" href="/ru/dashboard/admin">
-                <img class="adminlogo_img" src="/icons/darklogo.svg" alt="logo">
-            </a>
-        </div>
-        <div class="admin_user">
-            <img src='/icons/playerslogo/default_avatar.svg' class="admin_user_img" alt="admin logo">
-        </div>
-
+        <!-- add from js -->
     </header>
     <div class="admin_sidebar">
-        <ul>
-          <li>
-            <a class="admin_sidebar_category manageAllPlayers">
-                <img class="admin_sidebar_category-icon" src="/icons/players.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Игроки
-                </p>
-            </a>
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageAllClubs">
-                <img class="admin_sidebar_category-icon" src="/icons/clubs.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Клубы
-                </p>
-            </a>
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageAllCoaches">
-                <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Тренеры
-                </p>
-            </a> 
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageAllTournaments">
-                <img class="admin_sidebar_category-icon" src="/icons/tour.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Турниры
-                </p>
-            </a>
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageAllTrainings">
-                <img class="admin_sidebar_category-icon" src="/icons/train.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Тренировки
-                </p>
-            </a>
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageCoachApplications">
-                <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Заявки тренеров
-                </p>
-            </a> 
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageClubApplications">
-                <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Заявки клубов
-                </p>
-            </a> 
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageAdvertisement" style="background-color: #E9E9E9;">
-                <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Реклама
-                </p>
-            </a> 
-          </li>
-          
-           
-        </ul>
-    </div>
-    <div class="admin_profileMenu">
-        <a href="#" id="adminHome" class="logOut">Домой</a>
-        <a href="#" id="logOut" class="logOut">Выход</a>
+        <!-- add from js -->
     </div>
 
+    <section class="club">
+        <div class="adminContainer">
+            <h2>Список реклам</h2>
+            <div class="buttonsTopWrapp">
+                <button type="submit" id="addNewAdvertisement" class="header_btn-sign editclub_formContainer_submit">Добавить рекламу</button>
+            </div>
+            <div class="clubsTable">
+                <div id="upcoming-tournaments" class="clubsTable_content">
+                    <!-- add from js -->
+                </div>
+                   
+            </div>
 
+            
+        </div>
+    </section>
 
 
 
@@ -158,7 +94,7 @@
     </div>
     
     
-    <script type="module" src="/js/admin/admin.js"></script>
+    <script type="module" src="/js/admin/advs.js"></script>
     <!-- <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> -->
 </body>
 </html>

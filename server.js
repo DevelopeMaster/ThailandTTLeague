@@ -110,6 +110,30 @@ app.get('/ru', (req, res) => {
   res.render('ru');
 });
 
+// app.get('/:lang/becomeacoach', (req, res) => {
+//   const { lang } = req.params;
+
+//   if (req.isAuthenticated()) { // Проверка авторизации (или любая другая проверка, зависит от используемой стратегии)
+//     console.log(`/${lang}/becomeacoach`);  
+//     res.redirect(`/${lang}/becomeacoach`);
+//   } else {
+//       res.status(401).json({ message: 'Пожалуйста, зарегистрируйтесь, чтобы подать заявку' });
+//   }
+// });
+
+app.get('/becomeacoach', userAuthenticated, (req, res) => {
+  // const { lang } = req.params;
+  res.sendStatus(200);
+});
+
+// Middleware для проверки авторизации
+function userAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+      return next();
+  }
+  res.status(401).json({ message: 'Need register' });
+}
+
 app.get('/ru/dashboard/admin', ensureAdmin, (req, res) => {
   res.render('ru/dashboard/admin');
 });
@@ -136,9 +160,66 @@ app.get('/ru/dashboard/admin/edit/:playerId', ensureAuthenticated, ensureAdmin, 
   }
 });
 
+app.get('/allcities', ensureAdmin, async (req, res) => {
+  try {
+      const db = getDB();
+      const cities = await db.collection('cities').find().toArray();
+      res.json(cities);
+  } catch (error) {
+      console.error('Ошибка при получении списка городов:', error);
+      res.status(500).send('Ошибка сервера');
+  }
+});
+
+
+
+// app.get('/ru/dashboard/admin/edit/:playerId', ensureAuthenticated, ensureAdmin, (req, res) => {
+//   const { playerId } = req.params;
+//   const link = `ru/dashboard/admin/edit/player`;
+
+//   try {  
+//     console.log(`Rendering: ${link} for userId: ${playerId}`);
+//     res.render(link, {
+//       playerId: playerId
+//     });
+//   } catch (error) {
+//     console.error('Error rendering template:', error.message);
+//     res.status(500).send('Server error');
+//   }
+// });
+
+app.get('/ru/dashboard/admin/editcoach/:playerId', ensureAuthenticated, ensureAdmin, (req, res) => {
+  const { playerId } = req.params;
+  const link = `ru/dashboard/admin/editcoach/coach`;
+
+  try {  
+    console.log(`Rendering: ${link} for userId: ${playerId}`);
+    res.render(link, {
+      coachId: playerId
+    });
+  } catch (error) {
+    console.error('Error rendering template:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
 app.get('/ru/dashboard/admin/editclub/:clubId', ensureAuthenticated, ensureAdmin, (req, res) => {
   const { clubId } = req.params;
   const link = `ru/dashboard/admin/editclub/club`;
+
+  try {  
+    console.log(`Rendering: ${link} for clubId: ${clubId}`);
+    res.render(link, { clubId: clubId });
+    
+  } catch (error) {
+    console.error('Error rendering template:', error.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/ru/dashboard/admin/createclub/:clubId', ensureAuthenticated, ensureAdmin, (req, res) => {
+  const { clubId } = req.params;
+  const link = `ru/dashboard/admin/createclub/createclub`;
 
   try {  
     console.log(`Rendering: ${link} for clubId: ${clubId}`);
@@ -598,9 +679,19 @@ app.get('/cities', async function(req, res) {
   const language = req.query.language || 'english';
   try {
     const db = getDB();
-    const cities = await db.collection('cities').find({}, { projection: { _id: 0, [language]: 1 } }).toArray();
-    // console.log(cities);
-    res.json(cities.map(city => city[language]));
+     // Извлекаем все города с нужными проекциями
+     const allcities = await db.collection('cities').find({}, { projection: { _id: 0, [language]: 1 } }).toArray();
+     const citiesObjects = await db.collection('cities').find({}).toArray();
+     const cities = allcities.map(city => city[language]); // Массив с названиями на нужном языке
+ 
+     res.json({
+        citiesObjects,      // Массив названий городов на нужном языке
+        cities          // Оригинальный массив объектов городов
+     });
+
+    // const cities = await db.collection('cities').find({}, { projection: { _id: 0, [language]: 1 } }).toArray();
+    // // console.log(cities);
+    // res.json(cities.map(city => city[language]));
   } catch (err) {
     console.error('Error when loading the list of cities from the database:', err);
   }
@@ -676,6 +767,68 @@ app.get('/clubs', async function(req, res) {
   }
 });
 
+app.get('/advs', ensureAdmin, async function(req, res) {
+  const db = getDB();
+  const advs = await db.collection('adv').find().toArray();
+  if (advs) {
+    res.json(advs);
+  } else {
+    res.status(404).json({ error: 'Advs not found' });
+  }
+});
+
+app.get('/clubsrequest', ensureAdmin, async function(req, res) {
+  const db = getDB();
+  const requests = await db.collection('requestfromclub').find().toArray();
+  if (requests) {
+    res.json(requests);
+  } else {
+    res.status(404).json({ error: 'Requests not found' });
+  }
+});
+
+app.get('/coachesrequest', ensureAdmin, async function(req, res) {
+  const db = getDB();
+  const requests = await db.collection('requestfromcoach').find().toArray();
+  if (requests) {
+    res.json(requests);
+  } else {
+    res.status(404).json({ error: 'Requests not found' });
+  }
+});
+
+app.get('/ru/dashboard/admin/editadv/:advId', (req, res) => {
+  const { advId } = req.params;
+  const userType = req.session.userType; // Получаем тип пользователя из сессии
+  console.log(advId, userType);
+  if (userType) { 
+      const link = `ru/dashboard/admin/editadv/editadv`;
+      console.log(link);
+      return res.render(link, {
+        advId: advId,
+      });
+  } else {
+      console.log('Access denied: only for admin');
+      return res.status(403).send('Forbidden');
+  }
+});
+
+app.get('/ru/dashboard/admin/edittournament/:tournamentId', (req, res) => {
+  const { tournamentId } = req.params;
+  const userType = req.session.userType; // Получаем тип пользователя из сессии
+  // console.log(tournamentId, userType, 'есть контакт');
+  if (userType === "admin") { 
+      const link = `ru/dashboard/admin/edittournament/tournament`;
+      console.log(link);
+      return res.render(link, {
+        tournamentId: tournamentId,
+      });
+  } else {
+      console.log('Access denied: only for admin');
+      return res.status(403).send('Forbidden');
+  }
+});
+
 app.get('/clubs/:clubId', async function(req, res) {
   const clubId = req.params.clubId;
   const db = getDB();
@@ -723,6 +876,9 @@ app.get('/trainer/:trainerId', async (req, res) => {
 app.get('/get-data-club', async (req, res) => {
   const { clubId } = req.query;
   try {
+    if (!ObjectId.isValid(clubId)) {
+      return res.status(400).send('Invalid Club ID');
+    }
     // console.log(ObjectId.isValid(clubId));
     const db = getDB();
     const dataClub = await db.collection('clubs').findOne({ _id: new ObjectId(clubId) });
@@ -730,6 +886,44 @@ app.get('/get-data-club', async (req, res) => {
       return res.status(404).send('Club not found');
     }
     res.json(dataClub);
+  } catch (error) {
+    console.error('Error fetching club data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/get-data-clubrequest', async (req, res) => {
+  const { clubId } = req.query;
+  try {
+    if (!ObjectId.isValid(clubId)) {
+      return res.status(400).send('Invalid Club ID');
+    }
+    // console.log(ObjectId.isValid(clubId));
+    const db = getDB();
+    const dataClub = await db.collection('requestfromclub').findOne({ _id: new ObjectId(clubId) });
+    if (!dataClub) {
+      return res.status(404).send('Club not found');
+    }
+    res.json(dataClub);
+  } catch (error) {
+    console.error('Error fetching club data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/get-data-adv', async (req, res) => {
+  const { advId } = req.query;
+  try {
+    if (!ObjectId.isValid(advId)) {
+      return res.status(400).send('Invalid Club ID');
+    }
+    // console.log(ObjectId.isValid(clubId));
+    const db = getDB();
+    const dataAdv = await db.collection('adv').findOne({ _id: new ObjectId(advId) });
+    if (!dataAdv) {
+      return res.status(404).send('Adv not found');
+    }
+    res.json(dataAdv);
   } catch (error) {
     console.error('Error fetching club data:', error);
     res.status(500).send('Internal Server Error');
@@ -839,6 +1033,25 @@ app.get('/get-players', async (req, res) => {
       res.status(500).json({ error: 'An error occurred while retrieving players' });
     }
 });
+
+app.get('/get-players-coaches', async (req, res) => {
+  try {
+    const db = getDB();
+    const players = await db.collection('users').find({ role: { $ne: 'admin' } }).toArray();
+    const coaches = await db.collection('coaches').find({ role: { $ne: 'admin' } }).toArray();
+    
+    if (!players || !coaches) {
+      throw new Error('Failed to retrieve players or coaches');
+    }
+
+    const allplayers = [...players, ...coaches];  
+    res.json(allplayers);
+    } catch (err) {
+      console.error('Error fetching players:', err);
+      res.status(500).json({ error: 'An error occurred while retrieving players' });
+    }
+});
+
 
 app.get('/get-playerData', async (req, res) => {
   // const userId = req.params.userId;

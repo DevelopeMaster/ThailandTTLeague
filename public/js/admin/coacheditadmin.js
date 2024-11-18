@@ -2,12 +2,13 @@ import { listenerOfButtons, showErrorModal } from '../modules.js';
 import { createHeaderandSidebarForAdmin } from './adminmodules.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    createHeaderandSidebarForAdmin('manageAllPlayers');
+    createHeaderandSidebarForAdmin('manageAllCoaches');
     listenerOfButtons();   
 
-    const playerId = document.querySelector('.editPlayer').dataset.playerid;
+    const playerId = document.querySelector('.editPlayer').dataset.coachid;
     let playerData;
     let playerCity;
+    let deletedPhoto = false;
 
     await fetchUserData();
     let isFiltered;
@@ -81,17 +82,39 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
     }
 
+    window.addDots = function(input) {
+        let value = input.value;
+        let length = value.length;
+        
+        if (isNaN(value.replace(/\./g, ''))) {
+            input.value = value.substring(0, length - 1);
+            return;
+        }
+        if ((length === 2 || length === 5) && !isNaN(value[length - 1])) {
+            input.value += '.';
+        }
+        if (length === 10) {
+            let parts = value.split(".");
+            const enteredDate = new Date(parts[2], parts[1] - 1, parts[0]);
+            const today = new Date().setHours(0, 0, 0, 0);
+            if (enteredDate >= today) {
+                alert("Date of birth is not correct");
+                input.value = "";
+            }
+        }
+    }
 
     const cityInput = document.getElementById('city');
     const cityDropdown = document.getElementById('cityDropdown');
-    const coachInput = document.getElementById('coach');
-    const coachDropdown = document.getElementById('coachDropdown');
+    const clubInput = document.getElementById('club');
+    const clubDropdown = document.getElementById('clubDropdown');
     const bladeInput = document.getElementById('blade');
     const bladeDropdown = document.getElementById('bladeDropdown');
     const forehandInput = document.getElementById('forehand');
     const forehandDropdown = document.getElementById('forehandDropdown');
     const backhandInput = document.getElementById('backhand');
     const backhandDropdown = document.getElementById('backhandDropdown');
+    let allClubs;
 
     fetchData(`/cities?language=${"russian"}`)
         .then(data => {
@@ -99,12 +122,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             createDropdown(cityDropdown, cityOptions, cityInput); // Создаем выпадающий список с опциями
             setupDropdown(cityInput, cityDropdown, cityOptions); // Настраиваем фильтрацию
         });
-
-    fetchData('/coaches')
+    
+    fetchData('/clubs')
         .then(data => {
-            const coachOptions = data.map(coach => coach.name || coach.fullname); // Преобразуем данные в массив имен тренеров
-            createDropdown(coachDropdown, coachOptions, coachInput);
-            setupDropdown(coachInput, coachDropdown, coachOptions);
+            allClubs = data;
+            const clubOptions = data.map(club => club.name || club.fullname); // Преобразуем данные в массив имен тренеров
+            createDropdown(clubDropdown, clubOptions, clubInput);
+            setupDropdown(clubInput, clubDropdown, clubOptions);
+
+            if (playerData) {
+                const club = allClubs.find(club => club._id === playerData.club);
+                document.getElementById('club').value = club ? club.name : '';
+            }
         });
 
     fetchData('/rackets')
@@ -124,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
 
-    console.log(playerData);
+    // console.log(playerData);
     if (playerData) {
         const date = new Date(playerData.birthdayDate);
         const day = date.getDate().toString().padStart(2, '0');
@@ -151,7 +180,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 reader.onload = function(e) {
                     logoPreview.src = e.target.result;
                 };
-        
+                deletedPhoto = false;
                 reader.readAsDataURL(file);
             } else {
                 showErrorModal(`${getTranslation('File too large')}`);
@@ -162,17 +191,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         // document.getElementById('playerLogo').src = playerData.logo; // || "/icons/playerslogo/default_avatar.svg";
         document.getElementById('playerName').value = playerData.name || playerData.fullname;
         document.getElementById('city').value = playerCity || '';
-        document.getElementById('coach').value = playerData.coach || '';
         document.getElementById('date').value = formattedDate || '';
         document.getElementById('emailRegInput').value = playerData.email || '';
         document.getElementById('phoneNumber').value = playerData.phoneNumber || '';
         document.getElementById('raiting').value = playerData.rating || '';
+        document.getElementById('trainingDuration').value = playerData.trainingDuration || '';
+        document.getElementById('oneTrainingPrice').value = playerData.oneTrainingPrice || '';
         document.getElementById('blade').value = playerData.blade || '';
         document.getElementById('forehand').value = playerData.forehandRubber || '';
         document.getElementById('backhand').value = playerData.backhandRubber || '';
-        document.getElementById('description').value = playerData.description || '';
-        // document.getElementById('descriptionEng').value = playerData.descriptioneng || '';
-        // document.getElementById('descriptionThai').value = playerData.descriptionthai || '';
+        document.getElementById('description').value = playerData.trainingInfo['ru'] || '';
+        document.getElementById('descriptionEng').value = playerData.trainingInfo['en'] || '';
+        document.getElementById('descriptionThai').value = playerData.trainingInfo['th'] || '';
     
         const leftHandRadio = document.getElementById('left');
         const rightHandRadio = document.getElementById('right');
@@ -204,57 +234,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
 
-    document.getElementById('deletePlayerBtn').addEventListener('click', async function () {
+    document.getElementById('deleteCoachBtn').addEventListener('click', async function () {
         const isConfirmed = confirm(`Вы уверены что хотите удалить пользователя ${playerData.name || playerData.fullname}?`);
         
         if (isConfirmed) {
-            await deletePlayer();
+            await deleteCoach();
         }
     });
 
-    document.getElementById('deletePlayerBtnTop').addEventListener('click', async function () {
+    document.getElementById('deleteCoachBtnTop').addEventListener('click', async function () {
         const isConfirmed = confirm(`Вы уверены что хотите удалить пользователя ${playerData.name || playerData.fullname}?`);
         
         if (isConfirmed) {
-            await deletePlayer();
+            await deleteCoach();
         }
     });
 
-    async function deletePlayer() {
+    async function deleteCoach() {
         try {
-            const response = await fetch(`/api/deletePlayer/${playerId}`, { // Используйте правильный маршрут для удаления
+            const response = await fetch(`/api/deleteCoach/${playerId}`, { // Используйте правильный маршрут для удаления
                 method: 'DELETE'
             });
     
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to delete player');
+                throw new Error(errorData.error || 'Failed to delete coach');
             }
     
             const data = await response.json();
             if (data.success) {
-                window.location.href = '/ru/dashboard/admin';
+                window.location.href = '/ru/dashboard/admin/coaches';
             } else {
-                throw new Error(data.error || 'Failed to delete player');
+                throw new Error(data.error || 'Failed to delete coach');
             }
         } catch (error) {
-            console.error('Error deleting player:', error.message);
+            console.error('Error deleting coach:', error.message);
             showErrorModal(error.message);
         }
     }
 
-    document.getElementById('promoteToCoach').addEventListener('click', async function () {
+    document.getElementById('promoteToUser').addEventListener('click', async function () {
         const isConfirmed = confirm(`Вы уверены, что хотите изменить тип пользователя ${playerData.name || playerData.fullname} без сохранения изменений?`);
         
         if (isConfirmed) {
-            await promoteToCoach();
+            await promoteToUser();
         }
     });
 
-    async function promoteToCoach() {    
+    async function promoteToUser() {    
     
         try {
-            const response = await fetch(`/api/promoteToCoach/${playerId}`, {
+            const response = await fetch(`/api/promoteToUser/${playerId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -263,24 +293,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to promote player');
+                throw new Error(errorData.error || 'Failed to promote coach');
             }
     
             const data = await response.json();
             if (data.success) {
-                window.location.href = '/ru/dashboard/admin/coaches'; // Перенаправление после успешного перемещения
+                window.location.href = '/ru/dashboard/admin'; // Перенаправление после успешного перемещения
             } else {
-                throw new Error(data.error || 'Failed to promote player');
+                throw new Error(data.error || 'Failed to promote coach');
             }
         } catch (error) {
-            console.error('Error promoting player to coach:', error.message);
+            console.error('Error promoting coach to player:', error.message);
             showErrorModal(error.message); // Функция для отображения ошибок
         }
     }
     
     async function fetchUserData() {
         try {
-            const response = await fetch(`/get-playerData?lang=${"ru"}&playerId=${playerId}`);
+            const response = await fetch(`/get-data-coach?userId=${playerId}`);
             if (!response.ok) {
                 throw new Error('User not found');
             }
@@ -327,12 +357,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         return isoDate.toISOString(); // Возвращаем ISO строку
     }
 
+    
     window.removePhoto = function(event) {
         event.stopPropagation(); // Предотвращаем открытие проводника при удалении фото
 
         const preview = document.getElementById(`playerLogo`);
         const defaultImage = '/icons/playerslogo/default_avatar.svg'; 
-
+        deletedPhoto = true;
         // Устанавливаем дефолтное изображение
         preview.setAttribute('src', defaultImage);
 
@@ -340,24 +371,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById(`logoInput`).value = '';
     }
 
-    async function savePlayerData() {
+    async function saveCoachData() {
         try {
             const formData = new FormData();
-            
+            if (deletedPhoto) {
+                formData.append('useDefaultImage', true);
+            }
             formData.append('name', document.getElementById('playerName').value);
             formData.append('city', document.getElementById('city').value);
-            formData.append('coach', document.getElementById('coach').value || document.getElementById('coachNameAdditional').value);
             formData.append('birthdayDate', convertDateToISO(document.getElementById('date').value));
             formData.append('email', document.getElementById('emailRegInput').value);
             formData.append('phoneNumber', document.getElementById('phoneNumber').value);
             formData.append('rating', document.getElementById('raiting').value);
+            formData.append('club', document.getElementById('club').value);
+            formData.append('trainingDuration', document.getElementById('trainingDuration').value);
+            formData.append('oneTrainingPrice', document.getElementById('oneTrainingPrice').value);
             formData.append('hand', document.getElementById('left').checked ? document.getElementById('left').value : document.getElementById('right').value);
             formData.append('blade', document.getElementById('blade').value);
             formData.append('forehandRubber', document.getElementById('forehand').value);
             formData.append('backhandRubber', document.getElementById('backhand').value);
             formData.append('description', document.getElementById('description').value);
-            // formData.append('descriptioneng', document.getElementById('descriptionEng').value);
-            // formData.append('descriptionthai', document.getElementById('descriptionThai').value);
+            formData.append('descriptioneng', document.getElementById('descriptionEng').value);
+            formData.append('descriptionthai', document.getElementById('descriptionThai').value);
             // formData.append('lang', lang); // Отправляем текущий язык на сервер
             formData.append('userId', playerId);
 
@@ -372,7 +407,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
             // Отправка данных на сервер
-            const response = await fetch(`/api/savePlayerProfile`, { 
+            const response = await fetch(`/api/saveCoachProfile`, { 
                 method: 'POST',
                 body: formData
             });
@@ -380,7 +415,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!response.ok) {
                 // throw new Error('Failed to save club data');
                 const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to save club data');
+                throw new Error(errorData.error || 'Failed to save coach data');
             }
 
             try {
@@ -389,13 +424,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             
                 if (data.success) {
                     // Если логотип был обновлен, сохраняем его в localStorage
-                    if (data.logoUrl) {
-                        localStorage.setItem('userLogo', data.logoUrl);
-                    }
+                    // if (data.logoUrl) {
+                    //     localStorage.setItem('userLogo', data.logoUrl);
+                    // }
                     // Перенаправляем пользователя на новую страницу
-                    window.location.href = '/ru/dashboard/admin';
+                    window.location.href = '/ru/dashboard/admin/coaches';
                 } else {
-                    throw new Error(data.error || 'Failed to save player data');
+                    throw new Error(data.error || 'Failed to save coach data');
                 }
             } catch (error) {
                 console.error('Error parsing response:', error);
@@ -403,19 +438,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
     
         } catch (error) {
-            console.error('Error saving player data:', error.message);
+            console.error('Error saving coach data:', error.message);
             showErrorModal(error.message);
         }
     }
     
     document.getElementById('editclub_formContainer_submit').addEventListener('click', function(event) {
         event.preventDefault();
-        savePlayerData();
+        saveCoachData();
     });
 
     document.getElementById('editclub_formContainer_submitTop').addEventListener('click', function(event) {
         event.preventDefault();
-        savePlayerData();
+        saveCoachData();
     });
     
     // console.log(playerId);

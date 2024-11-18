@@ -56,14 +56,7 @@ export function createHeaderandSidebarForAdmin(page) {
                         </p>
                     </a>
                 </li>
-                <li>
-                    <a class="admin_sidebar_category manageAllTrainings">
-                        <img class="admin_sidebar_category-icon" src="/icons/train.svg" alt="">
-                        <p class="admin_sidebar_category-text">
-                            Тренировки
-                        </p>
-                    </a>
-                </li>
+               
                 <li>
                     <a class="admin_sidebar_category manageCoachApplications">
                         <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
@@ -85,6 +78,14 @@ export function createHeaderandSidebarForAdmin(page) {
                         <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
                         <p class="admin_sidebar_category-text">
                             Реклама
+                        </p>
+                    </a> 
+                </li>
+                <li>
+                    <a class="admin_sidebar_category manageCities">
+                        <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
+                        <p class="admin_sidebar_category-text">
+                            Города
                         </p>
                     </a> 
                 </li>
@@ -380,6 +381,297 @@ export async function getAllPlayers() {
     }
 };
 
+export async function getAllCoaches() {
+    const nameInput = document.getElementById('nameInput');
+    const clubInput = document.getElementById('clubInput');
+    const cityInput = document.getElementById('cityInput');
+
+    const nameDropdown = document.getElementById('nameDropdown');
+    const clubDropdown = document.getElementById('clubDropdown');
+    const cityDropdown = document.getElementById('cityDropdown');
+    const coachesContainer = document.querySelector('.coachesTable_content');
+    
+    const languageMap = {
+        'russian': 'ru',
+        'english': 'en',
+        'thai': 'th'
+    };
+
+    const currentLang = localStorage.getItem('clientLang') || 'english';
+    const langKey = languageMap[currentLang];
+
+    let allCoaches = [];
+    let allClubs;
+
+    await getAllClub();
+    await fetchAllCoaches();
+    
+
+    async function fetchAllCoaches() {
+        try {
+            const response = await fetch(`/coaches`);
+            const coaches = await response.json();
+            allCoaches = coaches;
+
+            displayCoaches(allCoaches, coachesContainer);
+
+            const names = [...new Set(coaches.flatMap(coach => coach.name || coach.fullname))];
+            
+            // const club = allClubs.find(club => String(club._id) === String(coach.club));
+            //     console.log(`Для тренера с club ID ${coach.club} найден клуб:`, club);
+            //     // return club ? club.name : '';
+            
+            const clubs = [...new Set(coaches.map(coach => {
+                const club = allClubs.find(club => String(club._id) === String(coach.club));
+                return club ? club.name : '';
+            }))];
+            const cityIds = [...new Set(coaches.map(coach => coach.city))]; // Now storing city _id
+
+            names.sort();
+            clubs.sort();
+
+            const cityNames = await Promise.all(cityIds.map(cityId => getCityName(cityId)));
+
+            cityNames.sort();
+
+            createDropdown(nameDropdown, names, nameInput);
+            createDropdown(clubDropdown, clubs, clubInput);
+            createDropdown(cityDropdown, cityNames, cityInput);
+        } catch (error) {
+            console.error('Произошла ошибка:', error);
+            showErrorModal('Database connection error');
+        }
+    }
+
+    let debounceTimeout; // Переменная для хранения таймера дебаунсинга
+
+
+    nameInput.addEventListener('input', () => debounceFilterCoaches(updateNameDropdown));
+    clubInput.addEventListener('input', () => debounceFilterCoaches(updateClubDropdown));
+    cityInput.addEventListener('input', () => debounceFilterCoaches(updateCityDropdown));
+
+    nameInput.addEventListener('focus', () => nameDropdown.style.display = 'block');
+    clubInput.addEventListener('focus', () => clubDropdown.style.display = 'block');
+    cityInput.addEventListener('focus', () => cityDropdown.style.display = 'block');
+
+    nameInput.addEventListener('blur', () => setTimeout(() => nameDropdown.style.display = 'none', 200));
+    clubInput.addEventListener('blur', () => setTimeout(() => clubDropdown.style.display = 'none', 200));
+    cityInput.addEventListener('blur', () => setTimeout(() => cityDropdown.style.display = 'none', 200));
+
+   
+    function debounceFilterCoaches(updateDropdown) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            updateDropdown();
+            filterCoaches();
+        }, 300); // Задержка в 300 мс
+    }
+
+    function updateNameDropdown() {
+        updateDropdownList(nameDropdown, [...new Set(allCoaches.flatMap(coach => coach.name || coach.fullname))], nameInput);
+    }
+
+    // function updateClubDropdown() {
+    //     updateDropdownList(clubDropdown, [...new Set(allCoaches.map(coach => coach.club))], clubInput);
+    // }
+
+    function updateClubDropdown() {
+        updateDropdownList(
+            clubDropdown, 
+            [...new Set(allCoaches.map(coach => {
+                // Логируем, чтобы проверить значения coach.club и club._id
+                // console.log(`Идентификатор клуба у тренера: ${coach.club}`);
+                const club = allClubs.find(club => String(club._id) === String(coach.club));
+                console.log(`Для тренера с club ID ${coach.club} найден клуб:`, club);
+                return club ? club.name : '';
+            }))], 
+            clubInput
+        );
+    }
+
+    // function updateClubDropdown() {
+    //     updateDropdownList(
+    //         clubDropdown, 
+    //         [...new Set(allCoaches.map(coach => {
+    //             const club = allClubs.find(club => club._id === coach.club);
+    //             return club ? club.name : '';
+    //         }))], 
+    //         clubInput
+    //     );
+    // }
+
+    function updateCityDropdown() {
+        Promise.all(allCoaches.map(coach => getCityName(coach.city)))
+            .then(cityNames => {
+                updateDropdownList(cityDropdown, [...new Set(cityNames)], cityInput);
+            });
+    }
+
+    async function getCityName(cityId) {
+        try {
+            const response = await fetch(`/cities/${cityId}`);
+            if (!response.ok) {
+                throw new Error('City data not found');
+            }
+            const city = await response.json();
+            return city[currentLang]; // Возвращает имя города на выбранном языке
+        } catch (error) {
+            console.error('Ошибка при получении названия города:', error);
+            return 'Unknown City'; // Возвращение запасного значения в случае ошибки
+        }
+    }
+
+   
+
+    async function getAllClub() {
+        try {
+            const response = await fetch(`/clubs`);
+            if (!response.ok) {
+                throw new Error('Clubs data not found');
+            }
+            allClubs = await response.json();
+        } catch (error) {
+            console.error('Ошибка при получении клубов:', error);
+            return 'Unknown Clubs';
+        }
+    }
+
+
+
+    function createDropdown(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        options.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                filterCoaches();
+            });
+            dropdown.appendChild(div);
+        });
+    }
+
+    function updateDropdownList(dropdown, options, inputElement) {
+        dropdown.innerHTML = '';
+        const currentText = inputElement.value.toLowerCase();
+        const filteredOptions = options.filter(option => option.toLowerCase().includes(currentText));
+
+        filteredOptions.forEach(option => {
+            const div = document.createElement('div');
+            div.textContent = option;
+            div.addEventListener('click', () => {
+                inputElement.value = option;
+                dropdown.style.display = 'none';
+                filterCoaches();
+            });
+            dropdown.appendChild(div);
+        });
+        dropdown.style.display = 'block';
+    }
+
+    async function filterCoaches() {
+        const nameValue = nameInput.value.toLowerCase();
+        const clubValue = clubInput.value.toLowerCase();
+        const cityValue = cityInput.value.toLowerCase();
+        coachesContainer.innerHTML = '';
+
+        const filteredCoaches = await Promise.all(allCoaches.map(async coach => {
+            // const nameMatch = !nameValue || coach.name ? coach.name.toLowerCase().includes(nameValue) : false || coach.fullname ? coach.fullname.toLowerCase().includes(nameValue) : false;
+            const nameMatch = !nameValue || 
+                (coach.name && coach.name.toLowerCase().includes(nameValue)) || 
+                (coach.fullname && coach.fullname.toLowerCase().includes(nameValue)) || 
+                (coach.playerName && coach.playerName.toLowerCase().includes(nameValue));
+
+            // const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
+            const club = allClubs.find(club => String(club._id) === String(coach.club));
+            const clubMatch = !clubValue || (club && club.name.toLowerCase().includes(clubValue));
+
+            const cityName = await getCityName(coach.city);
+            const cityMatch = !cityValue || cityValue === 'all' || cityName.toLowerCase().includes(cityValue);
+
+            return nameMatch && clubMatch && cityMatch ? coach : null;
+        }));
+
+        // Убираем null значения из массива
+        const validCoaches = filteredCoaches.filter(coach => coach !== null);
+
+        coachesContainer.innerHTML = 'список пуст';
+        displayCoaches(validCoaches, coachesContainer);
+    }
+
+    async function displayCoaches(players, container) {
+        try {
+            container.innerHTML = '';
+            
+            const cityNamesPromises = players.map(player => getCityName(player.city));
+            const cityNames = await Promise.all(cityNamesPromises);
+    
+            players.forEach((player, index) => {
+                let playerDiv = document.createElement('a');
+                playerDiv.className = 'coachesTable_coach';
+                playerDiv.href = `/ru/dashboard/admin/editcoach/${player._id}`;
+    
+                let numberDiv = document.createElement('div');
+                numberDiv.className = 'cell player_number';
+                numberDiv.textContent = index + 1;
+                playerDiv.appendChild(numberDiv);
+    
+                let nameDiv = document.createElement('div');
+                nameDiv.className = 'cell player_player';
+                let playerLogoDiv = document.createElement('div');
+                playerLogoDiv.className = 'playerLogo';
+                playerLogoDiv.style.cssText = `background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
+                nameDiv.appendChild(playerLogoDiv);
+    
+                let playerNameSpan = document.createElement('span');
+                playerNameSpan.textContent = player.fullname || player.name;
+                nameDiv.appendChild(playerNameSpan);
+                playerDiv.appendChild(nameDiv);
+    
+                let nicknameDiv = document.createElement('div');
+                nicknameDiv.className = 'cell player_login';
+                const club = allClubs.find(club => club._id === player.club);
+                nicknameDiv.textContent = club ? club.name : ' ';
+                // nicknameDiv.textContent = player.nickname ? player.nickname : ' ';
+                playerDiv.appendChild(nicknameDiv);
+    
+                let cityDiv = document.createElement('div');
+                cityDiv.className = 'cell player_city';
+                cityDiv.textContent = cityNames[index];
+                playerDiv.appendChild(cityDiv);
+    
+                let ratingDiv = document.createElement('div');
+                ratingDiv.className = 'cell player_rating';
+                ratingDiv.textContent = player.rating ? player.rating : '-';
+                playerDiv.appendChild(ratingDiv);
+
+                // preloader.style.display = 'none';
+                
+                container.appendChild(playerDiv);
+            });
+    
+        } catch (error) {
+            console.error('Произошла ошибка при отображении клубов:', error);
+            showErrorModal('Error while displaying clubs', 'Ops!');
+        }
+    }
+    
+    
+    // Инициализация данных тренеров и вызов начальной фильтрации
+    // fetchCoachesData();
+
+    async function fetchCoachesData() {
+        try {
+            const response = await fetch('/coaches');
+            allCoaches = await response.json();
+            filterCoaches(); // Выполнить фильтрацию при загрузке данных
+        } catch (error) {
+            console.error('Ошибка при загрузке данных тренеров:', error);
+        }
+    }
+}
+
 
 
 export async function getAllClubs() {
@@ -533,4 +825,89 @@ export async function getAllClubs() {
     //     displayClubs(allClubs);
     //     viewAllButton.style.display = 'none';
     // });
+}
+
+export async function getAllAdv() {
+
+    await fetchAllAdv();
+
+    async function fetchAllAdv() {
+        try {
+            const response = await fetch(`/advs`);
+            const advs = await response.json();
+            
+            displayAdvs(advs);
+            
+
+            // const clubNames = [...new Set(clubs.map(club => club.name))];
+            // clubNames.sort();
+            // cityNames.sort();
+
+        } catch (error) {
+            console.error('Произошла ошибка:', error);
+            showErrorModal('Database connection error');
+        }
+    }
+
+
+    async function displayAdvs(advs) {
+        const container = document.querySelector('.clubsTable_content');
+        container.innerHTML = '';
+    
+        // Сортируем advs: сначала объекты с gold: true, затем остальные
+        const sortedAdvs = advs.sort((a, b) => {
+            if (b.gold && !a.gold) return 1;
+            if (a.gold && !b.gold) return -1;
+            if (!a.gold && !b.gold) {
+                const dateA = new Date(a.expires);
+                const dateB = new Date(b.expires);
+                return dateA - dateB; // Сортируем по возрастанию даты
+            }
+            return 0; // Если оба объявления gold, не меняем их порядок
+        });
+
+        sortedAdvs.forEach((adv, i) => {
+            const item = document.createElement('a');
+            item.href = `/ru/dashboard/admin/editadv/${adv._id}`;
+            item.classList.add('clubsTable_club');
+    
+            // const date = new Date(adv.expire); // преобразуем строку в объект даты
+            // const formattedDate = date.toLocaleDateString('ru-RU', {
+            //     day: '2-digit',
+            //     month: '2-digit',
+            //     year: 'numeric'
+            // });
+
+            const date = new Date(adv.expire);
+
+            const day = String(date.getUTCDate()).padStart(2, '0');
+            const month = String(date.getUTCMonth() + 1).padStart(2, '0'); 
+            const year = date.getUTCFullYear();
+            
+            const formattedDate = `${day}.${month}.${year}`;
+            // document.querySelector('#expire').value = formattedDate;
+    
+            item.innerHTML = `
+                <div class="cell club_club">
+                    <div class="club_number">${i + 1}</div> <!-- Правильная нумерация -->
+                    <div class="clubLogo" style="width: 45px; height: 45px; border-radius: 5px; background-image: url(${adv.image || '/icons/playerslogo/default_avatar.svg'}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
+                    <span>${adv.customer}</span>
+                </div>
+                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">${adv.link}</span>
+                <div class="cell club_date">${formattedDate}  ${(new Date(adv.expire) < new Date())? '(закончено)': ''}</div>
+            `;
+    
+            // Если объявление с gold, добавляем особый стиль
+            if (adv.gold) {
+                item.style.backgroundColor = 'rgb(236 212 83 / 17%)';
+            }
+
+            if (new Date(adv.expire) < new Date()) { 
+                item.style.backgroundColor = 'rgb(244 46 46 / 21%)';
+                // document.querySelector('.club_date').innerText = `${formattedDate}`
+            }
+    
+            container.appendChild(item); // Добавляем в контейнер
+        });
+    }
 }

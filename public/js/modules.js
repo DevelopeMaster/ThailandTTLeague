@@ -16,17 +16,24 @@ export function fetchAdvertisements(block) {
             window.addEventListener('resize', updateAdvPosition);
             updateAdvPosition();
 
+
             advContent.innerHTML = '';
             advContent.style.visibility = 'visible';
 
             adv.forEach(item => {
-                const advBlock = document.createElement('a');
-                advBlock.href = item.link;
-                const advImg = document.createElement('img');
-                advImg.alt = 'adv';
-                advImg.src = item.image;
-                advBlock.appendChild(advImg);
-                advContent.appendChild(advBlock);
+
+                if (new Date(item.expire) >= new Date()) {
+                    const advBlock = document.createElement('a');
+                    advBlock.href = item.link;
+                    const advImg = document.createElement('img');
+                    advImg.alt = 'adv';
+                    advImg.src = item.image;
+                    advBlock.appendChild(advImg);
+                    advContent.appendChild(advBlock);
+
+                }
+
+                
             });
         })
         .catch(error => {
@@ -65,9 +72,13 @@ export async function createHeader(language) {
     
     console.log(sessionStatus.loggedIn);
     console.log(language);
+    const langMap = {
+        'english': 'en',
+        'thai': 'th',
+        'russian': 'ru'
+    }
     
     if (!sessionStatus.loggedIn) {
-        // console.log('хедер не залогинен');
         if (language === 'english') {
             headerTag.innerHTML = `
                 <div class="header_wrapper">
@@ -78,11 +89,17 @@ export async function createHeader(language) {
                                     <img class="logo_img" src="/icons/logo.svg" alt="logo">
                                 </a>
                                 <label class="header_top_left_label" id="headerPC">
-                                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                                    <button type="submit" class="header_top_left_search">
+                                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Search for a player">
+                                    <button id="playerSearchButton" type="submit" class="header_top_left_search">
                                         <img src="/icons/search.svg" alt="search icon">
                                     </button>
+                                    <div class="headerDropdownForm">
+                                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                                        <!-- options add from JS -->
+                                        </div>
+                                    </div>
                                 </label>
+                                
                             </div>
                             <div class="header_top_right" id="headerPC">
                                 
@@ -134,10 +151,10 @@ export async function createHeader(language) {
                                 Players
                             </p>
                         </a>
-                        <a class="header_bottom_category goToAllTrainings">
+                        <a class="header_bottom_category goToAllCoaches">
                             <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                             <p class="header_bottom_category-text">
-                                Training
+                                Coaches
                             </p>
                         </a>
                         <a class="header_bottom_category goToAboutUs">
@@ -156,10 +173,15 @@ export async function createHeader(language) {
                 </button>
                 
                 <label class="header_top_left_label">
-                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                    <button class="header_top_left_search">
+                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button id="playerSearchButton" class="header_top_left_search">
                         <img src="/icons/search.svg" alt="search icon">
                     </button>
+                    <div class="headerDropdownForm">
+                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                        <!-- options add from JS -->
+                        </div>
+                    </div>
                 </label>
                 <a class="header_bottom_category guest">
                     <p class="header_category-text btnLogin">
@@ -191,10 +213,10 @@ export async function createHeader(language) {
                         Players
                     </p>
                 </a>
-                <a class="header_bottom_category goToAllTrainings">
+                <a class="header_bottom_category goToAllCoaches">
                     <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                     <p class="header_bottom_category-text">
-                        Training
+                        Coaches
                     </p>
                 </a>
                 <a class="header_bottom_category goToAboutUs">
@@ -238,10 +260,15 @@ export async function createHeader(language) {
                                     <img class="logo_img" src="/icons/logo.svg" alt="logo">
                                 </a>
                                 <label class="header_top_left_label" id="headerPC">
-                                    <input class="header_top_left_input" type="text" placeholder="Поиск игрока">
-                                    <button type="submit" class="header_top_left_search">
+                                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Поиск игрока">
+                                    <button id="playerSearchButton" type="submit" class="header_top_left_search">
                                         <img src="/icons/search.svg" alt="search icon">
                                     </button>
+                                    <div class="headerDropdownForm">
+                                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                                        <!-- options add from JS -->
+                                        </div>
+                                    </div>
                                 </label>
                             </div>
                             <div class="header_top_right" id="headerPC">
@@ -294,10 +321,10 @@ export async function createHeader(language) {
                             Игроки
                             </p>
                         </a>
-                        <a class="header_bottom_category goToAllTrainings">
+                        <a class="header_bottom_category goToAllCoaches">
                             <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                             <p class="header_bottom_category-text">
-                            Тренировки
+                            Тренеры
                             </p>
                         </a>
                         <a class="header_bottom_category goToAboutUs">
@@ -316,10 +343,15 @@ export async function createHeader(language) {
                 </button>
                 
                 <label class="header_top_left_label">
-                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                    <button class="header_top_left_search">
+                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button id="playerSearchButton" class="header_top_left_search">
                         <img src="/icons/search.svg" alt="search icon">
                     </button>
+                    <div class="headerDropdownForm">
+                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                        <!-- options add from JS -->
+                        </div>
+                    </div>
                 </label>
                 <a class="header_bottom_category guest">
                     <p class="header_category-text btnLogin">
@@ -351,10 +383,10 @@ export async function createHeader(language) {
                         Игроки
                     </p>
                 </a>
-                <a class="header_bottom_category goToAllTrainings">
+                <a class="header_bottom_category goToAllCoaches">
                     <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                     <p class="header_bottom_category-text">
-                        Тренировки
+                        Тренеры
                     </p>
                 </a>
                 <a class="header_bottom_category goToAboutUs">
@@ -398,10 +430,15 @@ export async function createHeader(language) {
                                     <img class="logo_img" src="/icons/logo.svg" alt="logo">
                                 </a>
                                 <label class="header_top_left_label" id="headerPC">
-                                    <input class="header_top_left_input" type="text" placeholder="ค้นหาผู้เล่น">
-                                    <button type="submit" class="header_top_left_search">
+                                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="ค้นหาผู้เล่น">
+                                    <button id="playerSearchButton" type="submit" class="header_top_left_search">
                                         <img src="/icons/search.svg" alt="search icon">
                                     </button>
+                                    <div class="headerDropdownForm">
+                                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                                        <!-- options add from JS -->
+                                        </div>
+                                    </div>
                                 </label>
                             </div>
                             <div class="header_top_right" id="headerPC">
@@ -454,10 +491,10 @@ export async function createHeader(language) {
                                 ผู้เล่น
                             </p>
                         </a>
-                        <a class="header_bottom_category goToAllTrainings">
+                        <a class="header_bottom_category goToAllCoaches">
                             <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                             <p class="header_bottom_category-text">
-                                เทรนกับโค้ช
+                                โค้ชปิงปอง
                             </p>
                         </a>
                         <a class="header_bottom_category goToAboutUs">
@@ -476,10 +513,15 @@ export async function createHeader(language) {
                 </button>
                 
                 <label class="header_top_left_label">
-                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                    <button class="header_top_left_search">
+                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button id="playerSearchButton" class="header_top_left_search">
                         <img src="/icons/search.svg" alt="search icon">
                     </button>
+                    <div class="headerDropdownForm">
+                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                        <!-- options add from JS -->
+                        </div>
+                    </div>
                 </label>
                 <a class="header_bottom_category guest">
                     <p class="header_category-text btnLogin">
@@ -510,10 +552,10 @@ export async function createHeader(language) {
                         ผู้เล่น
                     </p>
                 </a>
-                <a class="header_bottom_category goToAllTrainings">
+                <a class="header_bottom_category goToAllCoaches">
                     <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                     <p class="header_bottom_category-text">
-                        เทรนกับโค้ช
+                        โค้ชปิงปอง
                     </p>
                 </a>
                 <a class="header_bottom_category goToAboutUs">
@@ -548,6 +590,7 @@ export async function createHeader(language) {
             </div>
             `;
         };
+
     } 
     
     else if (sessionStatus.loggedIn) {
@@ -607,10 +650,15 @@ export async function createHeader(language) {
                                     <img class="logo_img" src="/icons/logo.svg" alt="logo">
                                 </a>
                                 <label class="header_top_left_label" id="headerPC">
-                                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                                    <button type="submit" class="header_top_left_search">
+                                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Search for a player">
+                                    <button id="playerSearchButton" type="submit" class="header_top_left_search">
                                         <img src="/icons/search.svg" alt="search icon">
                                     </button>
+                                    <div class="headerDropdownForm">
+                                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                                        <!-- options add from JS -->
+                                        </div>
+                                    </div>
                                 </label>
                             </div>
                             <div class="header_top_right" id="headerPC">
@@ -672,10 +720,10 @@ export async function createHeader(language) {
                                 Players
                             </p>
                         </a>
-                        <a class="header_bottom_category goToAllTrainings">
+                        <a class="header_bottom_category goToAllCoaches">
                             <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                             <p class="header_bottom_category-text">
-                                Training
+                                Coaches
                             </p>
                         </a>
                         <a class="header_bottom_category goToAboutUs">
@@ -694,10 +742,15 @@ export async function createHeader(language) {
                 </button>
                 
                 <label class="header_top_left_label">
-                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                    <button class="header_top_left_search">
+                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button id="playerSearchButton" class="header_top_left_search">
                         <img src="/icons/search.svg" alt="search icon">
                     </button>
+                    <div class="headerDropdownForm">
+                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                        <!-- options add from JS -->
+                        </div>
+                    </div>
                 </label>
     
                 <a class="header_bottom_category logedIn myProfile">
@@ -724,10 +777,10 @@ export async function createHeader(language) {
                         Players
                     </p>
                 </a>
-                <a class="header_bottom_category goToAllTrainings">
+                <a class="header_bottom_category goToAllCoaches">
                     <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                     <p class="header_bottom_category-text">
-                        Training
+                        Coaches
                     </p>
                 </a>
                 <a class="header_bottom_category goToAboutUs">
@@ -771,10 +824,15 @@ export async function createHeader(language) {
                                     <img class="logo_img" src="/icons/logo.svg" alt="logo">
                                 </a>
                                 <label class="header_top_left_label" id="headerPC">
-                                    <input class="header_top_left_input" type="text" placeholder="Поиск игрока">
-                                    <button type="submit" class="header_top_left_search">
+                                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Поиск игрока">
+                                    <button id="playerSearchButton" type="submit" class="header_top_left_search">
                                         <img src="/icons/search.svg" alt="search icon">
                                     </button>
+                                    <div class="headerDropdownForm">
+                                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                                        <!-- options add from JS -->
+                                        </div>
+                                    </div>
                                 </label>
                             </div>
                             <div class="header_top_right" id="headerPC">
@@ -836,10 +894,10 @@ export async function createHeader(language) {
                             Игроки
                             </p>
                         </a>
-                        <a class="header_bottom_category goToAllTrainings">
+                        <a class="header_bottom_category goToAllCoaches">
                             <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                             <p class="header_bottom_category-text">
-                            Тренировки
+                            Тренеры
                             </p>
                         </a>
                         <a class="header_bottom_category goToAboutUs">
@@ -858,10 +916,15 @@ export async function createHeader(language) {
                 </button>
                 
                 <label class="header_top_left_label">
-                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                    <button class="header_top_left_search">
+                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button id="playerSearchButton" class="header_top_left_search">
                         <img src="/icons/search.svg" alt="search icon">
                     </button>
+                    <div class="headerDropdownForm">
+                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                        <!-- options add from JS -->
+                        </div>
+                    </div>
                 </label>
     
                 <a class="header_bottom_category logedIn myProfile">
@@ -888,10 +951,10 @@ export async function createHeader(language) {
                         Игроки
                     </p>
                 </a>
-                <a class="header_bottom_category goToAllTrainings">
+                <a class="header_bottom_category goToAllCoaches">
                     <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                     <p class="header_bottom_category-text">
-                        Тренировки
+                        Тренеры
                     </p>
                 </a>
                 <a class="header_bottom_category goToAboutUs">
@@ -935,10 +998,15 @@ export async function createHeader(language) {
                                     <img class="logo_img" src="/icons/logo.svg" alt="logo">
                                 </a>
                                 <label class="header_top_left_label" id="headerPC">
-                                    <input class="header_top_left_input" type="text" placeholder="ค้นหาผู้เล่น">
-                                    <button type="submit" class="header_top_left_search">
+                                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="ค้นหาผู้เล่น">
+                                    <button id="playerSearchButton" type="submit" class="header_top_left_search">
                                         <img src="/icons/search.svg" alt="search icon">
                                     </button>
+                                    <div class="headerDropdownForm">
+                                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                                        <!-- options add from JS -->
+                                        </div>
+                                    </div>
                                 </label>
                             </div>
                             <div class="header_top_right" id="headerPC">
@@ -1000,10 +1068,10 @@ export async function createHeader(language) {
                                 ผู้เล่น
                             </p>
                         </a>
-                        <a class="header_bottom_category goToAllTrainings">
+                        <a class="header_bottom_category goToAllCoaches">
                             <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                             <p class="header_bottom_category-text">
-                                เทรนกับโค้ช
+                                โค้ชปิงปอง
                             </p>
                         </a>
                         <a class="header_bottom_category goToAboutUs">
@@ -1022,10 +1090,15 @@ export async function createHeader(language) {
                 </button>
                 
                 <label class="header_top_left_label">
-                    <input class="header_top_left_input" type="text" placeholder="Search for a player">
-                    <button class="header_top_left_search">
+                    <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Search for a player">
+                    <button id="playerSearchButton" class="header_top_left_search">
                         <img src="/icons/search.svg" alt="search icon">
                     </button>
+                    <div class="headerDropdownForm">
+                        <div class="headerDropdown-content" id="headerPlayerDropdown">
+                        <!-- options add from JS -->
+                        </div>
+                    </div>
                 </label>
     
                 <a class="header_bottom_category logedIn myProfile" >
@@ -1052,10 +1125,10 @@ export async function createHeader(language) {
                         ผู้เล่น
                     </p>
                 </a>
-                <a class="header_bottom_category goToAllTrainings">
+                <a class="header_bottom_category goToAllCoaches">
                     <img class="header_bottom_category-icon" src="/icons/train.svg" alt="">
                     <p class="header_bottom_category-text">
-                        เทรนกับโค้ช
+                        โค้ชปิงปอง
                     </p>
                 </a>
                 <a class="header_bottom_category goToAboutUs">
@@ -1095,6 +1168,102 @@ export async function createHeader(language) {
     // function chevronRotate(chevron) {
     //     chevron.style.transform = 'rotateZ(180deg)';
     // }
+
+    let allPlayers = [];
+
+    // Функция для загрузки всех игроков при загрузке страницы
+    async function loadAllPlayers() {
+        try {
+            const response = await fetch('/get-players');
+            if (!response.ok) {
+                throw new Error('Failed to load players');
+            }
+
+            allPlayers = await response.json();
+        } catch (error) {
+            console.error('Error loading all players:', error);
+        }
+    }
+    
+    // Загружаем всех игроков при загрузке страницы
+    // document.addEventListener('DOMContentLoaded', loadAllPlayers);
+    await loadAllPlayers();
+    // console.log(allPlayers);
+    const searchInput = document.getElementById('playerSearchInput');
+    const searchDropdown = document.getElementById('headerPlayerDropdown');
+    
+    // Обработчик ввода в инпут
+    searchInput.addEventListener('input', handleInput(searchInput, searchInput.nextElementSibling.nextElementSibling));
+
+    document.addEventListener('input', function(event) {
+        if (event.target.id === 'playerSearchInput') {
+            console.log(event.target.nextElementSibling.nextElementSibling);
+            const dropDownWrapp = event.target.nextElementSibling.nextElementSibling;
+            handleInput(event.target, dropDownWrapp);
+        }
+    });
+
+
+    function handleInput(searchInput, dropDownWrapp) {
+        // console.log(allPlayers);
+        const query = searchInput.value.trim().toLowerCase();
+        const searchDropdown = dropDownWrapp.querySelector('#headerPlayerDropdown');
+        console.log(query);
+        // console.log(dropDownWrapp.querySelector('#headerPlayerDropdown'));
+        if (query) {
+            const filteredPlayers = allPlayers.filter(player => player.name ? player.name.toLowerCase().includes(query) : player.fullname.toLowerCase().includes(query) || (player.nickname ? player.nickname.toLowerCase().includes(query) : false));
+            updateDropdown(filteredPlayers, searchDropdown);
+        } else {
+            searchDropdown.innerHTML = '';
+            searchDropdown.style.display = 'none';
+        }
+    }
+    const translation = {
+        'Нет совпадений': {
+            'english': 'No matches',
+            'russian': 'Нет совпадений',
+            'thai': 'ไม่มีการจับคู่'
+        }
+    }
+
+    function updateDropdown(players, searchDropdown) {
+        searchDropdown.innerHTML = '';
+    
+        // console.log(players);
+        if (players.length > 0) {
+            players.forEach(player => {
+                const option = document.createElement('div');
+                option.textContent = `${player.name || player.fullname}`; // Отображаем имя игрока
+                if (player.nickname) {
+                    const optionSpan = document.createElement('span');
+                    optionSpan.textContent = `(${player.nickname})`;
+                    option.appendChild(optionSpan);
+                }
+                option.addEventListener('click', () => {
+                    searchInput.value = player.name || player.fullname;
+                    searchDropdown.style.display = 'none';
+                    window.location.href = `/${langMap[language]}/allplayers/${player._id}`;
+                    // console.log(langMap[language]);
+                });
+                searchDropdown.appendChild(option);
+            });
+    
+            searchDropdown.style.display = 'block'; // Показываем список
+        } else {
+            // Если совпадений нет
+            const noMatchOption = document.createElement('div');
+            noMatchOption.textContent = translation['Нет совпадений'][language];
+            searchDropdown.appendChild(noMatchOption);
+            searchDropdown.style.display = 'block'; // Показываем список с уведомлением
+        }
+    }
+    
+    // Закрытие выпадающего списка при клике вне его области
+    // document.addEventListener('click', (event) => {
+    //     if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
+    //         searchDropdown.style.display = 'none';
+    //     }
+    // });
     
     
 
@@ -1102,6 +1271,10 @@ export async function createHeader(language) {
         if (event.target.closest('.logOut')) {
             event.preventDefault();
             logout();
+        }
+
+        if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
+            searchDropdown.style.display = 'none';
         }
         
         if (event.target.closest('.header_account')) {
@@ -1133,6 +1306,8 @@ export async function createHeader(language) {
     })
     languageControl();
 };
+
+
 
 function chevronRotate(chevron, rotate = true) {
     chevron.style.transform = rotate ? 'rotateX(180deg)' : 'rotateX(0deg)';
@@ -1212,7 +1387,7 @@ export function createFooter(language) {
                         <a class="goToAllPlayers" href="#">Players</a>
                     </div>
                     <div class="footer_menu_path">
-                        <a href="#">Training</a>
+                        <a class="goToAllCoaches" href="#">Coaches</a>
                         <a href="#" class='goToAboutUs'>About Us</a>
                     </div>
                     </div>
@@ -1256,7 +1431,7 @@ export function createFooter(language) {
                         <a class="goToAllPlayers" href="#">Игроки</a>
                     </div>
                     <div class="footer_menu_path">
-                        <a href="#">Тренировки</a>
+                        <a class="goToAllCoaches" href="#">Тренеры</a>
                         <a href="#" class='goToAboutUs'>О Нас</a>
                     </div>
                     </div>
@@ -1300,7 +1475,7 @@ export function createFooter(language) {
                         <a class="goToAllPlayers" href="#">ผู้เล่น</a>
                     </div>
                     <div class="footer_menu_path">
-                        <a href="#">เทรนกับโค้ช</a>
+                        <a class="goToAllCoaches" href="#">โค้ชปิงปอง</a>
                         <a href="#" class='goToAboutUs'>รูปภาพและวิดีโอ</a>
                     </div>
                     </div>
@@ -1335,7 +1510,23 @@ export function createFooter(language) {
     
 }
 
-export function fetchPastTournaments() {
+let allClubs;
+async function fetchAllClubs() {
+    try {
+        const response = await fetch(`/clubs`);
+        const clubs = await response.json();
+        allClubs = clubs;
+
+    } catch (error) {
+        console.error('Произошла ошибка:', error);
+        showErrorModal('Database connection error');
+    }
+}
+
+export async function fetchPastTournaments() {
+   
+    await fetchAllClubs();
+
     fetch('/get-past-tournaments')
       .then(response => response.json())
       .then(data => {
@@ -1358,8 +1549,13 @@ export function fetchPastTournaments() {
             img.src = '/icons/ttrocket.svg';
             img.alt = 'table tennis rocket';
 
+            const languageMap = {
+                'russian': 'ru',
+                'english': 'en',
+                'thai': 'th'
+            };
             let langMap = {'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU'};
-            let lang = langMap[localStorage.clientLang] || 'en-US';
+            let lang = langMap[localStorage.getItem('clientLang')] || 'en-US';
             let span = document.createElement('span');
             let tournamentDate = new Date(tournament.datetime);
             let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
@@ -1369,9 +1565,23 @@ export function fetchPastTournaments() {
             dateDiv.appendChild(img);
             dateDiv.appendChild(span);
 
-            let pastClubDiv = document.createElement('div');
-            pastClubDiv.className = 'last_tournaments_tournament_clubDate_club';
+            const clientLang = languageMap[localStorage.getItem('clientLang')];
 
+            let club;
+            if (allClubs) {
+                club = allClubs.find(obj => obj.name.toLowerCase() === tournament.club.name.toLowerCase());
+            }
+            let pastClubDiv = document.createElement('a');
+
+            if (club && club._id) {
+                pastClubDiv.href = `/${clientLang}/allclubs/${club._id}`;
+            } else {
+                console.log('Клуб не найден или у клуба нет ID');
+                // Можете добавить альтернативное действие, если клуб не найден
+            }
+           
+            pastClubDiv.className = 'last_tournaments_tournament_clubDate_club';
+            pastClubDiv.style = `color: #fff; text-decoration: none;`;
             let pastClubLogoDiv = document.createElement('div');
             pastClubLogoDiv.className = 'clubLogo';
             pastClubLogoDiv.style.cssText = `background-image: url('${tournament.club.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
@@ -1390,9 +1600,11 @@ export function fetchPastTournaments() {
             let winnersDiv = document.createElement('div');
             winnersDiv.className = 'last_tournaments_tournament_winners';
 
+            
+
             tournament.players.sort((a, b) => a.place - b.place).forEach(player => {
                 let winnerLink = document.createElement('a');
-                winnerLink.href = `/${player.id}`;  // ------------------------------------------------------------------ссылка на лк
+                winnerLink.href = `/${clientLang}/allplayers//${player.id}`;  // ------------------------------------------------------------------ссылка на лк
                 winnerLink.className = `last_tournaments_tournament_winners_${player.place}`;
                 let winnerImg = document.createElement('img');
                 winnerImg.src = `/icons/${player.place}st-medal.svg`;
@@ -1433,11 +1645,11 @@ export function fetchPastTournaments() {
             playersLimitDiv.appendChild(pastPlayersDiv);
             playersLimitDiv.appendChild(pastRestrictionStatusDiv);
 
-            const languageMap = {
-                'russian': 'ru',
-                'english': 'en',
-                'thai': 'th'
-            };
+            // const languageMap = {
+            //     'russian': 'ru',
+            //     'english': 'en',
+            //     'thai': 'th'
+            // };
             const currentLang = localStorage.getItem('clientLang');
 
             let moreDetailsLink = document.createElement('a');
@@ -1465,6 +1677,8 @@ export function fetchFutureTournaments() {
     fetch('/get-future-tournaments')
         .then(response => response.json())
         .then(data => {
+            // let allClubs;
+            // fetchAllClubs();
             let futureTournaments = data.filter(tournament => new Date(tournament.datetime) > new Date());
             futureTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
             futureTournaments = futureTournaments.slice(0, 10);
@@ -2054,8 +2268,23 @@ export async function getAllCoaches() {
     const langKey = languageMap[currentLang];
 
     let allCoaches = [];
+    let allClubs = [];
+
+    await fetchAllClubs();
 
     await fetchAllCoaches();
+
+    async function fetchAllClubs() {
+        try {
+            const response = await fetch(`/clubs`);
+            const clubs = await response.json();
+            allClubs = clubs;       
+        } catch (error) {
+            console.error('Произошла ошибка:', error);
+            showErrorModal('Database connection error');
+        }
+    }
+    
 
     async function fetchAllCoaches() {
         try {
@@ -2068,13 +2297,21 @@ export async function getAllCoaches() {
             viewAllButton.style.display = 'block';
 
             const names = [...new Set(coaches.flatMap(coach => coach.name || coach.fullname))];
-            const clubs = [...new Set(coaches.map(coach => coach.club))];
+            
             const cityIds = [...new Set(coaches.map(coach => coach.city))]; // Now storing city _id
-
             names.sort();
+
+            const clubs = [...new Set(
+                coaches
+                    .map(coach => {
+                        const club = allClubs.find(c => String(c._id) === String(coach.club));
+                        return club ? club.name : null;
+                    })
+                    .filter(name => name)
+            )];
+            
             clubs.sort();
 
-            // Retrieve city names from MongoDB collection 'cities'
             const cityNames = await Promise.all(cityIds.map(cityId => getCityName(cityId)));
 
             cityNames.sort();
@@ -2121,8 +2358,21 @@ export async function getAllCoaches() {
         updateDropdownList(nameDropdown, [...new Set(allCoaches.flatMap(coach => coach.name || coach.fullname))], nameInput);
     }
 
+    // function updateClubDropdown() {
+    //     updateDropdownList(clubDropdown, [...new Set(allCoaches.map(coach => coach.club))], clubInput);
+    // }
+
     function updateClubDropdown() {
-        updateDropdownList(clubDropdown, [...new Set(allCoaches.map(coach => coach.club))], clubInput);
+        const clubNames = [...new Set(
+            allCoaches
+                .map(coach => {
+                    const club = allClubs.find(c => String(c._id) === String(coach.club));
+                    return club ? club.name : null;
+                })
+                .filter(name => name)
+        )];
+
+        updateDropdownList(clubDropdown, clubNames, clubInput);
     }
 
     function updateCityDropdown() {
@@ -2185,7 +2435,9 @@ export async function getAllCoaches() {
 
         const filteredCoaches = await Promise.all(allCoaches.map(async coach => {
             const nameMatch = !nameValue || coach.name.toLowerCase().includes(nameValue) || coach.playerName.toLowerCase().includes(nameValue);
-            const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
+            // const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
+            const coachClub = allClubs.find(c => String(c._id) === String(coach.club));
+            const clubMatch = !clubValue || (coachClub && coachClub.name.toLowerCase().includes(clubValue));
 
             const cityName = await getCityName(coach.city);
             const cityMatch = !cityValue || cityValue === 'all' || cityName.toLowerCase().includes(cityValue);
@@ -2247,7 +2499,12 @@ export async function getAllCoaches() {
             clubTitleSpan.textContent = clubTitle[currentLang] || 'Club:';
 
             const clubNameP = document.createElement('p');
-            clubNameP.textContent = coach.club;
+
+            const coachClub = allClubs.find(c => String(c._id) === String(coach.club));
+
+            // Если клуб найден, записываем его название, иначе оставляем пустым
+            clubNameP.textContent = coachClub ? coachClub.name : ' - ';
+            
 
             clubDiv.appendChild(clubTitleSpan);
             clubDiv.appendChild(clubNameP);
@@ -2288,7 +2545,7 @@ export async function getAllCoaches() {
         try {
             const response = await fetch('/coaches');
             allCoaches = await response.json();
-            filterCoaches(); // Выполнить фильтрацию при загрузке данных
+            // filterCoaches(); // Выполнить фильтрацию при загрузке данных
         } catch (error) {
             console.error('Ошибка при загрузке данных тренеров:', error);
         }
@@ -2507,12 +2764,14 @@ export function languageControl() {
 
 
 let citiesList = [];
+let namesOfCitie = [];
 
 export async function fetchCities(curLang) {
     try {
         const response = await fetch(`/cities?language=${curLang}`);
         const cities = await response.json();
-        citiesList = cities.sort();
+        citiesList = cities.citiesObjects.sort();
+        namesOfCitie = cities.cities.sort();
     } catch (error) {
         console.error('Произошла ошибка:', error);
     }
@@ -2785,6 +3044,7 @@ function closeModal() {
 
 export function registrationForm() {
     // const modal = document.getElementById("myModal");
+    const citiesList = namesOfCitie;
     let handChecked = false;
     const content = document.querySelector('.modal-content');
     const translations = {
@@ -3355,6 +3615,8 @@ export function listenerOfButtons() {
         'thai': 'th'
     };
 
+    
+
     if (document.querySelector('#myProfile')) {
         const accountBtnMenu = document.querySelector('#myProfile');
         const accountMenu = document.querySelector('.profileMenu');
@@ -3365,7 +3627,8 @@ export function listenerOfButtons() {
     }
 
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', async function(event) {
+        
         // console.log(event.target);
         if (event.target.classList.contains('btnRegister')) {
             registrationForm();
@@ -3395,9 +3658,14 @@ export function listenerOfButtons() {
             window.location.href = `/${languageMap[localStorage.clientLang]}/aboutus`;
         }
 
-        if (event.target.closest('.goToAllTrainings')) {
+        // if (event.target.closest('.goToAllTrainings')) {
+        //     event.preventDefault();
+        //     window.location.href = `/${languageMap[localStorage.clientLang]}/alltrainings`;
+        // }
+
+        if (event.target.closest('.goToAllCoaches')) {
             event.preventDefault();
-            window.location.href = `/${languageMap[localStorage.clientLang]}/alltrainings`;
+            window.location.href = `/${languageMap[localStorage.clientLang]}/allcoaches`;
         }
         
         // if (event.target.closest('.admin_user') || event.target.closest('.admin_user_img')) {
@@ -3414,10 +3682,36 @@ export function listenerOfButtons() {
         //     event.preventDefault();
         //     logout();
         // }
+        const needRegisterTranslate = {
+            "ru": "Пожалуйста, зарегистрируйтесь, чтобы подать заявку.",
+            "en": "Please register to submit an application.",
+            "th": "กรุณาลงทะเบียนเพื่อส่งใบสมัคร."
+        }
 
         if (event.target.id === 'becomeCoach') {
-            window.location.href = `/${languageMap[localStorage.clientLang]}/becomeacoach`;
+            // const lang = localStorage.clientLang;
+            try {
+                const response = await fetch(`/becomeacoach`);
+    
+                if (response.ok) {
+                    window.location.href = `/${languageMap[localStorage.clientLang]}/becomeacoach`;
+                } else if (response.status === 401) {
+                    const data = await response.json();
+                    // console.log(data);
+                    if(data.message === 'Need register') {
+                        alert(needRegisterTranslate[languageMap[localStorage.clientLang]]);
+                    }
+                    
+                }
+            } catch (error) {
+                console.error('Ошибка при переходе на страницу тренера:', error);
+                alert('Error. Please try again later.');
+            }
         }
+
+        // if (event.target.id === 'becomeCoach') {
+        //     window.location.href = `/${languageMap[localStorage.clientLang]}/becomeacoach`;
+        // }
 
         if (event.target.id === 'btnAddClub') {
             window.location.href = `/${languageMap[localStorage.clientLang]}/addclub`;
@@ -3448,7 +3742,7 @@ export function listenerOfButtons() {
             document.querySelector('.header_bottom_mob')?.classList.toggle('header_bottom_mob_openMenu');
         }
 
-        if (!event.target.closest('#burger') && !event.target.closest('.header_bottom header_bottom_mob')) {
+        if (!event.target.closest('#burger') && !event.target.closest('.header_bottom header_bottom_mob') && !event.target.closest('#playerSearchInput')) {
             if ( document.querySelector('.header_bottom_mob')) {
                 document.querySelector('.header_bottom_mob').classList.remove('header_bottom_mob_openMenu');
             }
@@ -3581,6 +3875,10 @@ export function listenerOfButtons() {
                 event.preventDefault();
                 console.log('/ru/dashboard/admin/adv');
                 window.location.href = '/ru/dashboard/admin/adv';
+            } else if (event.target.closest('.manageCities')) {
+                event.preventDefault();
+                console.log('/ru/dashboard/admin/cities');
+                window.location.href = '/ru/dashboard/admin/cities';
             }
         });
     }
@@ -4003,7 +4301,7 @@ export function controlTextAreaCoach(area, note) {
 // }
 
 
-export async function getAllTournaments() {
+export async function getAllTournaments(user) {
     const dateFromInput = document.getElementById('dateFromInput');
     const dateUntilInput = document.getElementById('dateUntilInput');
     const clubInput = document.getElementById('clubInput');
@@ -4036,9 +4334,11 @@ export async function getAllTournaments() {
 
     let allTournaments = [];
     let cities = [];
+    let citiesObjects = [];
 
-    await fetchAllTournaments();
     await fetchCities();
+    await fetchAllTournaments();
+    
 
     async function fetchAllTournaments() {
         try {
@@ -4063,7 +4363,9 @@ export async function getAllTournaments() {
         try {
             const response = await fetch(`/cities?language=${currentLang}`);
             const data = await response.json();
-            cities = data.sort();
+            cities = data.cities;
+            console.log(cities);
+            citiesObjects = data.citiesObjects;
             
             createDropdown(cityDropdown, cities, cityInput);
         } catch (error) {
@@ -4150,7 +4452,9 @@ export async function getAllTournaments() {
             const dateFromMatch = !dateFromValue || new Date(tournament.date) >= new Date(dateFromValue.split('.').reverse().join('-'));
             const dateUntilMatch = !dateUntilValue || new Date(tournament.date) <= new Date(dateUntilValue.split('.').reverse().join('-'));
             const clubMatch = !clubValue || tournament.club.name.toLowerCase().includes(clubValue);
-            const cityMatch = !cityValue || cityValue === 'all' || cities.includes(tournament.city._id) && cities[tournament.city._id].toLowerCase().includes(cityValue);
+            // const cityMatch = !cityValue || cityValue === 'all' || cities.includes(tournament.city._id) && cities[tournament.city._id].toLowerCase().includes(cityValue);
+            const cityObject = citiesObjects.find(city => city._id.$oid === tournament.city._id); // Найти город по _id
+            const cityMatch = !cityValue || cityValue === 'all' || (cityObject && cityObject[languageMap[localStorage.clientLang]].toLowerCase().includes(cityValue));
 
             return dateFromMatch && dateUntilMatch && clubMatch && cityMatch ? tournament : null;
         }));
@@ -4230,7 +4534,12 @@ export async function getAllTournaments() {
 
                 let tournamentDiv = document.createElement('a');
                 tournamentDiv.className = `${className}_tournament`;
-                tournamentDiv.href = `/${languageMap[currentLang]}/tournaments/${tournament._id}`;
+                if (user === 'admin') {
+                    tournamentDiv.href = `/ru/dashboard/admin/edittournament/${tournament._id}`;
+                } else {
+                    tournamentDiv.href = `/${languageMap[currentLang]}/tournaments/${tournament._id}`;
+                }
+                
 
                 let timeDiv = document.createElement('div');
                 timeDiv.className = 'cell tournament_time';
@@ -4279,7 +4588,7 @@ export async function getAllTournaments() {
                 playersImg.alt = 'person';
                 playersDiv.appendChild(playersImg);
                 let playersSpan = document.createElement('span');
-                playersSpan.textContent = tournament.players.length - 1;
+                playersSpan.textContent = tournament.players.length;
                 playersDiv.appendChild(playersSpan);
                 tournamentDiv.appendChild(playersDiv);
 

@@ -35,7 +35,10 @@ const storage = multer.diskStorage({
           cb(null, path.join(__dirname, '../public/icons/clubsphotos'));
       } else if ( file.fieldname === 'userLogo') {
           cb(null, path.join(__dirname, '../public/icons/playerslogo'));
+      } else if ( file.fieldname === 'banner') {
+          cb(null, path.join(__dirname, '../public/icons/advbanners'));
       }
+      
   },
   filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

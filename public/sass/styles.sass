@@ -1450,8 +1450,17 @@
                 &_clubDate
                     gap: 12px
                     width: 65%
-                    // &_club
-                    //     span
+                    a
+                        color: #fff
+                    &_club
+                        color: #fff
+                        text-decoration: none !important
+                        color: inherit !important
+                        cursor: default !important
+                        span
+                            text-decoration: none
+                            color: inherit
+                            cursor: default
                     //         font-size: 14px
                 &_winners
                     gap: 8px
@@ -1462,6 +1471,11 @@
                         top: 16px
                         flex-direction: column
                         gap: 10px
+    
+    .last_tournaments_tournament_club span
+        text-decoration: none
+        color: inherit
+
     .clubs
         margin-top: 40px
         &_content
@@ -1591,6 +1605,58 @@
                 align-items: center
             label
                 font-weight: 400
+
+.headerDropdownForm
+    position: absolute
+    top: 50px
+    left: 0px
+    display: block
+    width: 100%
+    .headerDropdown-content
+        display: none
+        position: absolute
+        width: 100%
+        z-index: 2
+        max-height: 165px
+        overflow-y: auto
+        background-color: #3F3F4C
+        border-radius: 12px 12px 12px 12px
+
+    .headerDropdown-content div
+        color: black
+        padding: 8px 13px 8px 16px
+        text-decoration: none
+        display: block
+        min-height: 24px
+        align-content: center
+        
+        color: #FFF
+        font-family: Inter
+        font-size: 14px
+        font-style: normal
+        font-weight: 400
+        line-height: normal
+        cursor: default
+        span
+            position: absolute
+            right: 16px
+            color: #666877
+
+    .headerDropdown-content div:hover
+        background-color: #343643
+
+    .headerDropdown-content::-webkit-scrollbar
+        padding-right: 8px
+        width: 2px
+
+    .headerDropdown-content::-webkit-scrollbar-track
+        background: #262630
+
+    .headerDropdown-content::-webkit-scrollbar-thumb
+        background: #666877
+
+    .headerDropdown-content::-webkit-scrollbar-thumb:hover
+        background: #666877
         
 
 @import 'personalpage';

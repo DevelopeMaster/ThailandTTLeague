@@ -57,96 +57,70 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/main.min.css">
-    
 </head>
 
-<body>
-    <header class="header" id="scroll">
-        <!-- from js -->
+<body class="admin_body">
+    <header class="admin_header" id="scroll">
+        <!-- add from js -->
     </header>
-    <div class="navigate">
-        <div class="container">
-            <nav aria-label="breadcrumb">
-                <ol id="breadcrumb" class="navigate_breadcrumb">
-                    <!-- from js -->
-                </ol>
-            </nav>
+    <div class="admin_sidebar">
+        <!-- add from js -->
+    </div>
+    <section class="tournaments filterTournaments">
+        <div class="adminContainer">
+            <!-- <h2>Поиск Турнира</h2> -->
+            <div class="filterTournaments_filter">
+                <div class="editCities_city">
+                    <div class="editCities_city_inputs">
+                        <input id="cityRu" class="editCities_city_ru" type="text" placeholder="Город на русском" required>
+                        <input id="cityEn" class="editCities_city_en" type="text" placeholder="Город на английском" required>
+                        <input id="cityTh" class="editCities_city_th" type="text" placeholder="Город на тайском" required>
+                    </div>
+                    <button id="addNewCity" class="header_btn-sign ">Добавить</button>  
+                </div>
+            </div>
+            
+        </div>
+      
+    </section>
+
+    <section class="editPlayer editCities">
+        <div class="adminContainer">
+            
+            <h2>Редактирование городов</h2>
+            <div class="coachesTable citiesTable">
+                <div id="citiesTable_content" class="citiesTable_content">
+                    <!-- <div class="editCities_city">
+                        <div class="editCities_city_inputs">
+                            <input class="editCities_city_ru" type="text">
+                            <input class="editCities_city_en" type="text">
+                            <input class="editCities_city_th" type="text">
+                        </div>
+                        <div class="editCities_city_btns">
+                            <div class="editCities_city_btns_save" data-player-id="665e398cf23b264777bf2284" style="background-image: url(&quot;/icons/save.svg&quot;); background-repeat: no-repeat;"></div>
+                            <div class="editCities_city_btns_cross" data-player-id="665e398cf23b264777bf2284" style="background-image: url(&quot;/icons/cross.svg&quot;); background-repeat: no-repeat;"></div>
+                        </div>
+                        
+                    </div> -->
+                </div>
+            </div>
+            
+
+            
+        </div>
+    </section>
+
+
+
+    <!-- Модальное окно -->
+    <div id="myModal" class="modal">    
+        <div class="modal-content">
+        <!-- add from DB -->
         </div>
     </div>
-    <section class="account">
-        <div class="container">
-            <div class="contentWrapper">
-                <div class="account_mainInfo">
-                    <!-- add from js -->
-                </div>
-                <div class="account_buttonWrapp">
-                    <button id="editProfile" class="header_btn-sign account_buttonWrapp_btn" fdprocessedid="c3chv">Edit profile</button>
-                    <div class="account_buttonWrapp_share">
-                        <p>Share profile</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="account_statistics">
-        <div class="container">
-            <div class="contentWrapper">
-                <h2>general Statistics</h2>
-                
-            </div>
-        </div>
-    </section>
-
-    <section class="account_bestVictories">
-        <div class="container">
-            <div class="contentWrapper">
-                <h2>best victories</h2>
-
-            </div>
-        </div>
-    </section>
-
-    <section class="account_bestVictories">
-        <div class="container">
-            <div class="contentWrapper">
-                <h2>awards</h2>
-
-            </div>
-        </div>
-    </section>
-
-    <section class="account_bestVictories">
-        <div class="container">
-            <div class="contentWrapper">
-                <h2>results</h2>
-
-            </div>
-        </div>
-    </section>
-
-
-
-
-
-
-
-    <footer class="footer">
-        <!-- from js -->
-      </footer>
-      
-      <div class="adv">
-        <!-- add from DB -->
-      </div>
-      
     
     
-      <!-- Модальное окно -->
-      <div id="myModal" class="modal">    
-          <div class="modal-content">
-            <!-- add from DB -->
-          </div>
-      </div>
-      <script type="module" src="/js/dashboard.js"></script> 
+    <script type="module" src="/js/admin/editcities.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> -->
 </body>
 </html>

@@ -93,7 +93,7 @@
                             <input type="text" id="clubName" name="clubName" readonly>
 
                             <label for="city">City*</label>
-                            <input type="text" id="city" name="city" style="background-image: url('/icons/chevron-down.svg'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 30px;" readonly>
+                            <input type="text" id="city" name="city" readonly>
                 
                             <label for="address">Address*</label>
                             <input type="text" id="address" name="address" readonly>
@@ -222,208 +222,26 @@
                     </div>
                 </form>
 
-                <form class="secondForm" id="rescheduling" action="/rescheduling" method="POST" enctype="multipart/form-data">
-                    
-                    <div class="editschedule_formContainer">
-                        <h3>Edit schedule</h3>
-                        <input type="hidden" name="userId" value="<%= userId %>">
-                        <div class="schedule-form">
-                            <table>
-                              <thead>
-                                <tr>
-                                  <th> </th>
-                                  <th>Monday</th>
-                                  <th>Tuesday</th>
-                                  <th>Wednesday</th>
-                                  <th>Thursday</th>
-                                  <th>Friday</th>
-                                  <th>Saturday</th>
-                                  <th>Sunday</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <!-- Session 1 -->
-                                <tr>
-                                  <td>I</td>
-                                  <td data-day="Monday">
-                                    <label>Start:</label>
-                                    <input type="time" name="monday_start_1">
-                                    <label>End:</label>
-                                    <input type="time" name="monday_end_1">
-                                  </td>
-                                  <td data-day="Tuesday">
-                                    <label>Start:</label>
-                                    <input type="time" name="tuesday_start_1">
-                                    <label>End:</label>
-                                    <input type="time" name="tuesday_end_1">
-                                  </td>
-                                  <td data-day="Wednesday">
-                                    <label>Start:</label>
-                                    <input type="time" name="wednesday_start_1">
-                                    <label>End:</label>
-                                    <input type="time" name="wednesday_end_1">
-                                  </td>
-                                  <td data-day="Thursday">
-                                    <label>Start:</label>
-                                    <input type="time" name="thursday_start_1">
-                                    <label>End:</label>
-                                    <input type="time" name="thursday_end_1">
-                                  </td>
-                                  <td data-day="Friday">
-                                    <label>Start:</label>
-                                    <input type="time" name="friday_start_1">
-                                    <label>End:</label>
-                                    <input type="time" name="friday_end_1">
-                                  </td>
-                                  <td data-day="Saturday">
-                                    <label>Start:</label>
-                                    <input type="time" name="saturday_start_1">
-                                    <label>End:</label>
-                                    <input type="time" name="saturday_end_1">
-                                  </td>
-                                  <td data-day="Sunday">
-                                    <label>Start:</label>
-                                    <input type="time" name="sunday_start_1">
-                                    <label>End:</label>
-                                    <input type="time" name="sunday_end_1">
-                                  </td>
-                                </tr>
-                            
-                                <!-- Session 2 -->
-                                <tr>
-                                  <td>II</td>
-                                  <td data-day="Monday">
-                                    <label>Start:</label>
-                                    <input type="time" name="monday_start_2">
-                                    <label>End:</label>
-                                    <input type="time" name="monday_end_2">
-                                  </td>
-                                  <td data-day="Tuesday">
-                                    <label>Start:</label>
-                                    <input type="time" name="tuesday_start_2">
-                                    <label>End:</label>
-                                    <input type="time" name="tuesday_end_2">
-                                  </td>
-                                  <td data-day="Wednesday">
-                                    <label>Start:</label>
-                                    <input type="time" name="wednesday_start_2">
-                                    <label>End:</label>
-                                    <input type="time" name="wednesday_end_2">
-                                  </td>
-                                  <td data-day="Thursday">
-                                    <label>Start:</label>
-                                    <input type="time" name="thursday_start_2">
-                                    <label>End:</label>
-                                    <input type="time" name="thursday_end_2">
-                                  </td>
-                                  <td data-day="Friday">
-                                    <label>Start:</label>
-                                    <input type="time" name="friday_start_2">
-                                    <label>End:</label>
-                                    <input type="time" name="friday_end_2">
-                                  </td>
-                                  <td data-day="Saturday">
-                                    <label>Start:</label>
-                                    <input type="time" name="saturday_start_2">
-                                    <label>End:</label>
-                                    <input type="time" name="saturday_end_2">
-                                  </td>
-                                  <td data-day="Sunday">
-                                    <label>Start:</label>
-                                    <input type="time" name="sunday_start_2">
-                                    <label>End:</label>
-                                    <input type="time" name="sunday_end_2">
-                                  </td>
-                                </tr>
-                            
-                                <!-- Session 3 -->
-                                <tr>
-                                  <td>III</td>
-                                  <td data-day="Monday">
-                                    <label>Start:</label>
-                                    <input type="time" name="monday_start_3">
-                                    <label>End:</label>
-                                    <input type="time" name="monday_end_3">
-                                  </td>
-                                  <td data-day="Tuesday">
-                                    <label>Start:</label>
-                                    <input type="time" name="tuesday_start_3">
-                                    <label>End:</label>
-                                    <input type="time" name="tuesday_end_3">
-                                  </td>
-                                  <td data-day="Wednesday">
-                                    <label>Start:</label>
-                                    <input type="time" name="wednesday_start_3">
-                                    <label>End:</label>
-                                    <input type="time" name="wednesday_end_3">
-                                  </td>
-                                  <td data-day="Thursday">
-                                    <label>Start:</label>
-                                    <input type="time" name="thursday_start_3">
-                                    <label>End:</label>
-                                    <input type="time" name="thursday_end_3">
-                                  </td>
-                                  <td data-day="Friday">
-                                    <label>Start:</label>
-                                    <input type="time" name="friday_start_3">
-                                    <label>End:</label>
-                                    <input type="time" name="friday_end_3">
-                                  </td>
-                                  <td data-day="Saturday">
-                                    <label>Start:</label>
-                                    <input type="time" name="saturday_start_3">
-                                    <label>End:</label>
-                                    <input type="time" name="saturday_end_3">
-                                  </td>
-                                  <td data-day="Sunday">
-                                    <label>Start:</label>
-                                    <input type="time" name="sunday_start_3">
-                                    <label>End:</label>
-                                    <input type="time" name="sunday_end_3">
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                            <button class="header_btn-sign editclub_formContainer_submit" type="submit">Save</button>
-                          </div>
-                        <!-- <div class="editclub_formContainer_formSection">
-                            <label for="clubName">Club name*</label>
-                            <input type="text" id="clubName" name="clubName" readonly>
-
-                            <label for="city">City*</label>
-                            <input type="text" id="city" name="city" style="background-image: url('/icons/chevron-down.svg'); background-repeat: no-repeat; background-position: right 8px center; padding-right: 30px;" readonly>
-                
-                            <label for="address">Address*</label>
-                            <input type="text" id="address" name="address" readonly>
-                            
-                            <label for="location">Location*</label>
-                            <input type="text" id="location" name="location" readonly>
-
-                                
-                            <label for="representative">Representative*</label>
-                            <input type="text" id="representative" name="representative" readonly>
-                
-                            <label for="phoneNumber">Phone number*</label>
-                            <input type="text" id="phoneNumber" name="phoneNumber" required>
-                
-                            <label for="website">Club website</label>
-                            <input type="url" id="website" name="website">
-
-
-                            
-                            <div class="inp-label-pare">
-                                <label for="info">Describe the club</label>
-                                <textarea id="description" placeholder="Enter information about your club" id="info" name="info" rows="7"></textarea>
-                            </div>
-                
-                            <button class="header_btn-sign editclub_formContainer_submit" type="submit">Save</button>
-                        </div> -->
-                    </div>
-                </form>
             </div>
         </div>
     </section>
    
+    <section class="club sectionSchedule">
+      <div class="container">
+          <div class="contentWrapper">
+            <h2>Edit schedule</h2>
+                <form class="secondForm" id="rescheduling" method="POST" enctype="multipart/form-data">
+                    <div class="editschedule_formContainer">
+                        <table class="schedule-form">  
+                          
+                        </table>
+                        <button class="header_btn-sign editschedule_formContainer_submit" type="submit">Save</button>
+                    </div>
+                </form>
+
+          </div>
+      </div>
+    </section>
  
     
     <footer class="footer">

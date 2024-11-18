@@ -75,7 +75,21 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Extra charge': 'Extra charge',
             'Free': 'Free',
             'File too large': 'The file is too large. Maximum size: 1 MB',
-            'Not image': 'Please select a valid image file.'
+            'Not image': 'Please select a valid image file.',
+            'daysOfWeek': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            'session': 'Session',
+            'event': 'Event',
+            'start': 'Start',
+            'end': 'End',
+            'Group training (Adults)': 'Group training (Adults)',
+            'Group training (Kids)': 'Group training (Kids)',
+            'The Ladder': 'The Ladder',
+            'Tournament (Master’s Cup)': 'Tournament (Master’s Cup)',
+            'Tournament (Kids Open Cup)': 'Tournament (Kids Open Cup)',
+            'Tournament (Amateurs Cup)': 'Tournament (Amateurs Cup)',
+            'Private session': 'Private session',
+            'Master Class': 'Master Class',
+            '-': 'Not selected'
         },
         'ru': {
             'representative': 'Представитель',
@@ -100,7 +114,21 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Extra charge': 'Платные',
             'Free': 'Бесплатные',
             'File too large': 'Файл слишком большой. Максимальный размер: 1 MB',
-            'Not image': 'Пожалуйста, выберите корректный файл изображения.'
+            'Not image': 'Пожалуйста, выберите корректный файл изображения.',
+            'daysOfWeek': ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+            'session': 'Сессия',
+            'event': 'Событие',
+            'start': 'Начало',
+            'end': 'Конец',
+            'Group training (Adults)': 'Групповая тренировка (взрослые)',
+            'Group training (Kids)': 'Групповая тренировка (дети)',
+            'The Ladder': 'Лестница',
+            'Tournament (Master’s Cup)': 'Турнир (Кубок мастеров)',
+            'Tournament (Kids Open Cup)': 'Турнир (Открытый кубок для детей)',
+            'Tournament (Amateurs Cup)': 'Турнир (Кубок любителей)',
+            'Private session': 'Индивидуальная тренировка',
+            'Master Class': 'Мастер-класс',
+            '-': 'Не выбрано'
         },
         'th': {
             'representative': 'ตัวแทน',
@@ -125,7 +153,21 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Extra charge': 'มีค่าใช้จ่ายเพิ่มเติม',
             'Free': 'ฟรี',
             'File too large': 'ไฟล์มีขนาดใหญ่เกินไป ขนาดสูงสุด: 1 MB',
-            'Not image': 'กรุณาเลือกไฟล์รูปภาพที่ถูกต้อง'
+            'Not image': 'กรุณาเลือกไฟล์รูปภาพที่ถูกต้อง',
+            'daysOfWeek': ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+            'session': 'ช่วง',
+            'event': 'กิจกรรม',
+            'start': 'เริ่ม',
+            'end': 'จบ',
+            'Group training (Adults)': 'เทรนแบบกลุ่ม (ผู้ใหญ่)',
+            'Group training (Kids)': 'เทรนแบบกลุ่ม (เด็ก)',
+            'The Ladder': 'แลดเดอร์',
+            'Tournament (Master’s Cup)': 'การแข่งขันสำหรับมืออาชีพ',
+            'Tournament (Kids Open Cup)': 'การแข่งขันสำหรับเด็ก',
+            'Tournament (Amateurs Cup)': 'การแข่งขันสำหรับบุคคลทั่วไป',
+            'Private session': 'เทรนส่วนตัว 1:1',
+            'Master Class': 'มาสเตอร์คลาส',
+            '-': 'ไม่ได้เลือก'
         }
     };
 
@@ -485,31 +527,345 @@ document.addEventListener("DOMContentLoaded", async function() {
         event.preventDefault();
         saveClubData();
     });
+
+    document.getElementById('rescheduling').addEventListener('submit', function(event) {
+        event.preventDefault();
+        saveScheduleData();
+    });
+
+    const sectionSchedule =  document.querySelector('.sectionSchedule');
+
+     // Добавляем слушатель resize
+    window.addEventListener('resize', () => {
+
+        const screenWidth = window.innerWidth;
+        if (screenWidth > 767) {
+            sectionSchedule.style = "display: block";
+            renderScheduleTable(clubdata);
+        } else {
+            sectionSchedule.style = "display: none";
+        }
+    });
+
     
-  
+    renderScheduleTable(clubdata);
+    
 
-    // const container = document.querySelector('.parseContainer');
+    function renderScheduleTable(clubData) {
+        const daysOfWeek = getTranslation('daysOfWeek'); // Переведенные названия дней
+        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const maxSessions = 6; // Постоянное значение для количества сессий
+      
+        const tableBody = document.querySelector('.schedule-form');
+        tableBody.innerHTML = ""; // Очищаем таблицу перед заполнением
+    
+        // Создаем строку заголовков таблицы
+        const headerRow = document.createElement("tr");
+    
+        // Первая ячейка заголовка - "Session"
+        const sessionHeader = document.createElement("th");
+        // sessionHeader.innerText = getTranslation('session');
+        headerRow.appendChild(sessionHeader);
+    
+        // Добавляем названия дней недели в заголовок
+        daysOfWeek.forEach(day => {
+            const dayHeader = document.createElement("th");
+            dayHeader.innerText = day;
+            headerRow.appendChild(dayHeader);
+        });
+    
+        tableBody.appendChild(headerRow); // Добавляем заголовок в таблицу
+    
+        // Рендерим строки для каждой сессии
+        for (let sessionIndex = 0; sessionIndex < maxSessions; sessionIndex++) {
+            const row = document.createElement("tr");
+    
+            // Добавляем номер сессии
+            const sessionCell = document.createElement("td");
+            sessionCell.innerText = sessionIndex + 1;
+            sessionCell.style = 'align-content: center';
+            row.appendChild(sessionCell);
+    
+            // Создаем ячейки для каждого дня недели
+            dayKeys.forEach((dayKey, dayIndex) => {
+                const cell = document.createElement("td");
+                const eventData = clubData.scheduleData[dayKey]?.[sessionIndex] || { event: "", start: "", end: "" };
+    
+                const eventLabel = document.createElement("label");
+                eventLabel.innerText = getTranslation('event');
+                const eventInput = document.createElement("textarea");
+                eventInput.setAttribute("readonly", true);
+                // eventInput.type = "text";
+                eventInput.rows = 4; // устанавливаем количество строк, например, 4
+                eventInput.cols = 5; // ширина в колонках, например, 30
+                eventInput.value = getTranslation(eventData.event) || (eventData.event === '' ? getTranslation('-'): 'Not selected');
+                if (eventInput.value === 'Not selected' || eventInput.value === ' Не выбрано' || eventInput.value === 'ไม่ได้เลือก') {
+                    eventInput.style = "color: #666877"; 
+                }
+                eventInput.name = `${dayKey}_event_${sessionIndex + 1}`;
+                eventInput.classList.add("event-input");
 
-    // if (container) {
-    //     const rows = container.querySelectorAll('tbody tr'); // Находим все tr элементы внутри контейнера
-    //     const result = [];
+                // eventInput.addEventListener('blur', () => {
+                //     if (eventInput.value === 'Not selected' || eventInput.value === ' Не выбрано' || eventInput.value === 'ไม่ได้เลือก') {
+                //         eventInput.style = "color: #666877"; 
+                //     } else {
+                //         eventInput.style = "color: #fff";
+                //     }
+                // });
+    
+                const dropdown = document.createElement("div");
+                dropdown.classList.add("eventDropdown");
+    
+                const dropdownContent = document.createElement("div");
+                dropdownContent.classList.add("eventDropdown-content");
+                dropdownContent.id = `${dayKey}_event_${sessionIndex + 1}`;
+    
+                const events = ["-", "Group training (Adults)", "Group training (Kids)", "The Ladder", "Tournament (Master’s Cup)", "Tournament (Kids Open Cup)", "Tournament (Amateurs Cup)", "Private session", "Master Class"];
+                events.forEach(type => {
+                    const dropdownItem = document.createElement("div");
+                    dropdownItem.innerText = getTranslation(type);  // Получаем перевод по ключу
+                    dropdownItem.onclick = () => { 
+                        eventInput.value = getTranslation(type);     // Заполняем поле ввода переводом
+                        dropdownContent.style.display = "none";
+                        if (eventInput.value === 'Not selected' || eventInput.value === 'Не выбрано' || eventInput.value === 'ไม่ได้เลือก') {
+                            eventInput.style = "color: #666877"; 
+                        } else {
+                            eventInput.style = "color: #fff";
+                        }
+                    };
+                    dropdownContent.appendChild(dropdownItem);
+                });
+                dropdown.appendChild(dropdownContent);
+                eventInput.onclick = (e) => {
+                    e.stopPropagation();
+                    dropdownContent.style.display = "block";
+                };
+                document.addEventListener("click", (e) => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdownContent.style.display = "none";
+                    }
+                });
+    
+                // Поля для начала и окончания события
+                const startLabel = document.createElement("label");
+                startLabel.innerText = getTranslation('start'); // Перевод "Start"
+                const startTime = document.createElement("input");
+                startTime.type = "time";
+                startTime.value = eventData.start;
+                startTime.name = `${dayKey}_start_${sessionIndex + 1}`;
+    
+                const endLabel = document.createElement("label");
+                endLabel.innerText = getTranslation('end'); // Перевод "End"
+                const endTime = document.createElement("input");
+                endTime.type = "time";
+                endTime.value = eventData.end;
+                endTime.name = `${dayKey}_end_${sessionIndex + 1}`;
+    
+                // Добавляем элементы в ячейку
+                cell.appendChild(eventLabel);
+                cell.appendChild(eventInput);
+                cell.appendChild(dropdown);
+                cell.appendChild(startLabel);
+                cell.appendChild(startTime);
+                cell.appendChild(endLabel);
+                cell.appendChild(endTime);
+    
+                row.appendChild(cell);
+            });
+    
+            tableBody.appendChild(row);
+        }
+    }
 
-    //     rows.forEach(row => {
-    //         const cells = row.querySelectorAll('td'); // Находим все td элементы внутри текущей строки
+    // renderResponsiveScheduleTable(clubdata);
 
-    //         if (cells.length >= 2) {
-    //             const manufacturer = cells[1].textContent.split(' (')[0]; // Извлекаем текст до первой скобки
-    //             const modelName = cells[2].textContent.split(' (')[0]; // Аналогично для названия модели
-
-    //             result.push(`"${manufacturer} ${modelName}"`);
+    // function renderResponsiveScheduleTable(clubData) {
+    //     const daysOfWeek = getTranslation('daysOfWeek'); // Переведенные названия дней
+    //     const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+    //     const maxSessions = 6; // Постоянное значение для количества сессий
+    
+    //     const tableBody = document.querySelector('.schedule-form');
+    //     tableBody.innerHTML = ""; // Очищаем таблицу перед заполнением
+    
+    //     dayKeys.forEach((dayKey, dayIndex) => {
+    //         const eventsForDay = clubData.scheduleData[dayKey] || [];
+    
+    //         if (eventsForDay.length === 0) return; // Пропускаем дни без событий
+    
+    //         // Создаем блок для дня
+    //         const dayBlock = document.createElement("div");
+    //         dayBlock.classList.add("day-block");
+    
+    //         // Название дня недели
+    //         const dayTitle = document.createElement("h3");
+    //         dayTitle.innerText = daysOfWeek[dayIndex];
+    //         dayBlock.appendChild(dayTitle);
+    
+    //         // Рендерим сессии для дня
+    //         for (let sessionIndex = 0; sessionIndex < maxSessions; sessionIndex++) {
+    //             const sessionData = eventsForDay[sessionIndex] || { event: "", start: "", end: "" };
+    
+    //             // Создаем блок для сессии
+    //             const sessionBlock = document.createElement("div");
+    //             sessionBlock.classList.add("session-block");
+    
+    //             // Сессия
+    //             const sessionTitle = document.createElement("div");
+    //             sessionTitle.classList.add("session-title");
+    //             sessionTitle.innerText = `Session ${sessionIndex + 1}`;
+    //             sessionBlock.appendChild(sessionTitle);
+    
+    //             // Название события
+    //             const eventLabel = document.createElement("label");
+    //             eventLabel.innerText = getTranslation('event');
+    //             const eventInput = document.createElement("textarea");
+    //             eventInput.setAttribute("readonly", true);
+    //             eventInput.rows = 4;
+    //             eventInput.cols = 5;
+    //             eventInput.value = getTranslation(sessionData.event) || (sessionData.event === '' ? getTranslation('-'): 'Not selected');
+    //             if (eventInput.value === 'Not selected' || eventInput.value === ' Не выбрано' || eventInput.value === 'ไม่ได้เลือก') {
+    //                 eventInput.style = "color: #666877"; 
+    //             }
+    //             eventInput.classList.add("event-input");
+    
+    //             // Выпадающий список для выбора события
+    //             const dropdown = document.createElement("div");
+    //             dropdown.classList.add("eventDropdown");
+    
+    //             const dropdownContent = document.createElement("div");
+    //             dropdownContent.classList.add("eventDropdown-content");
+    //             dropdownContent.id = `${dayKey}_event_${sessionIndex + 1}`;
+    
+    //             const events = ["-", "Group training (Adults)", "Group training (Kids)", "The Ladder", "Tournament (Master’s Cup)", "Tournament (Kids Open Cup)", "Tournament (Amateurs Cup)", "Private session", "Master Class"];
+    //             events.forEach(type => {
+    //                 const dropdownItem = document.createElement("div");
+    //                 dropdownItem.innerText = getTranslation(type);
+    //                 dropdownItem.onclick = () => { 
+    //                     eventInput.value = getTranslation(type);
+    //                     dropdownContent.style.display = "none";
+    //                     eventInput.style = eventInput.value === 'Not selected' || eventInput.value === 'Не выбрано' || eventInput.value === 'ไม่ได้เลือก' ? "color: #666877" : "color: #fff";
+    //                 };
+    //                 dropdownContent.appendChild(dropdownItem);
+    //             });
+    //             dropdown.appendChild(dropdownContent);
+    
+    //             eventInput.onclick = (e) => {
+    //                 e.stopPropagation();
+    //                 dropdownContent.style.display = "block";
+    //             };
+    
+    //             // Время начала и окончания
+    //             const startLabel = document.createElement("label");
+    //             startLabel.innerText = getTranslation('start');
+    //             const startTime = document.createElement("input");
+    //             startTime.type = "time";
+    //             startTime.value = sessionData.start;
+    //             startTime.name = `${dayKey}_start_${sessionIndex + 1}`;
+    
+    //             const endLabel = document.createElement("label");
+    //             endLabel.innerText = getTranslation('end');
+    //             const endTime = document.createElement("input");
+    //             endTime.type = "time";
+    //             endTime.value = sessionData.end;
+    //             endTime.name = `${dayKey}_end_${sessionIndex + 1}`;
+    
+    //             // Добавляем элементы в блок сессии
+    //             sessionBlock.appendChild(eventLabel);
+    //             sessionBlock.appendChild(eventInput);
+    //             sessionBlock.appendChild(dropdown);
+    //             sessionBlock.appendChild(startLabel);
+    //             sessionBlock.appendChild(startTime);
+    //             sessionBlock.appendChild(endLabel);
+    //             sessionBlock.appendChild(endTime);
+    
+    //             dayBlock.appendChild(sessionBlock); // Добавляем блок сессии в блок дня
     //         }
+    
+    //         tableBody.appendChild(dayBlock); // Добавляем блок дня в таблицу
     //     });
-
-    //     console.log(result); // Вывод массива с производителями и моделями
-    //     localStorage.setItem('накладки', result);
-    // } else {
-    //     console.log('Контейнер .parseContainer не найден');
     // }
+    
+    
+    function findEventKey(value, lang) {
+        const entries = Object.entries(translations[lang]);
+        const eventEntry = entries.find(([key, translation]) => translation === value);
+        return eventEntry ? eventEntry[0] : null; // Возвращаем ключ или null, если не найдено
+    }
+
+
+    async function saveScheduleData() {
+        const tableBody = document.querySelector('.schedule-form');
+        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const scheduleData = {}; 
+        
+        console.log(tableBody);
+        console.log(tableBody.rows);
+        // Инициализируем объект для каждого дня недели
+        dayKeys.forEach(day => {
+            scheduleData[day] = [];
+        });
+    
+        // Перебираем строки таблицы (начиная со второй строки, так как первая — это заголовок)
+        Array.from(tableBody.rows).slice(1).forEach((row, sessionIndex) => {
+            dayKeys.forEach((dayKey, dayIndex) => {
+                const cell = row.cells[dayIndex + 1]; // Первая ячейка — это номер сессии, поэтому сдвиг на 1
+                const eventInput = cell.querySelector("textarea.event-input");
+                const startTime = cell.querySelector(`input[name="${dayKey}_start_${sessionIndex + 1}"]`);
+                const endTime = cell.querySelector(`input[name="${dayKey}_end_${sessionIndex + 1}"]`);
+    
+                // Находим ключ события по текущему значению текста
+                // Находим ключ события
+                let eventKey = findEventKey(eventInput.value, lang);
+
+                console.log(eventKey);
+                if (!eventKey) {
+                    console.warn(`Событие "${eventInput.value}" не найдено в translations для языка "${lang}"`);
+                }
+
+                if (eventKey === "-") {
+                    eventKey = "";
+                    endTime.value ='';
+                    startTime.value ='';
+                }
+            
+                const event = {
+                    event: eventKey,
+                    start: startTime.value,
+                    end: endTime.value,
+                };
+                // Создаем объект события
+                // const event = {
+                //     event: eventInput.value,
+                //     start: startTime.value,
+                //     end: endTime.value,
+                // };
+                
+                // Добавляем событие в расписание дня
+                scheduleData[dayKey].push(event);
+            });
+        });
+    
+        try {
+            // Отправляем данные на сервер
+            const response = await fetch('/api/saveSchedule', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ scheduleData, clubId: userId}),
+            });
+    
+            if (response.ok) {
+                console.log("Расписание успешно сохранено.");
+                window.location.href = `/${lang}/dashboard/club/${userId}`;
+            } else {
+                console.error("Ошибка сохранения расписания.");
+            }
+        } catch (error) {
+            console.error("Ошибка подключения:", error);
+        }
+    }
+
 
 });
 

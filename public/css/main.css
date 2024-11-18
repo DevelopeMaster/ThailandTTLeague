@@ -1401,6 +1401,17 @@ h2 {
       .last_tournaments_tournament_clubDate {
         gap: 12px;
         width: 65%; }
+        .last_tournaments_tournament_clubDate a {
+          color: #fff; }
+        .last_tournaments_tournament_clubDate_club {
+          color: #fff;
+          text-decoration: none !important;
+          color: inherit !important;
+          cursor: default !important; }
+          .last_tournaments_tournament_clubDate_club span {
+            text-decoration: none;
+            color: inherit;
+            cursor: default; }
       .last_tournaments_tournament_winners {
         gap: 8px; }
       .last_tournaments_tournament_aditInfo_playersLimit {
@@ -1409,6 +1420,9 @@ h2 {
         top: 16px;
         flex-direction: column;
         gap: 10px; }
+  .last_tournaments_tournament_club span {
+    text-decoration: none;
+    color: inherit; }
   .clubs {
     margin-top: 40px; }
     .clubs_content {
@@ -1532,6 +1546,51 @@ h2 {
     align-items: center; }
   .modal .hands label {
     font-weight: 400; } }
+
+.headerDropdownForm {
+  position: absolute;
+  top: 50px;
+  left: 0px;
+  display: block;
+  width: 100%; }
+  .headerDropdownForm .headerDropdown-content {
+    display: none;
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+    max-height: 165px;
+    overflow-y: auto;
+    background-color: #3F3F4C;
+    border-radius: 12px 12px 12px 12px; }
+  .headerDropdownForm .headerDropdown-content div {
+    color: black;
+    padding: 8px 13px 8px 16px;
+    text-decoration: none;
+    display: block;
+    min-height: 24px;
+    align-content: center;
+    color: #FFF;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    cursor: default; }
+    .headerDropdownForm .headerDropdown-content div span {
+      position: absolute;
+      right: 16px;
+      color: #666877; }
+  .headerDropdownForm .headerDropdown-content div:hover {
+    background-color: #343643; }
+  .headerDropdownForm .headerDropdown-content::-webkit-scrollbar {
+    padding-right: 8px;
+    width: 2px; }
+  .headerDropdownForm .headerDropdown-content::-webkit-scrollbar-track {
+    background: #262630; }
+  .headerDropdownForm .headerDropdown-content::-webkit-scrollbar-thumb {
+    background: #666877; }
+  .headerDropdownForm .headerDropdown-content::-webkit-scrollbar-thumb:hover {
+    background: #666877; }
 
 .navigate {
   padding-top: 200px; }
@@ -5403,22 +5462,23 @@ input:-webkit-autofill:focus {
   margin-top: 5px;
   display: none; }
 
-input {
+input, textarea {
   width: 100%;
   margin-top: 10px;
   display: flex;
   padding: 8px 13px 8px 8px;
   align-items: center;
+  justify-content: center;
   border: none;
   border-radius: 6px;
   background: #3F3F4C;
   color: #fff;
   font-family: Inter;
-  font-size: 14px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: normal; }
-  input::placeholder {
+  input::placeholder, textarea::placeholder {
     color: #666877;
     font-family: Inter;
     font-size: 14px;
@@ -5426,51 +5486,118 @@ input {
     font-weight: 400;
     line-height: normal; }
 
-input:focus {
+input:focus, textarea:focus {
   outline: none; }
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
   -webkit-text-fill-color: #fff;
   transition: background-color 5000s ease-in-out 0s; }
 
-.secondForm {
-  margin-top: 40px; }
-  .secondForm .editschedule_formContainer {
-    position: relative;
-    padding: 20px;
-    border-radius: 14px;
-    background: #262630;
-    color: white;
+.secondForm .editschedule_formContainer {
+  position: relative;
+  padding: 20px;
+  border-radius: 14px;
+  background: #262630;
+  color: white;
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  /* Размещение старт/финиш инпутов рядом по горизонтали */ }
+  .secondForm .editschedule_formContainer table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #262630; }
+  .secondForm .editschedule_formContainer th, .secondForm .editschedule_formContainer td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
+  .secondForm .editschedule_formContainer .numberOfEvent {
+    align-content: center; }
+  .secondForm .editschedule_formContainer td label {
+    display: block;
+    color: #FFF;
+    text-align: center;
     font-family: Inter;
-    font-size: 16px;
+    font-size: 14px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 500;
     line-height: normal;
-    /* Размещение старт/финиш инпутов рядом по горизонтали */ }
-    .secondForm .editschedule_formContainer table {
-      margin-top: 20px;
+    align-self: stretch; }
+  .secondForm .editschedule_formContainer input {
+    height: 27px;
+    margin-top: 4px;
+    margin-bottom: 3px;
+    padding-top: 6px;
+    padding-bottom: 6px; }
+  .secondForm .editschedule_formContainer textarea {
+    resize: none;
+    cursor: pointer;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    scrollbar-width: none; }
+  .secondForm .editschedule_formContainer input[type="time"] {
+    width: 100%;
+    padding: 4px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px; }
+  .secondForm .editschedule_formContainer .event-input {
+    position: relative;
+    background-image: url("/icons/chevron-down.svg");
+    background-repeat: no-repeat;
+    background-position: right 0px center;
+    padding-right: 20px; }
+  .secondForm .editschedule_formContainer .eventDropdown {
+    position: relative;
+    margin-top: -6px;
+    display: block;
+    width: 100%;
+    margin-bottom: 9px;
+    scrollbar-width: none; }
+    .secondForm .editschedule_formContainer .eventDropdown .eventDropdown-content {
+      display: none;
+      position: absolute;
       width: 100%;
-      border-collapse: collapse; }
-    .secondForm .editschedule_formContainer th, .secondForm .editschedule_formContainer td {
-      padding: 10px;
-      border: 1px solid #ddd;
-      text-align: center; }
-    .secondForm .editschedule_formContainer td label {
-      display: block;
-      margin-bottom: 1px;
-      font-size: 12px;
-      color: #666; }
-    .secondForm .editschedule_formContainer input[type="time"] {
-      width: 80px;
-      padding: 4px;
-      font-size: 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin-top: 1px; }
-    .secondForm .editschedule_formContainer td label {
-      margin-bottom: 0; }
+      z-index: 2;
+      max-height: 118px;
+      overflow-y: auto;
+      background-color: #3f3f4c;
+      border-radius: 0 0 14px 14px;
+      scrollbar-width: none; }
+      .secondForm .editschedule_formContainer .eventDropdown .eventDropdown-content div {
+        padding: 8px 1px 8px 1px;
+        text-decoration: none;
+        display: block;
+        color: #fff;
+        font-family: Inter;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        cursor: default;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        cursor: pointer; }
+        .secondForm .editschedule_formContainer .eventDropdown .eventDropdown-content div:hover {
+          background: #666877; }
+  .secondForm .editschedule_formContainer td label {
+    margin-bottom: 0; }
+  .secondForm .editschedule_formContainer .editschedule_formContainer_submit {
+    margin-top: 20px; }
+
+.sectionSchedule {
+  margin-top: 80px; }
 
 @media (max-width: 768px) {
   .editclub_formContainer_formSection .photoUploadContainer {
@@ -5497,7 +5624,9 @@ input:-webkit-autofill:focus {
     content: attr(data-day);
     font-weight: bold;
     display: block;
-    margin-bottom: 5px; } }
+    margin-bottom: 5px; }
+  .sectionSchedule {
+    margin-top: 60px; } }
 
 @media (max-width: 576px) {
   .editclub_formContainer {
@@ -5506,7 +5635,13 @@ input:-webkit-autofill:focus {
     gap: 14px; }
     .editclub_formContainer_formSection .formWrapper {
       flex-direction: column;
-      gap: 0px; } }
+      gap: 0px; }
+    .editclub_formContainer_logoSection_btn {
+      width: 80px; }
+  .sectionSchedule {
+    margin-top: 40px; }
+  section h2 {
+    margin-bottom: 20px; } }
 
 .clubStatistics .tournamentsTable, .clubStatistics .victoriesTable {
   position: relative;
@@ -5605,6 +5740,34 @@ input:-webkit-autofill:focus {
 
 .clubStatistics .victoriesTable {
   margin-top: 20px; }
+
+.sectionSchedule .event {
+  width: 100%;
+  font-size: 14px;
+  text-align: center;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  scrollbar-width: none; }
+
+.sectionSchedule .time {
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px; }
+
+.sectionSchedule .schedule-container {
+  background-image: url("/images/tennisnet.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top; }
+
+.sectionSchedule .secondForm .schedule-table {
+  margin-top: 0;
+  background: none;
+  border-collapse: collapse;
+  table-layout: auto; }
+  .sectionSchedule .secondForm .schedule-table .event, .sectionSchedule .secondForm .schedule-table .time {
+    overflow-wrap: break-word;
+    scrollbar-width: none; }
 
 .clubWinners .winnersTable {
   position: relative;
@@ -5743,7 +5906,32 @@ input:-webkit-autofill:focus {
       .clubStatistics .tournamentsTable .player_rating, .clubStatistics .victoriesTable .player_rating {
         justify-content: flex-end;
         padding-left: 0px;
-        padding-right: 0px; } }
+        padding-right: 0px; }
+  .schedule-container {
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px; }
+  .schedule-form {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px; }
+    .schedule-form th.day-header {
+      text-align: left;
+      font-size: 16px;
+      padding: 10px; }
+    .schedule-form td.event {
+      text-align: center;
+      padding: 8px 10px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-direction: column; }
+    .schedule-form td.time {
+      text-align: center;
+      padding: 8px 10px; }
+    .schedule-form tr {
+      border-bottom: 1px solid #ddd; } }
 
 @media (max-width: 576px) {
   .clubStatistics {
@@ -6015,6 +6203,18 @@ input:-webkit-autofill:focus {
   position: relative; }
   .admin_body .admin_searchClub {
     margin-top: -46px; }
+  .admin_body .players {
+    margin-top: -50px; }
+    .admin_body .players .playersTable_player:hover {
+      border-radius: 0; }
+    .admin_body .players .playersTable_player:after {
+      margin-top: 14px; }
+  .admin_body .coaches {
+    margin-top: -50px; }
+    .admin_body .coaches .coachesTable_coach:hover {
+      border-radius: 0; }
+    .admin_body .coaches .coachesTable_coach:after {
+      margin-top: 14px; }
 
 .admin_header {
   position: fixed;
@@ -6127,9 +6327,6 @@ input:-webkit-autofill:focus {
 .admin_profileMenu_openMenu {
   display: block; }
 
-.players {
-  margin-top: 30px; }
-
 .adminContainer {
   position: relative;
   width: 804px;
@@ -6154,7 +6351,8 @@ input:-webkit-autofill:focus {
       margin-top: 0; }
   .adminContainer h2 {
     color: #000;
-    padding-top: 20px; }
+    padding-top: 20px;
+    margin-bottom: 20px; }
   .adminContainer .filterPlayers_filter {
     margin-top: 100px;
     background: #fff; }
@@ -6162,7 +6360,8 @@ input:-webkit-autofill:focus {
       color: #000; }
     .adminContainer .filterPlayers_filter input {
       background: #E9E9E9;
-      color: #000; }
+      color: #000;
+      height: 37px; }
     .adminContainer .filterPlayers_filter .dropdown-content {
       background-color: #fff; }
       .adminContainer .filterPlayers_filter .dropdown-content div {
@@ -6175,20 +6374,125 @@ input:-webkit-autofill:focus {
       color: #000; }
     .adminContainer .playersTable_player:hover {
       background-color: #E9E9E9; }
-  .adminContainer .filterClubs_filter {
+  .adminContainer .coachesTable {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+    margin-bottom: 24px; }
+    .adminContainer .coachesTable .cell {
+      color: #000; }
+    .adminContainer .coachesTable_coach {
+      border-radius: 8px;
+      padding: 15px 0;
+      display: grid;
+      grid-template-columns: 50px repeat(6, 1fr);
+      column-gap: 30px;
+      height: 30px;
+      align-items: center;
+      color: #fff;
+      text-decoration: none;
+      padding-top: 20px; }
+    .adminContainer .coachesTable_coach:hover {
+      background-color: #E9E9E9; }
+    .adminContainer .coachesTable .player_number {
+      color: #000000;
+      font-size: 16px;
+      font-weight: 500;
+      margin-left: 30px; }
+    .adminContainer .coachesTable .player_player {
+      grid-column: 2/4;
+      align-items: center;
+      gap: 12px;
+      display: block; }
+    .adminContainer .coachesTable .player_login {
+      grid-column: 4/6; }
+    .adminContainer .coachesTable .player_rating {
+      margin-right: 30px; }
+    .adminContainer .coachesTable_coach {
+      border-radius: 8px;
+      padding: 15px 0px;
+      display: grid;
+      grid-template-columns: 50px repeat(6, 1fr);
+      column-gap: 30px;
+      height: 30px;
+      align-items: center;
+      color: #000000;
+      text-decoration: none;
+      padding-top: 20px; }
+      .adminContainer .coachesTable_coach::after {
+        margin-top: 11px;
+        content: '';
+        display: block;
+        grid-column: 1/-1;
+        height: 1px;
+        background-color: #3F3F4C; }
+      .adminContainer .coachesTable_coach .player_number {
+        font-weight: 400;
+        margin-left: 30px; }
+      .adminContainer .coachesTable_coach .player_player {
+        font-size: 16px;
+        font-weight: 400;
+        display: flex; }
+        .adminContainer .coachesTable_coach .player_player .playerLogo {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%; }
+      .adminContainer .coachesTable_coach .player_login {
+        color: #000000; }
+      .adminContainer .coachesTable_coach .player_city {
+        font-weight: 400; }
+      .adminContainer .coachesTable_coach .player_rating {
+        font-weight: 400;
+        margin-right: 30px;
+        color: #000000; }
+    .adminContainer .coachesTable .cell {
+      height: 30px;
+      display: flex;
+      gap: 14px;
+      align-items: center; }
+      .adminContainer .coachesTable .cell span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
+  .adminContainer .filterClubs_filter, .adminContainer .filterTournaments_filter {
     margin-top: 100px;
     background: #fff; }
-    .adminContainer .filterClubs_filter label {
+    .adminContainer .filterClubs_filter label, .adminContainer .filterTournaments_filter label {
       color: #000; }
-    .adminContainer .filterClubs_filter input {
+    .adminContainer .filterClubs_filter input, .adminContainer .filterTournaments_filter input {
       background: #E9E9E9;
-      color: #000; }
-    .adminContainer .filterClubs_filter .dropdown-content {
+      color: #000;
+      height: 37px; }
+    .adminContainer .filterClubs_filter .dropdown-content, .adminContainer .filterTournaments_filter .dropdown-content {
       background-color: #fff; }
-      .adminContainer .filterClubs_filter .dropdown-content div {
+      .adminContainer .filterClubs_filter .dropdown-content div, .adminContainer .filterTournaments_filter .dropdown-content div {
         color: #000; }
-        .adminContainer .filterClubs_filter .dropdown-content div:hover {
+        .adminContainer .filterClubs_filter .dropdown-content div:hover, .adminContainer .filterTournaments_filter .dropdown-content div:hover {
           background-color: #E9E9E9; }
+    .adminContainer .filterClubs_filter #filterClubs, .adminContainer .filterTournaments_filter #filterClubs {
+      height: 37px; }
+  .adminContainer .filterCoaches_filter {
+    background: #fff;
+    margin-top: 99px; }
+    .adminContainer .filterCoaches_filter label {
+      color: #000; }
+    .adminContainer .filterCoaches_filter input {
+      background: #E9E9E9;
+      color: #000;
+      height: 37px; }
+    .adminContainer .filterCoaches_filter .dropdown-content {
+      background-color: #fff; }
+      .adminContainer .filterCoaches_filter .dropdown-content div {
+        color: #000; }
+        .adminContainer .filterCoaches_filter .dropdown-content div:hover {
+          background-color: #E9E9E9; }
+    .adminContainer .filterCoaches_filter #filterCoaches {
+      height: 37px; }
   .adminContainer .clubsTable {
     background-color: #fff;
     border-radius: 8px;
@@ -6198,7 +6502,8 @@ input:-webkit-autofill:focus {
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
-    line-height: 130%; }
+    line-height: 130%;
+    margin-bottom: 50px; }
     .adminContainer .clubsTable_club {
       position: relative;
       border-radius: 8px;
@@ -6221,6 +6526,9 @@ input:-webkit-autofill:focus {
         height: 1px;
         width: 100%;
         background-color: #3F3F4C; }
+      .adminContainer .clubsTable_club:hover {
+        background-color: #e9e9e9;
+        border-radius: 0; }
       .adminContainer .clubsTable_club .club_club {
         font-size: 16px;
         font-weight: 400;
@@ -6260,3 +6568,146 @@ input:-webkit-autofill:focus {
         margin-top: 0; }
       .adminContainer .editclub_formContainer .admin_container_buttonsWrapper .clubs_down, .adminContainer .editclub_formContainer .admin_container_buttonsWrapper .deletePlayer, .adminContainer .editclub_formContainer .admin_container_buttonsWrapper .editclub_formContainer_submit {
         margin-top: 0; }
+  .adminContainer .club_date {
+    text-align: end;
+    width: 120px; }
+  .adminContainer .editAdv_formContainer {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 30px;
+    border-radius: 14px;
+    color: #fff;
+    background: #fff; }
+    .adminContainer .editAdv_formContainer label {
+      color: #000; }
+    .adminContainer .editAdv_formContainer input {
+      background: #E9E9E9;
+      color: #000; }
+    .adminContainer .editAdv_formContainer .hands_left {
+      margin-top: 16px; }
+      .adminContainer .editAdv_formContainer .hands_left label {
+        margin-top: 0; }
+      .adminContainer .editAdv_formContainer .hands_left input {
+        margin-top: 0; }
+    .adminContainer .editAdv_formContainer_formSection {
+      display: flex;
+      color: #fff;
+      gap: 0;
+      flex-direction: column;
+      width: 100%; }
+    .adminContainer .editAdv_formContainer_logoSection img {
+      border-radius: 4px;
+      width: 100%;
+      max-width: 275px; }
+      .adminContainer .editAdv_formContainer_logoSection img #customLogoButton {
+        margin: 16px auto; }
+    .adminContainer .editAdv_formContainer_logoSection label {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal; }
+    .adminContainer .editAdv_formContainer .admin_container_buttonsWrapper {
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center; }
+      .adminContainer .editAdv_formContainer .admin_container_buttonsWrapper .makeCoach {
+        margin-top: 0; }
+      .adminContainer .editAdv_formContainer .admin_container_buttonsWrapper .clubs_down, .adminContainer .editAdv_formContainer .admin_container_buttonsWrapper .deletePlayer, .adminContainer .editAdv_formContainer .admin_container_buttonsWrapper .editclub_formContainer_submit {
+        margin-top: 0; }
+  .adminContainer .upcommingTable, .adminContainer .lastTournamentsTable {
+    background: #F8F8F8; }
+    .adminContainer .upcommingTable_header, .adminContainer .lastTournamentsTable_header {
+      background: #E9E9E9; }
+      .adminContainer .upcommingTable_header span, .adminContainer .lastTournamentsTable_header span {
+        color: #262630; }
+    .adminContainer .upcommingTable .cell, .adminContainer .lastTournamentsTable .cell {
+      color: #262630; }
+    .adminContainer .upcommingTable_tournament:hover .cell, .adminContainer .lastTournamentsTable_tournament:hover .cell {
+      background: #E9E9E9; }
+    .adminContainer .upcommingTable_tournament .tournament_club span, .adminContainer .lastTournamentsTable_tournament .tournament_club span {
+      width: 145px; }
+  .adminContainer .editCities_addCity {
+    margin-bottom: 40px; }
+  .adminContainer .editCities_city {
+    display: flex;
+    gap: 8px;
+    align-items: center; }
+    .adminContainer .editCities_city_inputs {
+      display: flex;
+      gap: 20px;
+      width: 100%; }
+      .adminContainer .editCities_city_inputs input {
+        background: #E9E9E9;
+        color: #000;
+        margin-bottom: 10px; }
+      .adminContainer .editCities_city_inputs .input-error {
+        border: 1px solid #D10000; }
+        .adminContainer .editCities_city_inputs .input-error::placeholder {
+          color: #D10000; }
+    .adminContainer .editCities_city_btns {
+      padding-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      width: 32px;
+      margin-bottom: 10px; }
+      .adminContainer .editCities_city_btns_save, .adminContainer .editCities_city_btns_cross {
+        width: 14px;
+        height: 14px;
+        background-position: center; }
+    .adminContainer .editCities_city button {
+      height: 40px; }
+
+.editTournament .registeredPlayersBlock, .editTournament .retiredPlayersBlock {
+  margin-top: 30px; }
+  .editTournament .registeredPlayersBlock h3, .editTournament .retiredPlayersBlock h3 {
+    color: #262630;
+    font-family: Inter;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%;
+    letter-spacing: -0.2px; }
+  .editTournament .registeredPlayersBlock .coachesTable_coach, .editTournament .retiredPlayersBlock .coachesTable_coach {
+    grid-template-columns: 50px repeat(2, 1fr) 50px;
+    color: #262630;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal; }
+    .editTournament .registeredPlayersBlock .coachesTable_coach .player_rating, .editTournament .retiredPlayersBlock .coachesTable_coach .player_rating {
+      text-align: end;
+      margin-right: 0px; }
+    .editTournament .registeredPlayersBlock .coachesTable_coach .player_player, .editTournament .retiredPlayersBlock .coachesTable_coach .player_player {
+      gap: 10px;
+      align-items: center; }
+      .editTournament .registeredPlayersBlock .coachesTable_coach .player_player span, .editTournament .retiredPlayersBlock .coachesTable_coach .player_player span {
+        color: #262630;
+        margin-top: 0;
+        font-size: 20px; }
+    .editTournament .registeredPlayersBlock .coachesTable_coach .player_cross, .editTournament .retiredPlayersBlock .coachesTable_coach .player_cross {
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+      background-position: center center;
+      padding-right: 0px; }
+
+.editTournament .addPlayersBlock {
+  margin-top: 30px; }
+  .editTournament .addPlayersBlock .clubs_down {
+    margin-top: 0; }
+  .editTournament .addPlayersBlock .deletePlayer {
+    margin-top: 10px; }
+
+.tournaments .adminContainer h2 {
+  margin-top: -80px; }
+
+.editCities .adminContainer h2 {
+  margin-top: -40px; }

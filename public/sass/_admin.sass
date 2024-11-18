@@ -14,6 +14,20 @@
         position: relative
         .admin_searchClub
             margin-top: -46px
+        .players
+            margin-top: -50px
+            .playersTable_player
+                &:hover
+                    border-radius: 0
+                &:after
+                    margin-top: 14px
+        .coaches
+            margin-top: -50px
+            .coachesTable_coach
+                &:hover
+                    border-radius: 0
+                &:after
+                    margin-top: 14px
 
     &_header
         position: fixed
@@ -61,6 +75,7 @@
         top: 76px
         z-index: 1000
         box-sizing: border-box
+        
         // left: 0
         // overflow-y: auto; /* Если меню длинное, добавим прокрутку */
         // transition: width 0.3s ease; /* Анимация при изменении ширины */
@@ -131,14 +146,13 @@
 
 .admin_profileMenu_openMenu
     display: block
-.players
-    margin-top: 30px
 
 .adminContainer
     position: relative
     width: 804px
     margin-left: 300px
     margin-top: 76px
+    
     .buttonsTopWrapp
         position: absolute
         top: 20px
@@ -162,6 +176,7 @@
     h2 
         color: #000
         padding-top: 20px
+        margin-bottom: 20px
     .filterPlayers_filter
         margin-top: 100px
         background: #fff
@@ -170,6 +185,7 @@
         input
             background: #E9E9E9
             color: #000
+            height: 37px
             // -webkit-text-fill-color: #000
         .dropdown-content
             background-color: #fff
@@ -183,8 +199,102 @@
             color: #000
         &_player:hover
             background-color: #E9E9E9
+    .coachesTable
+        background: #fff
+        border-radius: 14px
+        padding: 20px
+        font-family: Inter
+        font-size: 16px
+        font-style: normal
+        font-weight: 500
+        line-height: 130%
+        margin-bottom: 24px
+        .cell
+            color: #000
+        &_coach
+            border-radius: 8px
+            padding: 15px 0
+            display: grid
+            grid-template-columns: 50px repeat(6, 1fr)
+            column-gap: 30px
+            height: 30px
+            align-items: center
+            color: #fff
+            text-decoration: none
+            padding-top: 20px
+        &_coach:hover
+            background-color: #E9E9E9
+        .player
+            &_number
+                color: #000000
+                font-size: 16px
+                font-weight: 500
+                margin-left: 30px
+            &_player
+                grid-column: 2/4
+                align-items: center
+                gap: 12px
+                display: block
+            &_login
+                grid-column: 4/6
+            // &_city
+            &_rating
+                margin-right: 30px
 
-    .filterClubs_filter
+        &_coach
+            border-radius: 8px
+            padding: 15px 0px
+            display: grid
+            grid-template-columns: 50px repeat(6, 1fr)
+            column-gap: 30px
+
+            height: 30px
+            align-items: center
+            color: #000000
+            text-decoration: none
+            padding-top: 20px
+            &::after
+                margin-top: 11px
+                content: ''
+                display: block
+                grid-column: 1/-1
+                height: 1px
+                background-color: #3F3F4C
+
+            .player
+                &_number
+                    font-weight: 400
+                    margin-left: 30px
+                &_player
+                    font-size: 16px
+                    font-weight: 400
+                    display: flex
+                    .playerLogo
+                        width: 36px
+                        height: 36px
+                        border-radius: 50%
+                &_login
+                    color: #000000
+                &_city
+                    font-weight: 400
+                &_rating
+                    font-weight: 400
+                    margin-right: 30px
+                    color: #000000
+        .cell
+            height: 30px
+            display: flex
+            gap: 14px
+            align-items: center
+            span
+                white-space: nowrap
+                overflow: hidden
+                text-overflow: ellipsis
+        // textarea
+        //     white-space: pre-line
+            
+
+    .filterClubs_filter, .filterTournaments_filter
         margin-top: 100px
         background: #fff
         label
@@ -192,6 +302,7 @@
         input
             background: #E9E9E9
             color: #000
+            height: 37px
             // -webkit-text-fill-color: #000
         .dropdown-content
             background-color: #fff
@@ -199,6 +310,28 @@
                 color: #000
                 &:hover
                     background-color: #E9E9E9
+        #filterClubs
+            height: 37px
+
+    .filterCoaches_filter
+        // margin-top: 100px
+        background: #fff
+        margin-top: 99px
+        label
+            color: #000
+        input
+            background: #E9E9E9
+            color: #000
+            height: 37px
+            // -webkit-text-fill-color: #000
+        .dropdown-content
+            background-color: #fff
+            div
+                color: #000
+                &:hover
+                    background-color: #E9E9E9
+        #filterCoaches
+            height: 37px
     
     .clubsTable
         background-color: #fff
@@ -211,6 +344,7 @@
         font-style: normal
         font-weight: 500
         line-height: 130%
+        margin-bottom: 50px
         // &_content
         //     display: flex
 
@@ -239,6 +373,9 @@
                 height: 1px
                 width: 100%
                 background-color: #3F3F4C
+            &:hover
+                background-color: #e9e9e9
+                border-radius:  0
             
             .club
                 &_club
@@ -283,3 +420,173 @@
             .clubs_down, .deletePlayer, .editclub_formContainer_submit
                 margin-top: 0
             
+    .club_date
+        text-align: end
+        width: 120px
+    .editAdv
+        &_formContainer
+            position: relative
+            display: flex
+            justify-content: space-between
+            padding: 20px
+            gap: 30px
+            border-radius: 14px
+            color: #fff
+            background: #fff
+            label
+                color: #000
+            input
+                background: #E9E9E9
+                color: #000
+            .hands_left
+                margin-top: 16px
+                label
+                    margin-top: 0
+                input
+                    margin-top: 0
+            &_formSection
+                display: flex
+                color: #fff
+                gap: 0
+                flex-direction: column
+                width: 100%
+            &_logoSection
+                img
+                    border-radius: 4px
+                    width: 100%
+                    max-width: 275px
+                    // max-height: 242px
+                    #customLogoButton
+                        margin: 16px auto
+                // &_btn
+                //     width: 100%
+                label
+                    display: block
+                    margin-top: 10px
+                    text-align: center
+                    // color: #fff
+                    font-family: Inter
+                    font-size: 16px
+                    font-style: normal
+                    font-weight: 500
+                    line-height: normal
+                    // margin-top: 16px
+
+            .admin_container_buttonsWrapper
+                margin-top: 30px
+                display: flex
+                justify-content: space-between
+                align-items: center
+                .makeCoach
+                    margin-top: 0
+                .clubs_down, .deletePlayer, .editclub_formContainer_submit
+                    margin-top: 0
+    .upcommingTable, .lastTournamentsTable
+        background: #F8F8F8
+        &_header
+            background: #E9E9E9
+            span
+                color: #262630
+        .cell
+            color: #262630
+        &_tournament
+            &:hover
+                .cell
+                    background: #E9E9E9
+            .tournament_club
+                span
+                    width: 145px
+    .editCities
+        &_addCity
+            margin-bottom: 40px
+        &_city
+            display: flex
+            gap: 8px
+            align-items: center
+            &_inputs
+                display: flex
+                gap: 20px
+                width: 100%
+
+                input
+                    background: #E9E9E9
+                    color: #000
+                    margin-bottom: 10px
+                .input-error
+                    border: 1px solid #D10000
+                    // color: #D10000
+                    &::placeholder
+                        color: #D10000
+                    // background: #fe6262e9
+            &_btns
+                padding-top: 8px
+                display: flex
+                align-items: center
+                gap: 4px
+                width: 32px
+                margin-bottom: 10px
+                &_save, &_cross
+                    width: 14px
+                    height: 14px
+                    background-position: center
+            button
+                height: 40px
+
+
+.editTournament
+    .registeredPlayersBlock, .retiredPlayersBlock
+        margin-top: 30px
+        h3
+            color: #262630
+            font-family: Inter
+            font-size: 20px
+            font-style: normal
+            font-weight: 400
+            line-height: 130%
+            letter-spacing: -0.2px
+        .coachesTable
+            
+            &_coach
+                grid-template-columns: 50px repeat(2, 1fr) 50px
+                color: #262630
+                font-family: Inter
+                // font-size: 20px
+                font-style: normal
+                font-weight: 400
+                line-height: normal
+                .player
+                    &_rating
+                        text-align: end
+                        margin-right: 0px
+                    &_player
+                        gap: 10px
+                        align-items: center
+                        span
+                            color: #262630
+                            margin-top: 0
+                            font-size: 20px
+                    &_cross
+                        cursor: pointer
+                        height: 100%
+                        width: 100%
+                        background-position: center center
+                        padding-right: 0px
+                            
+    .addPlayersBlock
+        margin-top: 30px
+        .clubs_down
+            margin-top: 0
+        .deletePlayer
+            margin-top: 10px
+
+.tournaments
+    .adminContainer
+        h2
+            margin-top: -80px
+.editCities
+    .adminContainer
+        h2
+            margin-top: -40px
+// .filterTournaments
+//     // position: relative
+//     z-index: 1000

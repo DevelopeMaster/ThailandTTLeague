@@ -61,92 +61,82 @@
 
 <body class="admin_body">
     <header class="admin_header" id="scroll">
-        <div class="admin_logoWrapp">
-            <a class="adminlogo" href="/ru/dashboard/admin">
-                <img class="adminlogo_img" src="/icons/darklogo.svg" alt="logo">
-            </a>
-        </div>
-        <div class="admin_user">
-            <img src='/icons/playerslogo/default_avatar.svg' class="admin_user_img" alt="admin logo">
-        </div>
-
+        <!-- add from js -->
     </header>
     <div class="admin_sidebar">
-        <ul>
-          <li>
-            <a class="admin_sidebar_category manageAllPlayers">
-                <img class="admin_sidebar_category-icon" src="/icons/players.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Игроки
-                </p>
-            </a>
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageAllClubs">
-                <img class="admin_sidebar_category-icon" src="/icons/clubs.svg" alt="">
-                <p class="header_bottom_category-text">
-                    Клубы
-                </p>
-            </a>
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageAllCoaches">
-                <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Тренеры
-                </p>
-            </a> 
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageAllTournaments" style="background-color: #E9E9E9;">
-                <img class="admin_sidebar_category-icon" src="/icons/tour.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Турниры
-                </p>
-            </a>
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageAllTrainings">
-                <img class="admin_sidebar_category-icon" src="/icons/train.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Тренировки
-                </p>
-            </a>
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageCoachApplications">
-                <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Заявки тренеров
-                </p>
-            </a> 
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageClubApplications">
-                <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Заявки клубов
-                </p>
-            </a> 
-          </li>
-          <li>
-            <a class="admin_sidebar_category manageAdvertisement">
-                <img class="admin_sidebar_category-icon" src="/icons/about.svg" alt="">
-                <p class="admin_sidebar_category-text">
-                    Реклама
-                </p>
-            </a> 
-          </li>
+        <!-- add from js -->
+    </div>
+
+    <section class="tournaments filterTournaments">
+        <div class="adminContainer">
+            <!-- <h2>Поиск Турнира</h2> -->
+            <div class="filterTournaments_filter">
+                <div class="filterTournaments_wrapper">
+                    <div class="dropdownForm datesForm">
+                        <label for="dateFrom">Дата турнира</label>
+                        <input type="text" name="dateFrom" id="dateFromInput" placeholder="Дата от">
+                        <input type="text" name="dateUntil" id="dateUntilInput" placeholder="Дата до">
+                    </div>
+                    <div class="dropdownForm">
+                        <label for="club">Клуб</label>
+                        <input type="text" name="club" id="clubInput" placeholder="Название клуба">
+                        <div id="clubDropdown" class="dropdown-content"></div>
+                    </div>
+                </div>
+                <div class="filterTournaments_wrapper">
+                    <div class="dropdownForm">
+                        <label for="city">Поиск по городу</label>
+                        <input type="text" name="city" id="cityInput" placeholder="Название города">
+                        <div id="cityDropdown" class="dropdown-content"></div>
+                    </div>
+                    <button id="filterTournaments_btnSearch" class="header_btn-sign btnSbmt filterCoaches_sbmt" type="submit" fdprocessedid="c3chv">Найти</button>
+                </div>
+            </div>
+            
+        </div>
+      
+    </section>
+
+    <section class="tournaments">
+        <div class="adminContainer">
+            <h2>ближайшие турниры</h2>
+            <div class="upcommingTable">
+              <div class="upcommingTable_header">
+                  <span class="tournament_time">Время</span>
+                  <span class="tournament_club">Клуб</span>
+                  <span class="tournament_restrict">Ограничения</span>
+                  <span class="tournament_rating">Рейтинг</span>
+                  <span class="tournament_players">Игроки</span>
+              </div>
+              <div id="upcoming-tournaments" class="upcommingTable_content">
+                
+                
+              </div>
+            </div>
           
-           
-        </ul>
-    </div>
-    <div class="admin_profileMenu">
-        <a href="#" id="adminHome" class="logOut">Домой</a>
-        <a href="#" id="logOut" class="logOut">Выход</a>
-    </div>
+        </div>
+    </section>
 
 
+
+    <section class="tournaments">
+        <div class="adminContainer">
+            <h2>прошедшие турниры</h2>
+            <div class="lastTournamentsTable">
+              <div class="lastTournamentsTable_header">
+                  <span class="tournament_time">Время</span>
+                  <span class="tournament_club">Клуб</span>
+                  <span class="tournament_restrict">Ограничения</span>
+                  <span class="tournament_rating">Рейтинг</span>
+                  <span class="tournament_players">Игроки</span>
+              </div>
+              <div id="past-tournaments" class="lastTournamentsTable_content">
+                
+                
+              </div>
+            </div>
+        </div>
+    </section>
 
 
 
@@ -158,7 +148,7 @@
     </div>
     
     
-    <script type="module" src="/js/admin/admin.js"></script>
+    <script type="module" src="/js/admin/tournaments.js"></script>
     <!-- <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> -->
 </body>
 </html>

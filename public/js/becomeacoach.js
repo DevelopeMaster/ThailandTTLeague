@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     controlTextAreaCoach('info', '.textareaInfoLimit');
-
+    const playerId = localStorage.getItem('userId');
+    console.log(playerId);
     const form = document.querySelector('#applyCoachForm');
     form.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -57,7 +58,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+        data.playerId = playerId;
         data.requestDate = new Date();
+        
 
         fetch('/api/applyCoach', {
             method: 'POST',

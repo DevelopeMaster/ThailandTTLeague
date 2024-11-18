@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function renderPlayerData() {
         const playerMainInfo = document.querySelector('.player_mainInfo');
-        console.log(playerMainInfo);
+        // console.log(playerMainInfo);
         playerMainInfo.innerHTML = `
             <div class="player_mainInfo_logo" style="background-image: url(${player.logo || 'icons/playerslogo/default_avatar.svg'}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
             <div class="player_mainInfo_info">
@@ -209,16 +209,17 @@ document.addEventListener('DOMContentLoaded', async function() {
                     </div>
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Price')}: <span>${player.oneTrainingPrice || '-'}฿</span></p>
-                        <p>${getTranslation('club')}: <span>${club.name || '-'}</span></p>
+                        <p>${getTranslation('club')}: <a style='color: #fff; text-decoration: none;' href="/${lang}/allClubs/${clubId}">${club.name || '-'}</a></p>
                         <p>${getTranslation('city')}: <span>${playerCity || '-'}</span></p>
                         
                     </div>
                 </div>
             </div>
         `;
+        console.log(club);
 
         const playerAbout = document.querySelector('.player_about');
-        console.log(playerAbout);
+        // console.log(playerAbout);
         playerAbout.innerHTML = `
             <h3>${getTranslation('Racket')}</h3>
             <div class="player_about_info_descr">
@@ -238,22 +239,32 @@ document.addEventListener('DOMContentLoaded', async function() {
         const trainingAbout = document.querySelector('.training_about');
         if (player.trainingInfo && player.trainingInfo[lang] && player.trainingInfo[lang].length > 0) {
             // Формирование HTML строк для каждого блока информации
-            console.log(lang);
-            player.trainingInfo[lang].forEach(block => {
-                infoBlocks += `<p>${block}</p>`;
-            });
-        } else {
-            infoBlocks = `<p>${block}</p>`;
-            // infoBlocks = `<p>нет данных</p>`;
-        }
+            // console.log(lang);
+            // player.trainingInfo[lang].forEach(block => {
+            //     infoBlocks += `<p>${block}</p>`;
+            // });
+        // } 
+        // else {
+        //     infoBlocks = `<p>${block}</p>`;
+        //     // infoBlocks = `<p>нет данных</p>`;
+        // }
+        // const text = player.trainingInfo[lang];
+        // console.log()
+        // const formattedText = text.replace(/\r\n|\n/g, '<br>');
+
+        const description = player.trainingInfo[lang] || '';
+        // console.log(description);
+        const formattedDescription = typeof description === 'string' ? description.replace(/\r\n/g, '<br>') : 'Описание отсутствует';
+        
         trainingAbout.innerHTML = `
             <h3>${getTranslation('aboutTraining')}</h3>
             <div class="training_about_wrapp">
                 <p><span>${getTranslation('address')}: </span>${club.address[lang] || club.address['en']}</p>
                
-                ${infoBlocks}
+                <p>${formattedDescription}</p>
             </div>
         `;
+        }
 
         const linkToSchedule = document.querySelector('#goToTrainingSchedule');
         linkToSchedule.innerHTML = `${getTranslation('scheduleBtn')}`;

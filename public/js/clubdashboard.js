@@ -63,7 +63,20 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Beverages': 'Beverages',
             'Gym': 'Gym',
             'Extra charge': 'Extra charge',
-            'Free': 'Free'
+            'Free': 'Free',
+            'daysOfWeek': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            'event': 'Event',
+            'start': 'Start',
+            'end': 'End',
+            'Group training (Adults)': 'Group training (Adults)',
+            'Group training (Kids)': 'Group training (Kids)',
+            'The Ladder': 'The Ladder',
+            'Tournament (Master’s Cup)': 'Tournament (Master’s Cup)',
+            'Tournament (Kids Open Cup)': 'Tournament (Kids Open Cup)',
+            'Tournament (Amateurs Cup)': 'Tournament (Amateurs Cup)',
+            'Private session': 'Private session',
+            'Master Class': 'Master Class',
+            '-': 'Not selected'
         },
         'ru': {
             'representative': 'Представитель',
@@ -86,7 +99,20 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Beverages': 'Напитки',
             'Gym': 'Тренажерный зал',
             'Extra charge': 'Платные',
-            'Free': 'Бесплатные'
+            'Free': 'Бесплатные',
+            'daysOfWeek': ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+            'event': 'Событие',
+            'start': 'Начало',
+            'end': 'Конец',
+            'Group training (Adults)': 'Групповая тренировка (взрослые)',
+            'Group training (Kids)': 'Групповая тренировка (дети)',
+            'The Ladder': 'Лестница',
+            'Tournament (Master’s Cup)': 'Турнир (Кубок мастеров)',
+            'Tournament (Kids Open Cup)': 'Турнир (Открытый кубок для детей)',
+            'Tournament (Amateurs Cup)': 'Турнир (Кубок любителей)',
+            'Private session': 'Индивидуальная тренировка',
+            'Master Class': 'Мастер-класс',
+            '-': 'Не выбрано'
         },
         'th': {
             'representative': 'ตัวแทน',
@@ -109,7 +135,20 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Beverages': 'เครื่องดื่ม',
             'Gym': 'ยิม',
             'Extra charge': 'มีค่าใช้จ่ายเพิ่มเติม',
-            'Free': 'ฟรี'
+            'Free': 'ฟรี',
+            'daysOfWeek': ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+            'event': 'กิจกรรม',
+            'start': 'เริ่ม',
+            'end': 'จบ',
+            'Group training (Adults)': 'เทรนแบบกลุ่ม (ผู้ใหญ่)',
+            'Group training (Kids)': 'เทรนแบบกลุ่ม (เด็ก)',
+            'The Ladder': 'แลดเดอร์',
+            'Tournament (Master’s Cup)': 'การแข่งขันสำหรับมืออาชีพ',
+            'Tournament (Kids Open Cup)': 'การแข่งขันสำหรับเด็ก',
+            'Tournament (Amateurs Cup)': 'การแข่งขันสำหรับบุคคลทั่วไป',
+            'Private session': 'เทรนส่วนตัว 1:1',
+            'Master Class': 'มาสเตอร์คลาส',
+            '-': 'ไม่ได้เลือก'
         }
     };
 
@@ -132,6 +171,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
                 
             renderClubData();
+            // renderScheduleTable(club);
+            // renderMobileScheduleTable(club);
+            renderTableBasedOnScreenSize(club)
+
         } catch (error) {
             console.error('Error fetching club data:', error);
         }
@@ -228,7 +271,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 </div>
                 <div class="club_mainInfo_info_descr">
                     <div class="club_mainInfo_info_descr_path">
-                        <p>${getTranslation('representative')}: <span>${club.representative[lang] || club.representative['en']}</span></p>
+                        <p>${getTranslation('representative')}: <span>${club.representative || ' - '}</span></p>
                         <p>${getTranslation('website')}: <span><a href="${club.website}">${club.website}</a></span></p>
                         <p>${getTranslation('workingHours')}: <span>${club.workingHours}</span></p>
                     </div>
@@ -257,6 +300,144 @@ document.addEventListener('DOMContentLoaded', async function() {
     function nl2br(str) {
         return str.replace(/\n/g, '<br>');
     }
+
+    // renderScheduleTable(club);
+
+    function renderTableBasedOnScreenSize(clubData) {
+        // Определяем ширину экрана
+        const screenWidth = window.innerWidth;
+    
+        // Если ширина меньше 700px, рендерим мобильную таблицу
+        if (screenWidth < 768) {
+            renderMobileScheduleTable(clubData);
+        } else {
+            renderScheduleTable(clubData);
+        }
+    }
+    
+    // Добавляем слушатель resize
+    window.addEventListener('resize', () => {
+        renderTableBasedOnScreenSize(club); // Вызываем рендер при изменении размера окна
+    });
+
+    function renderScheduleTable(clubData) {
+        const daysOfWeek = getTranslation('daysOfWeek'); // Переведенные названия дней
+        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const maxSessions = 6; // Постоянное значение для количества сессий
+      
+        const tableBody = document.querySelector('.schedule-form');
+        tableBody.innerHTML = ""; // Очищаем таблицу перед заполнением
+    
+        // Создаем строку заголовков таблицы
+        const headerRow = document.createElement("tr");
+    
+        // Первая ячейка заголовка - "Session"
+        const sessionHeader = document.createElement("th");
+        // sessionHeader.innerText = getTranslation('session');
+        headerRow.appendChild(sessionHeader);
+    
+        // Добавляем названия дней недели в заголовок
+        daysOfWeek.forEach(day => {
+            const dayHeader = document.createElement("th");
+            dayHeader.innerText = day;
+            headerRow.appendChild(dayHeader);
+        });
+    
+        tableBody.appendChild(headerRow); // Добавляем заголовок в таблицу
+    
+        // Рендерим строки для каждой сессии
+        for (let sessionIndex = 0; sessionIndex < maxSessions; sessionIndex++) {
+            const row = document.createElement("tr");
+    
+            // Добавляем номер сессии
+            const sessionCell = document.createElement("td");
+            sessionCell.innerText = sessionIndex + 1;
+            sessionCell.classList.add('sessionCell');
+            sessionCell.style = 'align-content: center; width: 40px';
+            row.appendChild(sessionCell);
+            console.log(clubData);
+            // Создаем ячейки для каждого дня недели
+            dayKeys.forEach((dayKey, dayIndex) => {
+                const cell = document.createElement("td");
+                cell.style = "height: 109px; align-items: center";
+                
+                const eventData = clubData.scheduleData[dayKey]?.[sessionIndex] || { event: "", start: "", end: "" };
+    
+                const eventInput = document.createElement("div");
+                eventInput.innerText = getTranslation(eventData.event) || '';
+
+                eventInput.name = `${dayKey}_event_${sessionIndex + 1}`;
+                eventInput.classList.add("event");
+
+    
+                // Поля для начала и окончания события
+                const startLabel = document.createElement("div");
+                startLabel.classList.add("time");
+                if(eventData.event !== '' && eventData.start && eventData.end) {
+                    startLabel.innerText = `${eventData.start} - ${eventData.end}`;
+                } else {
+                    startLabel.innerText = '';
+                }
+                
+                cell.appendChild(eventInput);
+                // cell.appendChild(dropdown);
+                cell.appendChild(startLabel);
+    
+                row.appendChild(cell);
+            });
+    
+            tableBody.appendChild(row);
+        }
+    }
+
+    function renderMobileScheduleTable(clubData) {
+        const daysOfWeek = getTranslation('daysOfWeek'); // Переведенные названия дней
+        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        
+        const tableBody = document.querySelector('.schedule-form');
+        tableBody.innerHTML = ""; // Очищаем таблицу перед заполнением
+        
+        // Идем по каждому дню недели
+        dayKeys.forEach((dayKey, dayIndex) => {
+            const eventsForDay = clubData.scheduleData[dayKey] || []; // События дня
+
+            // Фильтруем события: оставляем только те, где есть данные
+            const filteredEvents = eventsForDay.filter(event => event.event && event.start && event.end);
+            
+            // Пропускаем день, если событий нет
+            if (filteredEvents.length === 0) return;
+
+            // Создаём заголовок дня
+            const dayRow = document.createElement("tr");
+            const dayCell = document.createElement("th");
+            dayCell.colSpan = 3; // Охватывает все колонки
+            dayCell.classList.add("day-header");
+            dayCell.innerText = daysOfWeek[dayIndex]; // Название дня недели
+            dayRow.appendChild(dayCell);
+            tableBody.appendChild(dayRow);
+
+            // Для каждого события создаем строку
+            filteredEvents.forEach(eventData => {
+                const eventRow = document.createElement("tr");
+
+                // Ячейка с названием события
+                const eventNameCell = document.createElement("td");
+                eventNameCell.classList.add("event");
+                const spanEvent = document.createElement('span');
+                spanEvent.innerText = `${getTranslation(eventData.event)}`;
+                const spanTime = document.createElement('span');
+                spanTime.innerText = `${eventData.start}-${eventData.end}`;
+
+                eventNameCell.appendChild(spanEvent);
+                eventNameCell.appendChild(spanTime);
+                eventRow.appendChild(eventNameCell);
+
+                tableBody.appendChild(eventRow);
+            });
+        });
+    }
+    
+    
 
     function renderMap() {
         const mapElement = document.getElementById('map');

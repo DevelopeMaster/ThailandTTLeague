@@ -67,46 +67,51 @@
         <!-- add from js -->
     </div>
 
-    <section class="filterCoaches"></section>
+    <section class="editAdv" data-advid="<%= advId %>">
         <div class="adminContainer">
-            <div class="filterCoaches_filter">
-                <div class="filterCoaches_wrapper">
-                    <div class="dropdownForm">
-                        <label for="name">Поиск по имени</label>
-                        <input type="text" name="name" id="nameInput" placeholder="Имя тренера">
-                        <div id="nameDropdown" class="dropdown-content"></div>
+            <h2>Редактирование рекламы</h2>
+            <!-- <div class="buttonsTopWrapp">
+                <a id="deleteClubBtnTop" class="deletePlayer" href="#">удалить</a>
+                <button type="submit" id="editclub_formContainer_submitTop" class="header_btn-sign editclub_formContainer_submit">Сохранить</button>
+            </div> -->
+    
+            <form id="editClubForm" action="/saveAdvertisement" method="POST" enctype="multipart/form-data">
+                <div class="editAdv_formContainer">
+                    
+                    <div class="editAdv_formContainer_logoSection">
+                        <img id="advLogo" src="/icons/defaultClubPicture.svg" alt="Club Logo">
+                        <input type="file" id="banner" name="banner" style="display: none;">
+                        <label for="banner" id="customLogoButton" class="editAdv_formContainer_logoSection_btn">Добавить банер</label>
                     </div>
-                    <div class="dropdownForm">
-                        <label for="club">Клуб</label>
-                        <input type="text" name="club" id="clubInput" placeholder="Название клуба">
-                        <div id="clubDropdown" class="dropdown-content"></div>
-                    </div>
-                </div>
-                <div class="filterCoaches_wrapper">
-                    <div class="dropdownForm">
-                        <label for="city">Поиск по городу</label>
-                        <input type="text" name="city" id="cityInput" placeholder="Город">
-                        <div id="cityDropdown" class="dropdown-content"></div>
-                    </div>
-                    <button id="filterCoaches" class="header_btn-sign btnSbmt" type="submit" fdprocessedid="c3chv">Найти</button>
-                </div>
-                
-            </div>
-            
-        </div>
-    </section>
+                    <div class="editclub_formContainer_formSection">
+                        <label for="customer">Заказчик</label>
+                        <input type="text" id="customer" name="customer" require>
 
-    <section class="coaches">
-        <div class="adminContainer">
-            <h2>СПИСОК ТРЕНЕРОВ</h2>
-            <div class="coachesTable">
-                <div id="upcoming-tournaments" class="coachesTable_content">
+                        <label for="link">Сссылка*</label>
+                        <input type="text" id="link" name="link" require>
+
+                        <label for="expire">Срок (до какого числа)*</label>
+                        <input type="text" id="expire" name="expire" require>
+                        
+                        <div class="hands_left">
+                            <label for="gold">Премиум</label>
+                            <input class="hands_radio" type="checkbox" id="gold" name="gold" value="gold">
+                        </div>
+                        
+                        <div class="admin_container_buttonsWrapper">
+                            <div></div>
+                            <div id="saveDelBlock" class="clubs_down">
+                                <a id="deleteAdvBtn" class="deletePlayer" href="#">удалить</a>
+                                <button type="submit" id="editAdv_formContainer_submit" class="header_btn-sign editclub_formContainer_submit">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
                     
                 </div>
-            </div>
+            </form>
+
             
         </div>
-      
     </section>
 
 
@@ -119,7 +124,7 @@
     </div>
     
     
-    <script type="module" src="/js/admin/coaches.js"></script>
+    <script type="module" src="/js/admin/editadv.js"></script>
     <!-- <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> -->
 </body>
 </html>

@@ -104,6 +104,36 @@
                 color: #FF7A00
     .victoriesTable
         margin-top: 20px
+.sectionSchedule
+    .event
+        width: 100%
+        font-size: 14px
+        text-align: center
+        white-space: pre-wrap
+        overflow-wrap: break-word
+        scrollbar-width: none
+    .time
+        font-size: 14px
+        text-align: center
+        margin-top: 10px
+    .schedule-container
+        background-image: url('/images/tennisnet.png')
+        background-repeat: no-repeat
+        background-size: cover
+        // background-position: center
+        background-position: top
+        // overflow-x: auto
+    .secondForm
+        .schedule-table
+            margin-top: 0
+            background: none
+            border-collapse: collapse // Схлопывание границ ячеек
+            table-layout: auto // Резиновое поведение колонок
+            .event, .time
+                // white-space: pre-wrap
+                overflow-wrap: break-word
+                scrollbar-width: none
+
 .clubWinners
     .winnersTable
         position: relative
@@ -256,6 +286,37 @@
                     justify-content: flex-end
                     padding-left: 0px
                     padding-right: 0px
+    
+    .schedule-container
+        padding: 20px
+        background: #f9f9f9
+        border-radius: 8px
+
+    .schedule-form
+        width: 100%
+        border-collapse: collapse
+        font-size: 14px
+        th.day-header
+            text-align: left
+            font-size: 16px
+            padding: 10px
+            
+        td.event
+            text-align: center
+            padding: 8px 10px
+            font-weight: bold
+            display: flex
+            justify-content: center
+            gap: 10px
+            flex-direction: column
+
+        td.time
+            text-align: center
+            padding: 8px 10px
+
+        tr
+            border-bottom: 1px solid #ddd
+
 
 @media (max-width: 576px)         
     .clubStatistics

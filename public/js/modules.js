@@ -789,6 +789,7 @@ export async function createHeader(language) {
                         About Us
                     </p>
                 </a>
+                <a href="#" class="logOut">Log out</a>
                 <div class="header_langs">
                     <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
                         <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
@@ -963,6 +964,7 @@ export async function createHeader(language) {
                         О Нас
                     </p>
                 </a>
+                <a href="#" class="logOut">Выход</a>
                 <div class="header_langs">
                     <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
                         <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">
@@ -1137,6 +1139,7 @@ export async function createHeader(language) {
                         เกี่ยวกับเรา
                     </p>
                 </a>
+                <a href="#" class="logOut">ออก</a>
                 <div class="header_langs">
                     <button class="header_langs_dropbtnLangs header_bottom_category selectedLanguage" id="selectedLanguage">
                         <img class="header_bottom_category-icon" src="/icons/globe.svg" alt="">

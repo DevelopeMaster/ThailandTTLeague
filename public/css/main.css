@@ -378,6 +378,15 @@ h2 {
     .header_footer_contacts a {
       text-decoration: none;
       color: #fff; }
+  .header .logOut {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-decoration: none;
+    text-decoration-line: none; }
 
 .loginFormError {
   padding: 1px 6px;
@@ -2148,7 +2157,9 @@ h2 {
   .filterCoaches label {
     font-size: 14px; }
   .allCoaches {
-    margin-top: 40px; } }
+    margin-top: 40px; }
+  .clubs_down {
+    margin-top: 16px; } }
 
 .filterClubs {
   margin-top: 40px; }
@@ -5513,11 +5524,13 @@ textarea:-webkit-autofill:focus {
   .secondForm .editschedule_formContainer table {
     margin-top: 20px;
     width: 100%;
+    border: 1px solid #818181;
+    border-radius: 10px;
     border-collapse: collapse;
     background-color: #262630; }
   .secondForm .editschedule_formContainer th, .secondForm .editschedule_formContainer td {
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #818181;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
@@ -5761,6 +5774,8 @@ textarea:-webkit-autofill:focus {
   background-position: top; }
 
 .sectionSchedule .secondForm .schedule-table {
+  border: 1px solid #818181;
+  border-radius: 10px 10px 0 0;
   margin-top: 0;
   background: none;
   border-collapse: collapse;
@@ -5768,6 +5783,10 @@ textarea:-webkit-autofill:focus {
   .sectionSchedule .secondForm .schedule-table .event, .sectionSchedule .secondForm .schedule-table .time {
     overflow-wrap: break-word;
     scrollbar-width: none; }
+  .sectionSchedule .secondForm .schedule-table th {
+    border: 1px solid #818181; }
+  .sectionSchedule .secondForm .schedule-table td {
+    border: 1px solid #818181; }
 
 .clubWinners .winnersTable {
   position: relative;

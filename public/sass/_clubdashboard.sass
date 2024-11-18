@@ -126,7 +126,7 @@
     .secondForm
         .schedule-table
             border: 1px solid #818181
-            border-radius: 10px 10px 0 0
+            // border-radius: 10px 10px 0 0
             margin-top: 0
             background: none
             border-collapse: collapse // Схлопывание границ ячеек
@@ -303,11 +303,22 @@
         padding: 20px
         background: #f9f9f9
         border-radius: 8px
+        box-sizing: border-box
 
     .schedule-form
         width: 100%
         border-collapse: collapse
+        border: 1px solid #818181
         font-size: 14px
+        &:after
+            content: ''
+            position: absolute
+            top: 20px
+            right: 20px
+            height: calc(100% - 40px)
+            width: 1px
+            background-color: #818181
+            pointer-events: none
         th.day-header
             text-align: left
             font-size: 16px
@@ -321,6 +332,7 @@
             justify-content: center
             gap: 10px
             flex-direction: column
+            border: none
 
         td.time
             text-align: center

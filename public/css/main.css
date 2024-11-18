@@ -2987,24 +2987,26 @@ h2 {
     font-size: 16px; }
 
 @media (max-width: 576px) {
-  .tournament h3 {
-    font-size: 18px; }
-  .tournament_mainInfo {
-    flex-direction: column; }
-    .tournament_mainInfo_info {
+  .tournament {
+    margin-top: 20px; }
+    .tournament h3 {
+      font-size: 18px; }
+    .tournament_mainInfo {
+      flex-direction: column; }
+      .tournament_mainInfo_info {
+        width: 100%; }
+        .tournament_mainInfo_info_name {
+          font-size: 18px; }
+        .tournament_mainInfo_info_descr {
+          display: flex;
+          flex-direction: column;
+          gap: 14px; }
+      .tournament_mainInfo_logo {
+        aspect-ratio: 2.8 / 1.54;
+        height: auto;
+        width: 100%; }
+    .tournament .singUpToTournament {
       width: 100%; }
-      .tournament_mainInfo_info_name {
-        font-size: 18px; }
-      .tournament_mainInfo_info_descr {
-        display: flex;
-        flex-direction: column;
-        gap: 14px; }
-    .tournament_mainInfo_logo {
-      aspect-ratio: 2.8 / 1.54;
-      height: auto;
-      width: 100%; }
-  .tournament .singUpToTournament {
-    width: 100%; }
   .tournamentLocation {
     margin-top: 40px; }
   .prizes_table h3 {
@@ -3627,6 +3629,8 @@ h2 {
         grid-template-columns: 20px repeat(5, 1fr);
         gap: 6px;
         padding-top: 0; }
+        .players .playersTable_player:after {
+          margin-top: 0; }
       .players .playersTable .cell {
         gap: 8px; }
       .players .playersTable .player {
@@ -5950,7 +5954,9 @@ textarea:-webkit-autofill:focus {
       text-align: center;
       padding: 8px 10px; }
     .schedule-form tr {
-      border-bottom: 1px solid #ddd; } }
+      border-bottom: 1px solid #818181; }
+  .sectionSchedule .secondForm .editschedule_formContainer td {
+    border: none; } }
 
 @media (max-width: 576px) {
   .clubStatistics {

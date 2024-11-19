@@ -57,7 +57,6 @@ const store = MongoStore.create({
 });
 
 
-
 // потом включить 
 store.on('create', (sid) => {
   console.log(`Session created: ${sid}`);
@@ -113,7 +112,6 @@ app.get('/ru', (req, res) => {
 
 app.get('/becomeacoach', userAuthenticated, (req, res) => {
   // const { lang } = req.params;
-  console.log('идем по маршруту');
   res.sendStatus(200);
 });
 
@@ -214,12 +212,6 @@ app.get('/ru/dashboard/admin/createclub/:clubId', ensureAuthenticated, ensureAdm
   }
 });
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
-
-
 
 app.get('/th', (req, res) => {
   res.render('th');
@@ -233,14 +225,23 @@ app.use('/api', userRoutes);
 
 // Маршруты для страниц с языковыми параметрами
 app.get('/:lang(en|ru|th)/allclubs/:clubId', (req, res) => {
-  const { lang } = req.params;
-  res.render(`${lang}/allclubs/club`);
+  try {
+    const { lang } = req.params;
+    res.render(`${lang}/allclubs/club`);
+  } catch (error) {
+    res.status(404).render('404');
+  }
+  
 });
 
 
 app.get('/:lang(en|ru|th)/trainings/:trainingId', async (req, res) => {
   try {
-    const { lang } = req.params;
+    const { lang, trainingId } = req.params;
+
+    if (!trainingId || !lang) {
+      return res.status(404).render('404');
+    }
     res.render(`${lang}/trainings/training`);
   } catch (error) {
     console.error('Error in route handler:', error);
@@ -252,6 +253,10 @@ app.get('/:lang(en|ru|th)/allplayers/:userId', async (req, res) => {
   try {
     const { lang, userId } = req.params;
     const link = `${lang}/allplayers/player`;
+
+    if (!userId || !lang) {
+      return res.status(404).render('404');
+    }
         
     console.log(`Rendering: ${link} for userId: ${userId}`);
     return res.render(link, {
@@ -268,6 +273,10 @@ app.get('/:lang(en|ru|th)/allcoaches/:userId', async (req, res) => {
   try {
     const { lang, userId } = req.params;
     const link = `${lang}/allcoaches/coach`;
+    
+    if (!userId || !lang) {
+      return res.status(404).render('404');
+    }
         
     console.log(`Rendering: ${link} for userId: ${userId}`);
     return res.render(link, {
@@ -283,6 +292,9 @@ app.get('/:lang(en|ru|th)/allcoaches/:userId', async (req, res) => {
 app.get('/:lang(en|ru|th)/trainings', async (req, res) => {
   try {
     const { lang } = req.params;
+    if (!lang) {
+      return res.status(404).render('404');
+    }
     res.render(`${lang}/alltrainings`);
   } catch (error) {
     console.error('Error in route handler:', error);
@@ -293,6 +305,9 @@ app.get('/:lang(en|ru|th)/trainings', async (req, res) => {
 app.get('/:lang(en|ru|th)/tournaments/:tournamentId', async (req, res) => {
   try {
     const { lang, tournamentId } = req.params;
+    if (!tournamentId || !lang) {
+      return res.status(404).render('404');
+    }
     await renderTournament(tournamentId, lang, res);
   } catch (error) {
     console.error('Error in route handler:', error);
@@ -306,7 +321,7 @@ async function renderTournament(id, lang, res) {
     const tournament = await db.collection('tournaments').findOne({ _id: new ObjectId(id) });
 
     if (!tournament) {
-      return res.status(404).send('Tournament not found');
+      return res.status(404).render('404');
     }
 
     if (tournament.datetime < new Date()) {
@@ -324,11 +339,17 @@ async function renderTournament(id, lang, res) {
 
 app.get('/:lang(en|ru|th)/alltournaments', (req, res) => {
   const { lang } = req.params;
+  if (!lang) {
+    return res.status(404).render('404');
+  }
   res.render(`${lang}/alltournaments`);
 });
 
 app.get('/:lang(en|ru|th)/alltrainings', (req, res) => {
   const { lang } = req.params;
+  if (!lang) {
+    return res.status(404).render('404');
+  }
   res.render(`${lang}/alltrainings`);
 });
 
@@ -360,7 +381,7 @@ app.get('/:lang/dashboard/editclub/:userId', ensureAuthenticated, (req, res) => 
 
   // Проверка на совпадение идентификаторов
   if (!sessionUserId.equals(userIdObject)) {
-    return res.redirect(`/${lang}/404`); // Редирект на страницу 404 при несовпадении идентификаторов
+    return res.redirect(`404`); // Редирект на страницу 404 при несовпадении идентификаторов
   }
 
   // Проверка на тип пользователя (должен быть "club")
@@ -380,23 +401,6 @@ app.get('/:lang/dashboard/editclub/:userId', ensureAuthenticated, (req, res) => 
   });
 });
 
-// app.get('/:lang/dashboard/edituser/:userId', ensureAuthenticated, (req, res) => {
-//   const { lang, userId } = req.params;
-//   const userType = req.session.userType; // Получаем тип пользователя из сессии
-
-//   if (userType === 'user') { // Проверяем, что тип пользователя "club"
-//       const link = `${lang}/dashboard/edituser`;
-      
-//       console.log(`Rendering: ${link} for userId: ${userId}`);
-//       return res.render(link, {
-//           userId: userId,
-//           userType: userType
-//       });
-//   } else {
-//       console.log('Access denied: User is not a club');
-//       return res.status(403).send('Forbidden');
-//   }
-// });
 
 app.get('/:lang/dashboard/edituser/:userId', ensureAuthenticated, (req, res) => {
   const { lang, userId } = req.params;
@@ -427,22 +431,6 @@ app.get('/:lang/dashboard/edituser/:userId', ensureAuthenticated, (req, res) => 
   });
 });
 
-// app.get('/:lang/dashboard/:userType/:userId', ensureAuthenticated, (req, res) => {
-//   const { lang, userType, userId } = req.params;
-//   const link = `${lang}/dashboard/${userType}`;
-  
-//   if (req.session.userType === userType) {
-//     console.log(link);
-//     return res.render(link, {
-//       userId: userId,
-//       userType: userType
-//     });
-    
-//   } else {
-//     console.log('ошибка');
-//     return res.status(403).send('Forbidden');
-//   }
-// });
 
 app.get('/:lang/dashboard/:userType/:userId', ensureAuthenticated, (req, res) => {
   const { lang, userType, userId } = req.params;
@@ -459,6 +447,8 @@ app.get('/:lang/dashboard/:userType/:userId', ensureAuthenticated, (req, res) =>
       link = `/${lang}/allclubs/${userId}`;
     } else if (userType === 'coach') {
       link = `/${lang}/allcoaches/${userId}`;
+    } else {
+        return res.status(404).render('404');
     }
     
     return res.redirect(link);
@@ -679,6 +669,9 @@ app.post('/reset-password/:token', async (req, res) => {
 
 app.get('/:lang(en|ru|th)/:page', (req, res) => {
   const { lang, page } = req.params;
+  if (!lang) {
+    return res.status(404).render('404');
+  }
   res.render(`${lang}/${page}`);
 });
 
@@ -1381,6 +1374,12 @@ app.post('/logout', (req, res) => {
 
 app.use((req, res, next) => {
   res.status(404).render('404');
+});
+
+// Обработка ошибок сервера
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Internal Server Error'); // Выводит сообщение об ошибке на случай непредвиденных сбоев
 });
 
 // Запуск сервера и инициализация базы данных

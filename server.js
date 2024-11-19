@@ -110,20 +110,16 @@ app.get('/ru', (req, res) => {
   res.render('ru');
 });
 
-// app.get('/:lang/becomeacoach', (req, res) => {
-//   const { lang } = req.params;
-
-//   if (req.isAuthenticated()) { // Проверка авторизации (или любая другая проверка, зависит от используемой стратегии)
-//     console.log(`/${lang}/becomeacoach`);  
-//     res.redirect(`/${lang}/becomeacoach`);
-//   } else {
-//       res.status(401).json({ message: 'Пожалуйста, зарегистрируйтесь, чтобы подать заявку' });
-//   }
-// });
 
 app.get('/becomeacoach', userAuthenticated, (req, res) => {
   // const { lang } = req.params;
+  console.log('идем по маршруту');
   res.sendStatus(200);
+});
+
+app.get('/:lang/becomeacoach', userAuthenticated, (req, res) => {
+  const { lang } = req.params;
+  res.render(`${lang}/becomeacoach`);
 });
 
 // Middleware для проверки авторизации
@@ -131,7 +127,10 @@ function userAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
       return next();
   }
-  res.status(401).json({ message: 'Need register' });
+  const language = req.path.match(/^\/(en|ru|th)/)?.[1] || 'en';
+
+  // Перенаправляем с учетом языка
+  res.redirect(`/${language}?loginRequired=true`);
 }
 
 app.get('/ru/dashboard/admin', ensureAdmin, (req, res) => {
@@ -171,22 +170,6 @@ app.get('/allcities', ensureAdmin, async (req, res) => {
   }
 });
 
-
-
-// app.get('/ru/dashboard/admin/edit/:playerId', ensureAuthenticated, ensureAdmin, (req, res) => {
-//   const { playerId } = req.params;
-//   const link = `ru/dashboard/admin/edit/player`;
-
-//   try {  
-//     console.log(`Rendering: ${link} for userId: ${playerId}`);
-//     res.render(link, {
-//       playerId: playerId
-//     });
-//   } catch (error) {
-//     console.error('Error rendering template:', error.message);
-//     res.status(500).send('Server error');
-//   }
-// });
 
 app.get('/ru/dashboard/admin/editcoach/:playerId', ensureAuthenticated, ensureAdmin, (req, res) => {
   const { playerId } = req.params;
@@ -350,57 +333,151 @@ app.get('/:lang(en|ru|th)/alltrainings', (req, res) => {
 });
 
 
+// app.get('/:lang/dashboard/editclub/:userId', ensureAuthenticated, (req, res) => {
+//   const { lang, userId } = req.params;
+//   const userType = req.session.userType; // Получаем тип пользователя из сессии
+
+//   if (userType === 'club') { // Проверяем, что тип пользователя "club"
+//       const link = `${lang}/dashboard/editclub`;
+      
+//       console.log(`Rendering: ${link} for userId: ${userId}`);
+//       return res.render(link, {
+//           userId: userId,
+//           userType: userType
+//       });
+//   } else {
+//       console.log('Access denied: User is not a club');
+//       return res.status(403).send('Forbidden');
+//   }
+// });
+
 app.get('/:lang/dashboard/editclub/:userId', ensureAuthenticated, (req, res) => {
   const { lang, userId } = req.params;
-  const userType = req.session.userType; // Получаем тип пользователя из сессии
+  const { userId: sessionUserId, userType } = req.session;
 
-  if (userType === 'club') { // Проверяем, что тип пользователя "club"
-      const link = `${lang}/dashboard/editclub`;
-      
-      console.log(`Rendering: ${link} for userId: ${userId}`);
-      return res.render(link, {
-          userId: userId,
-          userType: userType
-      });
-  } else {
-      console.log('Access denied: User is not a club');
-      return res.status(403).send('Forbidden');
+  // Преобразуем строку userId в ObjectId для правильного сравнения
+  const userIdObject = new ObjectId(userId);
+
+  // Проверка на совпадение идентификаторов
+  if (!sessionUserId.equals(userIdObject)) {
+    return res.redirect(`/${lang}/404`); // Редирект на страницу 404 при несовпадении идентификаторов
   }
+
+  // Проверка на тип пользователя (должен быть "club")
+  if (userType !== 'club') {
+    console.log('Ошибка: Несоответствие типа пользователя');
+    return res.redirect(`404`); // Редирект на страницу 404 при несоответствии типа пользователя
+  }
+
+  // Если все проверки пройдены, рендерим страницу редактирования клуба
+  const link = `${lang}/dashboard/editclub`;
+
+  console.log(`Rendering: ${link} for userId: ${userId}`);
+
+  return res.render(link, {
+      userId: userId,
+      userType: userType
+  });
 });
+
+// app.get('/:lang/dashboard/edituser/:userId', ensureAuthenticated, (req, res) => {
+//   const { lang, userId } = req.params;
+//   const userType = req.session.userType; // Получаем тип пользователя из сессии
+
+//   if (userType === 'user') { // Проверяем, что тип пользователя "club"
+//       const link = `${lang}/dashboard/edituser`;
+      
+//       console.log(`Rendering: ${link} for userId: ${userId}`);
+//       return res.render(link, {
+//           userId: userId,
+//           userType: userType
+//       });
+//   } else {
+//       console.log('Access denied: User is not a club');
+//       return res.status(403).send('Forbidden');
+//   }
+// });
 
 app.get('/:lang/dashboard/edituser/:userId', ensureAuthenticated, (req, res) => {
   const { lang, userId } = req.params;
-  const userType = req.session.userType; // Получаем тип пользователя из сессии
+  const { userId: sessionUserId, userType } = req.session;
 
-  if (userType === 'user') { // Проверяем, что тип пользователя "club"
-      const link = `${lang}/dashboard/edituser`;
-      
-      console.log(`Rendering: ${link} for userId: ${userId}`);
-      return res.render(link, {
-          userId: userId,
-          userType: userType
-      });
-  } else {
-      console.log('Access denied: User is not a club');
-      return res.status(403).send('Forbidden');
+  // Преобразуем строку userId в ObjectId для правильного сравнения
+  const userIdObject = new ObjectId(userId);
+
+  // Проверка на совпадение идентификаторов
+  if (!sessionUserId.equals(userIdObject)) {
+    return res.redirect(`404`); // Редирект на страницу 404 при несовпадении идентификаторов
   }
+
+  // Проверка на тип пользователя
+  if (userType !== 'user') {
+    console.log('Ошибка: Несоответствие типа пользователя');
+    return res.redirect(`404`); // Редирект на страницу 404 при несоответствии типа пользователя
+  }
+
+  // Если все проверки пройдены, рендерим страницу редактирования
+  const link = `${lang}/dashboard/edituser`;
+
+  console.log(`Rendering: ${link} for userId: ${userId}`);
+
+  return res.render(link, {
+      userId: userId,
+      userType: userType
+  });
 });
+
+// app.get('/:lang/dashboard/:userType/:userId', ensureAuthenticated, (req, res) => {
+//   const { lang, userType, userId } = req.params;
+//   const link = `${lang}/dashboard/${userType}`;
+  
+//   if (req.session.userType === userType) {
+//     console.log(link);
+//     return res.render(link, {
+//       userId: userId,
+//       userType: userType
+//     });
+    
+//   } else {
+//     console.log('ошибка');
+//     return res.status(403).send('Forbidden');
+//   }
+// });
 
 app.get('/:lang/dashboard/:userType/:userId', ensureAuthenticated, (req, res) => {
   const { lang, userType, userId } = req.params;
-  const link = `${lang}/dashboard/${userType}`;
-  
-  if (req.session.userType === userType) {
-    console.log(link);
-    return res.render(link, {
-      userId: userId,
-      userType: userType
-    });
+  const { userId: sessionUserId } = req.session;
+
+  // Преобразуем строку userId в ObjectId для правильного сравнения
+  const userIdObject = new ObjectId(userId);
+  let link;
+  // Проверка на совпадение идентификаторов
+  if (!sessionUserId.equals(userIdObject)) {
+    if (userType === 'user') {
+      link = `/${lang}/allplayers/${userId}`;
+    } else if (userType === 'club') {
+      link = `/${lang}/allclubs/${userId}`;
+    } else if (userType === 'coach') {
+      link = `/${lang}/allcoaches/${userId}`;
+    }
     
-  } else {
-    console.log('ошибка');
-    return res.status(403).send('Forbidden');
+    return res.redirect(link);
   }
+
+  // Проверка на совпадение типа пользователя
+  if (req.session.userType !== userType) {
+    console.log('Ошибка: Несоответствие типа пользователя');
+    return res.status(404).render('404');
+  }
+
+
+  link = `${lang}/dashboard/${userType}`;
+  console.log(`Доступ к профилю пользователя ${userId}`);
+
+  return res.render(link, {
+    userId: userId,
+    userType: userType
+  });
 });
 
 
@@ -410,21 +487,6 @@ app.use((err, req, res, next) => {
   }
   res.status(500).json({ error: 'Internal Server Error' });
 });
-
-
-// app.get('/:lang/:userType_dashboard', ensureAuthenticated, (req, res) => {
-//   const { lang, userType } = req.params;
-//   console.log('используется второй маршрут');
-//   // Проверка типа пользователя
-//   if (['user', 'admin', 'coach', 'club'].includes(userType)) {
-//     // Проверка авторизации
-//     if (req.session.userType === userType) {
-//       // Рендерим страницу дешборда
-//       const link = `/${lang}/${userType}_dashboard`;
-//       res.redirect(link);
-//     } 
-//   }
-// });
 
 
 // Маршрут для запроса восстановления пароля
@@ -797,7 +859,7 @@ app.get('/coachesrequest', ensureAdmin, async function(req, res) {
   }
 });
 
-app.get('/ru/dashboard/admin/editadv/:advId', (req, res) => {
+app.get('/ru/dashboard/admin/editadv/:advId', ensureAdmin, (req, res) => {
   const { advId } = req.params;
   const userType = req.session.userType; // Получаем тип пользователя из сессии
   console.log(advId, userType);
@@ -813,7 +875,7 @@ app.get('/ru/dashboard/admin/editadv/:advId', (req, res) => {
   }
 });
 
-app.get('/ru/dashboard/admin/edittournament/:tournamentId', (req, res) => {
+app.get('/ru/dashboard/admin/edittournament/:tournamentId', ensureAdmin, (req, res) => {
   const { tournamentId } = req.params;
   const userType = req.session.userType; // Получаем тип пользователя из сессии
   // console.log(tournamentId, userType, 'есть контакт');
@@ -1068,118 +1130,6 @@ app.get('/get-playerData', async (req, res) => {
 });
 
 
-
-
-
-// Обработка входа и регистрации
-// app.post('/register', [
-//   body('password')
-//     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
-//     .matches(/^(?=.*\d)(?=.*[a-zа-яё\u0E01-\u0E5B])(?=.*[A-ZА-ЯЁ]).{8,}$/).withMessage('Password must contain at least one number, one lowercase, and one uppercase letter')
-// ], async function (req, res) {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return res.status(400).json({ status: 'error', errors: errors.array() });
-//   }
-
-//   const defaultLogo = '/icons/playerslogo/default_avatar.svg';
-
-//   const { email, nickname, password, confirm_password, city, fullname, hand, date, registeredDate, policy, clientLang } = req.body;
-
-//   if (!email || !password || !confirm_password || !city || !fullname || !hand || !date || !registeredDate || !policy) {
-//     res.status(400).json({ error: 'Something wrong. Please come back to homepage and try again' });
-//     return;
-//   }
-
-//   const parts = date.split(".");
-//   const birthdayDate = new Date(`${parts[1]}/${parts[0]}/${parts[2]}`);
-
-//   try {
-//     // Check if the city already exists
-//     let cityId;
-//     const db = getDB();
-//     const cityExists = await db.collection('cities').findOne({ [clientLang]: city });
-//     if (cityExists) {
-//       cityId = cityExists._id;
-//     } else {
-//       const newCity = { [clientLang]: city };
-//       const result = await db.collection('cities').insertOne(newCity);
-//       cityId = result.insertedId;
-//     }
-
-//     await db.collection('users').insertOne({
-//       email,
-//       nickname,
-//       password,
-//       city: cityId,
-//       fullname,
-//       logo: defaultLogo,
-//       hand,
-//       birthdayDate,
-//       registeredDate,
-//       policy
-//     });
-
-//     console.log("User data inserted successfully");
-
-//     const transporter = nodemailer.createTransport({
-//       service: 'gmail',
-//       auth: {
-//         user: notificateEmail,
-//         pass: notificatePass
-//       }
-//     });
-
-//     const mailOptionsForOwner = {
-//       from: notificateEmail,
-//       to: 'ogarsanya@gmail.com',
-//       subject: 'New User Application',
-//       text: `
-//         A new user has registered
-//         E-mail: ${email}, 
-//         Nickname: ${nickname},  
-//         City: ${city}, 
-//         Name: ${fullname}, 
-//         Playing hand: ${hand}, 
-//         Birthday: ${birthdayDate}, 
-//         Registered date: ${registeredDate}, 
-//         Policy: 'Agreed'
-//       `
-//     };
-
-//     const mailOptionsForUser = {
-//       from: notificateEmail,
-//       to: email,
-//       subject: 'Congratulations!',
-//       text: `
-//         You have successfully registered at https://thailandttleague.com
-//         E-mail: ${email}
-//       `
-//     };
-
-//     transporter.sendMail(mailOptionsForOwner, (error, info) => {
-//       if (error) {
-//         console.error('Error sending email:', error);
-//       } else {
-//         console.log('Email sent:', info.response);
-//       }
-//     });
-
-//     transporter.sendMail(mailOptionsForUser, (error, info) => {
-//       if (error) {
-//         console.error('Error sending email:', error);
-//       } else {
-//         console.log('Email sent:', info.response);
-//       }
-//     });
-
-//     res.status(200).json({ status: 'success', message: 'Registration successful!' });
-//   } catch (err) {
-//     console.error('Error inserting into MongoDB:', err);
-//     res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });
-//   }
-// });
-
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -1300,39 +1250,6 @@ app.post('/register', [
 });
 
 
-
-// правильный код только для юзеров
-// app.post('/login', (req, res, next) => {
-//   // const { username, password } = req.body;
-//   // const user = await authenticateUser(username, password);
-//   passport.authenticate('local', (err, user, info) => {
-//       if (err) {
-//           return res.status(500).json({ message: 'Internal Server Error' });
-//       }
-//       if (!user) {
-//           return res.status(401).json({ message: 'Invalid email or password' });
-//       }
-      
-//       req.logIn(user, (err) => {
-//           if (err) {
-//             return res.status(500).json({ message: 'Internal Server Error' });
-//           }
-//           if (user) {
-//             req.session.userId = user._id;
-//             res.status(200).json(
-//               { userId: user._id,
-//                 name: user.fullname,
-//                 logo: user.logo
-//               }
-//             );
-//           } else {
-//             res.status(401).json({ error: 'Invalid credentials' });
-//           }
-//           // return res.json({ status: 'success' });
-//       });
-//   })(req, res, next);
-// });
-
 passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
   const db = getDB();
 
@@ -1420,83 +1337,6 @@ app.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
-// app.post('/login', async (req, res, next) => {
-//   const { email, password } = req.body;  // Исправляем на email и password
-//   const db = getDB();
-//   console.log(req.body);
-//   console.log('полученные данные на сервере:', email, password );
-  
-//   let user = await db.collection('users').findOne({ email });
-//   let userType = user ? (user.role === 'admin' ? 'admin' : 'user') : null;
-
-//   if (!user) {
-//     user = await db.collection('coaches').findOne({ email });
-//     userType = 'coach';
-//   }
-
-//   if (!user) {
-//     user = await db.collection('clubs').findOne({ email });
-//     userType = 'club';
-//   }
-
-//   // Если пользователь не найден ни в одной из коллекций
-//   if (!user) {
-//     return res.status(401).json({ message: 'Invalid email or password' });
-//   }
-
-//   // Аутентификация с использованием найденного пользователя
-//   passport.authenticate('local', (err, user, info) => {
-//     if (err) {
-//       return res.status(500).json({ message: 'Internal Server Error' });
-//     }
-//     if (!user) {
-//       return res.status(401).json({ message: 'Invalid email or password' });
-//     }
-//     // console.log('если есть user:', user, userType, user.logo, user.fullname || user.name, user._id);
-//     req.logIn(user, (err) => {
-//       if (err) {
-//         return res.status(500).json({ message: 'Internal Server Error' });
-//       }
-      
-//       if (user) {
-//         req.session.userId = user._id;
-//         req.session.userType = userType;  // Сохранение типа пользователя в сессии
-//         res.status(200).json({
-//           userId: user._id,
-//           name: user.fullname || user.name,
-//           logo: user.logo,
-//           userType: userType  // Возвращение типа пользователя в ответе
-//         });
-//       } else {
-//         res.status(401).json({ error: 'Invalid credentials' });
-//       }
-//     });
-//   })(req, res, next);
-// });
-
-
-
-
-// Middleware для проверки аутентификации
-// function ensureAuthenticated(req, res, next) {
-//   // console.log(req.isAuthenticated());
-//   if (req.isAuthenticated()) {
-//       return next();
-//   }
-//   res.status(401).json({ message: 'Unauthorized' });
-// }
-
-// module.exports = {
-//   ensureAuthenticated
-// };
-// Создание схемы сессий
-// const sessionSchema =  new mongoose.Schema({
-//   sessionId: String,
-//   userId: String,
-//   // Другие поля по необходимости
-// });
-// const Session = mongoose.model('Session', sessionSchema);
-
 app.get('/session', async (req, res) => {
   console.log('проверка сессии');
   if (req.session && req.session.user) {
@@ -1528,22 +1368,6 @@ app.get('/api/session', async (req, res) => {
   }
 });
 
-// Защищенный маршрут для /dashboard
-// app.get('/dashboard', ensureAuthenticated, (req, res) => {
-//   console.log('на сервере переход есть');
-//   res.json({ message: 'Welcome to your dashboard' });
-// });
-
-
-// app.get('/dashboard', (req, res) => {
-//   // Проверка сессии
-//   if (req.session.sessionId) {
-//     res.send('Profile page');
-//   } else {
-//     res.redirect('/login');
-//   }
-// });
-
 app.post('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
@@ -1554,7 +1378,6 @@ app.post('/logout', (req, res) => {
     res.redirect('/');
   });
 });
-
 
 app.use((req, res, next) => {
   res.status(404).render('404');

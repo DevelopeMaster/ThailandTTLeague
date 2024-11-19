@@ -2,27 +2,32 @@
     position: relative
     width: 100%
     padding-bottom: 20px
+    margin-top: -130px
     &_code
         width: 100%
         display: flex
         justify-content: center
         align-items: center
+        align-items: flex-end
         h6
             color: #FA6400
             font-family: Inter
             font-size: 400px
             font-style: normal
             font-weight: 700
-            line-height: 130%
+            line-height: 80%
             text-transform: uppercase
+            // font-size: 270px
+            // line-height: 100%
     h2
+        margin-top: 40px
         color: #FFF
         text-align: center
         font-family: Inter
         font-size: 40px
         font-style: normal
         font-weight: 600
-        line-height: 135%
+        line-height: 100%
         margin-bottom: 16px
     h4
         color: #FFF
@@ -31,7 +36,7 @@
         font-size: 16px
         font-style: normal
         font-weight: 400
-        line-height: 150%
+        line-height: 100%
     h3
         text-align: center
         margin-top: 30px
@@ -52,29 +57,52 @@
             font-weight: 600
             line-height: 150%
             text-decoration-line: underline
+    // svg
+    //     width: 300px
+    //     height: 500px
+    //     // box-sizing: border-box
+    //     // overflow: visible
+    //     overflow: hidden
+    //     padding-bottom: 35px
+.bouncing-svg
+    width: 100% /* Адаптивная ширина */
+    max-width: 350px /* Максимальная ширина на больших экранах */
+    height: auto /* Высота будет рассчитываться автоматически */
+    overflow: hidden /* Скрывает мяч, выходящий за границы */
+
 
 
 
 @media (max-width: 1300px)
-    .notFoundContainer_code
-        h6
-            font-size: 270px
-            line-height: 100%
-        img
-            aspect-ratio: 1 / 1
-            width: auto
-            height: 220px
+    .notFoundContainer
+        h2
+            margin-top: 0
+        &_code
+            h6
+                font-size: 270px
+                line-height: 120%
+            
+            img
+                aspect-ratio: 1 / 1
+                width: auto
+                height: 220px
+    .bouncing-svg
+        max-width: 255px
+
 @media (max-width: 992px)
     .notFoundContainer_code
         h6
             font-size: 250px
         img
             height: 210px
+    .bouncing-svg
+        max-width: 215px
 @media (max-width: 768px)
     .notFoundContainer
         &_code
             h6
                 font-size: 200px
+                line-height: 150%
             img
                 height: 180px
         h2
@@ -86,13 +114,16 @@
             a
                 font-size: 18px
                 margin-top: 20px
+    
+
 @media (max-width: 576px)
     .notFoundContainer
         &_code
             h6
                 font-size: 150px
-            img
-                height: 113px
+                line-height: 170%
+            // img
+            //     height: 113px
         h2
             font-size: 24px
             margin-bottom: 8px
@@ -102,3 +133,6 @@
                 font-size: 14px
             a
                 font-size: 16px
+    .bouncing-svg
+        max-width: 150px
+        

@@ -66,7 +66,9 @@
             <div class="notFoundContainer">
                 <div class="notFoundContainer_code">
                     <h6>4</h6>
-                    <img src="/icons/ball404.png" alt="tennis ball">
+                    <svg class="bouncing-svg" viewBox="0 0 300 500">
+                        <image id="ball" xlink:href="/icons/ball404.png" x="0" y="-250" width="300" height="300" />
+                    </svg>
                     <h6>4</h6>
                 </div>
                 <h2 id="errorMessage">Упс, страница не найдена</h2>
@@ -116,6 +118,55 @@
             mainPageLinkEl.textContent = translations[language].mainPageLinkText;
             backTo.textContent = translations[language].backTo;
         }
+
+        // document.addEventListener('DOMContentLoaded', () => {
+        const ball = document.querySelector('#ball');
+        const svg = document.querySelector('.bouncing-svg');
+        let t, h, max;
+
+        function updateBounceHeight() {
+            const svgHeight = svg.getBoundingClientRect().height; // Высота SVG
+            const ballHeight = ball.getBoundingClientRect().height; // Высота мяча
+            max = svgHeight - ballHeight - 15; // Уровень отскока с учетом нижней границы (отступ в 15px)
+            console.log(max);
+        }
+
+        // let t, h, max = 157;
+
+        function start() {
+            t = Date.now(); 
+            h = max + 300;
+        };
+
+        setTimeout(start, 500);
+        document.addEventListener('click', () => {
+            start();
+        })
+
+        // Обновляем параметры при загрузке и изменении размера окна
+        window.addEventListener('resize', updateBounceHeight);
+        document.addEventListener('DOMContentLoaded', () => {
+            updateBounceHeight();
+            setTimeout(start, 500);
+        });
+
+        // Запускаем анимацию
+        requestAnimationFrame(function animate() {
+            const dt = Date.now() - t;
+            h *= 0.97; // Затухание отскока
+
+            if (h < 1) h = 0;
+
+            const wave = Math.cos(dt / (200 - dt / 25)); // Плавная кривая движения
+            const newY = max - Math.abs(wave) * h;
+
+            if (!isNaN(newY)) {
+                ball.setAttribute('y', newY); // Установка позиции мяча
+            }
+
+            requestAnimationFrame(animate);
+        });
+
     </script>
 </body>
 </html>

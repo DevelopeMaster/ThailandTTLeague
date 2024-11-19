@@ -6129,28 +6129,31 @@ textarea:-webkit-autofill:focus {
 .notFoundContainer {
   position: relative;
   width: 100%;
-  padding-bottom: 20px; }
+  padding-bottom: 20px;
+  margin-top: -130px; }
   .notFoundContainer_code {
     width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center; }
+    align-items: center;
+    align-items: flex-end; }
     .notFoundContainer_code h6 {
       color: #FA6400;
       font-family: Inter;
       font-size: 400px;
       font-style: normal;
       font-weight: 700;
-      line-height: 130%;
+      line-height: 80%;
       text-transform: uppercase; }
   .notFoundContainer h2 {
+    margin-top: 40px;
     color: #FFF;
     text-align: center;
     font-family: Inter;
     font-size: 40px;
     font-style: normal;
     font-weight: 600;
-    line-height: 135%;
+    line-height: 100%;
     margin-bottom: 16px; }
   .notFoundContainer h4 {
     color: #FFF;
@@ -6159,7 +6162,7 @@ textarea:-webkit-autofill:focus {
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
-    line-height: 150%; }
+    line-height: 100%; }
   .notFoundContainer h3 {
     text-align: center;
     margin-top: 30px; }
@@ -6181,24 +6184,37 @@ textarea:-webkit-autofill:focus {
       line-height: 150%;
       text-decoration-line: underline; }
 
+.bouncing-svg {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  overflow: hidden; }
+
 @media (max-width: 1300px) {
+  .notFoundContainer h2 {
+    margin-top: 0; }
   .notFoundContainer_code h6 {
     font-size: 270px;
-    line-height: 100%; }
+    line-height: 120%; }
   .notFoundContainer_code img {
     aspect-ratio: 1 / 1;
     width: auto;
-    height: 220px; } }
+    height: 220px; }
+  .bouncing-svg {
+    max-width: 255px; } }
 
 @media (max-width: 992px) {
   .notFoundContainer_code h6 {
     font-size: 250px; }
   .notFoundContainer_code img {
-    height: 210px; } }
+    height: 210px; }
+  .bouncing-svg {
+    max-width: 215px; } }
 
 @media (max-width: 768px) {
   .notFoundContainer_code h6 {
-    font-size: 200px; }
+    font-size: 200px;
+    line-height: 150%; }
   .notFoundContainer_code img {
     height: 180px; }
   .notFoundContainer h2 {
@@ -6212,9 +6228,8 @@ textarea:-webkit-autofill:focus {
 
 @media (max-width: 576px) {
   .notFoundContainer_code h6 {
-    font-size: 150px; }
-  .notFoundContainer_code img {
-    height: 113px; }
+    font-size: 150px;
+    line-height: 170%; }
   .notFoundContainer h2 {
     font-size: 24px;
     margin-bottom: 8px; }
@@ -6223,7 +6238,9 @@ textarea:-webkit-autofill:focus {
     .notFoundContainer h3 span {
       font-size: 14px; }
     .notFoundContainer h3 a {
-      font-size: 16px; } }
+      font-size: 16px; }
+  .bouncing-svg {
+    max-width: 150px; } }
 
 #players-preloader {
   position: absolute;

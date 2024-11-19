@@ -532,7 +532,7 @@ router.post('/saveClubProfile', ensureAuthenticated, upload.fields([
     }
 });
 
-router.post('/saveSchedule', async (req, res) => {
+router.post('/saveSchedule', ensureAuthenticated, async (req, res) => {
     const { scheduleData, clubId } = req.body;
     console.log('маршрут есть');
     try {

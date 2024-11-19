@@ -15,7 +15,8 @@ function ensureAdmin(req, res, next) {
     if (req.isAuthenticated() && req.user.role === 'admin') {
       return next(); // Если пользователь администратор, продолжить выполнение
     } else {
-      return res.status(403).send('Access denied. Admins only.');
+    //   return res.status(403).send('Access denied. Admins only.');
+        return res.redirect(`404`);
     }
 };
 

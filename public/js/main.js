@@ -13,6 +13,26 @@ async function initializeApp() {
 //----------- important -----------//
 
 document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const loginRequired = urlParams.get('loginRequired');
+    
+    const setLang = {
+        'en': 'english',
+        'ru': 'russian',
+        'th': 'thai'
+    };
+    const language = window.location.pathname.match(/^\/(en|ru|th)/)?.[1] || 'en';
+    localStorage.setItem('clientLang', setLang[language]);
+
+    if (loginRequired === 'true') {
+        // Открываем модальное окно логина
+        setTimeout(loginForm, 200);
+
+        // Убираем параметр из URL, чтобы не оставался после действия
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
     createHeader(localStorage.getItem('clientLang') || 'english');
     createFooter(localStorage.getItem('clientLang') || 'english');
     const languageMap = {
@@ -34,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     languageControl();
 
+   
+
     fetchPastTournaments();
    
     fetchFutureTournaments();
@@ -47,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // listeners of buttons
     listenerOfButtons();
+
 
     
 });

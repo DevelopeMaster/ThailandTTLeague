@@ -6191,54 +6191,62 @@ textarea:-webkit-autofill:focus {
   overflow: hidden; }
 
 @media (max-width: 1300px) {
-  .notFoundContainer h2 {
-    margin-top: 0; }
-  .notFoundContainer_code h6 {
-    font-size: 270px;
-    line-height: 120%; }
-  .notFoundContainer_code img {
-    aspect-ratio: 1 / 1;
-    width: auto;
-    height: 220px; }
+  .notFoundContainer {
+    margin-top: -100px; }
+    .notFoundContainer h2 {
+      margin-top: 0; }
+    .notFoundContainer_code h6 {
+      font-size: 270px;
+      line-height: 120%; }
+    .notFoundContainer_code img {
+      aspect-ratio: 1 / 1;
+      width: auto;
+      height: 220px; }
   .bouncing-svg {
     max-width: 255px; } }
 
 @media (max-width: 992px) {
-  .notFoundContainer_code h6 {
-    font-size: 250px; }
-  .notFoundContainer_code img {
-    height: 210px; }
+  .notFoundContainer {
+    margin-top: -80px; }
+    .notFoundContainer_code h6 {
+      font-size: 250px; }
+    .notFoundContainer_code img {
+      height: 210px; }
   .bouncing-svg {
     max-width: 215px; } }
 
 @media (max-width: 768px) {
-  .notFoundContainer_code h6 {
-    font-size: 200px;
-    line-height: 150%; }
-  .notFoundContainer_code img {
-    height: 180px; }
-  .notFoundContainer h2 {
-    font-size: 32px;
-    margin-bottom: 12px; }
-  .notFoundContainer h3 span {
-    font-size: 18px; }
-  .notFoundContainer h3 a {
-    font-size: 18px;
-    margin-top: 20px; } }
+  .notFoundContainer {
+    margin-top: -60px; }
+    .notFoundContainer_code h6 {
+      font-size: 200px;
+      line-height: 150%; }
+    .notFoundContainer_code img {
+      height: 180px; }
+    .notFoundContainer h2 {
+      font-size: 32px;
+      margin-bottom: 12px; }
+    .notFoundContainer h3 span {
+      font-size: 18px; }
+    .notFoundContainer h3 a {
+      font-size: 18px;
+      margin-top: 20px; } }
 
 @media (max-width: 576px) {
-  .notFoundContainer_code h6 {
-    font-size: 150px;
-    line-height: 170%; }
-  .notFoundContainer h2 {
-    font-size: 24px;
-    margin-bottom: 8px; }
-  .notFoundContainer h3 {
-    margin-top: 20px; }
-    .notFoundContainer h3 span {
-      font-size: 14px; }
-    .notFoundContainer h3 a {
-      font-size: 16px; }
+  .notFoundContainer {
+    margin-top: 0px; }
+    .notFoundContainer_code h6 {
+      font-size: 150px;
+      line-height: 170%; }
+    .notFoundContainer h2 {
+      font-size: 24px;
+      margin-bottom: 8px; }
+    .notFoundContainer h3 {
+      margin-top: 20px; }
+      .notFoundContainer h3 span {
+        font-size: 14px; }
+      .notFoundContainer h3 a {
+        font-size: 16px; }
   .bouncing-svg {
     max-width: 150px; } }
 

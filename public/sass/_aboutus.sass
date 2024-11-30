@@ -1,7 +1,7 @@
 .aboutUs
     h2
         margin-top: 60px
-        margin-bottom: 14px
+        margin-bottom: 30px
     p
         color: #FFF
         font-family: Inter
@@ -9,76 +9,84 @@
         font-style: normal
         font-weight: 400
         line-height: 130%
-    &_info
-        margin-top: 14px
+    h4 
+        color: #FFF
+        font-family: Inter
+        font-size: 24px
+        font-style: normal
+        font-weight: 500
+        line-height: 130%
+        margin-bottom: 12px
+    &_textwrapp
         display: flex
-        box-sizing: border-box
+        gap: 36px
+        &_left
+            position: relative
+            width: 50%
+            h2
+                margin-top: 0px
+                margin-bottom: 14px
+                width: 100%
+            h4
+                width: 100%
+                padding-right: 103px
+            p 
+                width: 100%
+                padding-right: 103px
+        &_right
+            position: relative
+            width: 50%
+            h2
+                margin-top: 0px
+                margin-bottom: 14px
+                width: 100%
+                padding-right: 58px
+            h4
+                margin-top: 0px
+                width: 100%
+                padding-right: 58px
+            p
+                width: 100%
+                padding-right: 58px
+        &_decorate
+            padding: 20px 0px
+            &:before
+                position: absolute
+                top: 0
+                left: 0
+                content: ''
+                display: block
+                width: 100%
+                height: 1px
+                background-color: rgba(255, 255, 255, 0.16)
+        &_downdecorate
+            &:after
+                position: absolute
+                bottom: 0
+                left: 0
+                content: ''
+                display: block
+                width: 100%
+                height: 1px
+                background-color: rgba(255, 255, 255, 0.16)
+
+    &_image, &_secondImage
+        margin: 30px 0px
+        background-color: #000817
+        
+        background-position: center
+        background-size: cover
+        overflow: hidden
+        aspect-ratio: 1.216/0.57
         width: 100%
-        &_img
-            background-color: #000817
-            background-image: url(/images/aboutUsCoach.jpg)
-            background-position: center
-            background-size: cover
-            overflow: hidden
-            width: 57%
-            height: 400px
-            box-sizing: border-box
-        &_descr
-            box-sizing: border-box
-            display: flex
-            flex-direction: column
-            justify-content: space-around
-            width: 43%
-            min-width: 450px
-            // width: calc(100% - 616px)
-            &::before
-                content: ''
-                display: block
-                height: 1px
-                width: 100%
-                background-color: #3F3F4C
-            &::after
-                content: ''
-                display: block
-                height: 1px
-                width: 100%
-                background-color: #3F3F4C
-            &_item
-                max-width: 100%
-                padding: 20px 0
-                display: flex
-                flex-direction: column
-                gap: 16px
-                h4
-                    max-width: 417px
-                    color: #FFF
-                    font-family: Inter
-                    font-size: 24px
-                    font-style: normal
-                    font-weight: 500
-                    line-height: 130%
-                p
-                    max-width: 417px
-                    color: #FFF
-                    font-family: Inter
-                    font-size: 16px
-                    font-style: normal
-                    font-weight: 400
-                    line-height: 130%
-                &:nth-child(2)
-                    padding: 0
-                    &::before
-                        content: ''
-                        display: block
-                        height: 1px
-                        width: 100%
-                        background-color: #3F3F4C
-                    &::after
-                        content: ''
-                        display: block
-                        height: 1px
-                        width: 100%
-                        background-color: #3F3F4C
+        height: auto
+        box-sizing: border-box
+
+    &_image
+        background-image: url(/images/aboutUsCoach.jpg)
+    &_secondImage
+        background-image: url(/images/aboutUsCoach2.png)
+
                     
     &_benefits
         margin-top: 80px
@@ -123,40 +131,107 @@
                         border-radius: 50%
 
 
-@media (max-width: 1025px)
-    .aboutUs
-        &_info
-            // flex-direction: column
-            &_img
-                width: 57%
-            &_descr
-                width: 43%
-                min-width: 300px
+// @media (max-width: 1025px)
+//     .aboutUs
+//         &_info
+//             // flex-direction: column
+//             &_img
+//                 width: 57%
+//             &_descr
+//                 width: 43%
+//                 min-width: 300px
 // @media (max-width: 992px)
 // @media (max-width: 800px)
 @media (max-width: 768px)
     .aboutUs
-        &_info
+        &_textwrapp
+            // display: flex
             flex-direction: column
-            &_img
+            gap: 36px
+            &_left
+                position: relative
                 width: 100%
-            &_descr
-                margin-top: 20px
+                h2
+                    margin-top: 0px
+                    margin-bottom: 14px
+                h4
+                    padding-right: 0
+                p 
+                    padding-right: 0
+            &_right
+                position: relative
                 width: 100%
-                min-width: 300px
+                h2
+                    margin-top: 0px
+                    margin-bottom: 14px
+                    padding-right: 0
+                h4
+                    margin-top: 0px
+                    padding-right: 0
+                p
+                    width: 100%
+                    padding-right: 0
+            &_decorate
+                padding: 20px 0px
+                &:before
+                    position: absolute
+                    top: 0
+                    left: 0
+                    content: ''
+                    display: block
+                    width: 100%
+                    height: 1px
+                    background-color: rgba(255, 255, 255, 0.16)
+            &_downdecorate
+                &:after
+                    position: absolute
+                    bottom: 0
+                    left: 0
+                    content: ''
+                    display: block
+                    width: 100%
+                    height: 1px
+                    background-color: rgba(255, 255, 255, 0.16)
         &_benefits
             flex-direction: column
             &_item
                 width: 100%
 @media (max-width: 576px)
     .aboutUs
+        margin-top: 30px
         h2
-            margin-top: 22px
-            margin-bottom: 8px
+            margin-top: 29px
+            margin-bottom: 20px
             font-size: 24px
         p
             font-size: 14px
             width: 100%
+        &_textwrapp
+            gap: 20px
+            h2
+                margin-top: 0
+                margin-bottom: 8px
+            &_decorate
+                padding: 20px 0px
+                &:before
+                    position: absolute
+                    top: 0
+                    left: 0
+                    content: ''
+                    display: block
+                    width: 100%
+                    height: 1px
+                    background-color: rgba(255, 255, 255, 0.16)
+            &_downdecorate
+                &:after
+                    position: absolute
+                    bottom: 0
+                    left: 0
+                    content: ''
+                    display: none
+                    width: 100%
+                    height: 1px
+                    background-color: rgba(255, 255, 255, 0.16)
         &_info
             &_img
                 aspect-ratio: 3.2/2.07

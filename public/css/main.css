@@ -2516,7 +2516,7 @@ h2 {
 
 .aboutUs h2 {
   margin-top: 60px;
-  margin-bottom: 14px; }
+  margin-bottom: 30px; }
 
 .aboutUs p {
   color: #FFF;
@@ -2526,75 +2526,83 @@ h2 {
   font-weight: 400;
   line-height: 130%; }
 
-.aboutUs_info {
-  margin-top: 14px;
+.aboutUs h4 {
+  color: #FFF;
+  font-family: Inter;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+  margin-bottom: 12px; }
+
+.aboutUs_textwrapp {
   display: flex;
-  box-sizing: border-box;
-  width: 100%; }
-  .aboutUs_info_img {
-    background-color: #000817;
-    background-image: url(/images/aboutUsCoach.jpg);
-    background-position: center;
-    background-size: cover;
-    overflow: hidden;
-    width: 57%;
-    height: 400px;
-    box-sizing: border-box; }
-  .aboutUs_info_descr {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 43%;
-    min-width: 450px; }
-    .aboutUs_info_descr::before {
+  gap: 36px; }
+  .aboutUs_textwrapp_left {
+    position: relative;
+    width: 50%; }
+    .aboutUs_textwrapp_left h2 {
+      margin-top: 0px;
+      margin-bottom: 14px;
+      width: 100%; }
+    .aboutUs_textwrapp_left h4 {
+      width: 100%;
+      padding-right: 103px; }
+    .aboutUs_textwrapp_left p {
+      width: 100%;
+      padding-right: 103px; }
+  .aboutUs_textwrapp_right {
+    position: relative;
+    width: 50%; }
+    .aboutUs_textwrapp_right h2 {
+      margin-top: 0px;
+      margin-bottom: 14px;
+      width: 100%;
+      padding-right: 58px; }
+    .aboutUs_textwrapp_right h4 {
+      margin-top: 0px;
+      width: 100%;
+      padding-right: 58px; }
+    .aboutUs_textwrapp_right p {
+      width: 100%;
+      padding-right: 58px; }
+  .aboutUs_textwrapp_decorate {
+    padding: 20px 0px; }
+    .aboutUs_textwrapp_decorate:before {
+      position: absolute;
+      top: 0;
+      left: 0;
       content: '';
       display: block;
-      height: 1px;
       width: 100%;
-      background-color: #3F3F4C; }
-    .aboutUs_info_descr::after {
-      content: '';
-      display: block;
       height: 1px;
-      width: 100%;
-      background-color: #3F3F4C; }
-    .aboutUs_info_descr_item {
-      max-width: 100%;
-      padding: 20px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 16px; }
-      .aboutUs_info_descr_item h4 {
-        max-width: 417px;
-        color: #FFF;
-        font-family: Inter;
-        font-size: 24px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: 130%; }
-      .aboutUs_info_descr_item p {
-        max-width: 417px;
-        color: #FFF;
-        font-family: Inter;
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 130%; }
-      .aboutUs_info_descr_item:nth-child(2) {
-        padding: 0; }
-        .aboutUs_info_descr_item:nth-child(2)::before {
-          content: '';
-          display: block;
-          height: 1px;
-          width: 100%;
-          background-color: #3F3F4C; }
-        .aboutUs_info_descr_item:nth-child(2)::after {
-          content: '';
-          display: block;
-          height: 1px;
-          width: 100%;
-          background-color: #3F3F4C; }
+      background-color: rgba(255, 255, 255, 0.16); }
+  .aboutUs_textwrapp_downdecorate:after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    content: '';
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.16); }
+
+.aboutUs_image, .aboutUs_secondImage {
+  margin: 30px 0px;
+  background-color: #000817;
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+  aspect-ratio: 1.216/0.57;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box; }
+
+.aboutUs_image {
+  background-image: url(/images/aboutUsCoach.jpg); }
+
+.aboutUs_secondImage {
+  background-image: url(/images/aboutUsCoach2.png); }
 
 .aboutUs_benefits {
   margin-top: 80px;
@@ -2638,60 +2646,118 @@ h2 {
           background-color: orange;
           border-radius: 50%; }
 
-@media (max-width: 1025px) {
-  .aboutUs_info_img {
-    width: 57%; }
-  .aboutUs_info_descr {
-    width: 43%;
-    min-width: 300px; } }
-
 @media (max-width: 768px) {
-  .aboutUs_info {
-    flex-direction: column; }
-    .aboutUs_info_img {
+  .aboutUs_textwrapp {
+    flex-direction: column;
+    gap: 36px; }
+    .aboutUs_textwrapp_left {
+      position: relative;
       width: 100%; }
-    .aboutUs_info_descr {
-      margin-top: 20px;
+      .aboutUs_textwrapp_left h2 {
+        margin-top: 0px;
+        margin-bottom: 14px; }
+      .aboutUs_textwrapp_left h4 {
+        padding-right: 0; }
+      .aboutUs_textwrapp_left p {
+        padding-right: 0; }
+    .aboutUs_textwrapp_right {
+      position: relative;
+      width: 100%; }
+      .aboutUs_textwrapp_right h2 {
+        margin-top: 0px;
+        margin-bottom: 14px;
+        padding-right: 0; }
+      .aboutUs_textwrapp_right h4 {
+        margin-top: 0px;
+        padding-right: 0; }
+      .aboutUs_textwrapp_right p {
+        width: 100%;
+        padding-right: 0; }
+    .aboutUs_textwrapp_decorate {
+      padding: 20px 0px; }
+      .aboutUs_textwrapp_decorate:before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: '';
+        display: block;
+        width: 100%;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.16); }
+    .aboutUs_textwrapp_downdecorate:after {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      content: '';
+      display: block;
       width: 100%;
-      min-width: 300px; }
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.16); }
   .aboutUs_benefits {
     flex-direction: column; }
     .aboutUs_benefits_item {
       width: 100%; } }
 
 @media (max-width: 576px) {
-  .aboutUs h2 {
-    margin-top: 22px;
-    margin-bottom: 8px;
-    font-size: 24px; }
-  .aboutUs p {
-    font-size: 14px;
-    width: 100%; }
-  .aboutUs_info_img {
-    aspect-ratio: 3.2/2.07;
-    width: 100%;
-    height: auto; }
-  .aboutUs_info_descr_item {
-    gap: 8px;
-    padding: 12px 0; }
-    .aboutUs_info_descr_item h4 {
-      font-size: 20px; }
-    .aboutUs_info_descr_item p {
-      font-size: 14px; }
-  .aboutUs_benefits {
-    margin-top: 40px; }
-    .aboutUs_benefits_item h3 {
-      font-size: 18px; }
-    .aboutUs_benefits_item_list {
-      margin-top: 16px;
-      gap: 12px; }
-      .aboutUs_benefits_item_list li {
-        font-size: 14px;
-        margin-left: 8px; }
-        .aboutUs_benefits_item_list li::before {
-          width: 5px;
-          height: 5px;
-          left: -14px; } }
+  .aboutUs {
+    margin-top: 30px; }
+    .aboutUs h2 {
+      margin-top: 29px;
+      margin-bottom: 20px;
+      font-size: 24px; }
+    .aboutUs p {
+      font-size: 14px;
+      width: 100%; }
+    .aboutUs_textwrapp {
+      gap: 20px; }
+      .aboutUs_textwrapp h2 {
+        margin-top: 0;
+        margin-bottom: 8px; }
+      .aboutUs_textwrapp_decorate {
+        padding: 20px 0px; }
+        .aboutUs_textwrapp_decorate:before {
+          position: absolute;
+          top: 0;
+          left: 0;
+          content: '';
+          display: block;
+          width: 100%;
+          height: 1px;
+          background-color: rgba(255, 255, 255, 0.16); }
+      .aboutUs_textwrapp_downdecorate:after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        content: '';
+        display: none;
+        width: 100%;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.16); }
+    .aboutUs_info_img {
+      aspect-ratio: 3.2/2.07;
+      width: 100%;
+      height: auto; }
+    .aboutUs_info_descr_item {
+      gap: 8px;
+      padding: 12px 0; }
+      .aboutUs_info_descr_item h4 {
+        font-size: 20px; }
+      .aboutUs_info_descr_item p {
+        font-size: 14px; }
+    .aboutUs_benefits {
+      margin-top: 40px; }
+      .aboutUs_benefits_item h3 {
+        font-size: 18px; }
+      .aboutUs_benefits_item_list {
+        margin-top: 16px;
+        gap: 12px; }
+        .aboutUs_benefits_item_list li {
+          font-size: 14px;
+          margin-left: 8px; }
+          .aboutUs_benefits_item_list li::before {
+            width: 5px;
+            height: 5px;
+            left: -14px; } }
 
 .tournament {
   margin-top: 40px; }

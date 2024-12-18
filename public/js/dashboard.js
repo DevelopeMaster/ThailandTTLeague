@@ -158,9 +158,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 throw new Error('Player not found');
             }
             player = await response.json();
-            console.log(player);
+            // console.log(player);
             playerCity = await getCityName(player.city);
-            console.log(playerCity);
+            // console.log(playerCity);
             renderPlayerData();
         } catch (error) {
             console.error('Error fetching player data:', error);

@@ -684,10 +684,10 @@ app.get('/:lang/share/result', (req, res) => {
           <meta property="og:type" content="article">
           <title>${content.title}</title>
       </head>
-      <body>
-          <h1>${content.title}</h1>
+      <body style="background-color: #000817">
+          <h1 style="color:'#fff">${content.title}</h1>
           <img src="${image}" alt="Achievement">
-          <p>${content.description}</p>
+          <p style="color: '#fff">${content.description}</p>
       </body>
       </html>
   `);

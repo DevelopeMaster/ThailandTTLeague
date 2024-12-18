@@ -205,6 +205,22 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function renderPlayerData() {
         const formattedDate = formatDateAndAge(player.birthdayDate, lang);
+        const currentRating = player.rating;
+        const sundayRating = player.sundaysRating;
+        const ratingChange = currentRating - sundayRating;
+        let changeRatingColor;
+        let changeRatingSymbol;
+
+        if (ratingChange > 0) {
+            changeRatingColor = '#007026';  // Рейтинг увеличился
+            changeRatingSymbol = '+';
+        } else if (ratingChange < 0) {
+            changeRatingColor = '#ff0000c7';    // Рейтинг уменьшился
+            changeRatingSymbol = '';
+        } else {
+            changeRatingColor = '#adadada1';   // Рейтинг не изменился
+            changeRatingSymbol = '+';
+        } 
 
         const playerMainInfo = document.querySelector('.player_mainInfo');
         playerMainInfo.innerHTML = `
@@ -216,7 +232,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="player_mainInfo_info_descr">
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Playing hand')}: <span>${getTranslation(player.hand)}</span></p>
-                        <p>${getTranslation('Rating')}: <span>${player.rating || ' - '}</span></p>
+                        <p>${getTranslation('Rating')}: <span style="margin-left: 5px">${player.rating || ' - '}</span> <span style="margin-left: 5px; color: ${changeRatingColor}">${changeRatingSymbol}${ratingChange}</span></p>
                         <p>${getTranslation('Coach')}: <span>${player.coach || ' - '}</span></p>
                     </div>
                     <div class="player_mainInfo_info_descr_path">

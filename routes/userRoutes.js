@@ -63,6 +63,39 @@ router.post('/tournaments/:tournamentId/unregister-player', ensureAuthenticated,
 
 
 
+router.get('/clubtournaments', ensureAuthenticated, async (req, res) => {
+    const { clubName, clubLogo, upcoming } = req.query; // Извлечение параметров из строки запроса
+
+    let filter = {};
+    if (clubName) {
+        // filter['club.name'] = clubName; // Фильтр по названию клуба
+        filter['club.name'] = { $regex: new RegExp(`^${clubName}$`, 'i') };
+    }
+    if (clubLogo) {
+        // filter['club.name'] = clubName; // Фильтр по названию клуба
+        filter['club.logo'] = { $regex: new RegExp(`^${clubLogo}$`, 'i') };
+    }
+    if (upcoming === 'true') {
+        filter.datetime = { $gte: new Date() }; // Фильтр по дате
+    }
+
+    try {
+        const db = getDB();
+        // Поиск турниров в базе данных
+        const tournaments = await db
+            .collection('tournaments')
+            .find(filter)
+            .sort({ datetime: 1 })
+            .toArray();
+
+        res.status(200).json(tournaments); // Возврат найденных турниров
+    } catch (error) {
+        console.error('Ошибка при поиске турниров:', error);
+        res.status(500).send('Error retrieving tournaments');
+    }
+});
+
+
 //--------------EDIT PROFILES ----------//
 
 router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([

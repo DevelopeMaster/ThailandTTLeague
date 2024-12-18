@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Tournament (Master’s Cup)': 'Турнир (Кубок мастеров)',
             'Tournament (Kids Open Cup)': 'Турнир (Открытый кубок для детей)',
             'Tournament (Amateurs Cup)': 'Турнир (Кубок любителей)',
-            'Private session': 'Индивидуальная тренировка',
+            'Private session': 'Инд. тренировка',
             'Master Class': 'Мастер-класс',
             '-': 'Не выбрано'
         },
@@ -156,6 +156,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return translations[lang][key] || translations['en'][key];
     }
 
+    
     async function fetchClubData() {
         try {
             const response = await fetch(`/get-data-club?lang=${lang}&clubId=${clubId}`);
@@ -169,11 +170,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             } else {
                 localStorage.setItem('userLogo', 'icons/clubslogo/default_avatar.svg');
             }
-                
+            
+
+            // console.log(clubName);  
             renderClubData();
             // renderScheduleTable(club);
             // renderMobileScheduleTable(club);
-            renderTableBasedOnScreenSize(club)
+            renderTableBasedOnScreenSize(club);
+
+            const upcomingBlock = document.querySelector('.upcommingTable_content');
+            displayFutureTournaments(club.name, club.logo, upcomingBlock);
 
         } catch (error) {
             console.error('Error fetching club data:', error);
@@ -295,6 +301,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         renderMap();
         renderPhotos();  //  жду дизайн
+
+        document.addEventListener('click', async function(event) {
+
+            if (event.target.id === 'createTournament') {
+                window.location.href = `/${lang}/createtournament/${club._id}`;
+            }
+
+        });
+        
     }
 
     function nl2br(str) {
@@ -345,6 +360,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
         tableBody.appendChild(headerRow); // Добавляем заголовок в таблицу
     
+        
         // Рендерим строки для каждой сессии
         for (let sessionIndex = 0; sessionIndex < maxSessions; sessionIndex++) {
             const row = document.createElement("tr");
@@ -355,7 +371,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             sessionCell.classList.add('sessionCell');
             sessionCell.style = 'align-content: center; width: 40px';
             row.appendChild(sessionCell);
-            console.log(clubData);
+            
             // Создаем ячейки для каждого дня недели
             dayKeys.forEach((dayKey, dayIndex) => {
                 const cell = document.createElement("td");
@@ -467,7 +483,134 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    // const upcomingBlock = document.querySelector('.upcommingTable_content');
+    // displayFutureTournaments(clubName, upcomingBlock);
     fetchClubData();
+    
+    
+
+    async function displayFutureTournaments(clubName, clubLogo, container) {
+        try {
+            // Очистка контейнера перед отрисовкой данных
+            container.innerHTML = '';
+    
+            // Получение текущего языка интерфейса
+            const languageMap = {
+                'russian': 'ru',
+                'english': 'en',
+                'thai': 'th'
+            };
+            const currentLang = localStorage.getItem('clientLang') || 'english';
+            const langKey = languageMap[currentLang];
+    
+            // const clubName = 'PHUKET TT CLUB';
+            // Запрос к базе данных для получения будущих турниров текущего клуба
+            const response = await fetch(`/api/clubtournaments?clubName=${encodeURIComponent(clubName)}&clubLogo=${encodeURIComponent(clubLogo)}&upcoming=true`);
+    
+            const tournaments = await response.json();
+            // console.log(tournaments);
+            // Сортировка турниров по дате
+            tournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+    
+            // Рендеринг каждого турнира
+            for (const tournament of tournaments) {
+                const tournamentDate = new Date(tournament.datetime);
+                let langMap = { 'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU' };
+                let lang = langMap[localStorage.clientLang] || 'en-US';
+                let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
+                let formattedDate = `${dayOfWeek} ${String(tournamentDate.getDate()).padStart(2, '0')}.${String(tournamentDate.getMonth() + 1).padStart(2, '0')}.${tournamentDate.getFullYear()}`;
+    
+                // Создание элемента турнира
+                let tournamentDiv = document.createElement('a');
+                tournamentDiv.className = 'upcommingTable_tournament';
+                tournamentDiv.href = `/${langKey}/tournaments/${tournament._id}`;
+    
+                // Время
+                let timeDiv = document.createElement('div');
+                timeDiv.className = 'cell tournament_time';
+                timeDiv.textContent = tournament.datetime.split('T')[1].substring(0, 5);
+                tournamentDiv.appendChild(timeDiv);
+    
+                // Клуб
+                let clubDiv = document.createElement('div');
+                clubDiv.className = 'cell tournament_club';
+                let clubLogoDiv = document.createElement('div');
+                clubLogoDiv.className = 'clubLogo';
+                clubLogoDiv.style.cssText = `background-image: url('${tournament.club.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
+                clubDiv.appendChild(clubLogoDiv);
+    
+                let clubNameSpan = document.createElement('span');
+                clubNameSpan.textContent = tournament.club.name;
+                clubDiv.appendChild(clubNameSpan);
+                tournamentDiv.appendChild(clubDiv);
+    
+                // Ограничения
+                let restrictionsDiv = document.createElement('div');
+                restrictionsDiv.className = 'cell tournament_restrict';
+                restrictionsDiv.textContent = tournament.restrictions || '';
+                tournamentDiv.appendChild(restrictionsDiv);
+    
+                // Рейтинг
+                let ratingDiv = document.createElement('div');
+                ratingDiv.className = 'cell tournament_rating';
+                ratingDiv.textContent = tournament.rating || '-';
+                tournamentDiv.appendChild(ratingDiv);
+    
+                // Игроки
+                let playersDiv = document.createElement('div');
+                playersDiv.className = 'cell tournament_players';
+                let playersImg = document.createElement('img');
+                playersImg.src = '/icons/user.svg';
+                playersImg.alt = 'players';
+                playersDiv.appendChild(playersImg);
+    
+                let playersSpan = document.createElement('span');
+                playersSpan.textContent = tournament.players.length;
+                playersDiv.appendChild(playersSpan);
+                tournamentDiv.appendChild(playersDiv);
+
+                let editTournament = document.createElement('img');
+                editTournament.src = '/icons/editpen.svg';
+                editTournament.alt = 'Edit Pen';
+                editTournament.className = 'editPen';
+                editTournament.id = 'editPen';
+                editTournament.dataset.id = tournament._id || tournament.id;
+                // editTournament.addEventListener('click', (e) => {
+                //     e.stopPropagation();
+                //     window.location.href = `/${lang}/dashboard/edittournament/${tournament._id || tournament.id}`;
+                // });
+                playersDiv.appendChild(editTournament);
+                tournamentDiv.appendChild(playersDiv);
+                document.addEventListener('click', function (event) {
+                    const editPen = event.target.closest('.editPen');
+                    if (editPen) {
+                        event.preventDefault(); // Предотвращает переход по ссылке-родителю
+                        const tournamentId = editPen.dataset.id;
+                        const usertId = clubId;
+                        window.location.href = `/${langKey}/dashboard/edittournament/${tournamentId}/${usertId}`;
+                    }
+                });
+    
+                // Добавление турнира в контейнер
+                container.appendChild(tournamentDiv);
+            }
+    
+            // Если турниры не найдены
+            if (tournaments.length === 0) {
+                let noTournamentsDiv = document.createElement('div');
+                noTournamentsDiv.className = 'no_tournaments';
+                noTournamentsDiv.textContent = {
+                    'english': 'No upcoming tournaments',
+                    'thai': 'ไม่มีการแข่งขันที่จะมาถึง',
+                    'russian': 'Нет предстоящих турниров'
+                }[currentLang] || 'No upcoming tournaments';
+                container.appendChild(noTournamentsDiv);
+            }
+        } catch (error) {
+            console.error('Error displaying tournaments:', error);
+            showErrorModal('Error while displaying tournaments', 'Oops!');
+        }
+    }
 
 
 

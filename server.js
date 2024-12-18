@@ -5,7 +5,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const nodemailer = require('nodemailer');
 const passport = require('./passportConfig'); // Подключаем конфигурацию Passport
-// const browserSync = require('browser-sync');
+const browserSync = require('browser-sync');
 const { ObjectId } = require('mongodb'); // Импортируем ObjectId
 require('dotenv').config();
 const { connectDB, getDB } = require('./db'); // Подключаем функцию для получения базы данных
@@ -14,6 +14,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 // const router = express.Router();
+const cron = require('node-cron');
 const { v4: uuidv4 } = require('uuid');
 
 const { ensureAuthenticated, upload, ensureAdmin } = require('./middlewares/uploadConfig');
@@ -95,6 +96,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+
 
 // Основные маршруты
 app.get('/', (req, res) => {
@@ -315,6 +318,48 @@ app.get('/:lang(en|ru|th)/tournaments/:tournamentId', async (req, res) => {
   }
 });
 
+// app.get('/:lang(en|ru|th)/dashboard/edittournaments/:tournamentId', async (req, res) => {
+//   try {
+//     const { lang, tournamentId } = req.params;
+//     if (!tournamentId || !lang) {
+//       return res.status(404).render('404');
+//     }
+//     return res.render(`${lang}/tournaments/upcoming-tournament`);
+    
+//   } catch (error) {
+//     console.error('Error in route handler:', error);
+//     res.status(500).send('Server error');
+//   }
+// });
+
+app.get('/:lang(en|ru|th)/dashboard/edittournament/:tournamentId/:userId', async (req, res) => {
+  try {
+    const { lang, tournamentId, userId } = req.params;
+    // console.log('есть');
+    if (!tournamentId || !lang) {
+      return res.status(404).render('404');
+    }
+
+    // Дополнительно можно запросить данные о турнире из базы
+    // const db = getDB(); // Получение объекта базы данных
+    // const tournament = await db.collection('tournaments').findOne({ _id: tournamentId });
+
+    // if (!tournament) {
+    //   return res.status(404).render('404', { message: 'Tournament not found' });
+    // }
+
+    // Передача данных на страницу
+    return res.render(`${lang}/dashboard/edittournament`, {
+      tournamentId: tournamentId, // Передача ID турнира
+      userId: userId
+      // tournament: tournament // Передача объекта турнира
+    });
+  } catch (error) {
+    console.error('Error in route handler:', error);
+    res.status(500).send('Server error');
+  }
+});
+
 async function renderTournament(id, lang, res) {
   try {
     const db = getDB();
@@ -353,6 +398,20 @@ app.get('/:lang(en|ru|th)/alltrainings', (req, res) => {
   res.render(`${lang}/alltrainings`);
 });
 
+app.get('/:lang(en|ru|th)/createtournament/:id', (req, res) => {
+  const { lang, id } = req.params;
+  if (!lang) {
+    return res.status(404).render('404');
+  }
+  let link = `${lang}/createtournament`;
+
+  return res.render(link, {
+    userId: id,
+    // userType: userType
+});
+});
+
+
 
 // app.get('/:lang/dashboard/editclub/:userId', ensureAuthenticated, (req, res) => {
 //   const { lang, userId } = req.params;
@@ -371,6 +430,269 @@ app.get('/:lang(en|ru|th)/alltrainings', (req, res) => {
 //       return res.status(403).send('Forbidden');
 //   }
 // });
+
+// app.post('/get-playerIds', async (req, res) => {
+//   // console.log('есть контакт');
+//   try {
+//       const { playerIds } = req.body;
+//       // console.log(playerIds);
+
+//       // Проверка входных данных
+//       if (!Array.isArray(playerIds) || playerIds.length === 0) {
+//           return res.status(400).json({ error: 'Invalid player IDs' });
+//       }
+
+//       // Фильтрация и преобразование идентификаторов
+//       const validObjectIds = playerIds
+//           .filter(id => ObjectId.isValid(id)) // Только валидные идентификаторы
+//           .map(id => new ObjectId(id));
+
+//       // console.log('валидные', validObjectIds);
+//       if (validObjectIds.length === 0) {
+//           return res.status(400).json({ error: 'No valid player IDs provided' });
+//       }
+
+//       // Получение данных из базы
+//       const db = getDB(); // Предполагается, что функция getDB() возвращает подключение к базе
+//       const players = await db.collection('users')
+//           .find({ _id: { $in: validObjectIds } })
+//           .toArray();
+
+//       // Возвращаем результат
+//       // console.log(players);
+//       res.json(players);
+//   } catch (error) {
+//       console.error('Error fetching players:', error);
+//       res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+
+app.post('/get-playerIds', async (req, res) => {
+  try {
+      const { playerIds } = req.body;
+
+      // Проверка входных данных
+      if (!Array.isArray(playerIds) || playerIds.length === 0) {
+          return res.status(400).json({ error: 'Invalid player IDs' });
+      }
+
+      // Фильтрация и преобразование идентификаторов
+      const validObjectIds = playerIds
+          .filter(id => ObjectId.isValid(id)) // Только валидные идентификаторы
+          .map(id => new ObjectId(id));
+
+      if (validObjectIds.length === 0) {
+          return res.status(400).json({ error: 'No valid player IDs provided' });
+      }
+
+      // Подключение к базе данных
+      const db = getDB();
+
+      // Поиск в коллекции users
+      const usersPromise = db.collection('users')
+          .find({ _id: { $in: validObjectIds } })
+          .toArray();
+
+      // Поиск в коллекции coaches
+      const coachesPromise = db.collection('coaches')
+          .find({ _id: { $in: validObjectIds } })
+          .toArray();
+
+      // Ждем завершения обоих запросов
+      const [users, coaches] = await Promise.all([usersPromise, coachesPromise]);
+
+      // Объединение результатов
+      const players = [...users, ...coaches];
+
+      res.json(players);
+  } catch (error) {
+      console.error('Error fetching players:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/addtournament', ensureAuthenticated,  async (req, res) => {
+  const {
+      date,
+      datetime,
+      language,
+      tournamentname,
+      tournamentdate,
+      tournamenttime,
+      tournamentprice,
+      ratinglimit,
+      phone,
+      infotournaments,
+      userid,
+  } = req.body;
+
+  // Валидация данных
+  if (!tournamentname || !tournamentdate || !tournamenttime || !tournamentprice || !ratinglimit || !phone || !userid || !date || !datetime || !language) {
+      return res.status(400).json({ message: 'All required fields must be filled.' });
+  }
+
+  try {
+      const db = getDB();
+
+      // Находим клуб по ID
+      const club = await db.collection('clubs').findOne({ _id: new ObjectId(userid) });
+
+      if (!club) {
+          return res.status(404).json({ message: 'Club not found.' });
+      }
+
+      // Формируем данные для турнира
+      const tournamentData = {
+          name: tournamentname,
+          date: new Date(date),  // Дата турнира
+          datetime: new Date(datetime), // Полная дата с временем
+          contribution: parseFloat(tournamentprice), // Преобразуем цену в число
+          ratingLimit: parseInt(ratinglimit, 10), // Преобразуем рейтинг в число
+          contact: phone,
+          // info: infotournaments || '',
+          // createdBy: userid,
+          createdAt: new Date(),
+          prizes: {
+            [language]: infotournaments || ''
+          },
+          
+          club: {
+              name: club.name,
+              logo: club.logo
+          },
+          address: club.address || {}, // Адрес клуба
+          tables: club.tables || 0, // Количество столов
+          location: club.location || [], // Географическое положение
+          city: club.city || {} // Город клуба
+      };
+
+      // Сохраняем данные турнира в базу данных
+      const result = await db.collection('tournaments').insertOne(tournamentData);
+
+      res.status(201).json({ message: 'Tournament created successfully!', tournamentId: result.insertedId });
+  } catch (err) {
+      console.error('Error while saving tournament:', err);
+      res.status(500).json({ message: 'Failed to create the tournament. Please try again.' });
+  }
+});
+
+app.post('/edittournament', ensureAuthenticated, async (req, res) => {
+  const {
+      date,
+      datetime,
+      language,
+      tournamentname,
+      tournamentprice,
+      ratinglimit,
+      phone,
+      infotournaments,
+      userid,
+      tournamentid,
+  } = req.body;
+
+  if (!tournamentname || !date || !datetime || !tournamentprice || !ratinglimit || !phone || !userid || !language || !tournamentid) {
+      return res.status(400).json({ message: 'All required fields must be filled.' });
+  }
+
+  try {
+      const db = getDB();
+
+      // Найти клуб по ID
+      const club = await db.collection('clubs').findOne({ _id: new ObjectId(userid) });
+      if (!club) return res.status(404).json({ message: 'Club not found.' });
+
+      // Найти турнир по ID
+      const tournament = await db.collection('tournaments').findOne({ _id: new ObjectId(tournamentid) });
+      if (!tournament) return res.status(404).json({ message: 'Tournament not found.' });
+
+      // Сравнение и формирование изменений
+      const tournamentData = {};
+      if (tournamentname !== tournament.name) tournamentData.name = tournamentname;
+      if (new Date(date).toISOString().split('T')[0] !== tournament.date.toISOString().split('T')[0]) {
+          tournamentData.date = new Date(date);
+      }
+      if (new Date(datetime).toISOString() !== tournament.datetime.toISOString()) {
+          tournamentData.datetime = new Date(datetime);
+      }
+      if (parseFloat(tournamentprice) !== tournament.contribution) {
+          tournamentData.contribution = parseFloat(tournamentprice);
+      }
+      if (parseInt(ratinglimit, 10) !== tournament.ratingLimit) {
+          tournamentData.ratingLimit = parseInt(ratinglimit, 10);
+      }
+      if (phone !== tournament.contact) tournamentData.contact = phone;
+      if (!tournament.prizes || tournament.prizes[language] !== infotournaments) {
+          tournamentData.prizes = { ...tournament.prizes, [language]: infotournaments || '' };
+      }
+
+      // Логи изменений
+      console.log('Changes:', tournamentData);
+
+      // Обновление данных, если есть изменения
+      if (Object.keys(tournamentData).length > 0) {
+          const result = await db.collection('tournaments').updateOne(
+              { _id: new ObjectId(tournamentid) },
+              { $set: tournamentData }
+          );
+
+          if (result.modifiedCount > 0) {
+              return res.status(200).json({ message: 'Tournament updated successfully!' });
+          } else {
+              return res.status(400).json({ message: 'No changes were made.' });
+          }
+      } else {
+          return res.status(400).json({ message: 'No fields were changed.' });
+      }
+
+  } catch (err) {
+      console.error('Error while updating tournament:', err);
+      res.status(500).json({ message: 'Failed to update the tournament. Please try again.' });
+  }
+});
+
+
+app.get('/:lang/share/result', (req, res) => {
+  const { lang } = req.params; // Язык из маршрута
+  const { name, image, ratingChange } = req.query; // Параметры запроса
+
+  // Определяем переводы в зависимости от языка
+  const translations = {
+      en: {
+          title: `${name}'s Achievement`,
+          description: `My rating grew by ${ratingChange} this week!`,
+      },
+      ru: {
+          title: `Достижение ${name}`,
+          description: `Мой рейтинг вырос на ${ratingChange} за эту неделю!`,
+      },
+      th: {
+          title: `ความสำเร็จของ ${name}`,
+          description: `คะแนนของฉันเพิ่มขึ้น ${ratingChange} ในสัปดาห์นี้!`,
+      },
+  };
+
+  const content = translations[lang] || translations['en']; // По умолчанию английский
+
+  res.send(`
+      <!DOCTYPE html>
+      <html lang="${lang}">
+      <head>
+          <meta property="og:title" content="${content.title}">
+          <meta property="og:description" content="${content.description}">
+          <meta property="og:image" content="${image}">
+          <meta property="og:url" content="${req.protocol}://${req.get('host')}${req.originalUrl}">
+          <meta property="og:type" content="article">
+          <title>${content.title}</title>
+      </head>
+      <body>
+          <h1>${content.title}</h1>
+          <img src="${image}" alt="Achievement">
+          <p>${content.description}</p>
+      </body>
+      </html>
+  `);
+});
+
 
 app.get('/:lang/dashboard/editclub/:userId', ensureAuthenticated, (req, res) => {
   const { lang, userId } = req.params;
@@ -1372,6 +1694,43 @@ app.post('/logout', (req, res) => {
   });
 });
 
+const cronTask = async () => {
+  console.log('Запуск задачи обновления sundaysRating');
+  
+  try {
+      const db =  await getDB();
+      const players = await db.collection('users').find().toArray(); // Получаем всех игроков
+
+      // Создание операций для bulkWrite
+      const bulkOps = players.map(player => ({
+          updateOne: {
+              filter: { _id: player._id },
+              update: { 
+                  $set: { sundaysRating: player.rating } 
+              }
+          }
+      }));
+
+      // Выполняем массовое обновление
+      if (bulkOps.length > 0) {
+          await db.collection('users').bulkWrite(bulkOps);
+          console.log('Обновление sundaysRating завершено');
+      } else {
+          console.log('Нет игроков для обновления');
+      }
+  } catch (error) {
+      console.error('Ошибка при обновлении sundaysRating:', error);
+  }
+};
+
+// Расписание задачи
+cron.schedule('1 0 * * 0', cronTask);
+
+// Временный вызов задачи
+// (async () => {
+//   setTimeout(cronTask, 10000)
+// })();
+
 app.use((req, res, next) => {
   res.status(404).render('404');
 });
@@ -1384,18 +1743,18 @@ app.use((err, req, res, next) => {
 
 // Запуск сервера и инициализация базы данных
 connectDB().then(() => {
-  // app.listen(port, () => {
-  //   console.log(`Server is running on http://localhost:${port}`);
-  //   browserSync.init({
-  //     proxy: `http://localhost:${port}`,
-  //     files: ['./views/**/*.ejs', './public/**/*.*'],
-  //     port: 3001
-  //   });
-  // });
-
-  app.listen(8080, function () {
-    console.log(`Server is running on port ${8080}`);
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+    browserSync.init({
+      proxy: `http://localhost:${port}`,
+      files: ['./views/**/*.ejs', './public/**/*.*'],
+      port: 3001
+    });
   });
+
+  // app.listen(8080, function () {
+  //   console.log(`Server is running on port ${8080}`);
+  // });
 }).catch(err => {
   console.error('Failed to connect to database:', err);
 });

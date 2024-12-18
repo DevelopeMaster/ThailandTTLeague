@@ -1,4 +1,6 @@
 import { createHeader, createFooter, getAllPlayers, getAllTournaments, getAllClubs, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
+// const html2canvas = require('html2canvas');
+// import html2canvas from '../node_modules/html2canvas/dist/html2canvas.min.js';
 //----------- important -----------//
 window.onload = function() {
     if (!localStorage.getItem('clientLang')) {
@@ -268,6 +270,22 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function renderPlayerData() {
         const formattedDate = formatDateAndAge(player.birthdayDate, lang);
+        const currentRating = player.rating;
+        const sundayRating = player.sundaysRating;
+        const ratingChange = currentRating - sundayRating;
+        let changeRatingColor;
+        let changeRatingSymbol;
+
+        if (ratingChange > 0) {
+            changeRatingColor = '#007026';  // Рейтинг увеличился
+            changeRatingSymbol = '+';
+        } else if (ratingChange < 0) {
+            changeRatingColor = '#ff0000c7';    // Рейтинг уменьшился
+            changeRatingSymbol = '';
+        } else {
+            changeRatingColor = '#adadada1';   // Рейтинг не изменился
+            changeRatingSymbol = '+';
+        }
 
         const playerMainInfo = document.querySelector('.player_mainInfo');
         playerMainInfo.innerHTML = `
@@ -279,12 +297,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="player_mainInfo_info_descr">
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Playing hand')}: <span>${getTranslation(player.hand)}</span></p>
-                        <p>${getTranslation('Rating')}: <span>${player.rating || ' - '}</span></p>
+                        <p>${getTranslation('Rating')}: <span style="margin-left: 5px">${player.rating || ' - '}</span> <span style="margin-left: 5px; color: ${changeRatingColor}">${changeRatingSymbol}${ratingChange}</span></p>
                         <p>${getTranslation('Coach')}: <span>${player.coach || ' - '}</span></p>
                     </div>
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('city')}: <span>${playerCity}</span></p>
                         <p>${getTranslation('Birthday')}: <span>${formattedDate}</span></p>
+                        <a class="bestVictories_table_btn share_btn" id='shareBtn' href="#">Share</a>
                     </div>
                 </div>
             </div>
@@ -324,16 +343,164 @@ document.addEventListener('DOMContentLoaded', async function() {
             
         `;
 
-        // <div class="player_about_wrapp">
-        //         <p><span>${getTranslation('address')}: </span>${player.address[lang] || player.address['en']}</p>
-        //         <p>${player.info[lang] || player.info['en']}</p>
-        //     </div>
+
+        function openShareModal() {
+            const modal = document.getElementById('shareModal');
+            modal.style.display = 'block';
+            document.body.style ='overflow: hidden';
+        }
+        
+        function closeShareModal() {
+            const modal = document.getElementById('shareModal');
+            modal.style.display = 'none';
+            document.body.style ='overflow: auto';
+        }
+        
+        // Закрытие модального окна при клике вне его
+        document.addEventListener('click', (event) => {
+            const modal = document.querySelector('#shareModal');
+            if (modal && window.getComputedStyle(modal).display === 'block') {
+                if (!event.target.closest('.modal-content')) {
+                    closeShareModal();
+                }
+            }
+        });
+        
+        // Открытие модального окна
+        document.getElementById('shareBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // Останавливаем распространение события
+            openShareModal();
+        });
+        
+        // Закрытие модального окна при клике на кнопку
+        document.getElementById('closeModal').addEventListener('click', (e) => {
+            e.preventDefault();
+            closeShareModal();
+        });
+        
+        // Предотвращение закрытия модального окна при клике внутри него
+        document.querySelector('.modal-content').addEventListener('click', (e) => {
+            e.stopPropagation(); // Останавливаем распространение события
+        });
+
+        //генерация изображения результатов
+        function updateTemplate(player) {
+            // Устанавливаем логотип игрока
+            const playerLogo = document.getElementById('playerLogo');
+            playerLogo.src = player.logo;
+            const playerName = document.getElementById('playerName');
+            playerName.innerText = player.name || player.fullname;
+
+            const scoreBackground = document.getElementById('scoreBackground');
+            const scoreBackgroundPath = document.querySelector('#scoreBackground path');
+            const scoreArrow = document.getElementById('scoreArrow');
+            const playerScore = document.getElementById('playerScore');
+
+            const ratingChanges = player.rating - player.sundaysRating;
+            if (ratingChanges > 0) {
+                // scoreBackground.setAttribute('fill', '#007026');
+                // scoreBackgroundPath.setAttribute('fill', '#007026');
+                scoreBackground.style.fill = '#007026';
+                scoreArrow.setAttribute('fill', '#007026');
+                scoreArrow.style.transform = 'rotate(0deg)';
+                playerScore.style.color = '#007026';
+            } else if (ratingChanges < 0) {
+                // scoreBackground.setAttribute('fill', '#D10000');
+                // scoreBackgroundPath.setAttribute('fill', '#D10000');
+                scoreBackground.style.fill = '#D10000';
+                scoreArrow.setAttribute('fill', '#D10000');
+                scoreArrow.style.transform = 'rotate(180deg)';
+                playerScore.style.color = '#D10000';
+            } else {
+                // scoreBackground.setAttribute('fill', '#666877');
+                // scoreBackgroundPath.setAttribute('fill', '#666877');
+                scoreBackground.style.fill = '#666877';
+                scoreArrow.setAttribute('fill', '#666877');
+                scoreArrow.style.transform = 'rotate(0deg)';
+                playerScore.style.color = '#666877';
+            }
+            // Устанавливаем очки игрока
+            playerScore.textContent = `${ratingChanges}`;
+        }
+
+        
+
+        async function generateImage() {
+            const template = document.querySelector('#imageTemplate > div'); // Основной элемент
+            return html2canvas(template, { useCORS: true }).then((canvas) => {
+                return canvas.toDataURL('image/png'); // Получаем Base64 изображение
+            });
+        }
+
+        
+
+        // document.getElementById('shareFacebook').addEventListener('click', async () => {
+            
+        //     updateTemplate(player);
+        //     const imageData = await generateImage();
+
+        //     const formData = new FormData();
+        //     formData.append('image', imageData.split(',')[1]); // Убираем "data:image/png;base64,"
+        
+        //     const response = await fetch('https://api.imgbb.com/1/upload?key=d9be0bd58fd2d169c9882686e4609e56', {
+        //         method: 'POST',
+        //         body: formData,
+        //     });
+        
+        //     const data = await response.json();
+        //     const imageUrl = data.data.url; // Получаем публичную ссылку
+        //     console.log(imageUrl);
+
+        //     const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(imageUrl)}&quote=${encodeURIComponent('Мой успех в настольном теннисе!')}`;
+
+        //     // shareToFacebookWithDialog(imageData);
+        //     // Переход на Facebook для публикации
+        //     // const caption = 'My achievements in table tennis!';
+        //     // const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(imageUrl)}&quote=${encodeURIComponent(caption)}`;
+        //     window.open(shareUrl, '_blank');
+        // });
+
+        document.getElementById('shareFacebook').addEventListener('click', async () => {
+            // 1. Генерация изображения с результатами
+            updateTemplate(player);
+            const imageData = await generateImage();
+        
+            // 2. Загрузка изображения на ImgBB
+            const formData = new FormData();
+            formData.append('image', imageData.split(',')[1]); // Убираем "data:image/png;base64,"
+        
+            const response = await fetch('https://api.imgbb.com/1/upload?key=d9be0bd58fd2d169c9882686e4609e56', {
+                method: 'POST',
+                body: formData,
+            });
+        
+            const data = await response.json();
+            const publicImageUrl = data.data.url;
+        
+            // 3. Определение языка пользователя
+            const userLanguage = lang; // Можно определить на основе пользовательского профиля
+            const name = encodeURIComponent(player.name || player.fullname);
+            const ratingChange = encodeURIComponent(player.rating - player.sundaysRating);
+            const image = encodeURIComponent(publicImageUrl);
+        
+            // 4. Формирование URL динамической страницы
+            const pageUrl = `https://thailandttleague.com/${userLanguage}/share/result?name=${name}&image=${image}&ratingChange=${ratingChange}`;
+            const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+            console.log(pageUrl);
+            // 5. Открытие Facebook Share Dialog
+            window.open(shareUrl, '_blank');
+        });
+        
+
     }
 
 
     
 
     fetchPlayerData();
+
+    
 
     // let playerData;
     // let playerCity;

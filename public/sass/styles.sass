@@ -323,6 +323,24 @@
         line-height: normal
         text-decoration: none
         text-decoration-line: none
+.addTournament_form_btn, .addTournament_form_btn:focus-visible, .addTournament_form_btn:focus
+    width: 195px
+.addTournament   
+    input
+        margin-top: 0
+        height: 32px
+    textarea
+        margin-top: 0
+     
+.modal
+    &_buttonWrapper
+        margin-top: 20px
+        display: flex
+        justify-content: space-between
+        &_btn
+           width: 30%
+           gap: 10px
+
     
 .loginFormError
     padding: 1px 6px
@@ -1345,6 +1363,8 @@
     //     visibility: hidden
 
 @media (max-width: 576px)
+    .addTournament_form_btn, .addTournament_form_btn:focus-visible, .addTournament_form_btn:focus
+        width: 100%
     section
         h2
             margin-bottom: 18px

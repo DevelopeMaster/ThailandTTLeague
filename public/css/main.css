@@ -388,6 +388,24 @@ h2 {
     text-decoration: none;
     text-decoration-line: none; }
 
+.addTournament_form_btn, .addTournament_form_btn:focus-visible, .addTournament_form_btn:focus {
+  width: 195px; }
+
+.addTournament input {
+  margin-top: 0;
+  height: 32px; }
+
+.addTournament textarea {
+  margin-top: 0; }
+
+.modal_buttonWrapper {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between; }
+  .modal_buttonWrapper_btn {
+    width: 30%;
+    gap: 10px; }
+
 .loginFormError {
   padding: 1px 6px;
   margin-top: 11px;
@@ -1306,6 +1324,8 @@ h2 {
         display: none; } }
 
 @media (max-width: 576px) {
+  .addTournament_form_btn, .addTournament_form_btn:focus-visible, .addTournament_form_btn:focus {
+    width: 100%; }
   section h2 {
     margin-bottom: 18px; }
   .header_top {
@@ -2310,6 +2330,11 @@ h2 {
 
 .club {
   margin-top: 40px; }
+  .club_wrapp {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px; }
   .club_mainInfo {
     border-radius: 14px;
     background: #262630;
@@ -2414,7 +2439,8 @@ h2 {
   .supplements_free {
     display: flex;
     gap: 8px;
-    align-items: center; }
+    align-items: center;
+    flex-wrap: wrap; }
     .supplements_free p {
       color: #FFF;
       font-family: Inter;
@@ -2426,7 +2452,7 @@ h2 {
     display: flex;
     gap: 8px;
     align-items: center;
-    margin-bottom: 24px; }
+    flex-wrap: wrap; }
     .supplements_paid .supplements_item {
       background: var(--blue, #081B3E);
       border: none; }
@@ -2702,6 +2728,10 @@ h2 {
   .aboutUs {
     margin-top: 30px; }
     .aboutUs h2 {
+      font-size: 18px;
+      margin-top: 40px;
+      margin-bottom: 16px; }
+    .aboutUs_textwrapp_left h2 {
       margin-top: 29px;
       margin-bottom: 20px;
       font-size: 24px; }
@@ -2709,12 +2739,22 @@ h2 {
       font-size: 14px;
       width: 100%; }
     .aboutUs_textwrapp {
-      gap: 20px; }
+      gap: 16px; }
       .aboutUs_textwrapp h2 {
         margin-top: 0;
-        margin-bottom: 8px; }
+        margin-bottom: 12px; }
+      .aboutUs_textwrapp_left h4 {
+        font-size: 16px;
+        margin-bottom: 12px; }
+      .aboutUs_textwrapp_left p {
+        margin-top: -4px; }
+      .aboutUs_textwrapp_right h4 {
+        font-size: 16px;
+        margin-bottom: 12px; }
+      .aboutUs_textwrapp_right p {
+        margin-top: -4px; }
       .aboutUs_textwrapp_decorate {
-        padding: 20px 0px; }
+        padding: 12px 0px; }
         .aboutUs_textwrapp_decorate:before {
           position: absolute;
           top: 0;
@@ -2733,10 +2773,8 @@ h2 {
         width: 100%;
         height: 1px;
         background-color: rgba(255, 255, 255, 0.16); }
-    .aboutUs_info_img {
-      aspect-ratio: 3.2/2.07;
-      width: 100%;
-      height: auto; }
+    .aboutUs_image {
+      margin: 16px 0; }
     .aboutUs_info_descr_item {
       gap: 8px;
       padding: 12px 0; }
@@ -2750,7 +2788,7 @@ h2 {
         font-size: 18px; }
       .aboutUs_benefits_item_list {
         margin-top: 16px;
-        gap: 12px; }
+        gap: 17px; }
         .aboutUs_benefits_item_list li {
           font-size: 14px;
           margin-left: 8px; }
@@ -3740,6 +3778,8 @@ h2 {
     display: flex;
     justify-content: flex-start;
     gap: 20px; }
+    .player_mainInfo .share_btn {
+      margin-top: 0; }
     .player_mainInfo_logo {
       aspect-ratio: 1/1;
       min-width: 160px;
@@ -5856,6 +5896,11 @@ textarea:-webkit-autofill:focus {
     border: 1px solid #818181; }
   .sectionSchedule .secondForm .schedule-table td {
     border: 1px solid #818181; }
+
+.no_tournaments {
+  color: #3f3f4c;
+  text-align: center;
+  margin-top: 20px; }
 
 .clubWinners .winnersTable {
   position: relative;

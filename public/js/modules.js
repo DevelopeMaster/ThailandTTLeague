@@ -55,7 +55,7 @@ async function checkSession() {
             throw new Error('Failed to fetch session status');
         }
         const data = await response.json();
-        console.log('чек сессион', data);
+        // console.log('чек сессион', data);
         return data;
     } catch (error) {
         console.error('Error fetching session status:', error);
@@ -70,8 +70,8 @@ export async function createHeader(language) {
     // Запрос к серверу для получения информации о сессии
     const sessionStatus = await checkSession();
     
-    console.log(sessionStatus.loggedIn);
-    console.log(language);
+    // console.log(sessionStatus.loggedIn);
+    // console.log(language);
     const langMap = {
         'english': 'en',
         'thai': 'th',
@@ -1211,7 +1211,7 @@ export async function createHeader(language) {
         // console.log(allPlayers);
         const query = searchInput.value.trim().toLowerCase();
         const searchDropdown = dropDownWrapp.querySelector('#headerPlayerDropdown');
-        console.log(query);
+        // console.log(query);
         // console.log(dropDownWrapp.querySelector('#headerPlayerDropdown'));
         if (query) {
             const filteredPlayers = allPlayers.filter(player => player.name ? player.name.toLowerCase().includes(query) : player.fullname.toLowerCase().includes(query) || (player.nickname ? player.nickname.toLowerCase().includes(query) : false));
@@ -1326,7 +1326,7 @@ async function getUserData(userId, userType) {
             // console.log("Using cached data");
             // return userData;
             if (userData.logo === localStorage.getItem('userLogo')) {
-                console.log("Using cached data");
+                // console.log("Using cached data");
                 return userData;
             }
         }
@@ -1605,18 +1605,39 @@ export async function fetchPastTournaments() {
 
             
 
-            tournament.players.sort((a, b) => a.place - b.place).forEach(player => {
-                let winnerLink = document.createElement('a');
-                winnerLink.href = `/${clientLang}/allplayers//${player.id}`;  // ------------------------------------------------------------------ссылка на лк
-                winnerLink.className = `last_tournaments_tournament_winners_${player.place}`;
-                let winnerImg = document.createElement('img');
-                winnerImg.src = `/icons/${player.place}st-medal.svg`;
-                winnerImg.alt = `${player.place} place`;
-                let winnerSpan = document.createElement('span');
-                winnerSpan.textContent = player.fullname;
-                winnerLink.appendChild(winnerImg);
-                winnerLink.appendChild(winnerSpan);
-                winnersDiv.appendChild(winnerLink);
+            // tournament.players.sort((a, b) => a.place - b.place).forEach(player => {
+            //     let winnerLink = document.createElement('a');
+            //     winnerLink.href = `/${clientLang}/allplayers//${player.id}`;  // ------------------------------------------------------------------ссылка на лк
+            //     winnerLink.className = `last_tournaments_tournament_winners_${player.place}`;
+            //     let winnerImg = document.createElement('img');
+            //     winnerImg.src = `/icons/${player.place}st-medal.svg`;
+            //     winnerImg.alt = `${player.place} place`;
+            //     let winnerSpan = document.createElement('span');
+            //     winnerSpan.textContent = player.fullname;
+            //     winnerLink.appendChild(winnerImg);
+            //     winnerLink.appendChild(winnerSpan);
+            //     winnersDiv.appendChild(winnerLink);
+            // });
+
+            tournament.players
+            .sort((a, b) => a.place - b.place) // Сортируем по месту
+            .forEach(player => {
+                if (player.place >= 1 && player.place <= 3) { // Проверяем, входит ли место в топ-3
+                    let winnerLink = document.createElement('a');
+                    winnerLink.href = `/${clientLang}/allplayers/${player.id}`; // Ссылка на личный кабинет
+                    winnerLink.className = `last_tournaments_tournament_winners_${player.place}`;
+                    
+                    let winnerImg = document.createElement('img');
+                    winnerImg.src = `/icons/${player.place}st-medal.svg`;
+                    winnerImg.alt = `${player.place} place`;
+                    
+                    let winnerSpan = document.createElement('span');
+                    winnerSpan.textContent = player.fullname;
+                    
+                    winnerLink.appendChild(winnerImg);
+                    winnerLink.appendChild(winnerSpan);
+                    winnersDiv.appendChild(winnerLink);
+                }
             });
             
             pastTournamentDiv.appendChild(winnersDiv);
@@ -1675,8 +1696,28 @@ export async function fetchPastTournaments() {
     .catch(error => console.error('Error:', error));
 };
 
+async function fetchPlayerDetails(playerIds) {
+    return fetch('/get-playerIds', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ playerIds }),
+    })
+    .then(response => response.json())
+    .catch(error => {
+        console.error('Error fetching player details:', error);
+        return [];
+    });
+}
 
-export function fetchFutureTournaments() {
+export async function fetchFutureTournaments() {
+    const languageMap = {
+        'russian': 'ru',
+        'english': 'en',
+        'thai': 'th'
+    };
+
     fetch('/get-future-tournaments')
         .then(response => response.json())
         .then(data => {
@@ -1685,112 +1726,297 @@ export function fetchFutureTournaments() {
             let futureTournaments = data.filter(tournament => new Date(tournament.datetime) > new Date());
             futureTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
             futureTournaments = futureTournaments.slice(0, 10);
-            // рендер будущих турниров
+ 
             let currentDay = '';
-            futureTournaments.forEach(tournament => {
+            let allPlayerIds = [...new Set(
+                futureTournaments.flatMap(tournament =>
+                    Array.isArray(tournament.players) 
+                        ? tournament.players.map(player => player._id)
+                        : [] // Возвращаем пустой массив, если игроков нет
+                )
+            )];
+            
+           
+            console.log(allPlayerIds);
+            fetchPlayerDetails(allPlayerIds).then(allPlayers => {
+                console.log(allPlayers);
+                let playerMap = Object.fromEntries(allPlayers.map(player => [player._id, player]));
+                console.log(playerMap);
 
-            // Расчет среднего рейтинга
-            let totalRating = 0;
-            tournament.players.forEach(player => {
-                totalRating += player.rating;
+                
+
+                futureTournaments.forEach(tournament => {
+                    // Преобразуем идентификаторы в строковый формат
+                    // console.log(tournament.players);
+                    // let players = tournament.players
+                    //     .map(id => playerMap[String(id)]) // Преобразование `id` в строку
+                    //     .filter(player => player);  
+                    let players;
+
+                    if (tournament.players && Array.isArray(tournament.players)) {
+                        let tournamentPlayerIds = tournament.players.map(player => player._id); // Массив всех _id игроков турнира
+
+                        players = allPlayers.filter(player => tournamentPlayerIds.includes(player._id));// Исключаем игроков, которые не найдены
+                    
+                        if (players.length > 0) {
+                            // Исключаем игроков без рейтинга
+                            let playersWithRating = players.filter(player => player.rating !== null && player.rating !== undefined);
+                        
+                            if (playersWithRating.length > 0) {
+                                let totalRating = playersWithRating.reduce((sum, player) => sum + player.rating, 0);
+                                let averageRating = Math.round(totalRating / playersWithRating.length);
+                                tournament.rating = averageRating;
+                            } else {
+                                tournament.rating = 0; // Если ни у одного игрока нет рейтинга
+                            }
+                        } else {
+                            tournament.rating = 0; // Если игроков нет
+                        }
+                    } else {
+                        players = [];
+                    }
+
+                    console.log(players);
+                    renderTournament(tournament, players);
+                });
+                let moreButton = document.createElement('a');
+                moreButton.className = 'upcommingTable_btn';
+                moreButton.href = '#';
+                let showMore = {
+                    'english': 'See more',
+                    'thai': 'ดูเพิ่มเติม',
+                    'russian': 'Смотреть еще'
+                };
+                moreButton.textContent = showMore[localStorage.clientLang] || 'See more';
+                document.querySelector('.upcommingTable_content').appendChild(moreButton);
             });
-            let averageRating = Math.round(totalRating / tournament.players.length);
-            tournament.rating = averageRating;
 
-            let tournamentDate = new Date(tournament.datetime);
-            let langMap = {'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU'};
+            // futureTournaments.forEach(tournament => {
+            function renderTournament(tournament, players) {
+                let qty = (players && Array.isArray(players)) ? players.length : 0;
+                let avgRating = tournament.rating || 0;
+
+                let tournamentDate = new Date(tournament.datetime);
+                let langMap = {'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU'};
+            
+                let lang = langMap[localStorage.clientLang] || 'en-US';
+                let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
+                let formattedDate = `${dayOfWeek} ${String(tournamentDate.getDate()).padStart(2, '0')}.${String(tournamentDate.getMonth() + 1).padStart(2, '0')}.${tournamentDate.getFullYear()}`;
+                if (formattedDate !== currentDay) {
+                    currentDay = formattedDate;
+                    let weekdayDiv = document.createElement('div');
+                    weekdayDiv.className = 'upcommingTable_weekday';
+                    let dateSpan = document.createElement('span');
+                    dateSpan.textContent = currentDay;
+                    weekdayDiv.appendChild(dateSpan);
+                    document.querySelector('.upcommingTable_content').appendChild(weekdayDiv);
+                }
+
+                
+                const currentLang = localStorage.getItem('clientLang');
+                let tournamentDiv = document.createElement('a');
+                tournamentDiv.className = 'upcommingTable_tournament';
+                tournamentDiv.href = `${languageMap[currentLang]}/tournaments/${tournament._id}`;
+
+                let timeDiv = document.createElement('div');
+                timeDiv.className = 'cell tournament_time';
+                timeDiv.textContent = tournament.datetime.split('T')[1].substring(0, 5);
+                tournamentDiv.appendChild(timeDiv);
+
+                let clubDiv = document.createElement('div');
+                clubDiv.className = 'cell tournament_club';
+                let clubLogoDiv = document.createElement('div');
+                clubLogoDiv.className = 'clubLogo';
+                clubLogoDiv.style.cssText = `background-image: url('${tournament.club.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
+                clubDiv.appendChild(clubLogoDiv);
+
+                let clubNameSpan = document.createElement('span');
+                clubNameSpan.textContent = tournament.club.name;
+                clubDiv.appendChild(clubNameSpan);
+                tournamentDiv.appendChild(clubDiv);
+
+                let restrictionsDiv = document.createElement('div');
+                restrictionsDiv.className = 'cell tournament_restrict';
+                let restrictionStatusDiv = document.createElement('div');
+                restrictionStatusDiv.className = 'restrictionStatus';
+                
+                if (new Date(tournament.datetime) > new Date()) {
+                    restrictionStatusDiv.style.background = '#007026';
+                } else {
+                    restrictionStatusDiv.style.background = '#ADADAD';
+                }
+
+                let restrictionDiv = document.createElement('div');
+                restrictionDiv.className = 'restriction';
+                restrictionDiv.textContent = tournament.ratingLimit || tournament.restrictions;
+                restrictionStatusDiv.appendChild(restrictionDiv);
+                restrictionsDiv.appendChild(restrictionStatusDiv);
+                tournamentDiv.appendChild(restrictionsDiv);
+
+                let ratingDiv = document.createElement('div');
+                ratingDiv.className = 'cell tournament_rating';
+                ratingDiv.textContent = avgRating;
+                tournamentDiv.appendChild(ratingDiv);
+
+                let playersDiv = document.createElement('a');
+                playersDiv.className = 'cell tournament_players';
+                let playersImg = document.createElement('img');
+                playersImg.src = '/icons/user.svg';
+                playersImg.alt = 'person';
+                playersDiv.appendChild(playersImg);
+                let playersSpan = document.createElement('span');
+                // let qty = 0
+                // if (players && Array.isArray(players)) {
+                //     qty = players.length - 1
+                // }
+                playersSpan.textContent = qty;
+                playersDiv.appendChild(playersSpan);
+                tournamentDiv.appendChild(playersDiv);
+                
+                document.querySelector('.upcommingTable_content').appendChild(tournamentDiv);
+            }
+        // );
+
         
-            let lang = langMap[localStorage.clientLang] || 'en-US';
-            let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
-            let formattedDate = `${dayOfWeek} ${String(tournamentDate.getDate()).padStart(2, '0')}.${String(tournamentDate.getMonth() + 1).padStart(2, '0')}.${tournamentDate.getFullYear()}`;
-            if (formattedDate !== currentDay) {
-                currentDay = formattedDate;
-                let weekdayDiv = document.createElement('div');
-                weekdayDiv.className = 'upcommingTable_weekday';
-                let dateSpan = document.createElement('span');
-                dateSpan.textContent = currentDay;
-                weekdayDiv.appendChild(dateSpan);
-                // weekdayDiv.textContent = currentDay;
-                document.querySelector('.upcommingTable_content').appendChild(weekdayDiv);
-            }
-
-            const languageMap = {
-                'russian': 'ru',
-                'english': 'en',
-                'thai': 'th'
-            };
-            const currentLang = localStorage.getItem('clientLang');
-            let tournamentDiv = document.createElement('a');
-            tournamentDiv.className = 'upcommingTable_tournament';
-            tournamentDiv.href = `${languageMap[currentLang]}/tournaments/${tournament._id}`;
-
-            let timeDiv = document.createElement('div');
-            timeDiv.className = 'cell tournament_time';
-            timeDiv.textContent = tournament.datetime.split('T')[1].substring(0, 5);
-            tournamentDiv.appendChild(timeDiv);
-
-            let clubDiv = document.createElement('div');
-            clubDiv.className = 'cell tournament_club';
-            let clubLogoDiv = document.createElement('div');
-            clubLogoDiv.className = 'clubLogo';
-            clubLogoDiv.style.cssText = `background-image: url('${tournament.club.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
-            clubDiv.appendChild(clubLogoDiv);
-
-            let clubNameSpan = document.createElement('span');
-            clubNameSpan.textContent = tournament.club.name;
-            clubDiv.appendChild(clubNameSpan);
-            tournamentDiv.appendChild(clubDiv);
-
-            let restrictionsDiv = document.createElement('div');
-            restrictionsDiv.className = 'cell tournament_restrict';
-            let restrictionStatusDiv = document.createElement('div');
-            restrictionStatusDiv.className = 'restrictionStatus';
-            
-            if (new Date(tournament.datetime) > new Date()) {
-                restrictionStatusDiv.style.background = '#007026';
-            } else {
-                restrictionStatusDiv.style.background = '#ADADAD';
-            }
-
-            let restrictionDiv = document.createElement('div');
-            restrictionDiv.className = 'restriction';
-            restrictionDiv.textContent = tournament.restrictions;
-            restrictionStatusDiv.appendChild(restrictionDiv);
-            restrictionsDiv.appendChild(restrictionStatusDiv);
-            tournamentDiv.appendChild(restrictionsDiv);
-
-            let ratingDiv = document.createElement('div');
-            ratingDiv.className = 'cell tournament_rating';
-            ratingDiv.textContent = tournament.rating;
-            tournamentDiv.appendChild(ratingDiv);
-
-            let playersDiv = document.createElement('a');
-            playersDiv.className = 'cell tournament_players';
-            let playersImg = document.createElement('img');
-            playersImg.src = '/icons/user.svg';
-            playersImg.alt = 'person';
-            playersDiv.appendChild(playersImg);
-            let playersSpan = document.createElement('span');
-            playersSpan.textContent = tournament.players.length - 1;
-            playersDiv.appendChild(playersSpan);
-            tournamentDiv.appendChild(playersDiv);
-            
-            document.querySelector('.upcommingTable_content').appendChild(tournamentDiv);
-        });
-
-        let moreButton = document.createElement('a');
-        moreButton.className = 'upcommingTable_btn';
-        moreButton.href = '#';
-        let showMore = {
-            'english': 'See more',
-            'thai': 'ดูเพิ่มเติม',
-            'russian': 'Смотреть еще'
-        };
-        moreButton.textContent = showMore[localStorage.clientLang] || 'See more';
-        document.querySelector('.upcommingTable_content').appendChild(moreButton);
     })
     .catch(error => console.error('Error:', error));
 };
+
+// export function fetchFutureTournaments() {
+//     fetch('/get-future-tournaments')
+//         .then(response => response.json())
+//         .then(data => {
+//             // let allClubs;
+//             // fetchAllClubs();
+//             let futureTournaments = data.filter(tournament => new Date(tournament.datetime) > new Date());
+//             futureTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+//             futureTournaments = futureTournaments.slice(0, 10);
+//             // рендер будущих турниров
+//             let currentDay = '';
+
+//             futureTournaments.forEach(tournament => {
+
+//                 // Расчет среднего рейтинга
+//                 // let totalRating = 0;
+//                 // if(tournament.players && Array.isArray(tournament.players)) {
+//                 //     tournament.players.forEach(player => {
+//                 //         totalRating += player.rating;
+//                 //     });
+//                 // }
+//                 // let averageRating = Math.round(totalRating / tournament.players.length);
+//                 // tournament.rating = averageRating;
+
+//                 let totalRating = 0;
+//                 if (tournament.players && Array.isArray(tournament.players) && tournament.players.length > 0) {
+//                     tournament.players.forEach(player => {
+//                         totalRating += player.rating || 0;
+//                     });
+//                     let averageRating = Math.round(totalRating / tournament.players.length);
+//                     tournament.rating = averageRating;
+//                 } else {
+//                     console.warn(`Players array is missing or empty for tournament ID: ${tournament._id}`);
+//                     tournament.rating = 0; // Значение по умолчанию
+//                 }
+
+//                 let tournamentDate = new Date(tournament.datetime);
+//                 let langMap = {'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU'};
+            
+//                 let lang = langMap[localStorage.clientLang] || 'en-US';
+//                 let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
+//                 let formattedDate = `${dayOfWeek} ${String(tournamentDate.getDate()).padStart(2, '0')}.${String(tournamentDate.getMonth() + 1).padStart(2, '0')}.${tournamentDate.getFullYear()}`;
+//                 if (formattedDate !== currentDay) {
+//                     currentDay = formattedDate;
+//                     let weekdayDiv = document.createElement('div');
+//                     weekdayDiv.className = 'upcommingTable_weekday';
+//                     let dateSpan = document.createElement('span');
+//                     dateSpan.textContent = currentDay;
+//                     weekdayDiv.appendChild(dateSpan);
+//                     // weekdayDiv.textContent = currentDay;
+//                     document.querySelector('.upcommingTable_content').appendChild(weekdayDiv);
+//                 }
+
+//                 const languageMap = {
+//                     'russian': 'ru',
+//                     'english': 'en',
+//                     'thai': 'th'
+//                 };
+//                 const currentLang = localStorage.getItem('clientLang');
+//                 let tournamentDiv = document.createElement('a');
+//                 tournamentDiv.className = 'upcommingTable_tournament';
+//                 tournamentDiv.href = `${languageMap[currentLang]}/tournaments/${tournament._id}`;
+
+//                 let timeDiv = document.createElement('div');
+//                 timeDiv.className = 'cell tournament_time';
+//                 timeDiv.textContent = tournament.datetime.split('T')[1].substring(0, 5);
+//                 tournamentDiv.appendChild(timeDiv);
+
+//                 let clubDiv = document.createElement('div');
+//                 clubDiv.className = 'cell tournament_club';
+//                 let clubLogoDiv = document.createElement('div');
+//                 clubLogoDiv.className = 'clubLogo';
+//                 clubLogoDiv.style.cssText = `background-image: url('${tournament.club.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;`;
+//                 clubDiv.appendChild(clubLogoDiv);
+
+//                 let clubNameSpan = document.createElement('span');
+//                 clubNameSpan.textContent = tournament.club.name;
+//                 clubDiv.appendChild(clubNameSpan);
+//                 tournamentDiv.appendChild(clubDiv);
+
+//                 let restrictionsDiv = document.createElement('div');
+//                 restrictionsDiv.className = 'cell tournament_restrict';
+//                 let restrictionStatusDiv = document.createElement('div');
+//                 restrictionStatusDiv.className = 'restrictionStatus';
+                
+//                 if (new Date(tournament.datetime) > new Date()) {
+//                     restrictionStatusDiv.style.background = '#007026';
+//                 } else {
+//                     restrictionStatusDiv.style.background = '#ADADAD';
+//                 }
+
+//                 let restrictionDiv = document.createElement('div');
+//                 restrictionDiv.className = 'restriction';
+//                 restrictionDiv.textContent = tournament.restrictions;
+//                 restrictionStatusDiv.appendChild(restrictionDiv);
+//                 restrictionsDiv.appendChild(restrictionStatusDiv);
+//                 tournamentDiv.appendChild(restrictionsDiv);
+
+//                 let ratingDiv = document.createElement('div');
+//                 ratingDiv.className = 'cell tournament_rating';
+//                 ratingDiv.textContent = tournament.rating;
+//                 tournamentDiv.appendChild(ratingDiv);
+
+//                 let playersDiv = document.createElement('a');
+//                 playersDiv.className = 'cell tournament_players';
+//                 let playersImg = document.createElement('img');
+//                 playersImg.src = '/icons/user.svg';
+//                 playersImg.alt = 'person';
+//                 playersDiv.appendChild(playersImg);
+//                 let playersSpan = document.createElement('span');
+//                 let qty = 0
+//                 if (tournament.players && Array.isArray(tournament.players)) {
+//                     qty = tournament.players.length - 1
+//                 }
+//                 playersSpan.textContent = qty;
+//                 playersDiv.appendChild(playersSpan);
+//                 tournamentDiv.appendChild(playersDiv);
+                
+//                 document.querySelector('.upcommingTable_content').appendChild(tournamentDiv);
+//             }
+//         );
+
+//         let moreButton = document.createElement('a');
+//         moreButton.className = 'upcommingTable_btn';
+//         moreButton.href = '#';
+//         let showMore = {
+//             'english': 'See more',
+//             'thai': 'ดูเพิ่มเติม',
+//             'russian': 'Смотреть еще'
+//         };
+//         moreButton.textContent = showMore[localStorage.clientLang] || 'See more';
+//         document.querySelector('.upcommingTable_content').appendChild(moreButton);
+//     })
+//     .catch(error => console.error('Error:', error));
+// };
 
 
 // export function fetchClub() {
@@ -3483,7 +3709,8 @@ export function breadCrumb() {
             'admin_dashboard': 'Admin Dashboard',
             'club_dashboard': 'Club Dashboard',
             'trainer_dashboard': 'Coach Dashboard',
-            'editclub': 'Edit club data'
+            'editclub': 'Edit club data',
+            'createtournament': 'Create a tournament'
         },
         'ru': {
             'home': 'Главная',
@@ -3538,7 +3765,7 @@ export function breadCrumb() {
 
     const currentLang = Object.keys(languageMap).find(lang => pathArray.includes(lang)) || 'en';
     const filteredPathArray = pathArray.filter(part => !Object.keys(languageMap).includes(part));
-
+    
     let breadcrumbHTML = `<li class="navigate_breadcrumb_item"><a href="/${currentLang}">${translations[currentLang]['home']}</a></li>`;
 
     const dashboardIndex = filteredPathArray.indexOf('dashboard');
@@ -3576,6 +3803,8 @@ export function breadCrumb() {
                 translatedPath = translations[currentLang]['tournament'];
             } else if (containsNumbers && filteredPathArray[index - 1] === 'trainings') {
                 translatedPath = translations[currentLang]['training'];
+            } else if (containsNumbers && filteredPathArray[index - 1] === 'createtournament') {
+                translatedPath = '...';
             } else {
                 translatedPath = translations[currentLang][path] || capitalize(path);
             }
@@ -3719,6 +3948,10 @@ export function listenerOfButtons() {
         if (event.target.id === 'btnAddClub') {
             window.location.href = `/${languageMap[localStorage.clientLang]}/addclub`;
         }
+
+        // if (event.target.id === 'createTournament') {
+        //     window.location.href = `/${languageMap[localStorage.clientLang]}/createtournament`;
+        // }
 
         if (event.target.closest('.clubs_down')) {
             event.preventDefault();
@@ -4367,7 +4600,7 @@ export async function getAllTournaments(user) {
             const response = await fetch(`/cities?language=${currentLang}`);
             const data = await response.json();
             cities = data.cities;
-            console.log(cities);
+            // console.log(cities);
             citiesObjects = data.citiesObjects;
             
             createDropdown(cityDropdown, cities, cityInput);
@@ -4517,9 +4750,76 @@ export async function getAllTournaments(user) {
             upcomingTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
             pastTournaments.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
 
+            // const allPlayerIds = [...new Set(
+            //     tournaments.flatMap(tournament => 
+            //         tournament.players.map(player => player._id)
+            //     )
+            // )];
+    
+            // // Получение данных игроков
+            // const allPlayers = await fetchPlayerDetails(allPlayerIds);
+            // const playerMap = Object.fromEntries(allPlayers.map(player => [player._id, player]));
+
+            // console.log(allPlayers);
+            // console.log(playerMap);
+
             const renderTournament = async (tournament, container, className) => {
                 let tournamentDate = new Date(tournament.datetime);
                 let langMap = { 'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU' };
+
+                // console.log(tournament);
+                const allPlayerIds = [...new Set(
+                    // tournaments.flatMap(tournament => 
+                        tournament.players.map(player => player._id || player.id)
+                    // )
+                )];
+
+                let allPlayers = [];
+                try {
+                    allPlayers = await fetchPlayerDetails(allPlayerIds);
+                    // console.log('Fetched players:', allPlayers);
+                } catch (error) {
+                    console.error('Error fetching players:', error);
+                }
+        
+                // console.log(allPlayers);
+                // Получение данных игроков
+                // const allPlayers = await fetchPlayerDetails(allPlayerIds);
+                const playerMap = Object.fromEntries(allPlayers.map(player => [player._id, player])) || Object.fromEntries(allPlayers.map(player => [player.id, player]));
+                
+                // console.log(allPlayers);
+                // console.log(playerMap);
+
+                // const players = tournament.players.map(player => playerMap[player._id]).filter(player => player) || tournament.players.map(player => playerMap[player.id]).filter(player => player);
+                const players = tournament.players
+                    .map(player => playerMap[player._id || player.id])
+                    .filter(player => player);
+
+                // console.log(players);
+
+                // const validPlayers = players.filter(player => typeof player.rating === 'number' && !isNaN(player.rating));
+                // const totalRating = validPlayers.reduce((sum, player) => {
+                //     return player.rating ? sum + player.rating : sum;
+                // }, 0);
+
+                const validPlayers = players.filter(player => 
+                    player.rating !== undefined && !isNaN(Number(player.rating))
+                );
+                
+                const totalRating = validPlayers.reduce((sum, player) => {
+                    return sum + Number(player.rating);
+                }, 0);
+                
+                
+
+                const ratedPlayersCount = validPlayers.filter(player => player.hasOwnProperty('rating') && player.rating).length;
+                
+                const averageRating = ratedPlayersCount > 0 
+                    ? Math.round(totalRating / ratedPlayersCount) 
+                    : 0;
+                // console.log(averageRating);
+                tournament.rating = averageRating;
+                // console.log(players);
 
                 let lang = langMap[localStorage.clientLang] || 'en-US';
                 let dayOfWeek = tournamentDate.toLocaleDateString(lang, { weekday: 'long' });
@@ -4591,7 +4891,12 @@ export async function getAllTournaments(user) {
                 playersImg.alt = 'person';
                 playersDiv.appendChild(playersImg);
                 let playersSpan = document.createElement('span');
-                playersSpan.textContent = tournament.players.length;
+                if (players.length && Array.isArray(players)) {
+                    playersSpan.textContent = players.length;
+                } else {
+                    playersSpan.textContent = 0;
+                }
+                // playersSpan.textContent = players.length;
                 playersDiv.appendChild(playersSpan);
                 tournamentDiv.appendChild(playersDiv);
 
@@ -4603,6 +4908,7 @@ export async function getAllTournaments(user) {
                 container.dataset.currentDay = '';
                 for (let i = start; i < end; i++) {
                     if (i >= tournaments.length) break;
+                    // console.log(tournaments[i]);
                     await renderTournament(tournaments[i], container, className);
                 }
             };

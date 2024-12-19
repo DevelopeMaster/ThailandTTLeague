@@ -1760,11 +1760,12 @@ export async function fetchFutureTournaments() {
                     
                         if (players.length > 0) {
                             // Исключаем игроков без рейтинга
-                            let playersWithRating = players.filter(player => player.rating !== null && player.rating !== undefined);
+                            let playersWithRating = players.filter(player => +player.rating !== null && +player.rating !== undefined  && +player.rating !== 0);
                         
                             if (playersWithRating.length > 0) {
                                 let totalRating = playersWithRating.reduce((sum, player) => sum + player.rating, 0);
                                 let averageRating = Math.round(totalRating / playersWithRating.length);
+                                console.log(averageRating);
                                 tournament.rating = averageRating;
                             } else {
                                 tournament.rating = 0; // Если ни у одного игрока нет рейтинга

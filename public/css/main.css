@@ -2336,6 +2336,7 @@ h2 {
     align-items: flex-start;
     margin-bottom: 24px; }
   .club_mainInfo {
+    margin-top: 20px;
     border-radius: 14px;
     background: #262630;
     padding: 20px;

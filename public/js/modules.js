@@ -1737,11 +1737,11 @@ export async function fetchFutureTournaments() {
             )];
             
            
-            console.log(allPlayerIds);
+            // console.log(allPlayerIds);
             fetchPlayerDetails(allPlayerIds).then(allPlayers => {
-                console.log(allPlayers);
-                let playerMap = Object.fromEntries(allPlayers.map(player => [player._id, player]));
-                console.log(playerMap);
+                // console.log(allPlayers);
+                // let playerMap = Object.fromEntries(allPlayers.map(player => [player._id, player]));
+                // console.log(playerMap);
 
                 
 
@@ -1759,17 +1759,35 @@ export async function fetchFutureTournaments() {
                         players = allPlayers.filter(player => tournamentPlayerIds.includes(player._id));// Исключаем игроков, которые не найдены
                     
                         if (players.length > 0) {
-                            // Исключаем игроков без рейтинга
-                            let playersWithRating = players.filter(player => +player.rating !== null && +player.rating !== undefined  && +player.rating !== 0);
+
+                            const validPlayers = players.filter(player => 
+                                player.rating !== undefined && !isNaN(Number(player.rating))
+                            );
+                            
+                            const totalRating = validPlayers.reduce((sum, player) => {
+                                return sum + Number(player.rating);
+                            }, 0);
+                            
+                            
+            
+                            const ratedPlayersCount = validPlayers.filter(player => player.hasOwnProperty('rating') && player.rating).length;
+                            
+                            const averageRating = ratedPlayersCount > 0 
+                                ? Math.round(totalRating / ratedPlayersCount) 
+                                : 0;
+                            // console.log(averageRating);
+                            tournament.rating = averageRating;
+                            // // Исключаем игроков без рейтинга
+                            // let playersWithRating = players.filter(player => +player.rating !== null && +player.rating !== undefined  && +player.rating !== 0);
                         
-                            if (playersWithRating.length > 0) {
-                                let totalRating = playersWithRating.reduce((sum, player) => sum + player.rating, 0);
-                                let averageRating = Math.round(totalRating / playersWithRating.length);
-                                console.log(averageRating);
-                                tournament.rating = averageRating;
-                            } else {
-                                tournament.rating = 0; // Если ни у одного игрока нет рейтинга
-                            }
+                            // if (playersWithRating.length > 0) {
+                            //     let totalRating = playersWithRating.reduce((sum, player) => sum + player.rating, 0);
+                            //     let averageRating = Math.round(totalRating / playersWithRating.length);
+                            //     console.log(averageRating);
+                            //     tournament.rating = averageRating;
+                            // } else {
+                            //     tournament.rating = 0; // Если ни у одного игрока нет рейтинга
+                            // }
                         } else {
                             tournament.rating = 0; // Если игроков нет
                         }
@@ -1777,7 +1795,7 @@ export async function fetchFutureTournaments() {
                         players = [];
                     }
 
-                    console.log(players);
+                    // console.log(players);
                     renderTournament(tournament, players);
                 });
                 let moreButton = document.createElement('a');

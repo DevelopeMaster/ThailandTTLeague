@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         <p>${getTranslation('Coach')}: <span>${player.coach || ' - '}</span></p>
                     </div>
                     <div class="player_mainInfo_info_descr_path">
-                        <p>${getTranslation('city')}: <span>${playerCity}</span></p>
+                        <p>${getTranslation('city')}: <span>${playerCity || ' - '}</span></p>
                         <p>${getTranslation('Birthday')}: <span>${formattedDate}</span></p>
                         <a class="bestVictories_table_btn share_btn" id='shareBtn' href="#">Share</a>
                     </div>

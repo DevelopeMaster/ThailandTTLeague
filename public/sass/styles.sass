@@ -336,10 +336,15 @@
     &_buttonWrapper
         margin-top: 20px
         display: flex
+        gap: 10px
         justify-content: space-between
         &_btn
-           width: 30%
-           gap: 10px
+            width: 30%
+            gap: 10px
+            &:focus-visible
+                width: 30%
+            &:focus
+                width: 30%
 
     
 .loginFormError

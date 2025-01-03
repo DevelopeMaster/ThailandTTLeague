@@ -101,8 +101,8 @@ router.get('/clubtournaments', ensureAuthenticated, async (req, res) => {
 router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
     { name: 'userLogo', maxCount: 1 }
   ]), async (req, res) => {
-    console.log('Received files:', req.files);
-    console.log('Received body:', req.body);
+    // console.log('Received files:', req.files);
+    // console.log('Received body:', req.body);
   
     try {
         const db = getDB();
@@ -128,27 +128,87 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
             updates.fullname = req.body.name || req.body.fullname;
         }
   
-        if (req.body.cityName && req.body.cityName !== currentUserData.cityName) {
-            const city = await db.collection('cities').findOne({
+        console.log(req.body);
+        console.log(currentUserData);
+        // if (req.body.cityName && req.body.cityName !== currentUserData.cityName) {
+        //     const city = await db.collection('cities').findOne({
+        //         $or: [
+        //             { english: req.body.cityName },
+        //             { russian: req.body.cityName },
+        //             { thai: req.body.cityName }
+        //         ]
+        //     });
+  
+        //     if (city) {
+        //         const cityId = city._id;
+        //         console.log(new ObjectId(cityId));
+        //         updates.city = new ObjectId(cityId);
+        //     } else {
+        //         return res.status(400).send('City not found');
+        //     }
+        // } else if (req.body.cityName?.trim() === '') {
+        //     updates.city = null; 
+        // }
+        // if (!req.body.city) {
+        //     console.log('пустой');
+        // }
+
+        if (req.body.city && req.body.city !== currentUserData.city) {
+            const cityName = req.body.city.trim();
+            console.log('полученный город', cityName);
+            // Проверяем наличие города в базе
+            let city = await db.collection('cities').findOne({
                 $or: [
-                    { english: req.body.cityName },
-                    { russian: req.body.cityName },
-                    { thai: req.body.cityName }
+                    { english: cityName },
+                    { russian: cityName },
+                    { thai: cityName }
                 ]
             });
-  
+        
             if (city) {
-                const cityId = city._id;
-                console.log(new ObjectId(cityId));
-                updates.city = new ObjectId(cityId);
-            } else {
-                return res.status(400).send('City not found');
-            }
+                // Город найден, используем его ID
+                updates.city = new ObjectId(city._id);
+            } else if(!city) {
+                // Город не найден, добавляем его в базу
+                let newCity; 
+                if(req.body.lang === 'en') {
+                    newCity = {
+                        english: cityName, // Здесь можно адаптировать структуру, если нужно
+                        russian: null,
+                        thai: null,
+                    };
+                } else if(req.body.lang === 'ru') {
+                    newCity = {
+                        english: null, // Здесь можно адаптировать структуру, если нужно
+                        russian: cityName,
+                        thai: null,
+                    };
+                } else if(req.body.lang === 'th') {
+                    newCity = {
+                        english: null, // Здесь можно адаптировать структуру, если нужно
+                        russian: null,
+                        thai: cityName,
+                    };
+                }
+                console.log(newCity);
+        
+                const result = await db.collection('cities').insertOne(newCity);
+        
+                if (result.insertedId) {
+                    console.log('id добавленого города', result.insertedId);
+                    // Используем ID нового города
+                    updates.city = new ObjectId(result.insertedId);
+                } else {
+                    return res.status(500).send('Error creating new city');
+                }
+            } 
+        } else {
+            updates.city = ''; // Поле пустое, записываем null
         }
   
         if (req.body.coach && req.body.coach !== currentUserData.coach) {
             updates.coach = req.body.coach;
-        }
+        } 
   
         if (req.body.birthdayDate && req.body.birthdayDate !== currentUserData.birthdayDate) {
             updates.birthdayDate = req.body.birthdayDate;
@@ -176,26 +236,38 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
   
         if (req.body.blade && req.body.blade !== currentUserData.blade) {
             updates.blade = req.body.blade;
+        } else  if (req.body.blade !== undefined && req.body.blade.trim() === '') {
+            updates.blade = '';
         }
   
         if (req.body.forehandRubber && req.body.forehandRubber !== currentUserData.forehandRubber) {
             updates.forehandRubber = req.body.forehandRubber;
+        } else  if (req.body.forehandRubber !== undefined && req.body.forehandRubber.trim() === '') {
+            updates.forehandRubber = '';
         }
   
         if (req.body.backhandRubber && req.body.backhandRubber !== currentUserData.backhandRubber) {
             updates.backhandRubber = req.body.backhandRubber;
+        } else if (req.body.backhandRubber !== undefined && req.body.backhandRubber.trim() === '') {
+            updates.backhandRubber = '';
         }
   
         if (req.body.description && req.body.description !== currentUserData.description) {
             updates.description = req.body.description;
+        } else if (req.body.description !== undefined && req.body.description.trim() === '') {
+            updates.description = '';
         }
 
         if (req.body.descriptioneng && req.body.descriptioneng !== currentUserData.descriptioneng) {
             updates.descriptioneng = req.body.descriptioneng;
+        } else if (req.body.descriptioneng !== undefined && req.body.descriptioneng.trim() === '') {
+            updates.descriptioneng = '';
         }
 
         if (req.body.descriptionthai && req.body.descriptionthai !== currentUserData.descriptionthai) {
             updates.descriptionthai = req.body.descriptionthai;
+        } else if (req.body.descriptionthai !== undefined && req.body.descriptionthai.trim() === '') {
+            updates.descriptionthai = '';
         }
   
         if (Object.keys(updates).length > 0) {

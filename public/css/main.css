@@ -401,10 +401,15 @@ h2 {
 .modal_buttonWrapper {
   margin-top: 20px;
   display: flex;
+  gap: 10px;
   justify-content: space-between; }
   .modal_buttonWrapper_btn {
     width: 30%;
     gap: 10px; }
+    .modal_buttonWrapper_btn:focus-visible {
+      width: 30%; }
+    .modal_buttonWrapper_btn:focus {
+      width: 30%; }
 
 .loginFormError {
   padding: 1px 6px;
@@ -5061,6 +5066,18 @@ section {
         line-height: normal;
         text-decoration-line: underline;
         cursor: pointer; }
+
+@media (max-width: 576px) {
+  .modal_buttonWrapper {
+    flex-direction: column;
+    align-items: center; }
+    .modal_buttonWrapper_btn {
+      width: 220px;
+      gap: 10px; }
+      .modal_buttonWrapper_btn:focus-visible {
+        width: 220px; }
+      .modal_buttonWrapper_btn:focus {
+        width: 220px; } }
 
 .editclub_formContainer {
   position: relative;

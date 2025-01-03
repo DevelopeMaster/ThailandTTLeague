@@ -43,6 +43,27 @@ document.addEventListener("DOMContentLoaded", async function() {
     await fetchUserData();
     let isFiltered;
 
+    window.addDots = function(input) {
+        let value = input.value;
+        let length = value.length;
+        
+        if (isNaN(value.replace(/\./g, ''))) {
+            input.value = value.substring(0, length - 1);
+            return;
+        }
+        if ((length === 2 || length === 5) && !isNaN(value[length - 1])) {
+            input.value += '.';
+        }
+        if (length === 10) {
+            let parts = value.split(".");
+            const enteredDate = new Date(parts[2], parts[1] - 1, parts[0]);
+            const today = new Date().setHours(0, 0, 0, 0);
+            if (enteredDate >= today) {
+                alert("Date of birth is not correct");
+                input.value = "";
+            }
+        }
+    }
     // const cityDropdown = document.getElementById('cityDropdown');
 
     function createDropdown(dropdown, options, inputElement) {
@@ -127,7 +148,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     fetchData(`/cities?language=${language}`)
         .then(data => {
-            const cityOptions = data.sort(); // Преобразуем данные в массив имен городов
+            console.log(data);
+            const cityOptions = data.cities.sort(); // Преобразуем данные в массив имен городов
             createDropdown(cityDropdown, cityOptions, cityInput); // Создаем выпадающий список с опциями
             setupDropdown(cityInput, cityDropdown, cityOptions); // Настраиваем фильтрацию
         });
@@ -316,7 +338,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             // // Добавление логотипа
             const logoInput = document.getElementById('logoInput');
-            console.log(logoInput.files[0]);
+            // console.log(logoInput.files[0]);
             if (logoInput.files[0]) {
                 formData.append('userLogo', logoInput.files[0]);
             }

@@ -476,6 +476,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
         
             const data = await response.json();
+            console.log(data.data.url);
             const publicImageUrl = data.data.url;
         
             // 3. Определение языка пользователя
@@ -483,11 +484,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             const name = encodeURIComponent(player.name || player.fullname);
             const ratingChange = encodeURIComponent(player.rating - player.sundaysRating);
             const image = encodeURIComponent(publicImageUrl);
+            const userPageLink = encodeURIComponent(`https://asianttleague.com/en/allplayers/${player._id}`);
+            // const image = publicImageUrl;
         
+            const pageUrl = `https://asiantttleague.com/${userLanguage}/share/result?name=${name}&image=${encodeURIComponent(publicImageUrl)}&ratingChange=${ratingChange}&userPageLink=${userPageLink}`;
             // 4. Формирование URL динамической страницы
-            const pageUrl = `https://thailandttleague.com/${userLanguage}/share/result?name=${name}&image=${image}&ratingChange=${ratingChange}`;
+            // const pageUrl = `https://asianttleague.com/${userLanguage}/share/result?name=${name}&image=${image}&ratingChange=${ratingChange}&userPageLink=${userPageLink}`;
+            // const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
             const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
             console.log(pageUrl);
+            console.log(shareUrl);
             // 5. Открытие Facebook Share Dialog
             window.open(shareUrl, '_blank');
         });

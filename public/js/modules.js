@@ -119,7 +119,7 @@ export async function createHeader(language) {
                                         Log in
                                     </button>
                                     <button class="header_btn-sign btnRegister">
-                                        Sign in
+                                        Sign up
                                     </button>
                                 </div>
                             </div>
@@ -190,7 +190,7 @@ export async function createHeader(language) {
                 </a>
                 <a class="header_bottom_category guest">
                     <p class="header_bottom_category-text btnRegister">
-                        Sign in
+                        Sign up
                     </p>
                 </a>
     

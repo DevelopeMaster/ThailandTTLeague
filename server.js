@@ -651,48 +651,95 @@ app.post('/edittournament', ensureAuthenticated, async (req, res) => {
 });
 
 
-app.get('/:lang/share/result', (req, res) => {
-  const { lang } = req.params; // Язык из маршрута
-  const { name, image, ratingChange } = req.query; // Параметры запроса
+// app.get('/:lang/share/result', (req, res) => {
+//   const { lang } = req.params; // Язык из маршрута
+//   const { name, image, ratingChange } = req.query; // Параметры запроса
 
-  // Определяем переводы в зависимости от языка
+//   // Определяем переводы в зависимости от языка
+//   const translations = {
+//       en: {
+//           title: `${name}'s Achievement`,
+//           description: `My rating grew by ${ratingChange} this week!`,
+//       },
+//       ru: {
+//           title: `Достижение ${name}`,
+//           description: `Мой рейтинг вырос на ${ratingChange} за эту неделю!`,
+//       },
+//       th: {
+//           title: `ความสำเร็จของ ${name}`,
+//           description: `คะแนนของฉันเพิ่มขึ้น ${ratingChange} ในสัปดาห์นี้!`,
+//       },
+//   };
+
+//   const content = translations[lang] || translations['en']; // По умолчанию английский
+
+//   res.send(`
+//       <!DOCTYPE html>
+//       <html lang="${lang}">
+//       <head>
+//           <meta property="og:title" content="${content.title}">
+//           <meta property="og:description" content="${content.description}">
+//           <meta property="og:image" content="${image}">
+//           <meta property="og:url" content="${req.protocol}://${req.get('host')}${req.originalUrl}">
+//           <meta property="og:type" content="article">
+//           <meta property="og:image:width" content="1200">
+//           <meta property="og:image:height" content="630">
+//           <title>${content.title}</title>
+//       </head>
+//       <body style="background-color: #000817">
+//           <h1 style="color:'#fff">${content.title}</h1>
+//           <img src="${image}" alt="Achievement">
+//           <p style="color: '#fff">${content.description}</p>
+//       </body>
+//       </html>
+//   `);
+// });
+
+
+app.get('/:lang/share/result', (req, res) => {
+  const { lang } = req.params;
+  const { name, image, ratingChange, userPageLink } = req.query;
+
+  console.log('Image URL received:', image);
+  console.log('Link user:', userPageLink);
+
+  const escapeHtml = (str) =>
+      str.replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+
   const translations = {
-      en: {
-          title: `${name}'s Achievement`,
-          description: `My rating grew by ${ratingChange} this week!`,
-      },
-      ru: {
-          title: `Достижение ${name}`,
-          description: `Мой рейтинг вырос на ${ratingChange} за эту неделю!`,
-      },
-      th: {
-          title: `ความสำเร็จของ ${name}`,
-          description: `คะแนนของฉันเพิ่มขึ้น ${ratingChange} ในสัปดาห์นี้!`,
-      },
+      en: { title: `${escapeHtml(name)}'s Achievement`, description: `My rating grew by ${escapeHtml(ratingChange)} this week!` },
+      ru: { title: `Достижение ${escapeHtml(name)}`, description: `Мой рейтинг вырос на ${escapeHtml(ratingChange)} за эту неделю!` },
+      th: { title: `ความสำเร็จของ ${escapeHtml(name)}`, description: `คะแนนของฉันเพิ่มขึ้น ${escapeHtml(ratingChange)} ในสัปดาห์นี้!` },
   };
 
-  const content = translations[lang] || translations['en']; // По умолчанию английский
+  const content = translations[lang] || translations['en'];
 
   res.send(`
       <!DOCTYPE html>
       <html lang="${lang}">
       <head>
+          <meta charset="utf-8">
           <meta property="og:title" content="${content.title}">
           <meta property="og:description" content="${content.description}">
           <meta property="og:image" content="${image}">
-          <meta property="og:url" content="${req.protocol}://${req.get('host')}${req.originalUrl}">
+          <meta property="og:image:width" content="1200">
+          <meta property="og:image:height" content="630">
+          <meta property="og:url" content="${userPageLink}">
           <meta property="og:type" content="article">
           <title>${content.title}</title>
       </head>
-      <body style="background-color: #000817">
-          <h1 style="color:'#fff">${content.title}</h1>
-          <img src="${image}" alt="Achievement">
-          <p style="color: '#fff">${content.description}</p>
+      <body style="background-color: #000817; color: #fff; text-align: center;">
+          <h1>${content.title}</h1>
+          <img src="${image}" alt="Achievement" style="max-width: 100%; height: auto;">
+          <p>${content.description}</p>
       </body>
       </html>
   `);
 });
-
 
 app.get('/:lang/dashboard/editclub/:userId', ensureAuthenticated, (req, res) => {
   const { lang, userId } = req.params;

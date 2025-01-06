@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const parts = currentPath.split('/');
     const lang = parts[1];
     const clubId = parts[3];
-    console.log(clubId);
+    // console.log(clubId);
     let club;
     let clubCity;
 
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             club = await response.json();
             clubCity = await getCityName(club.city);
             renderClubData();
-            console.log(club);
+            // console.log(club);
             renderTableBasedOnScreenSize(club);
         } catch (error) {
             console.error('Error fetching club data:', error);
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             supplFreeContainer.appendChild(supplementsName);
 
             club.supplements.free.forEach(item => {
-                console.log(item);
+                // console.log(item);
                 const supplement = document.createElement('div');
                 supplement.classList.add('supplements_item');
                 const supplText = document.createElement('p');
@@ -295,9 +295,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     
     // Добавляем слушатель resize
-    window.addEventListener('resize', () => {
-        renderTableBasedOnScreenSize(club); // Вызываем рендер при изменении размера окна
-    });
+    // window.addEventListener('resize', () => {
+    //     renderTableBasedOnScreenSize(club); // Вызываем рендер при изменении размера окна
+    // });
 
     function renderScheduleTable(clubData) {
         const daysOfWeek = getTranslation('daysOfWeek'); // Переведенные названия дней
@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             sessionCell.classList.add('sessionCell');
             sessionCell.style = 'align-content: center; width: 40px';
             row.appendChild(sessionCell);
-            console.log(clubData);
+            // console.log(clubData);
             // Создаем ячейки для каждого дня недели
             dayKeys.forEach((dayKey, dayIndex) => {
                 const cell = document.createElement("td");

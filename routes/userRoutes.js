@@ -280,9 +280,9 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
             console.log(`Нет изменений для обновления пользователя ${userId}`);
         }
 
-        if (updates.logo) {
-            localStorage.setItem('userLogo', updates.logo);
-        }
+        // if (updates.logo) {
+        //     localStorage.setItem('userLogo', updates.logo);
+        // }
   
         res.json({
           success: true,
@@ -579,6 +579,7 @@ router.post('/saveClubProfile', ensureAuthenticated, upload.fields([
                 updates.info = newInfo; // Обновляем адрес, если есть изменения
             }
         }
+
   
         if (!currentClubData.supplements) {
             currentClubData.supplements = {}; // Создаем объект supplements

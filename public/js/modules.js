@@ -640,6 +640,7 @@ export async function createHeader(language) {
         };
 
         const userData = await getUserData(userId, userType);
+        console.log(userData);
         if (language === 'english') {
             headerTag.innerHTML = `
                 <div class="header_wrapper">

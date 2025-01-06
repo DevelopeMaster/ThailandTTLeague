@@ -2683,7 +2683,7 @@ export async function getAllCoaches() {
         const cityValue = cityInput.value.toLowerCase();
 
         const filteredCoaches = await Promise.all(allCoaches.map(async coach => {
-            const nameMatch = !nameValue || coach.name.toLowerCase().includes(nameValue) || coach.playerName.toLowerCase().includes(nameValue);
+            const nameMatch = !nameValue || coach.name.toLowerCase().includes(nameValue) || coach.playerName.toLowerCase().includes(nameValue) || coach.fullname.toLowerCase().includes(nameValue);
             // const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
             const coachClub = allClubs.find(c => String(c._id) === String(coach.club));
             const clubMatch = !clubValue || (coachClub && coachClub.name.toLowerCase().includes(clubValue));

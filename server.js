@@ -1112,7 +1112,7 @@ app.get('/cities', async function(req, res) {
      const cities = allcities.map(city => city[language]); // Массив с названиями на нужном языке
  
      res.json({
-        citiesObjects,      // Массив названий городов на нужном языке
+        citiesObjects,  // Массив названий городов на нужном языке
         cities          // Оригинальный массив объектов городов
      });
 

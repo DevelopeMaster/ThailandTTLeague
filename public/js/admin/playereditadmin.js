@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     fetchData(`/cities?language=${"russian"}`)
         .then(data => {
-            const cityOptions = data.sort(); // Преобразуем данные в массив имен городов
+            const cityOptions = data.cities.sort(); // Преобразуем данные в массив имен городов
             createDropdown(cityDropdown, cityOptions, cityInput); // Создаем выпадающий список с опциями
             setupDropdown(cityInput, cityDropdown, cityOptions); // Настраиваем фильтрацию
         });

@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     fetchData(`/cities?language=${"russian"}`)
         .then(data => {
-            const cityOptions = data.sort();
+            const cityOptions = data.cities.sort();
             createDropdown(cityDropdown, cityOptions, cityInput);
             setupDropdown(cityInput, cityDropdown, cityOptions);
         });

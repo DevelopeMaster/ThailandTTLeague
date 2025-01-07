@@ -2,11 +2,11 @@
 /node_modules
 
 # лого
-/public/icons/playerslogo/
+# /public/icons/playerslogo/
 
-/public/icons/clubslogo/
+# /public/icons/clubslogo/
 
-/public/icons/clubsphotos/
+# /public/icons/clubsphotos/
 
 # Файлы окружения
 .env

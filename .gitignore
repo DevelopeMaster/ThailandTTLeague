@@ -1,6 +1,13 @@
 # Зависимости
 /node_modules
 
+# лого
+/public/icons/playerslogo/
+
+/public/icons/clubslogo/
+
+/public/icons/clubsphotos/
+
 # Файлы окружения
 .env
 

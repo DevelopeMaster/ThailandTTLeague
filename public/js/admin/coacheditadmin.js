@@ -200,9 +200,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('blade').value = playerData.blade || '';
         document.getElementById('forehand').value = playerData.forehandRubber || '';
         document.getElementById('backhand').value = playerData.backhandRubber || '';
-        document.getElementById('description').value = playerData.trainingInfo['ru'] || '';
-        document.getElementById('descriptionEng').value = playerData.trainingInfo['en'] || '';
-        document.getElementById('descriptionThai').value = playerData.trainingInfo['th'] || '';
+        document.getElementById('description').value = playerData.trainingInfo ? playerData.trainingInfo['ru'] : '';
+        document.getElementById('descriptionEng').value = playerData.trainingInfo ? playerData.trainingInfo['en'] : '';
+        document.getElementById('descriptionThai').value =playerData.trainingInfo ? playerData.trainingInfo['th'] : '';
     
         const leftHandRadio = document.getElementById('left');
         const rightHandRadio = document.getElementById('right');

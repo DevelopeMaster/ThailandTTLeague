@@ -1418,7 +1418,7 @@ export function createFooter(language) {
                     </div>
                     
                 </div>
-                <span class="footer_laws">© 2024 Thailand TT League. All Rights Reserved</span>
+                <span class="footer_laws">© 2024 Asian TT League. All Rights Reserved</span>
             </div>
         `;
     } else if (language === 'russian') {
@@ -1462,7 +1462,7 @@ export function createFooter(language) {
                     </div>
                     
                 </div>
-                <span class="footer_laws">© 2024 Thailand TT League. All Rights Reserved</span>
+                <span class="footer_laws">© 2024 Asian TT League. All Rights Reserved</span>
             </div>
         `;
     } else if (language === 'thai') {
@@ -1506,7 +1506,7 @@ export function createFooter(language) {
                     </div>
                     
                 </div>
-                <span class="footer_laws">© 2024 Thailand TT League. All Rights Reserved</span>
+                <span class="footer_laws">© 2024 Asian TT League. All Rights Reserved</span>
             </div>
         `;
     }
@@ -3909,6 +3909,10 @@ export function listenerOfButtons() {
         if (event.target.closest('.goToAboutUs')) {
             window.location.href = `/${languageMap[localStorage.clientLang]}/aboutus`;
         }
+
+        // if (event.target.closest('.info_content_btn')) {
+        //     window.location.href = `/${languageMap[localStorage.clientLang]}/aboutus`;
+        // }
 
         // if (event.target.closest('.goToAllTrainings')) {
         //     event.preventDefault();

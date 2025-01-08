@@ -151,9 +151,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         return translations[lang][key] || translations['en'][key];
     }
 
-    async function fetchPlayerData() {
+
+    async function fetchCoachData() {
         try {
-            const response = await fetch(`/get-data-player?lang=${lang}&userId=${userId}`);
+            const response = await fetch(`/get-data-coach?lang=${lang}&userId=${userId}`);
             if (!response.ok) {
                 throw new Error('Player not found');
             }
@@ -163,83 +164,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             // console.log(playerCity);
             renderPlayerData();
         } catch (error) {
-            console.log('Error fetching player data:', error);
+            console.error('Error fetching player data:', error);
         }
     }
-
-    // async function fetchCoachData() {
-    //     try {
-    //         const response = await fetch(`/get-data-coach?lang=${lang}&userId=${userId}`);
-    //         if (!response.ok) {
-    //             throw new Error('Player not found');
-    //         }
-    //         player = await response.json();
-    //         // console.log(player);
-    //         playerCity = await getCityName(player.city);
-    //         // console.log(playerCity);
-    //         renderPlayerData();
-    //     } catch (error) {
-    //         console.error('Error fetching player data:', error);
-    //     }
-    // }
-
-    // async function fetchPlayerData() {
-    //     try {
-    //         let response = await fetch(`/get-data-player?lang=${lang}&userId=${userId}`);
-    //         if (!response.ok) {
-    //             console.warn('Player not found, trying to fetch coach data...');
-    //             response = await fetch(`/get-data-coach?lang=${lang}&userId=${userId}`);
-    //             if (!response.ok) {
-    //                 throw new Error('Coach not found');
-    //             }
-    //         }
-    
-    //         const playerOrCoach = await response.json();
-    //         if (!playerOrCoach) {
-    //             throw new Error('No data returned for player or coach');
-    //         }
-    
-    //         player = playerOrCoach;
-    //         console.log(player);
-    //         playerCity = await getCityName(player.city);
-    //         // renderPlayerData();
-    //     } catch (error) {
-    //         console.error('Error fetching player or coach data:', error);
-    //     }
-    // }
-    
-
-    // async function fetchPlayerData() {
-    //     try {
-    //         let response = await fetch(`/get-data-player?lang=${lang}&userId=${userId}`);
-    //         console.log('Response status:', response.status);
-    //         if (!response.ok) {
-    //             if (response.status === 404) {
-    //                 console.warn('Player not found, trying to fetch coach data...');
-    //                 response = await fetch(`/get-data-coach?lang=${lang}&userId=${userId}`);
-    //                 if (!response.ok) {
-    //                     throw new Error('Coach not found');
-    //                 }
-    //             } else {
-    //                 throw new Error(`Error fetching player data: ${response.statusText}`);
-    //             }
-    //         }
-    
-    //         const playerOrCoach = await response.json();
-    //         console.log('тренер', playerOrCoach);
-    //         if (!playerOrCoach) {
-    //             throw new Error('No data returned for player or coach');
-    //         }
-    
-    //         player = playerOrCoach;
-    //         playerCity = await getCityName(player.city);
-    //         console.log('Resolved city name:', playerCity); 
-    //         console.log('тренер', player);
-    //         renderPlayerData();
-    //     } catch (error) {
-    //         console.error('Error fetching player or coach data:', error);
-    //     }
-    // }
 
     async function getCityName(cityId) {
         try {
@@ -261,31 +188,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             return 'Unknown City'; // Возвращение запасного значения в случае ошибки
         }
     }
-
-    // function formatDateAndAge(dateString) {
-    //     // Преобразуем строку в объект Date
-    //     const date = new Date(dateString);
-    
-    //     // Форматируем дату в формате DD.MM.YYYY
-    //     const day = String(date.getDate()).padStart(2, '0');
-    //     const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы в JavaScript начинаются с 0
-    //     const year = date.getFullYear();
-    
-    //     // Вычисляем возраст
-    //     const currentDate = new Date();
-    //     let age = currentDate.getFullYear() - year;
-        
-    //     // Проверяем, прошел ли день рождения в этом году
-    //     if (
-    //         currentDate.getMonth() < date.getMonth() ||
-    //         (currentDate.getMonth() === date.getMonth() && currentDate.getDate() < date.getDate())
-    //     ) {
-    //         age--;
-    //     }
-    
-    //     // Собираем строку в нужном формате
-    //     return `${day}.${month}.${year} (${age} years)`;
-    // }
 
     function formatDateAndAge(dateString, language) {
         const date = new Date(dateString);
@@ -371,8 +273,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="player_mainInfo_info_descr">
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Playing hand')}: <span>${getTranslation(player.hand)}</span></p>
-                        <p>${getTranslation('Rating')}: <span style="margin-left: 5px">${player.rating || ' - '}</span> <span style="margin-left: 5px; color: ${changeRatingColor}">${changeRatingSymbol || ''}${ratingChange || ''}</span></p>
-                        <p>${getTranslation('Coach')}: <span>${player.coach || ' - '}</span></p>
+                        <p>${getTranslation('Rating')}: <span style="margin-left: 5px">${player.rating || ' - '}</span> <span style="margin-left: 5px; color: ${changeRatingColor}">${changeRatingSymbol || ''}${ratingChange || '0'}</span></p>
+                        
                     </div>
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('city')}: <span>${playerCity || ' - '}</span></p>
@@ -383,7 +285,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
         `;
 
-        // с 380 строки // <a class="bestVictories_table_btn share_btn" style='margin-top: 0' id='shareBtn' href="#">Share</a>
+        // <a class="bestVictories_table_btn share_btn" id='shareBtn' href="#">Share</a>
         const playerAbout = document.querySelector('.player_about');
         playerAbout.innerHTML = `
             <h3>${getTranslation('Racket')}</h3>
@@ -411,7 +313,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="player_statistics_info_descr_path statisticsSeparateLine">
                     <p>${getTranslation('Rank')}: <span>${player.rank || ' - '}</span></p>
                     <p>${getTranslation('First tournament')}: <span>29.01.2018</span></p>
-                    <p>${getTranslation('Most often in')}: <span>${player.club || ' - '} (${getTranslation('tournaments')}: ${player.tournaments || ' - '})</span></p>
+                    <p>${getTranslation('Most often in')}: <span>${player.clubtournaments || ' - '} (${getTranslation('tournaments')}: ${player.tournaments || ' - '})</span></p>
                     
                 </div>
             </div>
@@ -510,6 +412,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         
 
+
+
         // document.getElementById('shareFacebook').addEventListener('click', async () => {
             
         //     updateTemplate(player);
@@ -536,42 +440,42 @@ document.addEventListener('DOMContentLoaded', async function() {
         //     window.open(shareUrl, '_blank');
         // });
 
-        document.getElementById('shareFacebook').addEventListener('click', async () => {
-            // 1. Генерация изображения с результатами
-            updateTemplate(player);
-            const imageData = await generateImage();
+        // document.getElementById('shareFacebook').addEventListener('click', async () => {
+        //     // 1. Генерация изображения с результатами
+        //     updateTemplate(player);
+        //     const imageData = await generateImage();
         
-            // 2. Загрузка изображения на ImgBB
-            const formData = new FormData();
-            formData.append('image', imageData.split(',')[1]); // Убираем "data:image/png;base64,"
+        //     // 2. Загрузка изображения на ImgBB
+        //     const formData = new FormData();
+        //     formData.append('image', imageData.split(',')[1]); // Убираем "data:image/png;base64,"
         
-            const response = await fetch('https://api.imgbb.com/1/upload?key=d9be0bd58fd2d169c9882686e4609e56', {
-                method: 'POST',
-                body: formData,
-            });
+        //     const response = await fetch('https://api.imgbb.com/1/upload?key=d9be0bd58fd2d169c9882686e4609e56', {
+        //         method: 'POST',
+        //         body: formData,
+        //     });
         
-            const data = await response.json();
-            console.log(data.data.url);
-            const publicImageUrl = data.data.url;
+        //     const data = await response.json();
+        //     console.log(data.data.url);
+        //     const publicImageUrl = data.data.url;
         
-            // 3. Определение языка пользователя
-            const userLanguage = lang; // Можно определить на основе пользовательского профиля
-            const name = encodeURIComponent(player.name || player.fullname);
-            const ratingChange = encodeURIComponent(player.rating - player.sundaysRating);
-            const image = encodeURIComponent(publicImageUrl);
-            const userPageLink = encodeURIComponent(`https://asianttleague.com/en/allplayers/${player._id}`);
-            // const image = publicImageUrl;
+        //     // 3. Определение языка пользователя
+        //     const userLanguage = lang; // Можно определить на основе пользовательского профиля
+        //     const name = encodeURIComponent(player.name || player.fullname);
+        //     const ratingChange = encodeURIComponent(player.rating - player.sundaysRating);
+        //     const image = encodeURIComponent(publicImageUrl);
+        //     const userPageLink = encodeURIComponent(`https://asianttleague.com/en/allplayers/${player._id}`);
+        //     // const image = publicImageUrl;
         
-            const pageUrl = `https://asiantttleague.com/${userLanguage}/share/result?name=${name}&image=${encodeURIComponent(publicImageUrl)}&ratingChange=${ratingChange}&userPageLink=${userPageLink}`;
-            // 4. Формирование URL динамической страницы
-            // const pageUrl = `https://asianttleague.com/${userLanguage}/share/result?name=${name}&image=${image}&ratingChange=${ratingChange}&userPageLink=${userPageLink}`;
-            // const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
-            const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
-            console.log(pageUrl);
-            console.log(shareUrl);
-            // 5. Открытие Facebook Share Dialog
-            window.open(shareUrl, '_blank');
-        });
+        //     const pageUrl = `https://asiantttleague.com/${userLanguage}/share/result?name=${name}&image=${encodeURIComponent(publicImageUrl)}&ratingChange=${ratingChange}&userPageLink=${userPageLink}`;
+        //     // 4. Формирование URL динамической страницы
+        //     // const pageUrl = `https://asianttleague.com/${userLanguage}/share/result?name=${name}&image=${image}&ratingChange=${ratingChange}&userPageLink=${userPageLink}`;
+        //     // const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+        //     const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+        //     console.log(pageUrl);
+        //     console.log(shareUrl);
+        //     // 5. Открытие Facebook Share Dialog
+        //     window.open(shareUrl, '_blank');
+        // });
         
 
     }
@@ -579,7 +483,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     
 
-    fetchPlayerData();
+    // fetchPlayerData();
     fetchCoachData();
 
     

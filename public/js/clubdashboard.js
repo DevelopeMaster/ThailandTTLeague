@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             clubSupplements.appendChild(supplPaidContainer);
 
             const supplementsName = document.createElement('p');
-            supplementsName.innerText =  `${getTranslation('Extra charge')}: `;
+            supplementsName.innerText = `${getTranslation('Extra charge')}: `;
             supplPaidContainer.appendChild(supplementsName);
 
             club.supplements.paid.forEach(item => {

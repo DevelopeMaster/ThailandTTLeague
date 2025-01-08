@@ -405,15 +405,15 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
         let trainingInfo = { ...currentUserData.trainingInfo }; // Начинаем с текущих данных
 
         if (req.body.description && req.body.description !== currentUserData.trainingInfo['ru']) {
-            trainingInfo['ru'] = req.body.description;
+            trainingInfo['ru'] = req.body.description || '';
         }
 
         if (req.body.descriptioneng && req.body.descriptioneng !== currentUserData.trainingInfo['en']) {
-            trainingInfo['en'] = req.body.descriptioneng;
+            trainingInfo['en'] = req.body.descriptioneng || '';
         }
 
         if (req.body.descriptionthai && req.body.descriptionthai !== currentUserData.trainingInfo['th']) {
-            trainingInfo['th'] = req.body.descriptionthai;
+            trainingInfo['th'] = req.body.descriptionthai || '';
         }
 
         if (JSON.stringify(trainingInfo) !== JSON.stringify(currentUserData.trainingInfo)) {

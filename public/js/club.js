@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             clubSupplements.appendChild(supplFreeContainer);
 
             const supplementsName = document.createElement('p');
-            supplementsName.innerText = `Free: `;
+            supplementsName.innerText = `${getTranslation(`Free`)}: `;
             supplFreeContainer.appendChild(supplementsName);
 
             club.supplements.free.forEach(item => {
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             clubSupplements.appendChild(supplPaidContainer);
 
             const supplementsName = document.createElement('p');
-            supplementsName.innerText = `Paid: `;
+            supplementsName.innerText = `${getTranslation(`Extra charge`)}: `;
             supplPaidContainer.appendChild(supplementsName);
 
             club.supplements.paid.forEach(item => {

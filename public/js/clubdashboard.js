@@ -207,11 +207,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    const editClubProfile = document.querySelector('#editClubProfile');
-    editClubProfile.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.location.href = `/${lang}/dashboard/editclub/${clubId}`;
-    });
+    // const editClubProfile = document.querySelector('#editClubProfile');
+    // editClubProfile.addEventListener('click', (e) => {
+    //     console.log('есть');
+    //     e.preventDefault();
+    //     window.location.href = `/${lang}/dashboard/editclub/${clubId}`;
+    // });
     
     function renderPhotos() {
         const photoContainer = document.querySelector('#clubsPhotoContainer');
@@ -302,15 +303,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderMap();
         renderPhotos();  //  жду дизайн
 
-        document.addEventListener('click', async function(event) {
-
-            if (event.target.id === 'createTournament') {
+        document.addEventListener('click', (event) => {
+            console.log(event.target);
+            
+            if (event.target.closest('#createTournament')) {
+                event.preventDefault();
+                event.stopPropagation();
                 window.location.href = `/${lang}/createtournament/${club._id}`;
             }
 
         });
         
     }
+
+    document.addEventListener('click', async function(event) {
+
+        if (event.target.id === 'createTournament') {
+            event.stopPropagation();
+            window.location.href = `/${lang}/createtournament/${club._id}`;
+        }
+
+    });
 
     function nl2br(str) {
         return str.replace(/\n/g, '<br>');

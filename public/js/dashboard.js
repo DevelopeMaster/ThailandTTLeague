@@ -580,7 +580,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
 
     fetchPlayerData();
-    fetchCoachData();
+    // fetchCoachData();
 
     
 

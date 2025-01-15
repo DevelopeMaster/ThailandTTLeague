@@ -58,16 +58,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if(advdata.expire) {
-            // const date = new Date(advdata.expire);
-
-            // const formattedDate = date.toLocaleDateString('ru-RU', {
-            //     day: '2-digit',
-            //     month: '2-digit',
-            //     year: 'numeric'
-            // });
-
-            // document.querySelector('#expire').value = formattedDate;
-
             const date = new Date(advdata.expire);
 
             const day = String(date.getUTCDate()).padStart(2, '0');
@@ -82,29 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.querySelector('#gold').checked = true;
         }
 
-        const banner = document.getElementById('banner');
-        const logoPreview = document.getElementById('advLogo');
-
-        banner.addEventListener('change', function(event) {
-            const file = event.target.files[0];
         
-            if (file && file.type.startsWith('image/')) {
-                if (file.size > 1 * 1024 * 1024) {
-                    showErrorModal(`Файл слишком большой. Максимальный размер: 1 MB`);
-                    banner.value = ''; 
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    logoPreview.src = e.target.result;
-                };
-        
-                reader.readAsDataURL(file);
-            } else {
-                showErrorModal(`Пожалуйста, выберите корректный файл изображения`);
-                banner.value = '';
-            }
-        });
 
         document.getElementById('editAdv_formContainer_submit').addEventListener('click', function(event) {
             event.preventDefault();
@@ -119,6 +87,62 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     }
+
+    const banner = document.getElementById('banner');
+    const logoPreview = document.getElementById('advLogo');
+
+    // banner.addEventListener('change', function(event) {
+    //     const file = event.target.files[0];
+    
+    //     if (file && file.type.startsWith('image/')) {
+    //         if (file.size > 1 * 1024 * 1024) {
+    //             showErrorModal(`Файл слишком большой. Максимальный размер: 1 MB`);
+    //             banner.value = ''; 
+    //             return;
+    //         }
+    //         const reader = new FileReader();
+    //         reader.onload = function(e) {
+    //             logoPreview.src = e.target.result;
+    //         };
+    
+    //         reader.readAsDataURL(file);
+    //     } else {
+    //         showErrorModal(`Пожалуйста, выберите корректный файл изображения`);
+    //         banner.value = '';
+    //     }
+    // });
+    banner.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        // console.log('выбран', file);
+        // Проверяем, выбран ли файл
+        if (!file) {
+            showErrorModal(`Файл не выбран`);
+            return;
+        }
+    
+        // Проверяем, является ли файл изображением
+        if (!file.type.startsWith('image/')) {
+            showErrorModal('Выбранный файл не является изображением');
+            logoInput.value = ''; // Сбрасываем выбор файла
+            return;
+        }
+    
+        // Проверяем размер файла
+        const maxFileSize = 1 * 1024 * 1024; // 1 МБ
+        if (file.size > maxFileSize) {
+            showErrorModal(`Размер файла превышает 1 МБ`);
+            logoInput.value = ''; // Сбрасываем выбор файла
+            return;
+        }
+    
+        // Если все проверки пройдены, отображаем предварительный просмотр
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // console.log(e.target.result);
+            logoPreview.src = e.target.result; // Устанавливаем изображение в предварительный просмотр
+        };
+        reader.readAsDataURL(file);
+    });
 
 
     async function saveAdvData(descr) {
@@ -141,6 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const banner = document.getElementById('banner');
 
             if (banner.files[0]) {
+                // console.log(banner.files[0]);
                 formData.append('banner', banner.files[0]);
             }
 

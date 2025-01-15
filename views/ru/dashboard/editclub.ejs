@@ -210,10 +210,10 @@
                                 </div>
                             </div>
                         
-                            <input type="file" id="photoInput1" name="photos[]" style="display:none" accept="image/*" onchange="previewPhoto(1)">
-                            <input type="file" id="photoInput2" name="photos[]" style="display:none" accept="image/*" onchange="previewPhoto(2)">
-                            <input type="file" id="photoInput3" name="photos[]" style="display:none" accept="image/*" onchange="previewPhoto(3)">
-                            <input type="file" id="photoInput4" name="photos[]" style="display:none" accept="image/*" onchange="previewPhoto(4)">
+                            <input type="file" id="photoInput1" name="photos[]" style="display:none" accept="image/*" onchange="previewImage(this, document.getElementById('preview1'))">
+                            <input type="file" id="photoInput2" name="photos[]" style="display:none" accept="image/*" onchange="previewImage(this, document.getElementById('preview2'))">
+                            <input type="file" id="photoInput3" name="photos[]" style="display:none" accept="image/*" onchange="previewImage(this, document.getElementById('preview3'))">
+                            <input type="file" id="photoInput4" name="photos[]" style="display:none" accept="image/*" onchange="previewImage(this, document.getElementById('preview4'))">
 
                             <p class="photoUploadContainer_descr">Фото не должно превышать 1 Мб</p>
                             

@@ -323,6 +323,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             window.location.href = `/${lang}/createtournament/${club._id}`;
         }
 
+        if (event.target.id === 'startTournament') {
+            event.preventDefault();
+            window.location.href = `/${lang}/soft/${club._id}`;
+        }
+
     });
 
     function nl2br(str) {
@@ -578,7 +583,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 playersDiv.appendChild(playersImg);
     
                 let playersSpan = document.createElement('span');
-                playersSpan.textContent = tournament.players.length;
+                playersSpan.textContent = tournament.players ? tournament.players.length : '0';
                 playersDiv.appendChild(playersSpan);
                 tournamentDiv.appendChild(playersDiv);
 
@@ -625,7 +630,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-
+    // document.addEventListener('click', (event) => {
+    //     if (event.target.id === 'startTournament') {
+    //         event.preventDefault();
+    //         window.location.href = `/${languageMap[localStorage.clientLang]}/soft`;
+    //     }
+    // })
+    
 
 
 

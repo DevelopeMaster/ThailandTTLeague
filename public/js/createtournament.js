@@ -56,7 +56,23 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     };
 
+    let club;
+    let location;
     // console.log(userId);
+    async function fetchClubData() {
+        try {
+            const response = await fetch(`/get-data-club?lang=${lang}&clubId=${clubId}`);
+            if (!response.ok) {
+                throw new Error('Club not found');
+            }
+            club = await response.json();
+            location = club.location;
+            
+
+        } catch (error) {
+            console.error('Error fetching club data:', error);
+        }
+    }
 
     const form = document.getElementById('addTournamentForm');
 
@@ -67,6 +83,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // const userId = document.querySelector('.addClub.addTournament').dataset.userid; // Получаем userId из атрибута data-userid
         formData.append('userid', userId); // Добавляем userId в данные формы
         formData.append('language', lang);
+        formData.append('location', location);
 
         // Получение данных о дате и времени из формы
         const date = formData.get('tournamentdate'); // Формат YYYY-MM-DD
@@ -110,6 +127,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
     
-
+    
 
 });

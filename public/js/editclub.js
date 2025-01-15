@@ -178,145 +178,253 @@ document.addEventListener("DOMContentLoaded", async function() {
     await fetchClubData();
 
     console.log(clubdata);
+    const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 МБ
+    const DEFAULT_CLUB_PHOTO = '/icons/defaultClubPicture.svg';
+    const DEFAULT_PLAYER_LOGO = '/icons/clubslogo/default_avatar.svg';
+
+    // Функция для проверки файла
+    function validateFile(file) {
+        if (!file) {
+            return false;
+        }
+        if (!file.type.startsWith('image/')) {
+            showErrorModal(getTranslation('Not image'));
+            return false;
+        }
+        if (file.size > MAX_FILE_SIZE) {
+            showErrorModal(getTranslation('File too large'));
+            return false;
+        }
+        return true;
+    }
+
+    // Функция для предпросмотра изображения
+    window.previewImage = function (fileInput, previewElement) {
+        const file = fileInput.files[0];
+        if (validateFile(file)) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewElement.setAttribute('src', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            fileInput.value = ''; // Сброс значения
+        }
+    };
+
+    // Логотип клуба
+    document.getElementById('logoInput').addEventListener('change', function (event) {
+        const logoPreview = document.getElementById('clubLogo');
+        previewImage(event.target, logoPreview, (error) => {
+            showErrorModal(error);
+        });
+    });
+
+    // Фотографии клуба
+    for (let i = 1; i <= 4; i++) {
+        const fileInput = document.getElementById(`photoInput${i}`);
+        const preview = document.getElementById(`preview${i}`);
+
+        fileInput.addEventListener('change', function (event) {
+            previewImage(event.target, preview, (error) => {
+                showErrorModal(error);
+            });
+        });
+    }
+    // for (let i = 1; i <= 4; i++) {
+    //     document.getElementById(`photoInput${i}`).addEventListener('change', function(event) {
+    //         const file = event.target.files[0];
+    //         if (file && file.size > 1 * 1024 * 1024) { // 1 MB = 1 * 1024 * 1024 bytes
+    //             showErrorModal(`${getTranslation('File too large')}`);
+    //             event.target.value = ''; // Сбрасываем выбор файла
+    //         }
+    //     });
+    // }
+
+    // Удаление фотографий клуба
+    window.removePhoto = function (index, event) {
+        event.stopPropagation();
+        const preview = document.getElementById(`preview${index}`);
+        const fileInput = document.getElementById(`photoInput${index}`);
+        preview.setAttribute('src', DEFAULT_CLUB_PHOTO);
+        fileInput.value = ''; // Очистка input
+    };
+
     if (clubdata) {
         document.getElementById('clubName').value = clubdata.name || '';
         document.getElementById('city').value = clubCity || '';
         document.getElementById('address').value = clubdata.address[lang] || '';
-        document.getElementById('location').value = clubdata.location.join(', ') || '';
+        document.getElementById('location').value = clubdata.location?.join(', ') || '';
         document.getElementById('workingHours').value = clubdata.workingHours || '';
         document.getElementById('numberOfTables').value = clubdata.tables || '';
         document.getElementById('representative').value = clubdata.representative || '';
         document.getElementById('phoneNumber').value = clubdata.phoneNumber || '';
         document.getElementById('website').value = clubdata.website || '';
-        // document.getElementById('freeServices').value = clubdata.freeServices || '';
-        // document.getElementById('paidServices').value = clubdata.paidServices || '';
         document.getElementById('description').value = clubdata.info[lang] || '';
-        document.getElementById('clubLogo').src = clubdata.logo || '/icons/playerslogo/default_avatar.svg';
-
-
-        const logoInput = document.getElementById('logoInput');
-        const logoPreview = document.getElementById('clubLogo');
-
-        // Обработчик события для изменения файла
-        // logoInput.addEventListener('change', function(event) {
-        //     const file = event.target.files[0];
-            
-        //     // Проверяем, выбран ли файл и является ли он изображением
-        //     if (file && file.type.startsWith('image/')) {
-        //         const reader = new FileReader();
-                
-        //         reader.onload = function(e) {
-        //             // Устанавливаем новый src для логотипа-превью
-        //             logoPreview.src = e.target.result;
-        //         };
-
-        //         // Читаем файл как Data URL
-        //         reader.readAsDataURL(file);
-        //     } else {
-        //         alert('Please select a valid image file.');
-        //     }
-        // });
-
-        logoInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-        
-            // Проверяем, выбран ли файл и является ли он изображением
-            if (file && file.type.startsWith('image/')) {
-                if (file.size > 1 * 1024 * 1024) {
-                    showErrorModal(`${getTranslation('File too large')}`);
-                    logoInput.value = ''; 
-                    return;
-                }
-        
-                const reader = new FileReader();
-        
-                reader.onload = function(e) {
-                    logoPreview.src = e.target.result;
-                };
-        
-                reader.readAsDataURL(file);
-            } else {
-                showErrorModal(`${getTranslation('Not image')}`);
-                logoInput.value = '';
-            }
-        });
-        
+        document.getElementById('clubLogo').src = clubdata.logo || DEFAULT_PLAYER_LOGO;
+    
+        // Установка бесплатных и платных услуг
         clubdata.supplements.free.forEach(service => {
             const checkbox = document.querySelector(`.freeServices input[value="${service}"]`);
-            if (checkbox) {
-                checkbox.checked = true;
-            }
+            if (checkbox) checkbox.checked = true;
         });
-
+    
         clubdata.supplements.paid.forEach(service => {
             const checkbox = document.querySelector(`.paidServices input[value="${service}"]`);
-            if (checkbox) {
-                checkbox.checked = true;
-            }
+            if (checkbox) checkbox.checked = true;
         });
-
-        if (clubdata.photos && Array.isArray(clubdata.photos)) {
+    
+        // Установка фотографий
+        if (Array.isArray(clubdata.photos)) {
             clubdata.photos.forEach((photo, index) => {
-                if (index < 4) { // Учитываем, что у нас только 4 миниатюры
+                if (index < 4) {
                     const preview = document.getElementById(`preview${index + 1}`);
-                    if (preview) {
-                        preview.src = photo; // Устанавливаем URL фотографии
-                    }
+                    if (preview) preview.src = photo;
                 }
             });
         }
     } else {
         console.error('Club data is undefined.');
     }
+    // if (clubdata) {
+    //     document.getElementById('clubName').value = clubdata.name || '';
+    //     document.getElementById('city').value = clubCity || '';
+    //     document.getElementById('address').value = clubdata.address[lang] || '';
+    //     document.getElementById('location').value = clubdata.location.join(', ') || '';
+    //     document.getElementById('workingHours').value = clubdata.workingHours || '';
+    //     document.getElementById('numberOfTables').value = clubdata.tables || '';
+    //     document.getElementById('representative').value = clubdata.representative || '';
+    //     document.getElementById('phoneNumber').value = clubdata.phoneNumber || '';
+    //     document.getElementById('website').value = clubdata.website || '';
+    //     // document.getElementById('freeServices').value = clubdata.freeServices || '';
+    //     // document.getElementById('paidServices').value = clubdata.paidServices || '';
+    //     document.getElementById('description').value = clubdata.info[lang] || '';
+    //     document.getElementById('clubLogo').src = clubdata.logo || '/icons/playerslogo/default_avatar.svg';
+
+
+    //     const logoInput = document.getElementById('logoInput');
+    //     const logoPreview = document.getElementById('clubLogo');
+
+    //     // Обработчик события для изменения файла
+    //     // logoInput.addEventListener('change', function(event) {
+    //     //     const file = event.target.files[0];
+            
+    //     //     // Проверяем, выбран ли файл и является ли он изображением
+    //     //     if (file && file.type.startsWith('image/')) {
+    //     //         const reader = new FileReader();
+                
+    //     //         reader.onload = function(e) {
+    //     //             // Устанавливаем новый src для логотипа-превью
+    //     //             logoPreview.src = e.target.result;
+    //     //         };
+
+    //     //         // Читаем файл как Data URL
+    //     //         reader.readAsDataURL(file);
+    //     //     } else {
+    //     //         alert('Please select a valid image file.');
+    //     //     }
+    //     // });
+
+    //     logoInput.addEventListener('change', function(event) {
+    //         const file = event.target.files[0];
+        
+    //         // Проверяем, выбран ли файл и является ли он изображением
+    //         if (file && file.type.startsWith('image/')) {
+    //             if (file.size > 1 * 1024 * 1024) {
+    //                 showErrorModal(`${getTranslation('File too large')}`);
+    //                 logoInput.value = ''; 
+    //                 return;
+    //             }
+        
+    //             const reader = new FileReader();
+        
+    //             reader.onload = function(e) {
+    //                 logoPreview.src = e.target.result;
+    //             };
+        
+    //             reader.readAsDataURL(file);
+    //         } else {
+    //             showErrorModal(`${getTranslation('Not image')}`);
+    //             logoInput.value = '';
+    //         }
+    //     });
+        
+    //     clubdata.supplements.free.forEach(service => {
+    //         const checkbox = document.querySelector(`.freeServices input[value="${service}"]`);
+    //         if (checkbox) {
+    //             checkbox.checked = true;
+    //         }
+    //     });
+
+    //     clubdata.supplements.paid.forEach(service => {
+    //         const checkbox = document.querySelector(`.paidServices input[value="${service}"]`);
+    //         if (checkbox) {
+    //             checkbox.checked = true;
+    //         }
+    //     });
+
+    //     if (clubdata.photos && Array.isArray(clubdata.photos)) {
+    //         clubdata.photos.forEach((photo, index) => {
+    //             if (index < 4) { // Учитываем, что у нас только 4 миниатюры
+    //                 const preview = document.getElementById(`preview${index + 1}`);
+    //                 if (preview) {
+    //                     preview.src = photo; // Устанавливаем URL фотографии
+    //                 }
+    //             }
+    //         });
+    //     }
+    // } else {
+    //     console.error('Club data is undefined.');
+    // }
 
     window.triggerFileInput = function(index) {
         document.getElementById(`photoInput${index}`).click();
     }
 
-    // Функция для удаления фотографии и установки дефолтной картинки
-    window.removePhoto = function(index, event) {
-        event.stopPropagation(); // Предотвращаем открытие проводника при удалении фото
+    // // Функция для удаления фотографии и установки дефолтной картинки
+    // window.removePhoto = function(index, event) {
+    //     event.stopPropagation(); // Предотвращаем открытие проводника при удалении фото
 
-        const preview = document.getElementById(`preview${index}`);
-        const defaultImage = '/icons/defaultClubPicture.svg'; 
+    //     const preview = document.getElementById(`preview${index}`);
+    //     const defaultImage = '/icons/defaultClubPicture.svg'; 
 
-        // Устанавливаем дефолтное изображение
-        preview.setAttribute('src', defaultImage);
+    //     // Устанавливаем дефолтное изображение
+    //     preview.setAttribute('src', defaultImage);
 
-        // Очищаем значение input
-        document.getElementById(`photoInput${index}`).value = '';
-    }
+    //     // Очищаем значение input
+    //     document.getElementById(`photoInput${index}`).value = '';
+    // }
 
-    // Функция для изменения изображения при выборе файла
-    window.previewPhoto = function(index) {
-        const fileInput = document.getElementById(`photoInput${index}`);
-        const preview = document.getElementById(`preview${index}`);
-        const file = fileInput.files[0];
+    // // Функция для изменения изображения при выборе файла
+    // window.previewPhoto = function(index) {
+    //     const fileInput = document.getElementById(`photoInput${index}`);
+    //     const preview = document.getElementById(`preview${index}`);
+    //     const file = fileInput.files[0];
     
-        if (file) {
-            // Проверяем, является ли файл изображением
-            if (file.type.startsWith('image/')) {
-                // Проверка размера файла
-                if (file.size > 1 * 1024 * 1024) { 
-                    showErrorModal(`${getTranslation('File too large')}`);
-                    fileInput.value = '';
-                    return;
-                }
+    //     if (file) {
+    //         // Проверяем, является ли файл изображением
+    //         if (file.type.startsWith('image/')) {
+    //             // Проверка размера файла
+    //             if (file.size > 1 * 1024 * 1024) { 
+    //                 showErrorModal(`${getTranslation('File too large')}`);
+    //                 fileInput.value = '';
+    //                 return;
+    //             }
                 
-                const reader = new FileReader();
+    //             const reader = new FileReader();
     
-                reader.onload = function(e) {
-                    preview.setAttribute('src', e.target.result);
-                };
+    //             reader.onload = function(e) {
+    //                 preview.setAttribute('src', e.target.result);
+    //             };
     
-                reader.readAsDataURL(file);
-            } else {
-                showErrorModal(`${getTranslation('Not image')}`);
-                fileInput.value = '';
-                // preview.setAttribute('src', ''); // Очистить превью
-            }
-        }
-    };
+    //             reader.readAsDataURL(file);
+    //         } else {
+    //             showErrorModal(`${getTranslation('Not image')}`);
+    //             fileInput.value = '';
+    //             // preview.setAttribute('src', ''); // Очистить превью
+    //         }
+    //     }
+    // };
 
     // window.previewPhoto = function(index) {
     //     const fileInput = document.getElementById(`photoInput${index}`);
@@ -448,15 +556,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 
-    for (let i = 1; i <= 4; i++) {
-        document.getElementById(`photoInput${i}`).addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file && file.size > 1 * 1024 * 1024) { // 1 MB = 1 * 1024 * 1024 bytes
-                showErrorModal(`${getTranslation('File too large')}`);
-                event.target.value = ''; // Сбрасываем выбор файла
-            }
-        });
-    }
+    
 
     async function saveClubData() {
         try {
@@ -508,13 +608,16 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const errorData = await response.json();
                 throw new Error(errorData.error || 'Failed to save club data');
             }
-
-            if (response.url) {
-                if (logoInput.files[0]) {
-                    localStorage.setItem('logo', `${response.url}` )
+            const data = await response.json();
+            if (data.success) {
+                // Сохраняем пути в локальное хранилище
+                if (data.logoUrl) {
+                    localStorage.setItem('userLogo', data.logoUrl);
+                    // document.getElementById('clubLogo').src = data.logoUrl; // Обновляем превью
                 }
-                
-                window.location.href = response.url;
+            }
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
             }
     
         } catch (error) {

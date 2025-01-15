@@ -138,25 +138,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         logoInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
         
-            // Проверяем, выбран ли файл и является ли он изображением
-            if (file && file.type.startsWith('image/')) {
-                if (file.size > 1 * 1024 * 1024) {
-                    showErrorModal(`${getTranslation('Not image')}`);
-                    logoInput.value = ''; 
-                    return;
-                }
-        
-                const reader = new FileReader();
-        
-                reader.onload = function(e) {
-                    logoPreview.src = e.target.result;
-                };
-        
-                reader.readAsDataURL(file);
-            } else {
-                showErrorModal(`${getTranslation('File too large')}`);
-                logoInput.value = '';
+            // Проверяем, выбран ли файл
+            if (!file) {
+                showErrorModal(`Файл не выбран`);
+                return;
             }
+        
+            // Проверяем, является ли файл изображением
+            if (!file.type.startsWith('image/')) {
+                showErrorModal('Выбранный файл не является изображением');
+                logoInput.value = ''; // Сбрасываем выбор файла
+                return;
+            }
+        
+            // Проверяем размер файла
+            const maxFileSize = 1 * 1024 * 1024; // 1 МБ
+            if (file.size > maxFileSize) {
+                showErrorModal(`Размер файла превышает 1 МБ`);
+                logoInput.value = ''; // Сбрасываем выбор файла
+                return;
+            }
+        
+            // Если все проверки пройдены, отображаем предварительный просмотр
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                logoPreview.src = e.target.result; // Устанавливаем изображение в предварительный просмотр
+            };
+            reader.readAsDataURL(file);
         });
 
         // document.getElementById('playerLogo').src = playerData.logo; // || "/icons/playerslogo/default_avatar.svg";

@@ -14,6 +14,81 @@ const notificateEmail = process.env.NOTIFICATE_EMAIL;
 const notificatePass = process.env.NOTIFICATE_PASSWORD;
 
 
+// router.post('/upload', upload.fields([
+//     { name: 'logo', maxCount: 1 },
+//     { name: 'photos', maxCount: 10 },
+//     { name: 'userLogo', maxCount: 1 },
+//     { name: 'banner', maxCount: 1 }
+//   ]), (req, res) => {
+//     if (!req.files) {
+//       return res.status(400).json({ error: 'Файлы не были загружены' });
+//     }
+  
+//     const uploadedFiles = {};
+  
+//     // Обрабатываем загруженные файлы
+//     for (const fieldName in req.files) {
+//       uploadedFiles[fieldName] = req.files[fieldName].map(file => file.path); // Сохраняем пути к файлам
+//     }
+  
+//     res.json({
+//       message: 'Файлы успешно загружены',
+//       uploadedFiles, // Отправляем ссылки на загруженные файлы
+//     });
+//   });
+
+router.post('/upload/user-logo', upload.single('userLogo'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'Логотип не был загружен' });
+        }
+
+        res.json({
+            message: 'Логотип успешно загружен',
+            logoUrl: req.file.path // Ссылка на файл в Cloudinary
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке логотипа:', error);
+        res.status(500).json({ error: 'Ошибка при загрузке логотипа' });
+    }
+});
+
+router.post('/upload/club-logo', upload.single('logo'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'Логотип клуба не был загружен' });
+        }
+
+        res.json({
+            message: 'Логотип клуба успешно загружен',
+            logoUrl: req.file.path // Ссылка на файл в Cloudinary
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке логотипа клуба:', error);
+        res.status(500).json({ error: 'Ошибка при загрузке логотипа клуба' });
+    }
+});
+
+router.post('/upload/club-photos', upload.array('photos', 10), (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ error: 'Фотографии клуба не были загружены' });
+        }
+
+        const photosUrls = req.files.map(file => file.path);
+
+        res.json({
+            message: 'Фотографии клуба успешно загружены',
+            photos: photosUrls // Ссылки на фотографии в Cloudinary
+        });
+    } catch (error) {
+        console.error('Ошибка при загрузке фотографий клуба:', error);
+        res.status(500).json({ error: 'Ошибка при загрузке фотографий клуба' });
+    }
+});
+
+
+
 router.get('/check-auth', ensureAuthenticated, (req, res) => {
     // Возвращаем ID авторизованного пользователя
     res.json({ userId: req.user._id });
@@ -117,10 +192,16 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
         const updates = {};
   
         // Обновление логотипа (если новый логотип был загружен)
-        if (req.files['userLogo']) {
-            const logoPath = `/icons/playerslogo/${req.files['userLogo'][0].filename}`;
-            if (currentUserData.logo !== logoPath) {
-                updates.logo = logoPath;
+        // if (req.files['userLogo']) {
+        //     const logoPath = `/icons/playerslogo/${req.files['userLogo'][0].filename}`;
+        //     if (currentUserData.logo !== logoPath) {
+        //         updates.logo = logoPath;
+        //     }
+        // }
+        if (req.files?.userLogo?.[0]) {
+            const logoUrl = req.files.userLogo[0].path; // Ссылка на файл в Cloudinary
+            if (currentUserData.logo !== logoUrl) {
+                updates.logo = logoUrl; // Сохраняем ссылку на файл в БД
             }
         }
   
@@ -320,10 +401,10 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
             if (currentUserData.logo !== defaultLogoPath) {
                 updates.logo = defaultLogoPath;
             }
-        } else if (req.files['userLogo']) {
-            const logoPath = `/icons/playerslogo/${req.files['userLogo'][0].filename}`;
-            if (currentUserData.logo !== logoPath) {
-                updates.logo = logoPath;
+        } else if (req.files?.userLogo?.[0]) {
+            const logoUrl = req.files.userLogo[0].path; // Ссылка на файл в Cloudinary
+            if (currentUserData.logo !== logoUrl) {
+                updates.logo = logoUrl; // Сохраняем ссылку на файл в БД
             }
         }
   
@@ -469,7 +550,7 @@ router.post('/saveClubProfile', ensureAuthenticated, upload.fields([
   
         // Обновление логотипа (если новый логотип был загружен)
         if (req.files['logo']) {
-            const logoPath = `/icons/clubslogo/${req.files['logo'][0].filename}`;
+            const logoPath = req.files['logo'][0].path; // Используем путь Cloudinary
             if (currentClubData.logo !== logoPath) {
                 updates.logo = logoPath;
             }
@@ -479,8 +560,8 @@ router.post('/saveClubProfile', ensureAuthenticated, upload.fields([
             const currentPhotos = currentClubData.photos || []; // Получаем текущие фото или создаем пустой массив
             const updatedPhotos = [...currentPhotos]; // Копируем текущие фото для дальнейшего обновления
         
-            // Массив с путями новых фотографий
-            const photoPaths = req.files['photos'].map(file => `/icons/clubsphotos/${file.filename}`);
+            // Массив с путями новых фотографий (полученных из Cloudinary)
+            const photoPaths = req.files['photos'].map(file => file.path); // `file.path` уже содержит корректный путь из Cloudinary
         
             // Если передан индекс фотографии
             const photoIndex = parseInt(req.body.photoIndex, 10);
@@ -630,8 +711,11 @@ router.post('/saveClubProfile', ensureAuthenticated, upload.fields([
         // let link = `/en/dashboard/club/${clubId}`;
 
         // let link = `/ru/dashboard/admin/clubs`;
-        
-        res.redirect(link);
+        res.json({
+            success: true,
+            logoUrl: updates.logo || currentClubData.logo,
+            redirectUrl: link // Указываем ссылку для редиректа
+        });
     } catch (error) {
         console.error('Ошибка при сохранении профиля клуба:', error);
         res.status(500).send('Internal Server Error');
@@ -846,10 +930,16 @@ router.post('/saveAdvProfile', ensureAuthenticated, upload.fields([
   
   
         // Обновление логотипа (если новый логотип был загружен)
+        // if (req.files['banner']) {
+        //     const logoPath = `/icons/advbanners/${req.files['banner'][0].filename}`;
+        //     if (currentAdvData.image !== logoPath) {
+        //         updates.image = logoPath;
+        //     }
+        // }
         if (req.files['banner']) {
-            const logoPath = `/icons/advbanners/${req.files['banner'][0].filename}`;
-            if (currentAdvData.image !== logoPath) {
-                updates.image = logoPath;
+            const logoPath = req.files['banner'][0].path; // Используем путь Cloudinary
+            if (currentClubData.logo !== logoPath) {
+                updates.logo = logoPath;
             }
         }
         
@@ -909,8 +999,15 @@ router.post('/createAdv', ensureAuthenticated, upload.fields([
             link: req.body.link,
             expire: new Date(req.body.expire),
             createdday: new Date(),
-            image: req.files['banner'] ? `/icons/advbanners/${req.files['banner'][0].filename}` : null,
+            // image: req.files['banner'] ? `/icons/advbanners/${req.files['banner'][0].filename}` : null,
         };
+
+        if (req.files['banner']) {
+            const logoPath = req.files['banner'][0].path; // Используем путь Cloudinary
+            // if (currentClubData.logo !== logoPath) {
+                newAdv.image = logoPath;
+            // }
+        }
 
         const result = await db.collection('adv').insertOne(newAdv);
         console.log(`Новая реклама создана с ID: ${result.insertedId}`);

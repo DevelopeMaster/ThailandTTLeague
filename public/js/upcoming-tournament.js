@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             if (response.ok) {
                 const userData = await response.json();
+                // console.log(userData);
                 currentUserId = userData.userId;
                 updateButtonVisibility();
             } else {
@@ -91,10 +92,36 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    function updateButtonVisibility() {
-        const isRegistered = tournament.players.some(player => player._id === currentUserId);
-        const isRetired = tournament.retiredPlayers.some(player => player._id === currentUserId);
+    // function updateButtonVisibility() {
+    //     const isRegistered = tournament.players.some(player => player._id === currentUserId);
+    //     const isRetired = tournament.retiredPlayers.some(player => player._id === currentUserId);
 
+    //     if (isRetired) {
+    //         singUpToTournamentBtn.style.display = 'none'; // Не показываем кнопку для выбывших игроков
+    //     } else if (isRegistered) {
+    //         singUpToTournamentBtn.style.display = 'none';
+    //         cancelRegistrationBtn.style.display = 'block'; // Показываем кнопку "Отказаться"
+    //     } else {
+    //         singUpToTournamentBtn.style.display = 'block';
+    //         cancelRegistrationBtn.style.display = 'none'; // Скрываем кнопку "Отказаться"
+    //     }
+    // }
+
+    function updateButtonVisibility() {
+        // Проверяем наличие массива игроков и выбывших
+        const players = Array.isArray(tournament.players) ? tournament.players : [];
+        const retiredPlayers = Array.isArray(tournament.retiredPlayers) ? tournament.retiredPlayers : [];
+    
+        const isRegistered = players.some(player => player._id === currentUserId);
+        const isRetired = retiredPlayers.some(player => player._id === currentUserId);
+    
+        // Проверка: если текущий пользователь — клуб
+        if (!isRegistered && !isRetired) {
+            singUpToTournamentBtn.style.display = 'none';
+            cancelRegistrationBtn.style.display = 'none';
+            return; // Завершаем выполнение функции
+        }
+    
         if (isRetired) {
             singUpToTournamentBtn.style.display = 'none'; // Не показываем кнопку для выбывших игроков
         } else if (isRegistered) {
@@ -105,6 +132,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             cancelRegistrationBtn.style.display = 'none'; // Скрываем кнопку "Отказаться"
         }
     }
+    
 
     // Инициализируем проверку авторизации при загрузке страницы
     await checkUserAuth();
@@ -157,49 +185,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
-    // const currentPath = window.location.pathname;
-
-    // const parts = currentPath.split('/');
-    // const lang = parts[1];
-    // const tournamentId = parts[3];
-
-    // console.log(lang, tournamentId);
-    // let tournament;
-
-    // async function fetchTournamentData() {
-    //     try {
-    //         const response = await fetch(`/get-data-tournament?lang=${lang}&tournamentId=${tournamentId}`);
-    //         if (!response.ok) {
-    //             throw new Error('Tournament not found');
-    //         }
-    //         tournament = await response.json();
-    //         // clubCity = await getCityName(club.city);
-    //         console.log(tournament)
-    //         // renderClubData();
-    //     } catch (error) {
-    //         console.error('Error fetching tournament data:', error);
-    //     }
-    //     renderMap();
-    // }
-    // fetchTournamentData();
-
-    // function renderMap() {
-    //     const mapElement = document.getElementById('mapTournament');
-    //     if (!mapElement) return;
-
-    //     const map = L.map('mapTournament').setView([tournament.location[0], tournament.location[1]], 15);
-
-    //     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    //     }).addTo(map);
-
-    //     L.marker([tournament.location[0], tournament.location[1]]).addTo(map)
-    //         .bindPopup(`${tournament.address[lang] || tournament.address['en']}`)
-    //         .openPopup();
-    // }
-
-
-  
+      
 
     async function fetchTournamentData() {
         try {
@@ -251,18 +237,18 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // document.getElementById('registeredPlayers').textContent = `${tournament.players.length} ${translations[lang].peopleRegistered}`;
         // количество зарегистрированных людей на русском языке
-        const registeredPlayersText = getRegisteredPlayersText(tournament.players.length, lang);
-        document.getElementById('registeredPlayers').textContent = `${tournament.players.length} ${registeredPlayersText}`;
+        const registeredPlayersText = getRegisteredPlayersText(tournament.players ? tournament.players.length : 0, lang);
+        document.getElementById('registeredPlayers').textContent = `${tournament.players ? tournament.players.length : 0} ${registeredPlayersText}`;
 
         document.getElementById('restrictionStatus').style.backgroundColor = 'rgb(0, 112, 38)';
-        document.getElementById('restrictionStatus').innerHTML = `<div class="restriction">${tournament.restrictions}</div>`;
+        document.getElementById('restrictionStatus').innerHTML = `<div class="restriction">${tournament.restrictions || tournament.ratingLimit}</div>`;
         // document.getElementById('tournamentStart').textContent = new Date(tournament.datetime).toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit' });
         document.getElementById('tournamentStart').textContent = formattedTime;
         // document.getElementById('tournamentCity').textContent = tournament.address[lang] || tournament.address['en'];
         const cityName = (tournament.address[lang] || tournament.address['en']).split(',')[0];
         document.getElementById('tournamentCity').textContent = cityName;
-        document.getElementById('tournamentContacts').textContent = tournament.contacts;
-        document.getElementById('tournamentContacts').href = `tel:${tournament.contacts}`;
+        document.getElementById('tournamentContacts').textContent = tournament.contacts || '-';
+        document.getElementById('tournamentContacts').href = `tel:${tournament.contacts || ''}`;
         document.getElementById('tournamentContribution').textContent = `${tournament.contribution}฿`;
 
         const prizesTable = document.getElementById('prizesTable');
@@ -279,41 +265,95 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const registeredPlayersList = document.getElementById('registeredPlayersList');
         registeredPlayersList.innerHTML = '';
-        tournament.players.forEach((playerObj, index) => {
-            const player = allPlayers.find(p => p._id === playerObj._id);
-            if (player) { // Проверяем, найден ли игрок
-                const playerElement = document.createElement('div');
-                playerElement.className = 'upcomingTournament_table_player';
-                playerElement.innerHTML = `
-                    <div class="upcomingTournament_number">${index + 1}</div>
-                    <div class="cell upcomingTournament_player">
-                        <div class="playerLogo" style="border-radius: 50%; background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
-                        <span>${player.name || player.fullname}</span>
-                    </div>
-                    <div class="cell upcomingTournament_rating">${player.rating || '-'}</div>
-                `;
-                registeredPlayersList.appendChild(playerElement);
-            }
-        });
+        if (!tournament.players || tournament.players.length === 0) {
+            // const noPlayersMessage = document.createElement('div');
+            // noPlayersMessage.className = 'no-players-message';
+            // noPlayersMessage.textContent = 'No registered players.';
+            // registeredPlayersList.appendChild(noPlayersMessage);
+            console.log('нет зарегистрированных игроков');
+        } else {
+            tournament.players.forEach((playerObj, index) => {
+                const player = allPlayers.find(p => p._id === playerObj._id);
+                if (player) { // Проверяем, найден ли игрок
+                    const playerElement = document.createElement('div');
+                    playerElement.className = 'upcomingTournament_table_player';
+                    playerElement.innerHTML = `
+                        <div class="upcomingTournament_number">${index + 1}</div>
+                        <div class="cell upcomingTournament_player">
+                            <div class="playerLogo" style="border-radius: 50%; background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span>${player.name || player.fullname}</span>
+                        </div>
+                        <div class="cell upcomingTournament_rating">${player.rating || '-'}</div>
+                    `;
+                    registeredPlayersList.appendChild(playerElement);
+                }
+            });
+        }
+        // tournament.players.forEach((playerObj, index) => {
+        //     const player = allPlayers.find(p => p._id === playerObj._id);
+        //     if (player) { // Проверяем, найден ли игрок
+        //         const playerElement = document.createElement('div');
+        //         playerElement.className = 'upcomingTournament_table_player';
+        //         playerElement.innerHTML = `
+        //             <div class="upcomingTournament_number">${index + 1}</div>
+        //             <div class="cell upcomingTournament_player">
+        //                 <div class="playerLogo" style="border-radius: 50%; background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+        //                 <span>${player.name || player.fullname}</span>
+        //             </div>
+        //             <div class="cell upcomingTournament_rating">${player.rating || '-'}</div>
+        //         `;
+        //         registeredPlayersList.appendChild(playerElement);
+        //     }
+        // });
 
         const retiredPlayersList = document.getElementById('retiredPlayersList');
         retiredPlayersList.innerHTML = '';
-        tournament.retiredPlayers.forEach((playerObj, index) => {
-            const player = allPlayers.find(p => p._id === playerObj._id);
-            if (player) { // Проверяем, найден ли игрок
-                const playerElement = document.createElement('div');
-                playerElement.className = 'upcomingTournament_table_player';
-                playerElement.innerHTML = `
-                    <div class="upcomingTournament_number">${index + 1}</div>
-                    <div class="cell upcomingTournament_player">
-                        <div class="playerLogo" style="background-image: url('${player.logo}'); border-radius: 50%; background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
-                        <span>${player.name || player.fullname}</span>
-                    </div>
-                    <div class="cell upcomingTournament_rating">${player.rating || '-'}</div>
-                `;
-                retiredPlayersList.appendChild(playerElement);
-            }
-        });
+
+        // Проверяем, определён ли массив и есть ли в нём элементы
+        if (Array.isArray(tournament.retiredPlayers) && tournament.retiredPlayers.length > 0) {
+            tournament.retiredPlayers.forEach((playerObj, index) => {
+                const player = allPlayers.find(p => p._id === playerObj._id);
+                if (player) { // Проверяем, найден ли игрок
+                    const playerElement = document.createElement('div');
+                    playerElement.className = 'upcomingTournament_table_player';
+                    playerElement.innerHTML = `
+                        <div class="upcomingTournament_number">${index + 1}</div>
+                        <div class="cell upcomingTournament_player">
+                            <div class="playerLogo" style="background-image: url('${player.logo}'); border-radius: 50%; background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span>${player.name || player.fullname}</span>
+                        </div>
+                        <div class="cell upcomingTournament_rating">${player.rating || '-'}</div>
+                    `;
+                    retiredPlayersList.appendChild(playerElement);
+                }
+            });
+        } else {
+            // Если список пуст, отображаем сообщение
+            // const noPlayersMessage = document.createElement('div');
+            // noPlayersMessage.className = 'noPlayersMessage';
+            // noPlayersMessage.textContent = 'No retired players found.';
+            // retiredPlayersList.appendChild(noPlayersMessage);
+            console.log('No retired players found');
+        }
+
+        // const retiredPlayersList = document.getElementById('retiredPlayersList');
+        // retiredPlayersList.innerHTML = '';
+        // tournament.retiredPlayers.forEach((playerObj, index) => {
+        //     const player = allPlayers.find(p => p._id === playerObj._id);
+        //     if (player) { // Проверяем, найден ли игрок
+        //         const playerElement = document.createElement('div');
+        //         playerElement.className = 'upcomingTournament_table_player';
+        //         playerElement.innerHTML = `
+        //             <div class="upcomingTournament_number">${index + 1}</div>
+        //             <div class="cell upcomingTournament_player">
+        //                 <div class="playerLogo" style="background-image: url('${player.logo}'); border-radius: 50%; background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+        //                 <span>${player.name || player.fullname}</span>
+        //             </div>
+        //             <div class="cell upcomingTournament_rating">${player.rating || '-'}</div>
+        //         `;
+        //         retiredPlayersList.appendChild(playerElement);
+        //     }
+        // });
     }
 
     function renderMap() {

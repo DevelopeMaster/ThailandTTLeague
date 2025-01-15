@@ -339,7 +339,8 @@ h2 {
       display: flex;
       align-items: center;
       gap: 6px;
-      cursor: pointer; }
+      cursor: pointer;
+      text-decoration: none; }
       .header_bottom_category img {
         height: 22px; }
       .header_bottom_category p {
@@ -349,6 +350,8 @@ h2 {
         font-style: normal;
         font-weight: 500;
         line-height: normal; }
+    .header_bottom_category-text {
+      text-decoration: none; }
   .header_footer_contacts {
     position: relative;
     display: inline-flex;
@@ -877,6 +880,9 @@ h2 {
   box-sizing: border-box; }
   .footer .mobilelogo {
     display: none; }
+  .footer .logo_img {
+    width: 84px;
+    height: auto; }
   .footer_wrap {
     position: relative;
     display: flex;
@@ -2631,7 +2637,7 @@ h2 {
   box-sizing: border-box; }
 
 .aboutUs_image {
-  background-image: url(/images/aboutUsCoach.jpg); }
+  background-image: url(/images/aboutUsCoach.png); }
 
 .aboutUs_secondImage {
   background-image: url(/images/aboutUsCoach2.png); }
@@ -6901,3 +6907,76 @@ textarea:-webkit-autofill:focus {
 
 .editCities .adminContainer h2 {
   margin-top: -40px; }
+
+.softHeader {
+  height: 76px; }
+  .softHeader .header_wrapper {
+    height: 76px;
+    border-radius: 0; }
+    .softHeader .header_wrapper .logo_img {
+      width: 59px; }
+  .softHeader .header_top {
+    padding: 15px 20px;
+    border-bottom: 1px solid #E8E8E8; }
+  .softHeader .header_account_avatar {
+    border-radius: 10px;
+    border: 1px solid #FFF; }
+  .softHeader .header_account_content {
+    margin-top: 0;
+    right: 50px; }
+
+.chooseTournament {
+  padding-top: 76px;
+  margin-top: 0;
+  box-sizing: border-box; }
+  .chooseTournament h1 {
+    position: relative;
+    margin-top: 80px;
+    color: #FFF;
+    text-align: center;
+    font-family: Inter;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-transform: uppercase; }
+  .chooseTournament_wrapp {
+    width: 804px;
+    display: flex;
+    width: 804px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 30px auto;
+    box-sizing: border-box; }
+    .chooseTournament_wrapp_item {
+      display: flex;
+      width: 100%;
+      height: 87px;
+      padding: 30px 40px;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      border-radius: 12px;
+      background: #262630;
+      box-sizing: border-box;
+      text-decoration: none; }
+      .chooseTournament_wrapp_item h3 {
+        color: #FA6400;
+        font-family: Inter;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        underline: none; }
+      .chooseTournament_wrapp_item h4 {
+        color: #FFF;
+        font-family: Inter;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal; }
+    .chooseTournament_wrapp_btn {
+      margin: 40px auto;
+      width: 280px; }

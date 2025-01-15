@@ -856,27 +856,29 @@ export async function getAllAdv() {
     
         // Сортируем advs: сначала объекты с gold: true, затем остальные
         const sortedAdvs = advs.sort((a, b) => {
-            if (b.gold && !a.gold) return 1;
-            if (a.gold && !b.gold) return -1;
-            if (!a.gold && !b.gold) {
-                const dateA = new Date(a.expires);
-                const dateB = new Date(b.expires);
-                return dateA - dateB; // Сортируем по возрастанию даты
-            }
-            return 0; // Если оба объявления gold, не меняем их порядок
+            // Проверяем статус завершения
+            const isExpiredA = new Date(a.expire) < new Date();
+            const isExpiredB = new Date(b.expire) < new Date();
+        
+            if (!isExpiredA && isExpiredB) return -1; // Активные выше завершённых
+            if (isExpiredA && !isExpiredB) return 1; // Завершённые ниже активных
+        
+            // Проверяем статус gold
+            if (a.gold && !b.gold) return -1; // Премиум выше обычных
+            if (!a.gold && b.gold) return 1; // Обычные ниже премиум
+        
+            // Если оба в одной категории, сортируем по дате
+            const dateA = new Date(a.expire);
+            const dateB = new Date(b.expire);
+            return dateA - dateB;
         });
+
+
 
         sortedAdvs.forEach((adv, i) => {
             const item = document.createElement('a');
             item.href = `/ru/dashboard/admin/editadv/${adv._id}`;
             item.classList.add('clubsTable_club');
-    
-            // const date = new Date(adv.expire); // преобразуем строку в объект даты
-            // const formattedDate = date.toLocaleDateString('ru-RU', {
-            //     day: '2-digit',
-            //     month: '2-digit',
-            //     year: 'numeric'
-            // });
 
             const date = new Date(adv.expire);
 

@@ -177,6 +177,27 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
 
     
+    const translations = {
+        en: {
+            'No file selected': 'No file selected',
+            'Not an image': 'The selected file is not an image',
+            'File too large': 'The file size exceeds the 1 MB limit',
+        },
+        ru: {
+            'No file selected': 'Файл не выбран',
+            'Not an image': 'Выбранный файл не является изображением',
+            'File too large': 'Размер файла превышает 1 МБ',
+        },
+        th: {
+            'No file selected': 'ยังไม่ได้เลือกไฟล์',
+            'Not an image': 'ไฟล์ที่เลือกไม่ใช่รูปภาพ',
+            'File too large': 'ขนาดไฟล์เกิน 1 MB',
+        },
+    };
+
+    function getTranslation(key) {
+        return translations[lang][key] || translations['en'][key];
+    }
 
     console.log(playerData);
     if (playerData) {
@@ -189,28 +210,60 @@ document.addEventListener("DOMContentLoaded", async function() {
         const logoInput = document.getElementById('logoInput');
         const logoPreview = document.getElementById('playerLogo');
 
+        // logoInput.addEventListener('change', function(event) {
+        //     const file = event.target.files[0];
+        
+        //     // Проверяем, выбран ли файл и является ли он изображением
+        //     if (file && file.type.startsWith('image/')) {
+        //         if (file.size > 1 * 1024 * 1024) {
+        //             showErrorModal(`${getTranslation('Not image')}`);
+        //             logoInput.value = ''; 
+        //             return;
+        //         }
+        
+        //         const reader = new FileReader();
+        
+        //         reader.onload = function(e) {
+        //             logoPreview.src = e.target.result;
+        //         };
+        
+        //         reader.readAsDataURL(file);
+        //     } else {
+        //         showErrorModal(`${getTranslation('File too large')}`);
+        //         logoInput.value = '';
+        //     }
+        // });
+
         logoInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
         
-            // Проверяем, выбран ли файл и является ли он изображением
-            if (file && file.type.startsWith('image/')) {
-                if (file.size > 1 * 1024 * 1024) {
-                    showErrorModal(`${getTranslation('Not image')}`);
-                    logoInput.value = ''; 
-                    return;
-                }
-        
-                const reader = new FileReader();
-        
-                reader.onload = function(e) {
-                    logoPreview.src = e.target.result;
-                };
-        
-                reader.readAsDataURL(file);
-            } else {
-                showErrorModal(`${getTranslation('File too large')}`);
-                logoInput.value = '';
+            // Проверяем, выбран ли файл
+            if (!file) {
+                showErrorModal(`${getTranslation('No file selected')}`);
+                return;
             }
+        
+            // Проверяем, является ли файл изображением
+            if (!file.type.startsWith('image/')) {
+                showErrorModal(`${getTranslation('Not an image')}`);
+                logoInput.value = ''; // Сбрасываем выбор файла
+                return;
+            }
+        
+            // Проверяем размер файла
+            const maxFileSize = 1 * 1024 * 1024; // 1 МБ
+            if (file.size > maxFileSize) {
+                showErrorModal(`${getTranslation('File too large')}`);
+                logoInput.value = ''; // Сбрасываем выбор файла
+                return;
+            }
+        
+            // Если все проверки пройдены, отображаем предварительный просмотр
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                logoPreview.src = e.target.result; // Устанавливаем изображение в предварительный просмотр
+            };
+            reader.readAsDataURL(file);
         });
 
         // document.getElementById('playerLogo').src = playerData.logo; // || "/icons/playerslogo/default_avatar.svg";

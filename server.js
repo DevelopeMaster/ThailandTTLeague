@@ -8,7 +8,7 @@ const passport = require('./passportConfig'); // Подключаем конфи
 // const browserSync = require('browser-sync');
 const { ObjectId } = require('mongodb'); // Импортируем ObjectId
 require('dotenv').config();
-const { connectDB, getDB } = require('./db'); // Подключаем функцию для получения базы данных
+const { connectDB, getDB, client } = require('./db'); // Подключаем функцию для получения базы данных
 const flash = require('connect-flash');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
@@ -19,11 +19,109 @@ const { v4: uuidv4 } = require('uuid');
 
 const { ensureAuthenticated, upload, ensureAdmin } = require('./middlewares/uploadConfig');
 const userRoutes = require('./routes/userRoutes');
+const fs = require('fs');
 
-// const passport = require('passport');
-// require('./passportConfig'); // Подключаем конфигурацию Passport
+// ВЫГРУЗКА ИЗОБРАЖЕНИЙ С КОМПА НА СЕРВЕР
+
+// const path = require('path');
+// const cloudinary = require('./cloudinaryConfiq');
 
 
+// // // Укажите локальную папку с изображениями и иконками
+// const rootFolders = [
+//   path.join(__dirname, 'public/images'),
+//   path.join(__dirname, 'public/icons')
+// ];
+
+// // // Функция для загрузки файлов
+// // Функция для загрузки файлов
+// async function uploadFolder(folderPath, cloudinaryBaseFolder) {
+//   fs.readdir(folderPath, async (err, items) => {
+//     if (err) {
+//       console.error(`Ошибка чтения папки ${folderPath}:`, err);
+//       return;
+//     }
+
+//     for (const item of items) {
+//       const itemPath = path.join(folderPath, item);
+
+//       fs.stat(itemPath, async (err, stats) => {
+//         if (err) {
+//           console.error(`Ошибка получения данных для ${itemPath}:`, err);
+//           return;
+//         }
+
+//         if (stats.isDirectory()) {
+//           // Рекурсивный вызов для вложенных папок
+//           const newCloudinaryFolder = path.join(cloudinaryBaseFolder, item).replace(/\\/g, '/');
+//           await uploadFolder(itemPath, newCloudinaryFolder);
+//         } else if (stats.isFile()) {
+//           try {
+//             const relativePath = path.relative(path.join(__dirname, 'public'), itemPath); // Путь относительно public
+//             const publicId = relativePath.replace(/\\/g, '/').replace(/\.[^/.]+$/, ''); // Убираем расширение
+//             const folderPath = path.dirname(publicId);
+
+//             const result = await cloudinary.uploader.upload(itemPath, {
+//               folder: folderPath, // Корректный путь в Cloudinary
+//               public_id: path.basename(publicId) // Только имя файла без расширения
+//             });
+
+//             console.log(`Загружен: ${itemPath} → ${result.secure_url}`);
+//           } catch (uploadError) {
+//             console.error(`Ошибка загрузки ${itemPath}:`, uploadError);
+//           }
+//         }
+//       });
+//     }
+//   });
+// }
+
+// // Запуск загрузки
+// (async () => {
+//   for (const folder of rootFolders) {
+//     const baseFolder = path.basename(folder).replace(/\\/g, '/');
+//     await uploadFolder(folder, baseFolder);
+//   }
+// })();
+//---------------------------------------------------------
+
+
+
+// Функция для удаления непустой папки
+// async function deleteFolder(folderPath) {
+//   try {
+//     // Получаем список ресурсов в папке
+//     const resources = await cloudinary.api.resources({
+//       type: 'upload',
+//       prefix: folderPath, // Указываем путь к папке
+//       max_results: 500 // Максимальное число ресурсов за один запрос
+//     });
+
+//     // Если есть ресурсы, удаляем их
+//     const publicIds = resources.resources.map(resource => resource.public_id);
+//     if (publicIds.length > 0) {
+//       const deleteResponse = await cloudinary.api.delete_resources(publicIds);
+//       console.log(`Удалены ресурсы из папки ${folderPath}:`, deleteResponse);
+//     }
+
+//     // Удаляем пустую папку
+//     const folderDeleteResponse = await cloudinary.api.delete_folder(folderPath);
+//     console.log(`Папка ${folderPath} успешно удалена:`, folderDeleteResponse);
+//   } catch (error) {
+//     console.error(`Ошибка при удалении папки ${folderPath}:`, error);
+//   }
+// }
+
+// Пример использования
+// deleteFolder('icons/ads');
+// deleteFolder('icons/advbanners');
+// deleteFolder('icons/clubslogo');
+// deleteFolder('icons/clubsphotos');
+// deleteFolder('icons/favicons');
+// deleteFolder('icons/playerslogo');
+// deleteFolder('icons');
+// deleteFolder('images/phuketclub');
+// deleteFolder('images');
 
 const app = express();
 const port = 3000;
@@ -41,6 +139,61 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.set('trust proxy', 1);
+
+// app.get('/images', (req, res) => {
+//   // const { fileName } = req.params;
+//   console.log('перенаправлено');
+//   // Формируем ссылку на Cloudinary
+//   const cloudinaryUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}${req.path}`;
+
+//   // Перенаправляем запрос
+//   res.redirect(cloudinaryUrl);
+// });
+
+// app.get('/icons', (req, res) => {
+//   // const { fileName } = req.params;
+//   console.log('перенаправлено');
+//   // Формируем ссылку на Cloudinary
+//   const cloudinaryUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}${req.path}`;
+
+//   // Перенаправляем запрос
+//   res.redirect(cloudinaryUrl);
+// });
+
+// Middleware для обработки запросов к изображениям
+app.use('/images', (req, res, next) => {
+  const localPath = path.join(__dirname, 'public/images', req.path);
+
+  // Проверяем, существует ли файл локально
+  fs.access(localPath, fs.constants.F_OK, (err) => {
+    if (err) {
+      // Если файла нет, перенаправляем запрос в Cloudinary
+      // console.log('Файл отсутствует локально, перенаправлено в Cloudinary:', req.path);
+      const cloudinaryUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/images${req.path}`;
+      return res.redirect(cloudinaryUrl);
+    }
+
+    // Если файл существует, продолжаем обработку (Express Static его обслужит)
+    next();
+  });
+});
+
+app.use('/icons', (req, res, next) => {
+  const localPath = path.join(__dirname, 'public/icons', req.path); // public/icons
+
+  // Проверяем, существует ли файл локально
+  fs.access(localPath, fs.constants.F_OK, (err) => {
+    if (err) {
+      // Если файла нет, перенаправляем запрос в Cloudinary
+      // console.log('Файл отсутствует локально, перенаправлено в Cloudinary:', req.path);
+      const cloudinaryUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/icons${req.path}`;
+      return res.redirect(cloudinaryUrl);
+    }
+
+    // Если файл существует, продолжаем обработку (Express Static его обслужит)
+    next();
+  });
+});
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
@@ -111,6 +264,9 @@ app.get('/en', (req, res) => {
 app.get('/ru', (req, res) => {
   res.render('ru');
 });
+
+
+
 
 
 app.get('/becomeacoach', userAuthenticated, (req, res) => {
@@ -408,7 +564,20 @@ app.get('/:lang(en|ru|th)/createtournament/:id', (req, res) => {
   return res.render(link, {
     userId: id,
     // userType: userType
+  });
 });
+
+app.get('/:lang(en|ru|th)/soft/:id', (req, res) => {
+  const { lang, id } = req.params;
+  if (!lang) {
+    return res.status(404).render('404');
+  }
+  let link = `${lang}/soft`;
+
+  return res.render(link, {
+    userId: id,
+    // userType: userType
+  });
 });
 
 
@@ -524,10 +693,11 @@ app.post('/addtournament', ensureAuthenticated,  async (req, res) => {
       phone,
       infotournaments,
       userid,
+      location,
   } = req.body;
 
   // Валидация данных
-  if (!tournamentname || !tournamentdate || !tournamenttime || !tournamentprice || !ratinglimit || !phone || !userid || !date || !datetime || !language) {
+  if (!tournamentname || !tournamentdate || !tournamenttime || !tournamentprice || !ratinglimit || !phone || !userid || !date || !location || !datetime || !language) {
       return res.status(400).json({ message: 'All required fields must be filled.' });
   }
 
@@ -549,6 +719,7 @@ app.post('/addtournament', ensureAuthenticated,  async (req, res) => {
           contribution: parseFloat(tournamentprice), // Преобразуем цену в число
           ratingLimit: parseInt(ratinglimit, 10), // Преобразуем рейтинг в число
           contact: phone,
+          // location: location,
           // info: infotournaments || '',
           // createdBy: userid,
           createdAt: new Date(),
@@ -558,11 +729,13 @@ app.post('/addtournament', ensureAuthenticated,  async (req, res) => {
           
           club: {
               name: club.name,
-              logo: club.logo
+              logo: club.logo,
+              _id: userid,
+              location: location || []
           },
           address: club.address || {}, // Адрес клуба
           tables: club.tables || 0, // Количество столов
-          location: club.location || [], // Географическое положение
+          location: club.location || location || [], // Географическое положение
           city: club.city || {} // Город клуба
       };
 
@@ -796,6 +969,37 @@ app.get('/:lang/dashboard/edituser/:userId', ensureAuthenticated, (req, res) => 
 
   return res.render(link, {
       userId: userId,
+      userType: userType
+  });
+});
+
+app.get('/:lang/soft/tournament/:userId/:tournamentId', ensureAuthenticated, (req, res) => {
+  const { lang, userId, tournamentId } = req.params;
+  const { userId: sessionUserId, userType } = req.session;
+
+  // Преобразуем строку userId в ObjectId для правильного сравнения
+  const userIdObject = new ObjectId(userId);
+
+  // Проверка на совпадение идентификаторов
+  if (!sessionUserId.equals(userIdObject)) {
+    console.log('wrong user');
+    return res.redirect(`404`); // Редирект на страницу 404 при несовпадении идентификаторов
+  }
+
+  // Проверка на тип пользователя
+  if (userType !== 'club') {
+    console.log('Ошибка: Несоответствие типа пользователя');
+    return res.redirect(`404`); // Редирект на страницу 404 при несоответствии типа пользователя
+  }
+
+  // Если все проверки пройдены, рендерим страницу редактирования
+  const link = `${lang}/soft/tournament`;
+
+  console.log(`Rendering: ${link} for userId: ${userId}`);
+
+  return res.render(link, {
+      userId: userId,
+      tournamentId: tournamentId,
       userType: userType
   });
 });
@@ -1372,6 +1576,41 @@ app.get('/get-data-tournament', async (req, res) => {
   }
 });
 
+app.get('/tournaments-by-club/:clubId', async (req, res) => {
+  const { clubId } = req.params;
+
+  try {
+      
+      // Убедитесь, что переданный ID корректный
+      if (!ObjectId.isValid(clubId)) {
+          return res.status(400).json({ error: 'Invalid club ID format' });
+      }
+      const db = getDB();
+      // Запрос к базе данных для получения турниров с указанным клубом
+      const tournaments = await db.collection('tournaments')
+      .find({
+        'club._id': clubId,
+        $or: [
+          { finished: false },
+          { finished: { $exists: false } }
+        ]
+      })
+      .sort({ datetime: 1 })
+      .toArray();
+
+      if (!tournaments.length) {
+          return res.status(404).json({ message: 'No tournaments found for this club ID' });
+      }
+
+      // Возвращаем найденные турниры
+      res.status(200).json(tournaments);
+  } catch (error) {
+      console.error('Error fetching tournaments:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 app.get('/get-data-player', async (req, res) => {
   const { userId } = req.query;
   console.log(userId);
@@ -1406,25 +1645,58 @@ app.get('/get-data-coach', async (req, res) => {
   }
 });
 
+// app.get('/get-past-tournaments', async (req, res) => {
+//   try {
+//     const db = getDB();
+//     const tournaments = await db.collection('tournaments').find().toArray();
+//     const pastTournaments = tournaments.filter(tournament => new Date(tournament.datetime) <= new Date());
+
+//     await Promise.all(pastTournaments.map(async (tournament) => {
+//       tournament.players = await Promise.all(tournament.players.map(async (player) => {
+//         const user = await db.collection('users').findOne({ _id: new ObjectId(player.id) });
+//         player.name = user ? user.fullname : 'Unknown User';
+//         return player;
+//       }));
+//       return tournament;
+//     }));
+
+//     res.status(200).json(pastTournaments);
+//   } catch (err) {
+//     console.error(`Failed to retrieve tournaments: ${err}`);
+//     res.status(500).json({ error: 'An error occurred while retrieving tournaments' });
+//   }
+// });
+
 app.get('/get-past-tournaments', async (req, res) => {
   try {
     const db = getDB();
-    const tournaments = await db.collection('tournaments').find().toArray();
-    const pastTournaments = tournaments.filter(tournament => new Date(tournament.datetime) <= new Date());
 
+    // Запрос к MongoDB с фильтром по дате и параметру finished
+    const pastTournaments = await db.collection('tournaments')
+      .find({
+        datetime: { $lte: new Date() }, // Только прошедшие турниры
+        finished: true // Только завершенные турниры
+      })
+      .toArray();
+
+    // Дополнительная обработка данных о игроках
     await Promise.all(pastTournaments.map(async (tournament) => {
-      tournament.players = await Promise.all(tournament.players.map(async (player) => {
-        const user = await db.collection('users').findOne({ _id: new ObjectId(player.id) });
-        player.name = user ? user.fullname : 'Unknown User';
-        return player;
-      }));
+      if (tournament.players && Array.isArray(tournament.players)) {
+        tournament.players = await Promise.all(tournament.players.map(async (player) => {
+          const user = await db.collection('users').findOne({ _id: new ObjectId(player.id) });
+          return {
+            ...player,
+            name: user ? user.fullname : 'Unknown User'
+          };
+        }));
+      }
       return tournament;
     }));
 
     res.status(200).json(pastTournaments);
   } catch (err) {
-    console.error(`Failed to retrieve tournaments: ${err}`);
-    res.status(500).json({ error: 'An error occurred while retrieving tournaments' });
+    console.error(`Failed to retrieve past tournaments: ${err}`);
+    res.status(500).json({ error: 'An error occurred while retrieving past tournaments' });
   }
 });
 
@@ -1807,4 +2079,29 @@ connectDB().then(() => {
   });
 }).catch(err => {
   console.error('Failed to connect to database:', err);
+});
+
+process.on('SIGTERM', async () => {
+  console.log("Closing MongoDB connection for production...");
+  try {
+      await client.close();
+      console.log("MongoDB connection closed");
+  } catch (err) {
+      console.error("Error closing MongoDB connection", err);
+  } finally {
+      process.exit(0);
+  }
+});
+
+// Дополнительно можно добавить обработчик для SIGINT (например, для завершения при нажатии Ctrl+C)
+process.on('SIGINT', async () => {
+  console.log("Application interrupted. Closing MongoDB connection...");
+  try {
+      await client.close();
+      console.log("MongoDB connection closed");
+  } catch (err) {
+      console.error("Error closing MongoDB connection", err);
+  } finally {
+      process.exit(0);
+  }
 });

@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         'en': {
             'city': 'City',
             'contacts': 'Contacts',
-            'Playing hand': 'Plaing hand',
+            'Playing hand': 'Playing hand',
             'Rating': 'Rating',
             'Birthday': 'Date of birth',
             'Racket': 'Racket',

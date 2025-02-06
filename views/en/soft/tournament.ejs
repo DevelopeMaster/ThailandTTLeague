@@ -66,14 +66,485 @@
     </header>
 
     <section class="startTournament" data-tournamentid="<%= tournamentId %>" data-userid="<%= userId %>">
-        <h3 style="color:aliceblue">Hello</h3>
+        <div class="startTournament_panelWrapp">
+            <div class="startTournament_panelWrapp_tournament">
+                <div class="startTournament_panelWrapp_tournament_menu">
+                    <div class="startTournament_panelWrapp_tournament_menu_tournamentTypeBlock graySoftSmallBlock">
+                        <div class="dropdownForm">
+                            <label for="club">Tournament type</label>
+                            <input type="text" name="typeoftournament" id="typeOfTournamentInput" value="Round robin tournament" placeholder="Round robin tournament">
+                            <div id="typeOfTournamentDropdown" class="dropdown-content" style="display: none;">
+                                <div data-type="roundRobin">Round robin tournament</div>
+                                <div data-type="twoRound">Two-round tournament</div>
+                                <div data-type="shortGrid">Short grid tournament</div>
+                                <div data-type="longGrid">Long grid tournament</div>
+                                <div data-type="olimpic">Olimpic tournament</div>
+                                <div data-type="groupFinal">Group + final</div>
+                                <div data-type="groupTwoFinals">Group + two finals</div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="startTournament_panelWrapp_tournament_menu_tournamentInfoBlock graySoftSmallBlock">
+                        <div class="startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param">
+                            <h4>Number of tables</h4>
+                            <!-- <span>0</span> -->
+                            <input type="number" id="numberOfTables" value="0" min="0" max="30" step="1">
+                        </div>
+                        <div class="startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param">
+                            <h4>Rating limit</h4>
+                            <!-- <span>0</span> -->
+                            <input type="text" id="ratingLimit" value="0" readonly>
+                        </div>
+                        <div class="startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param">
+                            <h4>Sets</h4>
+                            <input type="number" id="numberOfParties" value="3" min="1" max="9" step="1">
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div class="startTournament_panelWrapp_tournament_games">
+                    <div class="startTournament_panelWrapp_tournament_games_playingBlock graySoftBlock">
+                        <div class="startTournament_panelWrapp_tournament_games_header grayHeaderBlock">
+                            <h3>Playing</h3>
+                        </div>
+                        <div class="startTournament_panelWrapp_tournament_games_playingBlock_pairs">
+                            <!-- <div class="startTournament_panelWrapp_tournament_games_playingBlock_pairs_item">
+                                <h3>1</h3>
+                                <div class="group">
+                                    <span>Gr.1</span>
+                                </div>
+                                <div class="pair">
+                                    <h6>Petrov Alexander</h6> 
+                                    <h6>:</h6>
+                                    <h6>Dmitry Arbuz</h6>
+                                </div>
+                            </div> -->
+                        </div>
+                    
+                    </div>
+
+                    <div class="startTournament_panelWrapp_tournament_games_watingBlock graySoftBlock">
+                        <div class="startTournament_panelWrapp_tournament_games_header grayHeaderBlock">
+                            <h3>Waiting</h3>
+                        </div>
+                        <div class="startTournament_panelWrapp_tournament_games_watingBlock_pairs">
+                            <!-- <div class="startTournament_panelWrapp_tournament_games_watingBlock_pairs_item">
+                                <div class="group">
+                                    <span>Gr.1</span>
+                                </div>
+                                <div class="pair">
+                                    <h6>Petrov Alexander</h6> 
+                                    <h6>:</h6>
+                                    <h6>Dmitry Arbuz</h6>
+                                </div>
+                            </div> -->
+
+                        </div>
+
+                        
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="startTournament_panelWrapp_players">
+                <div class="startTournament_panelWrapp_players_searchBlock graySoftSmallBlock">
+                    <label class="header_top_left_label startTournament_panelWrapp_players_searchBlock_label graySoftBlock_label" id="searchPlayerLabel">
+                        <input id="playerSearchInput" class="header_top_left_input" type="text" placeholder="Search for a player" autocomplete="off">
+                        <div class="headerDropdownForm">
+                            <div class="headerDropdown-content startTournament_panelWrapp_players_searchBlock_label_dropdown" id="headerPlayerDropdown" style="display: none;">
+                                
+                            </div>
+                        </div>
+                    </label>
+                    <button id="addPlayertoTournament" class="header_btn-sign btnSbmt" type="submit" >Add</button>
+                </div>
+                <div class="startTournament_panelWrapp_players_registration graySoftBlock">
+                    <div class="startTournament_panelWrapp_players_registration_header grayHeaderBlock">
+                        <div class="name">
+                            <h3>Full name</h3>
+                        </div>
+                        
+                        <div class="dob">
+                            <h3>Year of birth</h3>
+                        </div>
+                        
+                        <div class="rating">
+                            <h3>Rating</h3>
+                        </div>
+                        
+                        <div class="city">
+                            <h3>City</h3>
+                        </div>
+                        <div class="cross">
+                            <!-- <img src="/icons/deleteCross.svg" alt=""> -->
+                        </div>
+                        
+                    </div>
+                    <div class="startTournament_panelWrapp_players_registration_showPlayers">
+                        <!-- <div class="startTournament_panelWrapp_players_registration_showPlayers_item">
+                            <div class="number">
+                                <h3>1</h3>
+                            </div>
+                            <div class="name">
+                                <h3>Petrov Alexander</h3>
+                            </div>
+                        
+                            <div class="dob">
+                                <h3>1994</h3>
+                            </div>
+                        
+                            <div class="rating">
+                                <h3>366</h3>
+                            </div>
+                        
+                            <div class="city">
+                                <h3>Phuket</h3>
+                            </div>
+                            <div class="cross">
+                                <img src="/icons/deleteCross.svg" alt="">
+                            </div>
+                        </div>
+
+                        <div class="startTournament_panelWrapp_players_registration_showPlayers_item">
+                            <div class="number">
+                                <h3>2</h3>
+                            </div>
+                            <div class="name">
+                                <h3>Vasiliev Andrew</h3>
+                            </div>
+                        
+                            <div class="dob">
+                                <h3>1994</h3>
+                            </div>
+                        
+                            <div class="rating">
+                                <h3>366</h3>
+                            </div>
+                        
+                            <div class="city">
+                                <h3>Phuket</h3>
+                            </div>
+                            <div class="cross">
+                                <img src="/icons/deleteCross.svg" alt="">
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="startTournament_panelWrapp_players_registration_unratedBlock">
+                        <h5>Unrated players</h5>
+                        <form id="addUnratedPlayerForm" action="/addUnratedPlayer" method="POST" enctype="application/x-www-form-urlencoded">
+                            <div class="form_wrapper">
+                                <label for="fullname">Name*</label>
+                                <input type="text" placeholder="Name" id="fullname" name="fullname" required>
+                            </div>
+
+                            <div class="form_wrapper">
+                                <label for="date">Birthday*</label>
+                                <input type="text" name="date" id="date" placeholder="dd.mm.yyyy" oninput="addDots(this)" maxlength="10" required>
+                            </div>
+
+                            <div class="form_wrapper">
+                                <label for="nickname">Nickname</label>
+                                <input type="text" id="loginRegInput" placeholder="Nickname" name="nickname" required>
+                            </div>
+                            
+                            <div class="form_wrapper">
+                                <label for="city">City*</label>
+                                <input type="text" placeholder="City" id="city" name="city" required>
+                            </div>
+                            
+                            
+                            <div class="form_wrapper">
+                                <div>  </div>
+                                <a class="addUnratedPlayer_btn" href="#">Add player</a>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+
+                <div class="startTournament_panelWrapp_players_retired graySoftBlock">
+                    <div class="startTournament_panelWrapp_players_registration_header grayHeaderBlock">
+                        <h3>Withdrew from the game</h3>
+                    </div>
+                    <div class="startTournament_panelWrapp_players_retired_list">
+
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+        <div class="startTournament_startButtonWrapp">
+            <button id="saveTournamentData" class="header_btn-log">
+                Save changes
+            </button>
+            <button id="startTournamentBtn" class="header_btn-sign btnSbmt">Start</button>
+        </div>
     </section>
+    <section class="display">
+        <div class="displayTournament graySoftBlock">
+            
+            <div class="content">
+                <div class="display_header">
+                    <h3>Round robin tournament</h3>
+                </div>
+                <!-- <table class="tournament-table" id="tournamentTable">
+                   
+                </table> -->
+
+                <div class="tournament-wrapper">
+                    <!-- <div class="players-list">
+                        <div class="header-placeholder">
+                            <img src="/icons/racket.svg" alt="tennis racket">
+                            <h3>Playing</h3>
+                        </div> 
+                        <ul class="players-names"> -->
+                            <!-- <li>
+                                <span>1</span>
+                                <h3>Player 1</h3>
+                                <div>
+                                    <h5>R:124</h5>
+                                </div>
+                            </li>
+                            <li>
+                                <span>2</span>
+                                <h3>Player 2</h3>
+                                <div>
+                                    <h5>R:124</h5>
+                                </div>
+                            </li>
+                            <li>
+                                <span>3</span>
+                                <h3>Player 3</h3>
+                                <div>
+                                    <h5>R:124</h5>
+                                </div>
+                            </li>
+                            <li>
+                                <span>4</span>
+                                <h3>Player 4</h3>
+                                <div>
+                                    <h5>R:124</h5>
+                                </div>
+                            </li> -->
+                        <!-- </ul>
+                    </div> -->
+                    <!-- <div class="table-wrapper">
+                        <div class="table-header">
+                            <div class="header-row">
+                                <div>1</div>
+                                <div>2</div>
+                                <div>3</div>
+                                <div>4</div>
+                                <div>0</div>
+                                <div>M</div>
+                            </div>
+                        </div>
+                        <div class="results-table">
+                            <table>
+                                <tbody>
+                                   
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+
+        </div>
+        <div class="startTournament_startButtonWrapp">
+            <button id="showResult" style="display: none;" class="header_btn-sign btnSbmt">Result</button>
+        </div>
+    </section>
+        
 
 
     <!-- Модальное окно -->
     <div id="myModal" class="modal">    
-        <div class="modal-content">
-        <!-- add from DB -->
+        <div class="modal-content softStyle">
+        <!-- add from DB -->   
+            <!-- <h2>editing a meeting</h2>
+            <p>Table Number: 3</p>
+            <div class="modalPairBlockDone">
+                <div>
+                    <h4 class="modalPairBlockDone_firstPlayer">Petrov Alexander</h4>
+                    <input style="margin-right: -27px" type="text" value="0">
+                    <h4 class="modalPairBlockDone_vs">:</h4>
+                    <input style="margin-left: -27px" type="text" value="0">
+                    <h4 class="modalPairBlockDone_secondPlayer">Aleksandr Trainer</h4>
+                </div> 
+            </div>
+            <div class="modalScoreBlock">
+                <div class="modalScoreBlock_points">
+                    <div class="modalScoreBlock_points_row">
+                        <div class="modalScoreBlock_points_left">
+
+                        </div>
+                        <div class="modalScoreBlock_points_right">
+                            <h5>1</h5><h5>2</h5><h5>3</h5><h5>4</h5><h5>5</h5><h5>6</h5><h5>7</h5><h5>8</h5><h5>9</h5>
+                        </div>
+                    </div>
+                    <div class="modalScoreBlock_points_row">
+                        <div class="modalScoreBlock_points_left">
+                            <h3>Petrov Alexander</h3>
+                        </div>
+                        <div class="modalScoreBlock_points_right">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                        </div>
+                    </div>
+                    <div class="modalScoreBlock_points_row">
+                        <div class="modalScoreBlock_points_left">
+                            <h3>Ivanov Dmitriy</h3>
+                        </div>
+                        <div class="modalScoreBlock_points_right">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="modalScoreBlock_scores">
+                    <div class="modalScoreBlock_scores_player1">
+                        <button>3 : 0</button>
+                        <button>3 : 1</button>
+                        <button>3 : 2</button>
+                        <button>W : L</button>
+                    </div>
+                    <button id="cancelGame" class="header_btn-log btn-cancel">
+                        Cancel game
+                    </button>
+                    <div class="modalScoreBlock_scores_player2">
+                        <button>0 : 3</button>
+                        <button>1 : 3</button>
+                        <button>2 : 3</button>
+                        <button>L : W</button>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-actions">
+                <button id="createTournamentSoft" class="header_btn-sign btn-confirm">
+                    OK
+                </button>
+                <button id="createTournamentSoft" class="header_btn-log btn-cancel">
+                    Cancel
+                </button>
+                
+            </div> -->
+        
+        </div>
+    </div>
+
+    <div id="modalFinishGame" class="modal">    
+        <div class="modal-content softStyle">
+        <!-- add from DB -->   
+            <h2>editing a meeting</h2>
+            <p>Table Number: 3</p>
+            <div class="modalPairBlockDone">
+                <div>
+                    <h4 class="modalPairBlockDone_firstPlayer">Petrov Alexander</h4>
+                    <input style="margin-right: -27px" type="text" value="0">
+                    <h4 class="modalPairBlockDone_vs">:</h4>
+                    <input style="margin-left: -27px" type="text" value="0">
+                    <h4 class="modalPairBlockDone_secondPlayer">Aleksandr Trainer</h4>
+                </div> 
+            </div>
+            <div class="modalScoreBlock">
+                <div class="modalScoreBlock_points">
+                    <div class="modalScoreBlock_points_row">
+                        <div class="modalScoreBlock_points_left">
+
+                        </div>
+                        <div class="modalScoreBlock_points_right">
+                            <h5>1</h5><h5>2</h5><h5>3</h5><h5>4</h5><h5>5</h5><h5>6</h5><h5>7</h5><h5>8</h5><h5>9</h5>
+                        </div>
+                    </div>
+                    <div class="modalScoreBlock_points_row firstPlayer">
+                        <div class="modalScoreBlock_points_left">
+                            <h3>Petrov Alexander</h3>
+                        </div>
+                        <div class="modalScoreBlock_points_right">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                        </div>
+                    </div>
+                    <div class="modalScoreBlock_points_row secondPlayer">
+                        <div class="modalScoreBlock_points_left">
+                            <h3>Ivanov Dmitriy</h3>
+                        </div>
+                        <div class="modalScoreBlock_points_right">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                            <input type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="modalScoreBlock_scores">
+                    <div class="modalScoreBlock_scores_player1">
+                        <button>3 : 0</button>
+                        <button>3 : 1</button>
+                        <button>3 : 2</button>
+                        <button>W : L</button>
+                    </div>
+                    <button id="cancelGame" class="header_btn-log btn-cancel">
+                        Cancel game
+                    </button>
+                    <div class="modalScoreBlock_scores_player2">
+                        <button>0 : 3</button>
+                        <button>1 : 3</button>
+                        <button>2 : 3</button>
+                        <button>L : W</button>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-actions">
+                <button id="saveGameResult" class="header_btn-sign btn-confirm">
+                    OK
+                </button>
+                <button id="notFinish" class="header_btn-log btn-cancel">
+                    Cancel
+                </button>
+                
+            </div>
+        
         </div>
     </div>
     <script type="module" src="/js/softstarttournament.js"></script> 

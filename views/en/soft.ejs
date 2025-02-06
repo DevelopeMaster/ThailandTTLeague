@@ -87,7 +87,7 @@
                 </div> -->
             </div>
 
-            <button id="createTournament" class="header_btn-sign account_buttonWrapp_btn chooseTournament_wrapp_btn">
+            <button id="createTournamentSoft" class="header_btn-sign account_buttonWrapp_btn chooseTournament_wrapp_btn">
                 Create new tournament
             </button>
 
@@ -100,8 +100,76 @@
 
     <!-- Модальное окно -->
     <div id="myModal" class="modal">    
-        <div class="modal-content">
+        <div class="modal-content softStyle">
         <!-- add from DB -->
+        </div>
+    </div>
+    <div id="createTournamentModal" class="modal">    
+        <div class="modal-content">
+            <h2>Create Tournament</h2>
+            <form class="addClub_form addTournament_form" id="addTournamentForm">
+                <div class="form_group">
+                    <label for="tournamentname">Tournament name*</label>
+                    <input placeholder="Name" type="text" id="tournamentName" name="tournamentname" required>
+                </div>
+                <div class="addClub_form_namePhone">
+                    <div class="form_group">
+                        <label for="tournamentdate">Tournament date*</label>
+                        <input placeholder="Date" type="date" id="" name="tournamentdate" required>
+                    </div>
+                    <div class="form_group">
+                        <label for="tournamenttime">Tournament time*</label>
+                        <input placeholder="Time" type="time" id="phone" name="tournamenttime" required>
+                    </div>
+                </div>
+                <div class="addClub_form_namePhone">
+                    <div class="form_group">
+                        <label for="ratinglimit">Rating limit*</label>
+                        <input placeholder="Limit" type="text" id="name" name="ratinglimit" required>
+                    </div>
+                    <div class="form_group">
+                        <label for="phone">Tournament organizer contact*</label>
+                        <input placeholder="Phone number" type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                </div>
+                <div class="form_group">
+                    <label for="tournamentprice">Tournament cost*</label>
+                    <input placeholder="Price" type="text" id="city" name="tournamentprice" required>
+                </div>
+                
+                <div class="form_group">
+                    <label for="infotournaments">Prizes, awards</label>
+                    <textarea placeholder="Prizes, awards for winning place in the tournament" id="infoTournaments" name="infotournaments" rows="7"></textarea>
+                </div>
+                
+                <button type="submit" class="header_btn-sign addTournament_form_btn">Create a tournament</button>
+            </form>
+            <!-- <form id="tournamentForm">
+                <div class="form-group">
+                    <label for="tournamentName">Name of Tournament</label>
+                    <input type="text" id="tournamentName" name="tournamentName" placeholder="Enter tournament name" required>
+                </div>
+                <div class="form-group">
+                    <label for="tournamentDate">Date of Tournament</label>
+                    <input type="date" id="tournamentDate" name="tournamentDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="ratingLimit">Rating limit</label>
+                    <input type="number" id="price" name="ratingLimit" placeholder="Enter limit" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" id="price" name="price" placeholder="Enter price" required>
+                </div>
+                <div class="form-group">
+                    <label for="prizes">Prizes</label>
+                    <textarea id="prizes" name="prizes" placeholder="Describe the prizes" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="header_btn-sign submit-btn">Create</button>
+                </div>
+            </form> -->
         </div>
     </div>
     <script type="module" src="/js/softstartpage.js"></script> 

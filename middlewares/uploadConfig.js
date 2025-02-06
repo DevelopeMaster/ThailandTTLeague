@@ -5,13 +5,33 @@ const crypto = require('crypto');
 const cloudinary = require('../cloudinaryConfiq');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
+// function ensureAuthenticated(req, res, next) {
+//     // console.log(req.isAuthenticated());
+//     if (req.isAuthenticated()) {
+//         return next();
+//     }
+//     res.status(401).json({ message: 'Unauthorized' });
+// };
 function ensureAuthenticated(req, res, next) {
-    // console.log(req.isAuthenticated());
     if (req.isAuthenticated()) {
         return next();
     }
-    res.status(401).json({ message: 'Unauthorized' });
-};
+
+    // Определяем тип пользователя из URL
+    const urlParts = req.originalUrl.split('/');
+    const userType = urlParts.includes('club') ? 'allclubs' :
+                     urlParts.includes('coach') ? 'allcoaches' :
+                     urlParts.includes('player') ? 'allplayers' : null;
+
+    // Проверяем, куда перенаправить пользователя
+    if (userType) {
+        // Если в URL есть указание типа (club, coach, player), перенаправляем на общедоступную страницу
+        return res.redirect(`/${req.lang || 'en'}/${userType}/${urlParts[urlParts.length - 1]}`);
+    } else {
+        // Если тип пользователя не определен, редирект на страницу ошибки
+        return res.redirect(`/${req.lang || 'en'}/404`);
+    }
+}
 
 function ensureAdmin(req, res, next) {
     if (req.isAuthenticated() && req.user.role === 'admin') {

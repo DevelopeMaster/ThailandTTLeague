@@ -207,6 +207,7 @@ h2 {
     .header_account_avatar {
       width: 46px;
       height: 46px;
+      object-fit: cover;
       border-radius: 50%;
       margin-right: 0; }
     .header_account_content {
@@ -216,7 +217,7 @@ h2 {
       justify-content: center;
       gap: 30px;
       position: absolute;
-      width: 202px;
+      width: 218px;
       padding: 30px;
       border-radius: 0px 0px 14px 14px;
       background: #262630;
@@ -990,7 +991,6 @@ h2 {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: black;
   background-color: rgba(0, 0, 0, 0.4); }
   .modal_close {
     position: absolute;
@@ -1076,43 +1076,6 @@ h2 {
         font-style: normal;
         font-weight: 500;
         line-height: 130%; }
-    .modal form .dropdownForm {
-      position: relative;
-      margin-top: 8px;
-      display: block;
-      width: 100%; }
-      .modal form .dropdownForm .dropdown-content {
-        display: none;
-        position: absolute;
-        width: 100%;
-        z-index: 2;
-        max-height: 165px;
-        overflow-y: auto;
-        background-color: #3F3F4C;
-        border-radius: 0px 0px 14px 14px; }
-      .modal form .dropdownForm .dropdown-content div {
-        color: black;
-        padding: 8px 13px 8px 8px;
-        text-decoration: none;
-        display: block;
-        color: #FFF;
-        font-family: Inter;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-        cursor: default; }
-      .modal form .dropdownForm .dropdown-content div:hover {
-        background-color: #343643; }
-      .modal form .dropdownForm .dropdown-content::-webkit-scrollbar {
-        padding-right: 8px;
-        width: 2px; }
-      .modal form .dropdownForm .dropdown-content::-webkit-scrollbar-track {
-        background: #262630; }
-      .modal form .dropdownForm .dropdown-content::-webkit-scrollbar-thumb {
-        background: #666877; }
-      .modal form .dropdownForm .dropdown-content::-webkit-scrollbar-thumb:hover {
-        background: #666877; }
     .modal form .dropbtnCities:hover, .modal form .dropbtnCities:focus {
       background-color: #3F3F4C; }
     .modal form span {
@@ -1205,6 +1168,44 @@ h2 {
       text-align: left;
       margin-top: 11px;
       cursor: pointer; }
+
+.dropdownForm {
+  position: relative;
+  margin-top: 8px;
+  display: block;
+  width: 100%; }
+  .dropdownForm .dropdown-content {
+    display: none;
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+    max-height: 165px;
+    overflow-y: auto;
+    background-color: #3F3F4C;
+    border-radius: 0px 0px 14px 14px; }
+  .dropdownForm .dropdown-content div {
+    color: black;
+    padding: 8px 13px 8px 8px;
+    text-decoration: none;
+    display: block;
+    color: #FFF;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    cursor: default; }
+  .dropdownForm .dropdown-content div:hover {
+    background-color: #343643; }
+  .dropdownForm .dropdown-content::-webkit-scrollbar {
+    padding-right: 8px;
+    width: 2px; }
+  .dropdownForm .dropdown-content::-webkit-scrollbar-track {
+    background: #262630; }
+  .dropdownForm .dropdown-content::-webkit-scrollbar-thumb {
+    background: #666877; }
+  .dropdownForm .dropdown-content::-webkit-scrollbar-thumb:hover {
+    background: #666877; }
 
 @media (max-width: 1276px) {
   .container {
@@ -1586,6 +1587,10 @@ h2 {
     align-items: center; }
   .modal .hands label {
     font-weight: 400; } }
+
+.softHeader .header_top {
+  max-width: 1440px;
+  margin: 0 auto; }
 
 .headerDropdownForm {
   position: absolute;
@@ -6912,12 +6917,13 @@ textarea:-webkit-autofill:focus {
   height: 76px; }
   .softHeader .header_wrapper {
     height: 76px;
-    border-radius: 0; }
+    border-radius: 0;
+    border-bottom: 1px solid #E8E8E8; }
     .softHeader .header_wrapper .logo_img {
       width: 59px; }
   .softHeader .header_top {
     padding: 15px 20px;
-    border-bottom: 1px solid #E8E8E8; }
+    box-sizing: border-box; }
   .softHeader .header_account_avatar {
     border-radius: 10px;
     border: 1px solid #FFF; }
@@ -6977,6 +6983,795 @@ textarea:-webkit-autofill:focus {
         font-style: normal;
         font-weight: 400;
         line-height: normal; }
-    .chooseTournament_wrapp_btn {
+    .chooseTournament_wrapp_btn, .chooseTournament_wrapp_btn:focus-visible, .chooseTournament_wrapp_btn:focus {
       margin: 40px auto;
       width: 280px; }
+
+#createTournamentModal .modal-content {
+  max-width: 804px;
+  background-color: #000817; }
+  #createTournamentModal .modal-content .addClub_form .form_group {
+    gap: 0px; }
+  #createTournamentModal .modal-content .addClub_form .addTournament_form_btn {
+    margin-top: 20px; }
+
+.startTournament {
+  margin: 0 auto;
+  margin-top: 76px;
+  padding: 20px;
+  box-sizing: border-box;
+  max-width: 1440px; }
+  .startTournament h6 {
+    color: #B62727;
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal; }
+  .startTournament h5 {
+    color: #FA6400;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%;
+    letter-spacing: -0.14px; }
+  .startTournament h4 {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal; }
+  .startTournament h3 {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal; }
+  .startTournament div {
+    box-sizing: border-box; }
+  .startTournament_panelWrapp {
+    display: flex;
+    gap: 20px; }
+    .startTournament_panelWrapp_tournament {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%; }
+      .startTournament_panelWrapp_tournament_menu {
+        display: flex;
+        gap: 20px;
+        width: 100%; }
+        .startTournament_panelWrapp_tournament_menu_tournamentTypeBlock {
+          padding: 14px;
+          width: 100%;
+          height: 94px; }
+        .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock {
+          padding: 14px;
+          width: 100%;
+          height: 94px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 14px; }
+          .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param {
+            display: flex;
+            height: 26px;
+            align-items: center;
+            gap: 14px;
+            align-self: stretch; }
+            .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param span, .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param input {
+              margin-top: 0;
+              display: flex;
+              width: 47px;
+              height: 26px;
+              padding: 11px 12px;
+              justify-content: center;
+              align-items: center;
+              gap: 10px;
+              border-radius: 6px;
+              background: #3F3F4C;
+              color: #FFF;
+              font-family: Inter;
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: normal; }
+            .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param input {
+              width: 55px;
+              padding: 11px 6px 11px 12px;
+              text-align: center;
+              appearance: textfield; }
+              .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param input::-webkit-inner-spin-button, .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param input::-webkit-outer-spin-button {
+                appearance: auto; }
+            .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param #ratingLimit {
+              padding: 11px 6px; }
+      .startTournament_panelWrapp_tournament_games {
+        display: flex;
+        gap: 20px; }
+        .startTournament_panelWrapp_tournament_games_header {
+          display: flex;
+          height: 42px;
+          padding: 11px 237px 12px 14px;
+          align-items: center;
+          margin-bottom: 8px; }
+        .startTournament_panelWrapp_tournament_games_playingBlock {
+          padding: 14px;
+          width: 100%;
+          height: 781px; }
+          .startTournament_panelWrapp_tournament_games_playingBlock_pairs {
+            width: 100%;
+            height: calc(100% - 47px);
+            overflow-y: scroll; }
+            .startTournament_panelWrapp_tournament_games_playingBlock_pairs::-webkit-scrollbar {
+              padding-right: 8px;
+              width: 2px; }
+            .startTournament_panelWrapp_tournament_games_playingBlock_pairs::-webkit-scrollbar-track {
+              background: #262630; }
+            .startTournament_panelWrapp_tournament_games_playingBlock_pairs::-webkit-scrollbar-thumb {
+              background: #666877; }
+            .startTournament_panelWrapp_tournament_games_playingBlock_pairs::-webkit-scrollbar-thumb:hover {
+              background: #666877; }
+            .startTournament_panelWrapp_tournament_games_playingBlock_pairs_item {
+              width: 100%;
+              padding: 6px 0;
+              border-bottom: 1px solid #3F3F4C;
+              display: flex;
+              align-items: center;
+              gap: 20px;
+              cursor: pointer; }
+              .startTournament_panelWrapp_tournament_games_playingBlock_pairs_item h3 {
+                font-size: 12px; }
+              .startTournament_panelWrapp_tournament_games_playingBlock_pairs_item .group {
+                display: flex;
+                width: 30px;
+                padding: 4px;
+                justify-content: center;
+                align-items: center;
+                border-radius: 2px;
+                background: #723C1F; }
+                .startTournament_panelWrapp_tournament_games_playingBlock_pairs_item .group span {
+                  color: #FFF;
+                  font-family: Inter;
+                  font-size: 12px;
+                  font-style: normal;
+                  font-weight: 400;
+                  line-height: normal; }
+              .startTournament_panelWrapp_tournament_games_playingBlock_pairs_item .pair {
+                width: 100%;
+                display: flex;
+                justify-content: start;
+                align-items: center;
+                gap: 4px; }
+                .startTournament_panelWrapp_tournament_games_playingBlock_pairs_item .pair h6 {
+                  color: #fff; }
+        .startTournament_panelWrapp_tournament_games_watingBlock {
+          padding: 14px;
+          width: 100%;
+          height: 781px; }
+          .startTournament_panelWrapp_tournament_games_watingBlock_pairs {
+            width: 100%;
+            height: calc(100% - 47px);
+            overflow-y: scroll; }
+            .startTournament_panelWrapp_tournament_games_watingBlock_pairs::-webkit-scrollbar {
+              padding-right: 8px;
+              width: 2px; }
+            .startTournament_panelWrapp_tournament_games_watingBlock_pairs::-webkit-scrollbar-track {
+              background: #262630; }
+            .startTournament_panelWrapp_tournament_games_watingBlock_pairs::-webkit-scrollbar-thumb {
+              background: #666877; }
+            .startTournament_panelWrapp_tournament_games_watingBlock_pairs::-webkit-scrollbar-thumb:hover {
+              background: #666877; }
+            .startTournament_panelWrapp_tournament_games_watingBlock_pairs_item {
+              width: 100%;
+              padding: 6px 0;
+              border-bottom: 1px solid #3F3F4C;
+              display: flex;
+              gap: 20px;
+              cursor: pointer; }
+              .startTournament_panelWrapp_tournament_games_watingBlock_pairs_item .group {
+                display: flex;
+                width: 30px;
+                padding: 4px;
+                justify-content: center;
+                align-items: center;
+                border-radius: 2px;
+                background: #723C1F; }
+                .startTournament_panelWrapp_tournament_games_watingBlock_pairs_item .group span {
+                  color: #FFF;
+                  font-family: Inter;
+                  font-size: 12px;
+                  font-style: normal;
+                  font-weight: 400;
+                  line-height: normal; }
+              .startTournament_panelWrapp_tournament_games_watingBlock_pairs_item .pair {
+                width: 100%;
+                display: flex;
+                justify-content: start;
+                align-items: center;
+                gap: 4px; }
+    .startTournament_panelWrapp_players {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px; }
+      .startTournament_panelWrapp_players_searchBlock {
+        padding: 14px;
+        display: flex;
+        width: 100%;
+        height: 74px;
+        align-items: center;
+        gap: 14px; }
+        .startTournament_panelWrapp_players_searchBlock_label input {
+          color: #fff !important; }
+        .startTournament_panelWrapp_players_searchBlock_label_dropdown div {
+          display: flex !important;
+          justify-content: space-between;
+          cursor: pointer; }
+          .startTournament_panelWrapp_players_searchBlock_label_dropdown div div:nth-child(1) {
+            padding: 0;
+            width: 46%; }
+          .startTournament_panelWrapp_players_searchBlock_label_dropdown div div:nth-child(2) {
+            padding: 0;
+            width: 27%;
+            color: #666877;
+            text-align: center;
+            justify-content: center; }
+          .startTournament_panelWrapp_players_searchBlock_label_dropdown div div:nth-child(3) {
+            padding: 0;
+            width: 27%;
+            color: #666877;
+            text-align: end;
+            justify-content: end; }
+      .startTournament_panelWrapp_players_registration {
+        display: flex;
+        width: 100%;
+        height: 549px;
+        padding: 14px;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-shrink: 0; }
+        .startTournament_panelWrapp_players_registration_header {
+          display: flex;
+          width: 100%;
+          padding: 11px 16px;
+          align-items: flex-start;
+          gap: 6px;
+          justify-content: space-between;
+          align-items: center;
+          box-sizing: border-box; }
+          .startTournament_panelWrapp_players_registration_header div {
+            box-sizing: border-box; }
+        .startTournament_panelWrapp_players_registration_showPlayers {
+          height: 100%;
+          width: 100%;
+          overflow-y: scroll; }
+          .startTournament_panelWrapp_players_registration_showPlayers::-webkit-scrollbar {
+            padding-right: 8px;
+            width: 2px; }
+          .startTournament_panelWrapp_players_registration_showPlayers::-webkit-scrollbar-track {
+            background: #262630; }
+          .startTournament_panelWrapp_players_registration_showPlayers::-webkit-scrollbar-thumb {
+            background: #666877; }
+          .startTournament_panelWrapp_players_registration_showPlayers::-webkit-scrollbar-thumb:hover {
+            background: #666877; }
+          .startTournament_panelWrapp_players_registration_showPlayers_item {
+            display: flex;
+            width: 100%;
+            padding: 14px 16px 7px 0;
+            align-items: flex-start;
+            gap: 6px;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            border-bottom: 1px solid #3F3F4C; }
+          .startTournament_panelWrapp_players_registration_showPlayers .unrated-header {
+            margin-top: 14px;
+            color: #FA6400;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 130%;
+            letter-spacing: -0.14px; }
+        .startTournament_panelWrapp_players_registration_unratedBlock {
+          padding-top: 5px; }
+          .startTournament_panelWrapp_players_registration_unratedBlock form {
+            display: flex;
+            gap: 14px; }
+            .startTournament_panelWrapp_players_registration_unratedBlock form .form_wrapper {
+              margin-top: 16px;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              gap: 12px; }
+              .startTournament_panelWrapp_players_registration_unratedBlock form .form_wrapper label {
+                color: #FFF;
+                font-family: Inter;
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 130%;
+                letter-spacing: -0.14px; }
+              .startTournament_panelWrapp_players_registration_unratedBlock form .form_wrapper input {
+                margin-top: 0; }
+              .startTournament_panelWrapp_players_registration_unratedBlock form .form_wrapper .addUnratedPlayer_btn {
+                width: 75px;
+                color: #FA6400;
+                font-family: Inter;
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                text-decoration-line: underline;
+                text-decoration-style: solid;
+                text-decoration-skip-ink: none;
+                text-decoration-thickness: auto;
+                text-underline-offset: auto;
+                text-underline-position: from-font; }
+      .startTournament_panelWrapp_players .number {
+        flex-basis: 18px;
+        max-width: 18px; }
+      .startTournament_panelWrapp_players .name {
+        flex-basis: 198px;
+        max-width: 198px; }
+      .startTournament_panelWrapp_players .dob {
+        flex-basis: 141px;
+        max-width: 141px; }
+      .startTournament_panelWrapp_players .rating {
+        flex-basis: 92px;
+        max-width: 92px; }
+      .startTournament_panelWrapp_players .city {
+        flex-basis: 138px;
+        max-width: 138px; }
+      .startTournament_panelWrapp_players .cross {
+        width: 12px;
+        cursor: pointer; }
+      .startTournament_panelWrapp_players_retired {
+        display: flex;
+        width: 100%;
+        height: 232px;
+        padding: 14px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        flex-shrink: 0; }
+        .startTournament_panelWrapp_players_retired_list {
+          height: 100%;
+          width: 100%;
+          overflow-y: scroll; }
+          .startTournament_panelWrapp_players_retired_list::-webkit-scrollbar {
+            padding-right: 8px;
+            width: 2px; }
+          .startTournament_panelWrapp_players_retired_list::-webkit-scrollbar-track {
+            background: #262630; }
+          .startTournament_panelWrapp_players_retired_list::-webkit-scrollbar-thumb {
+            background: #666877; }
+          .startTournament_panelWrapp_players_retired_list::-webkit-scrollbar-thumb:hover {
+            background: #666877; }
+  .startTournament_startButtonWrapp {
+    padding: 20px 0px;
+    display: flex;
+    width: 100%;
+    justify-content: flex-end; }
+    .startTournament_startButtonWrapp button, .startTournament_startButtonWrapp button:focus-visible, .startTournament_startButtonWrapp button:focus {
+      width: 281px; }
+    .startTournament_startButtonWrapp #saveTournamentData {
+      margin-right: 20px;
+      width: 281px; }
+  .startTournament .dropdownForm {
+    position: relative;
+    display: block;
+    width: 100%; }
+    .startTournament .dropdownForm label {
+      color: #fff;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      margin-top: 16px; }
+    .startTournament .dropdownForm input {
+      width: 100%;
+      height: 37px;
+      margin-top: 10px;
+      display: flex;
+      padding: 8px 13px 8px 8px;
+      align-items: center;
+      border: none;
+      border-radius: 6px;
+      background: #3f3f4c;
+      color: #fff;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      background-image: url(/icons/chevron-down.svg);
+      background-repeat: no-repeat;
+      background-position: right 8px center; }
+    .startTournament .dropdownForm .dropdown-content {
+      display: none;
+      position: absolute;
+      width: 100%;
+      z-index: 2;
+      max-height: 165px;
+      overflow-y: auto;
+      background-color: #3f3f4c;
+      border-radius: 0 0 14px 14px; }
+      .startTournament .dropdownForm .dropdown-content div {
+        padding: 8px 13px 8px 8px;
+        text-decoration: none;
+        display: block;
+        color: #fff;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        cursor: default; }
+
+.disabledButton {
+  background: #A6A6A6;
+  cursor: not-allowed;
+  border: none; }
+  .disabledButton:hover {
+    background: #A6A6A6;
+    cursor: not-allowed;
+    border: none; }
+
+.modalPairBlock {
+  padding: 16px 0 12px 0;
+  width: 100%;
+  height: 33px;
+  border-bottom: 1px solid #3F3F4C;
+  align-content: center; }
+  .modalPairBlock div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    width: 100%; }
+  .modalPairBlock_vs {
+    width: 5px; }
+  .modalPairBlock_firstPlayer {
+    text-align: right;
+    width: 45%; }
+  .modalPairBlock_secondPlayer {
+    text-align: left;
+    width: 45%; }
+
+.softStyle {
+  background-color: #000817 !important;
+  max-width: 804px !important; }
+
+.modalPairBlockDone {
+  padding: 16px 0 12px 0;
+  width: 100%;
+  height: 33px;
+  border-bottom: 1px solid #3F3F4C;
+  align-content: center; }
+  .modalPairBlockDone div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    width: 100%; }
+    .modalPairBlockDone div input {
+      display: flex;
+      width: 33px;
+      height: 35px;
+      padding: 9px 9px;
+      text-align: center;
+      margin-top: 0;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #FFF;
+      font-family: Inter;
+      font-size: 14px;
+      font-weight: 400; }
+  .modalPairBlockDone_vs {
+    width: 5px; }
+  .modalPairBlockDone_firstPlayer {
+    text-align: right;
+    width: 45%; }
+  .modalPairBlockDone_secondPlayer {
+    text-align: left;
+    width: 45%; }
+
+.modalScoreBlock {
+  margin-top: 30px;
+  width: 100%;
+  box-sizing: border-box; }
+  .modalScoreBlock_points {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0 auto;
+    box-sizing: border-box; }
+    .modalScoreBlock_points_row {
+      width: 100%;
+      position: relative;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      box-sizing: border-box; }
+    .modalScoreBlock_points_left {
+      display: flex;
+      justify-content: flex-end;
+      width: calc( 50% - 5px); }
+      .modalScoreBlock_points_left h3 {
+        text-align: end;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 130%; }
+    .modalScoreBlock_points_right {
+      display: flex;
+      justify-content: flex-start;
+      width: calc( 50% - 5px);
+      gap: 4px;
+      box-sizing: border-box; }
+      .modalScoreBlock_points_right h5 {
+        display: block;
+        box-sizing: border-box;
+        color: #fff;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 130%;
+        width: 20px;
+        height: 20px;
+        padding: 2px;
+        text-align: center; }
+      .modalScoreBlock_points_right input {
+        margin-top: 0;
+        width: 20px;
+        height: 20px;
+        padding: 2px;
+        text-align: center;
+        border-radius: 2px;
+        border: 1px solid rgba(255, 255, 255, 0.29);
+        background: #3F3F4C;
+        box-sizing: border-box; }
+  .modalScoreBlock_scores {
+    width: 506px;
+    margin: 30px auto;
+    display: flex;
+    gap: 100px;
+    justify-content: space-between;
+    align-items: center; }
+    .modalScoreBlock_scores .btn-cancel, .modalScoreBlock_scores .btn-cancel:focus, .modalScoreBlock_scores .btn-cancel:active {
+      width: 196px;
+      height: 35px; }
+    .modalScoreBlock_scores_player1, .modalScoreBlock_scores_player2 {
+      display: flex;
+      flex-direction: column;
+      gap: 8px; }
+      .modalScoreBlock_scores_player1 button, .modalScoreBlock_scores_player2 button {
+        display: flex;
+        justify-content: center;
+        width: 55px;
+        height: 33px;
+        padding: 6px 8px;
+        align-items: center;
+        gap: 8px;
+        align-self: stretch;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.29);
+        background: #3F3F4C;
+        color: #FFF;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal; }
+
+.modal-actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 10px; }
+  .modal-actions .btn-confirm, .modal-actions .btn-cancel {
+    width: 143px; }
+    .modal-actions .btn-confirm:focus-visible, .modal-actions .btn-confirm:focus, .modal-actions .btn-cancel:focus-visible, .modal-actions .btn-cancel:focus {
+      width: 143px; }
+
+.display {
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+  max-width: 1440px;
+  position: relative; }
+  .display_header {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    align-self: stretch; }
+    .display_header h3 {
+      color: #FFF;
+      font-family: Inter;
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal; }
+  .display .displayTournament {
+    height: 525px;
+    width: 100%;
+    padding: 14px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    cursor: grab;
+    transform-origin: top left;
+    transform: scale(1);
+    transition: transform 0.1s ease; }
+    .display .displayTournament .content {
+      width: 200%;
+      height: 200%;
+      transform-origin: top left;
+      color: #ffffff;
+      font-size: 2rem; }
+      .display .displayTournament .content .tournament-wrapper {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        justify-content: flex-start; }
+        .display .displayTournament .content .tournament-wrapper h3 {
+          color: #FFF;
+          font-family: Inter;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal; }
+        .display .displayTournament .content .tournament-wrapper .players-list {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: center;
+          padding: 14px;
+          width: 335px;
+          border-radius: 8px;
+          background: #3F3F4C;
+          box-sizing: border-box; }
+          .display .displayTournament .content .tournament-wrapper .players-list .header-placeholder {
+            box-sizing: border-box;
+            width: 100%;
+            height: 42px;
+            display: flex;
+            gap: 8px;
+            border-radius: 8px;
+            background: #262630;
+            padding: 0 14px;
+            align-items: center;
+            margin-bottom: 14px; }
+            .display .displayTournament .content .tournament-wrapper .players-list .header-placeholder img {
+              width: 15px;
+              height: 20px; }
+          .display .displayTournament .content .tournament-wrapper .players-list .players-names {
+            margin: 0;
+            margin-top: 16px;
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px; }
+            .display .displayTournament .content .tournament-wrapper .players-list .players-names li {
+              display: flex;
+              width: 307px;
+              height: 35px;
+              padding: 10px;
+              align-items: flex-start;
+              gap: 7px;
+              box-sizing: border-box; }
+              .display .displayTournament .content .tournament-wrapper .players-list .players-names li span {
+                width: 16px;
+                color: #FFF;
+                font-family: Inter;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal; }
+              .display .displayTournament .content .tournament-wrapper .players-list .players-names li h3 {
+                width: 100%; }
+              .display .displayTournament .content .tournament-wrapper .players-list .players-names li div {
+                display: flex;
+                width: 33px;
+                padding: 2px;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                flex-shrink: 0;
+                border-radius: 2px;
+                background: #B62727; }
+                .display .displayTournament .content .tournament-wrapper .players-list .players-names li div h5 {
+                  color: #FFF;
+                  font-family: Inter;
+                  font-size: 10px;
+                  font-style: normal;
+                  font-weight: 500;
+                  line-height: normal; }
+        .display .displayTournament .content .tournament-wrapper .table-wrapper {
+          display: flex;
+          flex-direction: column; }
+          .display .displayTournament .content .tournament-wrapper .table-wrapper .table-header {
+            display: flex;
+            padding: 14px;
+            align-items: center;
+            align-self: stretch;
+            border-radius: 8px;
+            background: #3F3F4C;
+            box-sizing: border-box; }
+            .display .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row {
+              display: flex;
+              gap: 14px;
+              justify-content: space-between;
+              border-collapse: collapse;
+              box-sizing: border-box;
+              background: #262630;
+              border-radius: 6px; }
+              .display .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row div {
+                display: flex;
+                width: 58px;
+                height: 42px;
+                padding: 9px 24px;
+                justify-content: center;
+                align-items: center;
+                box-sizing: border-box;
+                font-family: Inter;
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal; }
+          .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table {
+            margin-top: 2px;
+            box-sizing: border-box; }
+            .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table {
+              border-collapse: separate;
+              border-spacing: 14.5px;
+              box-sizing: border-box; }
+              .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table td {
+                position: relative;
+                box-sizing: border-box;
+                width: 58px;
+                height: 35px;
+                border-radius: 6px;
+                background: rgba(63, 63, 76, 0.36);
+                color: #FFF;
+                font-family: Inter;
+                font-size: 14px;
+                font-style: normal;
+                text-align: center;
+                align-content: center;
+                font-weight: 400;
+                line-height: normal; }
+              .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .disabled {
+                background: #585869; }
+              .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .points, .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .place {
+                background: #FFF;
+                color: #000; }
+  .display #showResult {
+    display: none; }
+
+/* Контейнер с контентом внутри */
+.graySoftBlock {
+  border-radius: 20px;
+  background: #262630; }
+
+.graySoftSmallBlock {
+  border-radius: 14px;
+  background: #262630; }
+
+.grayHeaderBlock {
+  border-radius: 8px;
+  background: #3F3F4C; }

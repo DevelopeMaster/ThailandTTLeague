@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 minute: '2-digit',
             });
     
-            console.log(`/${lang}/soft/tournament/${tournament._id}`);
+            // console.log(`/${lang}/soft/tournament/${tournament._id}`);
             // Создаем карточку турнира
             const card = document.createElement('a');
             card.setAttribute('href', `/${lang}/soft/tournament/${clubId}/${tournament._id}`);
@@ -102,16 +102,102 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
-    const createTournamentBtn = document.querySelector('#createTournament');
-    // const newTournament = document.querySelector('#createTournament');
-    // console.log(createTournamentBtn);
-    createTournamentBtn.addEventListener('click', (e) => {
-        console.log(`/${lang}/createTournament/${userId}`);
-        e.preventDefault();
-        e.stopPropagation();
-        window.location.href = `/${lang}/createTournament/${userId}`;
-    });
 
+
+
+    
+    function renderTournamentForm() {
+        document.body.style = 'overflow-y: hidden';
+        const modal = document.querySelector('#createTournamentModal');
+        modal.style.display = 'block'; // Показываем модальное окно
+    
+        // Добавляем обработчик события для отправки формы
+        const form = document.getElementById('addTournamentForm');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+        
+            const formData = new FormData(form);
+            const tournamentData = Object.fromEntries(formData.entries());
+
+            // Получение данных о дате и времени из формы
+            const date = formData.get('tournamentdate'); // Формат YYYY-MM-DD
+            const time = formData.get('tournamenttime'); // Формат HH:MM
+
+            // Создание объекта полной даты
+            const datetime = new Date(`${date}T${time}:00Z`); // Объединяем дату и время
+
+            // Добавление даты и времени в данные формы
+            // formData.append('date', datetime.toISOString());
+            // formData.append('datetime', datetime.toISOString());
+            tournamentData.date = datetime.toISOString();
+            tournamentData.datetime = datetime.toISOString();
+        
+            // Добавляем дополнительные данные
+            tournamentData.language = lang; // текущий язык
+            tournamentData.clubId = clubId; // ID клуба
+        
+            // Преобразуем дату в ISO-формат, если это необходимо
+            if (tournamentData.date) {
+                tournamentData.date = new Date(tournamentData.date).toISOString();
+            }
+        
+            // Преобразуем цену в число
+            if (tournamentData.price) {
+                tournamentData.price = parseFloat(tournamentData.price);
+            }
+            if (tournamentData.ratingLimit) {
+                tournamentData.ratingLimit = parseFloat(tournamentData.price);
+            }
+        
+            console.log('Tournament Data:', tournamentData);
+        
+            // Отправка данных на сервер
+            try {
+                const response = await fetch('/createTournament', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(tournamentData),
+                });
+        
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to create tournament');
+                }
+        
+                const result = await response.json();
+                console.log('Tournament created:', result);
+        
+                // Закрываем модальное окно
+                closeModal();
+                window.location.href = `/${lang}/soft/tournament/${clubId}/${result.tournamentId}`;
+            } catch (error) {
+                console.error('Error creating tournament:', error);
+            }
+        });
+    
+        // Закрытие модального окна при клике вне его содержимого
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    
+        // // Функция для закрытия модального окна
+        function closeModal() {
+            modal.style.display = 'none'; // Показываем модальное окно
+            document.body.style = 'overflow-y: auto';
+            // modalContent.innerHTML = '';
+        }
+    }
+    
+    // Кнопка для открытия модального окна
+    const createTournamentBtn = document.querySelector('#createTournamentSoft');
+    createTournamentBtn.classList.add('open-modal-btn');
+    
+    createTournamentBtn.addEventListener('click', renderTournamentForm);
+    
+    // Добавляем кнопку в DOM
+    
     
 
     // async function fetchClubData() {
@@ -145,4 +231,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // const headerBottom = document.querySelector('.header_bottom_pc');
     // headerBottom.style = 'display: none';
+    // document.querySelector('#myProfile').addEventListener('click', (e) => {
+    //     e.target.preventDefault();
+    //     window.location.href = `${lang}/dashboard/club/${clubId}`;
+    // });
+
+    // document.querySelector('#editClubProfile').addEventListener('click', (e) => {
+    //     e.target.preventDefault();
+    //     window.location.href = `${lang}/dashboard/editclub/${clubId}`;
+    // })
 });

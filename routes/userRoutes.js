@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+exports.router = router;
 require('dotenv').config();
 const { ObjectId } = require('mongodb');
 const { body, validationResult } = require('express-validator');
@@ -751,6 +752,7 @@ router.post('/saveSchedule', ensureAuthenticated, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+  
 
 router.post('/createClub', ensureAuthenticated, upload.fields([
     { name: 'logo', maxCount: 1 },

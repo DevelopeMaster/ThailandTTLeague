@@ -658,7 +658,7 @@ export async function createHeader(language) {
                                             <a href="#" class="header_bottom_category" id="myTournaments">
                                                 <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
                                                 <p class="header_bottom_category-text">
-                                                    My tournam.
+                                                    My tournaments
                                                 </p>
                                             </a>
                                             <a href="#" class="logOut">Log out</a>
@@ -1988,7 +1988,7 @@ export async function createSoftHeader(language) {
                                 </div>
                                 
                             </div>
-                            <div class="header_account_content profileMenu">
+                            <div class="header_account_content profileMenu" style='width: 220px'>
                                 <a href="#" class="header_bottom_category logedIn myProfile" id="myProfile">
                                     <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
                                     <p class="header_bottom_category-text">
@@ -1999,6 +1999,12 @@ export async function createSoftHeader(language) {
                                     <img class="header_bottom_category-icon" src="/icons/editorange.svg" alt="">
                                     <p class="header_bottom_category-text">
                                         Edit profile
+                                    </p>
+                                </a>
+                                <a class="header_bottom_category" id="myTournaments">
+                                    <img class="header_bottom_category-icon" src="/icons/players.svg" alt="">
+                                    <p class="header_bottom_category-text">
+                                        My tournaments
                                     </p>
                                 </a>
                                 <a href="#" class="logOut">Log out</a>
@@ -2392,6 +2398,30 @@ export async function createSoftHeader(language) {
                     document.querySelector('.profileMenu').classList.toggle('header_account_content_openMenu');
                 }
             })
+
+            const myProfile = document.querySelector('#myProfile');
+            myProfile.addEventListener('click', (e) => {
+                // console.log(`/${langMap[language]}/soft/${userId}`);
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = `/${langMap[language]}/dashboard/club/${userId}`;
+            });
+
+            const editClubProfile = document.querySelector('#editClubProfile');
+            editClubProfile.addEventListener('click', (e) => {
+                console.log(`/${langMap[language]}/dashboard/editclub/${userId}`);
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = `/${langMap[language]}/dashboard/editclub/${userId}`;
+            });
+
+            const myTournaments = document.querySelector('#myTournaments');
+            myTournaments.addEventListener('click', (e) => {
+                console.log(`/${langMap[language]}/soft/${userId}`);
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = `/${langMap[language]}/soft/${userId}`;
+            });
             
         }
     }

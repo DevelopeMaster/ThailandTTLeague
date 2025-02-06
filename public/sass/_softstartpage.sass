@@ -6,11 +6,13 @@
             // padding: 0 20px
             height: 76px
             border-radius: 0
+            border-bottom: 1px solid #E8E8E8
             .logo_img
                 width: 59px
         &_top
             padding: 15px 20px
-            border-bottom: 1px solid #E8E8E8
+            box-sizing: border-box
+            // border-bottom: 1px solid #E8E8E8
         &_account_avatar
             border-radius: 10px
             border: 1px solid #FFF
@@ -70,7 +72,16 @@
                 font-style: normal
                 font-weight: 400
                 line-height: normal
-        &_btn
+        &_btn, &_btn:focus-visible, &_btn:focus
             margin: 40px auto
             width: 280px
             
+#createTournamentModal
+    .modal-content
+        max-width: 804px
+        background-color: #000817
+        .addClub_form
+            .form_group
+                gap: 0px
+            .addTournament_form_btn
+                margin-top: 20px

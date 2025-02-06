@@ -75,11 +75,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         // console.log(playerInput, playerDropdown);
 
         await fetchAllPlayers();
+        if (tournamentData.players) {
+            displayPlayers(tournamentData.players, containerRegistered, true);
 
-        displayPlayers(tournamentData.players, containerRegistered, true);
-
-        displayPlayers(tournamentData.retiredPlayers, containerRetired, false);
-        console.log(tournamentData.retiredPlayers);
+        }
+        if (tournamentData.retiredPlayers) {
+            displayPlayers(tournamentData.retiredPlayers, containerRetired, false);
+            console.log(tournamentData.retiredPlayers);
+        }
+        
         
 
         function updateDropdownList(dropdown, players, inputElement) {
@@ -346,7 +350,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Рейтинг
                     let ratingDiv = document.createElement('div');
                     ratingDiv.className = 'cell player_rating';
-                    ratingDiv.textContent = player.rating ? player.rating : '-';
+                    ratingDiv.textContent = player.rating ? Math.round(player.rating) : '-';
                     playerDiv.appendChild(ratingDiv);
         
                     let crossDiv = document.createElement('div');

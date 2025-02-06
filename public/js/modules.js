@@ -3526,7 +3526,7 @@ export async function fetchCoaches() {
 
             let ratingDiv = document.createElement('div');
             ratingDiv.className = 'coaches_content_coach_info_rating';
-            ratingDiv.textContent = coach.rating;
+            ratingDiv.textContent = Math.round(coach.rating);
 
             let nameH4 = document.createElement('h4');
             nameH4.className = 'coaches_content_coach_info_name';
@@ -3829,7 +3829,7 @@ export async function getAllCoaches() {
 
             const ratingDiv = document.createElement('div');
             ratingDiv.className = 'coaches_content_coach_info_rating';
-            ratingDiv.textContent = coach.rating;
+            ratingDiv.textContent = Math.round(coach.rating);
 
             const nameH4 = document.createElement('h4');
             nameH4.className = 'coaches_content_coach_info_name';
@@ -6296,7 +6296,7 @@ export async function getAllPlayers() {
     
                 let ratingDiv = document.createElement('div');
                 ratingDiv.className = 'cell player_rating';
-                ratingDiv.textContent = player.rating ? player.rating : '-';
+                ratingDiv.textContent = player.rating ? Math.round(player.rating) : '-';
                 playerDiv.appendChild(ratingDiv);
     
                 container.appendChild(playerDiv);

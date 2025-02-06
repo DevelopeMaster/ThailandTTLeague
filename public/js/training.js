@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <div class="playerLogo" style="background-image: url('${player.logo || "/icons/playerslogo/default_avatar.svg"}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
                     <span>${player.name}</span>
                 </div>
-                <div class="cell bookedPlayers_rating">${player.rating}</div>
+                <div class="cell bookedPlayers_rating">${Math.round(player.rating)}</div>
             `;
             bookedPlayersList.appendChild(playerElement);
         });

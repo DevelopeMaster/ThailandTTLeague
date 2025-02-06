@@ -5,7 +5,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const nodemailer = require('nodemailer');
 const passport = require('./passportConfig'); // Подключаем конфигурацию Passport
-// const browserSync = require('browser-sync');
+const browserSync = require('browser-sync');
 const { ObjectId } = require('mongodb'); // Импортируем ObjectId
 require('dotenv').config();
 const { connectDB, getDB, client } = require('./db'); // Подключаем функцию для получения базы данных
@@ -2585,18 +2585,18 @@ app.use((err, req, res, next) => {
 
 // Запуск сервера и инициализация базы данных
 connectDB().then(() => {
-  // app.listen(port, () => {
-  //   console.log(`Server is running on http://localhost:${port}`);
-  //   browserSync.init({
-  //     proxy: `http://localhost:${port}`,
-  //     files: ['./views/**/*.ejs', './public/**/*.*'],
-  //     port: 3001
-  //   });
-  // });
-
-  app.listen(8080, function () {
-    console.log(`Server is running on port ${8080}`);
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+    browserSync.init({
+      proxy: `http://localhost:${port}`,
+      files: ['./views/**/*.ejs', './public/**/*.*'],
+      port: 3001
+    });
   });
+
+  // app.listen(8080, function () {
+  //   console.log(`Server is running on port ${8080}`);
+  // });
 }).catch(err => {
   console.error('Failed to connect to database:', err);
 });

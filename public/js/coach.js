@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="player_mainInfo_info_descr">
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Playing hand')}: <span>${getTranslation(player.hand)}</span></p>
-                        <p>${getTranslation('Rating')}: <span>${player.rating || ' - '}</span></p>
+                        <p>${getTranslation('Rating')}: <span>${Math.round(player.rating) || ' - '}</span></p>
                         <p>${getTranslation('Training')}: <span>${player.trainingDuration / 60 || ' - '} ${getTranslation('hours')}</span></p>
                     </div>
                     <div class="player_mainInfo_info_descr_path">
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="player_statistics_info_descr_path">
                     <p>${getTranslation('Tournaments played')}: <span>${player.tournaments || ' - '}</span></p>
                     <p>${getTranslation('Games')}: <span>323 (258 / 65)</span></p>
-                    <div class="raitingWrapp"><span>${getTranslation('Maximum rating')}:</span> <span class="coaches_content_coach_info_rating">${player.rating || ' - '}</span></div>
+                    <div class="raitingWrapp"><span>${getTranslation('Maximum rating')}:</span> <span class="coaches_content_coach_info_rating">${Math.round(player.rating) || ' - '}</span></div>
                 </div>
                 <div class="player_statistics_info_descr_path statisticsSeparateLine">
                     <p>${getTranslation('Rank')}: <span>${player.rank || ' - '}</span></p>

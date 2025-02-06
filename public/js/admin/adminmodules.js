@@ -336,7 +336,7 @@ export async function getAllPlayers() {
     
                 let ratingDiv = document.createElement('div');
                 ratingDiv.className = 'cell player_rating';
-                ratingDiv.textContent = player.rating ? player.rating : '-';
+                ratingDiv.textContent = player.rating ? Math.round(player.rating) : '-';
                 playerDiv.appendChild(ratingDiv);
 
                 // preloader.style.display = 'none';
@@ -643,7 +643,7 @@ export async function getAllCoaches() {
     
                 let ratingDiv = document.createElement('div');
                 ratingDiv.className = 'cell player_rating';
-                ratingDiv.textContent = player.rating ? player.rating : '-';
+                ratingDiv.textContent = player.rating ? Math.round(player.rating) : '-';
                 playerDiv.appendChild(ratingDiv);
 
                 // preloader.style.display = 'none';

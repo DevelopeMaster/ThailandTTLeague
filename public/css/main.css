@@ -738,9 +738,14 @@ h2 {
         display: flex;
         gap: 6px;
         flex-direction: column;
-        justify-content: space-between; }
+        justify-content: space-between;
+        width: calc( 53% - 20px); }
         .clubs_content_club_info_name {
-          font-size: 20px; }
+          font-size: 20px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 100%; }
         .clubs_content_club_info_city {
           font-size: 16px; }
         .clubs_content_club_info a {
@@ -2642,10 +2647,10 @@ h2 {
   box-sizing: border-box; }
 
 .aboutUs_image {
-  background-image: url(/images/aboutUsCoach.png); }
+  background-image: url(https://res.cloudinary.com/dth8nfmhk/images/bn4mfhcpvv7oi85cvr0o); }
 
 .aboutUs_secondImage {
-  background-image: url(/images/aboutUsCoach2.png); }
+  background-image: url(https://res.cloudinary.com/dth8nfmhk/images/lzk4w6jkfri7naluaxt5); }
 
 .aboutUs_benefits {
   margin-top: 80px;

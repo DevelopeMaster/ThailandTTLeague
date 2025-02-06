@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                             <div class="playerLogo" style="border-radius: 50%; background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
                             <span>${player.name || player.fullname}</span>
                         </div>
-                        <div class="cell upcomingTournament_rating">${player.rating || '-'}</div>
+                        <div class="cell upcomingTournament_rating">${Math.round(player.rating) || '-'}</div>
                     `;
                     registeredPlayersList.appendChild(playerElement);
                 }
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                             <div class="playerLogo" style="background-image: url('${player.logo}'); border-radius: 50%; background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
                             <span>${player.name || player.fullname}</span>
                         </div>
-                        <div class="cell upcomingTournament_rating">${player.rating || '-'}</div>
+                        <div class="cell upcomingTournament_rating">${Math.round(player.rating) || '-'}</div>
                     `;
                     retiredPlayersList.appendChild(playerElement);
                 }

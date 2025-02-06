@@ -940,8 +940,8 @@ router.post('/saveAdvProfile', ensureAuthenticated, upload.fields([
         // }
         if (req.files['banner']) {
             const logoPath = req.files['banner'][0].path; // Используем путь Cloudinary
-            if (currentClubData.logo !== logoPath) {
-                updates.logo = logoPath;
+            if (currentAdvData.image !== logoPath) {
+                updates.image = logoPath;
             }
         }
         

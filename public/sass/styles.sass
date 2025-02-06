@@ -701,8 +701,13 @@
                 gap: 6px
                 flex-direction: column
                 justify-content: space-between
+                width: calc( 53% - 20px )
                 &_name
                     font-size: 20px
+                    white-space: nowrap       /* Запрещает перенос строк */
+                    overflow: hidden        /* Обрезает выходящий за границы текст */
+                    text-overflow: ellipsis
+                    width: 100%
                 &_city
                     font-size: 16px
                 a

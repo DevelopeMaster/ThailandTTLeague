@@ -755,6 +755,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const startTime = document.createElement("input");
                 startTime.type = "time";
                 startTime.value = eventData.start;
+                // startTime.value = eventData.start || '--:--';
+                // startTime.setAttribute('appearance', 'none');
+                // startTime.setAttribute('inputmode', 'none');
+                // startTime.setAttribute('autocomplete', 'off');
+                startTime.setAttribute('step', '60');
                 startTime.name = `${dayKey}_start_${sessionIndex + 1}`;
     
                 const endLabel = document.createElement("label");
@@ -762,6 +767,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const endTime = document.createElement("input");
                 endTime.type = "time";
                 endTime.value = eventData.end;
+                // endTime.value = eventData.end || '00:00';
                 endTime.name = `${dayKey}_end_${sessionIndex + 1}`;
     
                 // Добавляем элементы в ячейку
@@ -778,6 +784,58 @@ document.addEventListener("DOMContentLoaded", async function() {
     
             tableBody.appendChild(row);
         }
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+        if (isSafari) {
+            document.querySelectorAll('input[type="time"]').forEach(input => {
+                input.addEventListener("input", () => {
+                    if (input.value && input.value !== "--:--") {
+                        input.classList.remove("empty");
+                    } else {
+                        input.classList.add("empty");
+                    }
+                });
+    
+                input.addEventListener("blur", () => {
+                    if (!input.value) {
+                        input.classList.add("empty");
+                    }
+                });
+    
+                // Проверяем начальное состояние
+                if (!input.value) {
+                    input.classList.add("empty");
+                }
+            });
+        }
+
+        document.querySelectorAll('input[type="time"]').forEach(input => {
+            input.addEventListener("change", (event) => {
+                const inputElement = event.target;
+                if (!inputElement.value) return;
+    
+                console.log(`⏰ Время обновлено: ${inputElement.name} -> ${inputElement.value}`);
+                
+                // Принудительное обновление value (фикс для Chrome)
+                inputElement.setAttribute("value", inputElement.value);
+            });
+        });
+    
+        // document.querySelectorAll('input[type="time"]').forEach(input => {
+        //     input.addEventListener("input", () => {
+        //         if (!input.value) {
+        //             console.log(input, 'отсутствует value');
+        //             input.classList.add("empty");
+        //         } else {
+        //             input.classList.remove("empty");
+        //         }
+        //     });
+    
+        //     // Проверяем начальное состояние
+        //     if (!input.value) {
+        //         input.classList.add("empty");
+        //     }
+        // });
     }
 
     // renderResponsiveScheduleTable(clubdata);
@@ -930,6 +988,12 @@ document.addEventListener("DOMContentLoaded", async function() {
                     endTime.value ='';
                     startTime.value ='';
                 }
+
+                if (!eventKey || !startTime.value || !endTime.value) {
+                    eventKey = "";
+                    endTime.value ='';
+                    startTime.value ='';
+                }
             
                 const event = {
                     event: eventKey,
@@ -958,10 +1022,10 @@ document.addEventListener("DOMContentLoaded", async function() {
                 body: JSON.stringify({ scheduleData, clubId: userId}),
             });
     
-            if (response.ok) {
                 console.log("Расписание успешно сохранено.");
                 window.location.href = `/${lang}/dashboard/club/${userId}`;
-            } else {
+           if (response.ok) {
+             } else {
                 console.error("Ошибка сохранения расписания.");
             }
         } catch (error) {

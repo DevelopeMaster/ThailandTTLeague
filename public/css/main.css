@@ -879,7 +879,7 @@ h2 {
   position: relative;
   border-radius: 14px 14px 0px 0px;
   background: #262630;
-  z-index: 1;
+  z-index: 100;
   margin-top: 100px;
   padding-top: 40px;
   padding-bottom: 20px;
@@ -972,13 +972,15 @@ h2 {
 .adv {
   position: absolute;
   right: 0;
+  height: 75%;
   top: 875px;
   padding: 0px 0px;
   display: flex;
   visibility: hidden;
   flex-direction: column;
   gap: 40px;
-  z-index: 5; }
+  z-index: 5;
+  transition: transform 0.2s ease-out; }
   .adv a {
     border-radius: 14px;
     overflow: hidden; }
@@ -5708,7 +5710,17 @@ textarea:-webkit-autofill:focus {
     padding: 4px;
     font-size: 12px;
     border: 1px solid #ccc;
-    border-radius: 4px; }
+    border-radius: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none; }
+  .secondForm .editschedule_formContainer input[type="time"].empty {
+    color: transparent;
+    position: relative; }
+  .secondForm .editschedule_formContainer input[type="time"].empty::before {
+    content: "--:--";
+    color: #666;
+    position: absolute; }
   .secondForm .editschedule_formContainer .event-input {
     position: relative;
     background-image: url("/icons/chevron-down.svg");
@@ -7620,7 +7632,11 @@ textarea:-webkit-autofill:focus {
     cursor: grab;
     transform-origin: top left;
     transform: scale(1);
-    transition: transform 0.1s ease; }
+    transition: transform 0.1s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; }
     .display .displayTournament .content {
       width: 200%;
       height: 200%;

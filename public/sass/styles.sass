@@ -3,6 +3,7 @@
 
 .header
     position: fixed
+    // position: sticky
     top: 0
     display: block
     z-index: 10
@@ -852,7 +853,7 @@
     position: relative
     border-radius: 14px 14px 0px 0px
     background: #262630
-    z-index: 1
+    z-index: 100
     margin-top: 100px
     padding-top: 40px
     padding-bottom: 20px
@@ -950,6 +951,8 @@
 .adv
     position: absolute
     right: 0
+    height: 75%
+    // max-height: calc(100% - 175px - 230px)
     top: 875px
     padding: 0px 0px
     display: flex
@@ -957,6 +960,7 @@
     flex-direction: column
     gap: 40px
     z-index: 5
+    transition: transform 0.2s ease-out
     a
         border-radius: 14px
         overflow: hidden

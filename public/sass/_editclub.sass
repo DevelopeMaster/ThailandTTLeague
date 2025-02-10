@@ -388,7 +388,33 @@ textarea:-webkit-autofill:focus
             font-size: 12px
             border: 1px solid #ccc
             border-radius: 4px
+            appearance: none
+            -webkit-appearance: none
+            -moz-appearance: none
             // margin-top: 1px
+        input[type="time"].empty
+            color: transparent
+            position: relative
+        
+
+        input[type="time"].empty::before 
+            content: "--:--"
+            color: #666
+            position: absolute
+        
+        // input[type="time"]::-webkit-datetime-edit
+        //     // display: none
+        
+        // input[type="time"]::-webkit-datetime-edit-fields-wrapper
+        //     // display: none
+        
+        // input[type="time"]::-webkit-inner-spin-button,
+        // input[type="time"]::-webkit-clear-button
+        //     display: none
+
+        // input[type="time"]::-webkit-calendar-picker-indicator
+        //     // display: none
+        
         .event-input
             position: relative
             background-image: url('/icons/chevron-down.svg')

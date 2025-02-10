@@ -1609,7 +1609,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
 // зона рендера таблиц и схем
-
 document.addEventListener('DOMContentLoaded', () => {
     const display = document.querySelector('.displayTournament'); // Родительский контейнер
     const content = document.querySelector('.content'); // Контент внутри
@@ -1623,8 +1622,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Получение размеров контейнера и контента
     const getBounds = () => {
         const displayRect = display.getBoundingClientRect();
-        const contentRect = content.getBoundingClientRect();
-
         return {
             displayWidth: displayRect.width,
             displayHeight: displayRect.height,
@@ -1636,18 +1633,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ограничение позиции
     const limitPosition = (x, y) => {
         const { displayWidth, displayHeight, contentWidth, contentHeight } = getBounds();
-        
-        // Левый верхний угол контента не должен выходить за границы
-        const minX = 0;
-        const minY = 0;
-        
-        // Правый нижний угол контента также должен оставаться в пределах контейнера
+        const minX = 0, minY = 0;
         const maxX = displayWidth - contentWidth;
         const maxY = displayHeight - contentHeight;
 
         return {
-            x: Math.max(Math.min(x, minX), maxX), // Ограничиваем правый и левый края
-            y: Math.max(Math.min(y, minY), maxY), // Ограничиваем верхний и нижний края
+            x: Math.max(Math.min(x, minX), maxX),
+            y: Math.max(Math.min(y, minY), maxY),
         };
     };
 
@@ -1662,11 +1654,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обработчик движения мыши
     display.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
-
         let x = e.clientX - startX;
         let y = e.clientY - startY;
 
-        // Применяем ограничения
         const limitedPosition = limitPosition(x, y);
         currentX = limitedPosition.x;
         currentY = limitedPosition.y;
@@ -1680,31 +1670,163 @@ document.addEventListener('DOMContentLoaded', () => {
         display.style.cursor = 'grab';
     });
 
-    // Обработчик масштабирования колесом мыши
+    let lastTouchDistance = null; // Для отслеживания pinch-to-zoom
+
+    // Обработчик тачпада (pinch-to-zoom)
+    display.addEventListener('touchmove', (e) => {
+        if (e.touches.length !== 2) return; // Обрабатываем только два пальца
+
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+
+        // Вычисляем расстояние между пальцами
+        const currentDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+        );
+
+        if (lastTouchDistance) {
+            const zoomFactor = currentDistance / lastTouchDistance;
+            const newScale = Math.min(Math.max(0.5, scale * zoomFactor), 3);
+
+            scale = newScale;
+            content.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+        }
+
+        lastTouchDistance = currentDistance;
+    });
+
+    // Сбрасываем состояние pinch-to-zoom
+    display.addEventListener('touchend', () => {
+        lastTouchDistance = null;
+    });
+
+    // Обработчик колесика мыши (только с Ctrl)
     display.addEventListener('wheel', (e) => {
+        if (!e.ctrlKey) return; // Игнорируем зум без Ctrl
+
         e.preventDefault();
         const zoomIntensity = 0.1;
         const delta = e.deltaY > 0 ? -zoomIntensity : zoomIntensity;
-        const newScale = Math.min(Math.max(0.5, scale + delta), 3); // Ограничиваем масштаб
+        const newScale = Math.min(Math.max(0.5, scale + delta), 3);
 
-        // Масштабирование относительно верхнего левого угла
         const { contentWidth, contentHeight } = getBounds();
         const rect = content.getBoundingClientRect();
 
-        const offsetX = (e.clientX - rect.left) / scale; // Смещение по X
-        const offsetY = (e.clientY - rect.top) / scale; // Смещение по Y
+        const offsetX = (e.clientX - rect.left) / scale;
+        const offsetY = (e.clientY - rect.top) / scale;
 
         currentX -= offsetX * (newScale - scale);
         currentY -= offsetY * (newScale - scale);
 
         scale = newScale;
 
-        // Применяем ограничения
         const limitedPosition = limitPosition(currentX, currentY);
         currentX = limitedPosition.x;
         currentY = limitedPosition.y;
 
         content.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
     });
+
 });
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     const display = document.querySelector('.displayTournament'); // Родительский контейнер
+//     const content = document.querySelector('.content'); // Контент внутри
+
+//     let isDragging = false;
+//     let startX, startY, currentX = 0, currentY = 0, scale = 1;
+
+//     // Устанавливаем transform-origin в верхний левый угол
+//     content.style.transformOrigin = 'top left';
+
+//     // Получение размеров контейнера и контента
+//     const getBounds = () => {
+//         const displayRect = display.getBoundingClientRect();
+//         const contentRect = content.getBoundingClientRect();
+
+//         return {
+//             displayWidth: displayRect.width,
+//             displayHeight: displayRect.height,
+//             contentWidth: content.offsetWidth * scale,
+//             contentHeight: content.offsetHeight * scale,
+//         };
+//     };
+
+//     // Ограничение позиции
+//     const limitPosition = (x, y) => {
+//         const { displayWidth, displayHeight, contentWidth, contentHeight } = getBounds();
+        
+//         // Левый верхний угол контента не должен выходить за границы
+//         const minX = 0;
+//         const minY = 0;
+        
+//         // Правый нижний угол контента также должен оставаться в пределах контейнера
+//         const maxX = displayWidth - contentWidth;
+//         const maxY = displayHeight - contentHeight;
+
+//         return {
+//             x: Math.max(Math.min(x, minX), maxX), // Ограничиваем правый и левый края
+//             y: Math.max(Math.min(y, minY), maxY), // Ограничиваем верхний и нижний края
+//         };
+//     };
+
+//     // Обработчик начала перетаскивания
+//     display.addEventListener('mousedown', (e) => {
+//         isDragging = true;
+//         startX = e.clientX - currentX;
+//         startY = e.clientY - currentY;
+//         display.style.cursor = 'grabbing';
+//     });
+
+//     // Обработчик движения мыши
+//     display.addEventListener('mousemove', (e) => {
+//         if (!isDragging) return;
+
+//         let x = e.clientX - startX;
+//         let y = e.clientY - startY;
+
+//         // Применяем ограничения
+//         const limitedPosition = limitPosition(x, y);
+//         currentX = limitedPosition.x;
+//         currentY = limitedPosition.y;
+
+//         content.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+//     });
+
+//     // Обработчик окончания перетаскивания
+//     document.addEventListener('mouseup', () => {
+//         isDragging = false;
+//         display.style.cursor = 'grab';
+//     });
+
+//     // Обработчик масштабирования колесом мыши
+//     display.addEventListener('wheel', (e) => {
+//         if (!e.ctrlKey) return; // Блокируем зум, если не зажат Ctrl
+
+//         e.preventDefault();
+//         const zoomIntensity = 0.1;
+//         const delta = e.deltaY > 0 ? -zoomIntensity : zoomIntensity;
+//         const newScale = Math.min(Math.max(0.5, scale + delta), 3); // Ограничиваем масштаб
+
+//         // Масштабирование относительно верхнего левого угла
+//         const { contentWidth, contentHeight } = getBounds();
+//         const rect = content.getBoundingClientRect();
+
+//         const offsetX = (e.clientX - rect.left) / scale; // Смещение по X
+//         const offsetY = (e.clientY - rect.top) / scale; // Смещение по Y
+
+//         currentX -= offsetX * (newScale - scale);
+//         currentY -= offsetY * (newScale - scale);
+
+//         scale = newScale;
+
+//         // Применяем ограничения
+//         const limitedPosition = limitPosition(currentX, currentY);
+//         currentX = limitedPosition.x;
+//         currentY = limitedPosition.y;
+
+//         content.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+//     });
+// });
 

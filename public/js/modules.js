@@ -11,6 +11,20 @@ export function fetchAdvertisements(block) {
                 const topDistance = block.getBoundingClientRect().top + window.pageYOffset;
                 advContent.style.right = rightDistance + 'px';
                 advContent.style.top = topDistance + 'px';
+
+                // Проверяем количество баннеров
+                setTimeout(() => {
+                    const advCount = advContent.children.length;
+                    if (advCount === 1) {
+                        const banners = advContent.children;
+                        const singleBanner = banners[0];
+                        singleBanner.style.position = "sticky";
+                        singleBanner.style.top = "175px";
+                        singleBanner.style.zIndex = "10";
+                        // advContent.style.position = "sticky";
+                        // advContent.style.top = "175px"; // Высота шапки
+                    }
+                }, 100);
             }
 
             window.addEventListener('resize', updateAdvPosition);
@@ -32,9 +46,10 @@ export function fetchAdvertisements(block) {
                     advContent.appendChild(advBlock);
 
                 }
-
-                
             });
+            
+            
+
         })
         .catch(error => {
             console.error('Произошла ошибка:', error);

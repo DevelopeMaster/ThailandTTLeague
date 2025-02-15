@@ -1153,7 +1153,7 @@ app.post('/saveTournament', async (req, res) => {
           return res.status(400).json({ error: 'Tournament ID is required' });
       }
 
-      const { players, retiredPlayers, unratedPlayers, waitingPairs, finishedPairs, currentPairs, results } = state;
+      const { players, retiredPlayers, unratedPlayers, waitingPairs, finishedPairs, currentPairs, results, finished } = state;
 
       // Обновляем турнирные данные
       const updateData = {};
@@ -1213,6 +1213,9 @@ app.post('/saveTournament', async (req, res) => {
 
       if (results) {
         updateData.results = results;
+      }
+      if (finished) {
+        updateData.finished = finished;
       }
 
       // Проверяем, есть ли уже `initialRatings`

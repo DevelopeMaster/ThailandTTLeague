@@ -7453,14 +7453,45 @@ textarea:-webkit-autofill:focus {
     align-items: center;
     gap: 40px;
     width: 100%; }
+    .modalPairBlock div:nth-child(2) {
+      justify-content: space-between; }
   .modalPairBlock_vs {
     width: 5px; }
   .modalPairBlock_firstPlayer {
     text-align: right;
     width: 45%; }
+    .modalPairBlock_firstPlayer_lastGame {
+      visibility: hidden;
+      color: #D10000;
+      text-align: right;
+      font-family: Inter;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 130%; }
+      .modalPairBlock_firstPlayer_lastGame svg {
+        width: 13px;
+        height: 13px;
+        margin-right: 5px; }
   .modalPairBlock_secondPlayer {
     text-align: left;
     width: 45%; }
+    .modalPairBlock_secondPlayer_lastGame {
+      visibility: hidden;
+      color: #D10000;
+      text-align: right;
+      font-family: Inter;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 130%; }
+      .modalPairBlock_secondPlayer_lastGame svg {
+        width: 13px;
+        height: 13px;
+        margin-right: 5px; }
+
+.lastGame {
+  visibility: visible; }
 
 .softStyle {
   background-color: #000817 !important;
@@ -7602,27 +7633,28 @@ textarea:-webkit-autofill:focus {
     .modal-actions .btn-confirm:focus-visible, .modal-actions .btn-confirm:focus, .modal-actions .btn-cancel:focus-visible, .modal-actions .btn-cancel:focus {
       width: 143px; }
 
-.display {
+.display, .completed, .results {
   margin: 0 auto;
   padding: 20px;
   width: 100%;
   max-width: 1440px;
   position: relative; }
-  .display_header {
+  .display_header, .completed_header, .results_header {
     padding: 10px 14px;
     margin-bottom: 8px;
     width: 100%;
     display: flex;
     align-items: center;
-    align-self: stretch; }
-    .display_header h3 {
+    align-self: stretch;
+    box-sizing: border-box; }
+    .display_header h3, .completed_header h3, .results_header h3 {
       color: #FFF;
       font-family: Inter;
       font-size: 24px;
       font-style: normal;
       font-weight: 600;
       line-height: normal; }
-  .display .displayTournament {
+  .display .displayTournament, .display .completedGames, .display .finalResults, .completed .displayTournament, .completed .completedGames, .completed .finalResults, .results .displayTournament, .results .completedGames, .results .finalResults {
     height: 525px;
     width: 100%;
     padding: 14px;
@@ -7637,25 +7669,25 @@ textarea:-webkit-autofill:focus {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none; }
-    .display .displayTournament .content {
+    .display .displayTournament .content, .display .completedGames .content, .display .finalResults .content, .completed .displayTournament .content, .completed .completedGames .content, .completed .finalResults .content, .results .displayTournament .content, .results .completedGames .content, .results .finalResults .content {
       width: 200%;
       height: 200%;
       transform-origin: top left;
       color: #ffffff;
       font-size: 2rem; }
-      .display .displayTournament .content .tournament-wrapper {
+      .display .displayTournament .content .tournament-wrapper, .display .completedGames .content .tournament-wrapper, .display .finalResults .content .tournament-wrapper, .completed .displayTournament .content .tournament-wrapper, .completed .completedGames .content .tournament-wrapper, .completed .finalResults .content .tournament-wrapper, .results .displayTournament .content .tournament-wrapper, .results .completedGames .content .tournament-wrapper, .results .finalResults .content .tournament-wrapper {
         display: flex;
         gap: 14px;
         align-items: flex-start;
         justify-content: flex-start; }
-        .display .displayTournament .content .tournament-wrapper h3 {
+        .display .displayTournament .content .tournament-wrapper h3, .display .completedGames .content .tournament-wrapper h3, .display .finalResults .content .tournament-wrapper h3, .completed .displayTournament .content .tournament-wrapper h3, .completed .completedGames .content .tournament-wrapper h3, .completed .finalResults .content .tournament-wrapper h3, .results .displayTournament .content .tournament-wrapper h3, .results .completedGames .content .tournament-wrapper h3, .results .finalResults .content .tournament-wrapper h3 {
           color: #FFF;
           font-family: Inter;
           font-size: 16px;
           font-style: normal;
           font-weight: 500;
           line-height: normal; }
-        .display .displayTournament .content .tournament-wrapper .players-list {
+        .display .displayTournament .content .tournament-wrapper .players-list, .display .completedGames .content .tournament-wrapper .players-list, .display .finalResults .content .tournament-wrapper .players-list, .completed .displayTournament .content .tournament-wrapper .players-list, .completed .completedGames .content .tournament-wrapper .players-list, .completed .finalResults .content .tournament-wrapper .players-list, .results .displayTournament .content .tournament-wrapper .players-list, .results .completedGames .content .tournament-wrapper .players-list, .results .finalResults .content .tournament-wrapper .players-list {
           display: flex;
           flex-direction: column;
           align-items: flex-start;
@@ -7665,7 +7697,7 @@ textarea:-webkit-autofill:focus {
           border-radius: 8px;
           background: #3F3F4C;
           box-sizing: border-box; }
-          .display .displayTournament .content .tournament-wrapper .players-list .header-placeholder {
+          .display .displayTournament .content .tournament-wrapper .players-list .header-placeholder, .display .completedGames .content .tournament-wrapper .players-list .header-placeholder, .display .finalResults .content .tournament-wrapper .players-list .header-placeholder, .completed .displayTournament .content .tournament-wrapper .players-list .header-placeholder, .completed .completedGames .content .tournament-wrapper .players-list .header-placeholder, .completed .finalResults .content .tournament-wrapper .players-list .header-placeholder, .results .displayTournament .content .tournament-wrapper .players-list .header-placeholder, .results .completedGames .content .tournament-wrapper .players-list .header-placeholder, .results .finalResults .content .tournament-wrapper .players-list .header-placeholder {
             box-sizing: border-box;
             width: 100%;
             height: 42px;
@@ -7676,10 +7708,10 @@ textarea:-webkit-autofill:focus {
             padding: 0 14px;
             align-items: center;
             margin-bottom: 14px; }
-            .display .displayTournament .content .tournament-wrapper .players-list .header-placeholder img {
+            .display .displayTournament .content .tournament-wrapper .players-list .header-placeholder img, .display .completedGames .content .tournament-wrapper .players-list .header-placeholder img, .display .finalResults .content .tournament-wrapper .players-list .header-placeholder img, .completed .displayTournament .content .tournament-wrapper .players-list .header-placeholder img, .completed .completedGames .content .tournament-wrapper .players-list .header-placeholder img, .completed .finalResults .content .tournament-wrapper .players-list .header-placeholder img, .results .displayTournament .content .tournament-wrapper .players-list .header-placeholder img, .results .completedGames .content .tournament-wrapper .players-list .header-placeholder img, .results .finalResults .content .tournament-wrapper .players-list .header-placeholder img {
               width: 15px;
               height: 20px; }
-          .display .displayTournament .content .tournament-wrapper .players-list .players-names {
+          .display .displayTournament .content .tournament-wrapper .players-list .players-names, .display .completedGames .content .tournament-wrapper .players-list .players-names, .display .finalResults .content .tournament-wrapper .players-list .players-names, .completed .displayTournament .content .tournament-wrapper .players-list .players-names, .completed .completedGames .content .tournament-wrapper .players-list .players-names, .completed .finalResults .content .tournament-wrapper .players-list .players-names, .results .displayTournament .content .tournament-wrapper .players-list .players-names, .results .completedGames .content .tournament-wrapper .players-list .players-names, .results .finalResults .content .tournament-wrapper .players-list .players-names {
             margin: 0;
             margin-top: 16px;
             list-style: none;
@@ -7687,7 +7719,7 @@ textarea:-webkit-autofill:focus {
             display: flex;
             flex-direction: column;
             gap: 14px; }
-            .display .displayTournament .content .tournament-wrapper .players-list .players-names li {
+            .display .displayTournament .content .tournament-wrapper .players-list .players-names li, .display .completedGames .content .tournament-wrapper .players-list .players-names li, .display .finalResults .content .tournament-wrapper .players-list .players-names li, .completed .displayTournament .content .tournament-wrapper .players-list .players-names li, .completed .completedGames .content .tournament-wrapper .players-list .players-names li, .completed .finalResults .content .tournament-wrapper .players-list .players-names li, .results .displayTournament .content .tournament-wrapper .players-list .players-names li, .results .completedGames .content .tournament-wrapper .players-list .players-names li, .results .finalResults .content .tournament-wrapper .players-list .players-names li {
               display: flex;
               width: 307px;
               height: 35px;
@@ -7695,7 +7727,7 @@ textarea:-webkit-autofill:focus {
               align-items: flex-start;
               gap: 7px;
               box-sizing: border-box; }
-              .display .displayTournament .content .tournament-wrapper .players-list .players-names li span {
+              .display .displayTournament .content .tournament-wrapper .players-list .players-names li span, .display .completedGames .content .tournament-wrapper .players-list .players-names li span, .display .finalResults .content .tournament-wrapper .players-list .players-names li span, .completed .displayTournament .content .tournament-wrapper .players-list .players-names li span, .completed .completedGames .content .tournament-wrapper .players-list .players-names li span, .completed .finalResults .content .tournament-wrapper .players-list .players-names li span, .results .displayTournament .content .tournament-wrapper .players-list .players-names li span, .results .completedGames .content .tournament-wrapper .players-list .players-names li span, .results .finalResults .content .tournament-wrapper .players-list .players-names li span {
                 width: 16px;
                 color: #FFF;
                 font-family: Inter;
@@ -7703,9 +7735,9 @@ textarea:-webkit-autofill:focus {
                 font-style: normal;
                 font-weight: 500;
                 line-height: normal; }
-              .display .displayTournament .content .tournament-wrapper .players-list .players-names li h3 {
+              .display .displayTournament .content .tournament-wrapper .players-list .players-names li h3, .display .completedGames .content .tournament-wrapper .players-list .players-names li h3, .display .finalResults .content .tournament-wrapper .players-list .players-names li h3, .completed .displayTournament .content .tournament-wrapper .players-list .players-names li h3, .completed .completedGames .content .tournament-wrapper .players-list .players-names li h3, .completed .finalResults .content .tournament-wrapper .players-list .players-names li h3, .results .displayTournament .content .tournament-wrapper .players-list .players-names li h3, .results .completedGames .content .tournament-wrapper .players-list .players-names li h3, .results .finalResults .content .tournament-wrapper .players-list .players-names li h3 {
                 width: 100%; }
-              .display .displayTournament .content .tournament-wrapper .players-list .players-names li div {
+              .display .displayTournament .content .tournament-wrapper .players-list .players-names li div, .display .completedGames .content .tournament-wrapper .players-list .players-names li div, .display .finalResults .content .tournament-wrapper .players-list .players-names li div, .completed .displayTournament .content .tournament-wrapper .players-list .players-names li div, .completed .completedGames .content .tournament-wrapper .players-list .players-names li div, .completed .finalResults .content .tournament-wrapper .players-list .players-names li div, .results .displayTournament .content .tournament-wrapper .players-list .players-names li div, .results .completedGames .content .tournament-wrapper .players-list .players-names li div, .results .finalResults .content .tournament-wrapper .players-list .players-names li div {
                 display: flex;
                 width: 33px;
                 padding: 2px;
@@ -7715,17 +7747,17 @@ textarea:-webkit-autofill:focus {
                 flex-shrink: 0;
                 border-radius: 2px;
                 background: #B62727; }
-                .display .displayTournament .content .tournament-wrapper .players-list .players-names li div h5 {
+                .display .displayTournament .content .tournament-wrapper .players-list .players-names li div h5, .display .completedGames .content .tournament-wrapper .players-list .players-names li div h5, .display .finalResults .content .tournament-wrapper .players-list .players-names li div h5, .completed .displayTournament .content .tournament-wrapper .players-list .players-names li div h5, .completed .completedGames .content .tournament-wrapper .players-list .players-names li div h5, .completed .finalResults .content .tournament-wrapper .players-list .players-names li div h5, .results .displayTournament .content .tournament-wrapper .players-list .players-names li div h5, .results .completedGames .content .tournament-wrapper .players-list .players-names li div h5, .results .finalResults .content .tournament-wrapper .players-list .players-names li div h5 {
                   color: #FFF;
                   font-family: Inter;
                   font-size: 10px;
                   font-style: normal;
                   font-weight: 500;
                   line-height: normal; }
-        .display .displayTournament .content .tournament-wrapper .table-wrapper {
+        .display .displayTournament .content .tournament-wrapper .table-wrapper, .display .completedGames .content .tournament-wrapper .table-wrapper, .display .finalResults .content .tournament-wrapper .table-wrapper, .completed .displayTournament .content .tournament-wrapper .table-wrapper, .completed .completedGames .content .tournament-wrapper .table-wrapper, .completed .finalResults .content .tournament-wrapper .table-wrapper, .results .displayTournament .content .tournament-wrapper .table-wrapper, .results .completedGames .content .tournament-wrapper .table-wrapper, .results .finalResults .content .tournament-wrapper .table-wrapper {
           display: flex;
           flex-direction: column; }
-          .display .displayTournament .content .tournament-wrapper .table-wrapper .table-header {
+          .display .displayTournament .content .tournament-wrapper .table-wrapper .table-header, .display .completedGames .content .tournament-wrapper .table-wrapper .table-header, .display .finalResults .content .tournament-wrapper .table-wrapper .table-header, .completed .displayTournament .content .tournament-wrapper .table-wrapper .table-header, .completed .completedGames .content .tournament-wrapper .table-wrapper .table-header, .completed .finalResults .content .tournament-wrapper .table-wrapper .table-header, .results .displayTournament .content .tournament-wrapper .table-wrapper .table-header, .results .completedGames .content .tournament-wrapper .table-wrapper .table-header, .results .finalResults .content .tournament-wrapper .table-wrapper .table-header {
             display: flex;
             padding: 14px;
             align-items: center;
@@ -7733,7 +7765,7 @@ textarea:-webkit-autofill:focus {
             border-radius: 8px;
             background: #3F3F4C;
             box-sizing: border-box; }
-            .display .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row {
+            .display .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row, .display .completedGames .content .tournament-wrapper .table-wrapper .table-header .header-row, .display .finalResults .content .tournament-wrapper .table-wrapper .table-header .header-row, .completed .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row, .completed .completedGames .content .tournament-wrapper .table-wrapper .table-header .header-row, .completed .finalResults .content .tournament-wrapper .table-wrapper .table-header .header-row, .results .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row, .results .completedGames .content .tournament-wrapper .table-wrapper .table-header .header-row, .results .finalResults .content .tournament-wrapper .table-wrapper .table-header .header-row {
               display: flex;
               gap: 14px;
               justify-content: space-between;
@@ -7741,7 +7773,7 @@ textarea:-webkit-autofill:focus {
               box-sizing: border-box;
               background: #262630;
               border-radius: 6px; }
-              .display .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row div {
+              .display .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row div, .display .completedGames .content .tournament-wrapper .table-wrapper .table-header .header-row div, .display .finalResults .content .tournament-wrapper .table-wrapper .table-header .header-row div, .completed .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row div, .completed .completedGames .content .tournament-wrapper .table-wrapper .table-header .header-row div, .completed .finalResults .content .tournament-wrapper .table-wrapper .table-header .header-row div, .results .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row div, .results .completedGames .content .tournament-wrapper .table-wrapper .table-header .header-row div, .results .finalResults .content .tournament-wrapper .table-wrapper .table-header .header-row div {
                 display: flex;
                 width: 58px;
                 height: 42px;
@@ -7754,14 +7786,14 @@ textarea:-webkit-autofill:focus {
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal; }
-          .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table {
+          .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table, .display .completedGames .content .tournament-wrapper .table-wrapper .results-table, .display .finalResults .content .tournament-wrapper .table-wrapper .results-table, .completed .displayTournament .content .tournament-wrapper .table-wrapper .results-table, .completed .completedGames .content .tournament-wrapper .table-wrapper .results-table, .completed .finalResults .content .tournament-wrapper .table-wrapper .results-table, .results .displayTournament .content .tournament-wrapper .table-wrapper .results-table, .results .completedGames .content .tournament-wrapper .table-wrapper .results-table, .results .finalResults .content .tournament-wrapper .table-wrapper .results-table {
             margin-top: 2px;
             box-sizing: border-box; }
-            .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table {
+            .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table, .display .completedGames .content .tournament-wrapper .table-wrapper .results-table table, .display .finalResults .content .tournament-wrapper .table-wrapper .results-table table, .completed .displayTournament .content .tournament-wrapper .table-wrapper .results-table table, .completed .completedGames .content .tournament-wrapper .table-wrapper .results-table table, .completed .finalResults .content .tournament-wrapper .table-wrapper .results-table table, .results .displayTournament .content .tournament-wrapper .table-wrapper .results-table table, .results .completedGames .content .tournament-wrapper .table-wrapper .results-table table, .results .finalResults .content .tournament-wrapper .table-wrapper .results-table table {
               border-collapse: separate;
               border-spacing: 14.5px;
               box-sizing: border-box; }
-              .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table td {
+              .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table td, .display .completedGames .content .tournament-wrapper .table-wrapper .results-table table td, .display .finalResults .content .tournament-wrapper .table-wrapper .results-table table td, .completed .displayTournament .content .tournament-wrapper .table-wrapper .results-table table td, .completed .completedGames .content .tournament-wrapper .table-wrapper .results-table table td, .completed .finalResults .content .tournament-wrapper .table-wrapper .results-table table td, .results .displayTournament .content .tournament-wrapper .table-wrapper .results-table table td, .results .completedGames .content .tournament-wrapper .table-wrapper .results-table table td, .results .finalResults .content .tournament-wrapper .table-wrapper .results-table table td {
                 position: relative;
                 box-sizing: border-box;
                 width: 58px;
@@ -7776,13 +7808,186 @@ textarea:-webkit-autofill:focus {
                 align-content: center;
                 font-weight: 400;
                 line-height: normal; }
-              .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .disabled {
+              .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .disabled, .display .completedGames .content .tournament-wrapper .table-wrapper .results-table table .disabled, .display .finalResults .content .tournament-wrapper .table-wrapper .results-table table .disabled, .completed .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .disabled, .completed .completedGames .content .tournament-wrapper .table-wrapper .results-table table .disabled, .completed .finalResults .content .tournament-wrapper .table-wrapper .results-table table .disabled, .results .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .disabled, .results .completedGames .content .tournament-wrapper .table-wrapper .results-table table .disabled, .results .finalResults .content .tournament-wrapper .table-wrapper .results-table table .disabled {
                 background: #585869; }
-              .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .points, .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .place {
+              .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .points, .display .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .place, .display .completedGames .content .tournament-wrapper .table-wrapper .results-table table .points, .display .completedGames .content .tournament-wrapper .table-wrapper .results-table table .place, .display .finalResults .content .tournament-wrapper .table-wrapper .results-table table .points, .display .finalResults .content .tournament-wrapper .table-wrapper .results-table table .place, .completed .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .points, .completed .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .place, .completed .completedGames .content .tournament-wrapper .table-wrapper .results-table table .points, .completed .completedGames .content .tournament-wrapper .table-wrapper .results-table table .place, .completed .finalResults .content .tournament-wrapper .table-wrapper .results-table table .points, .completed .finalResults .content .tournament-wrapper .table-wrapper .results-table table .place, .results .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .points, .results .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .place, .results .completedGames .content .tournament-wrapper .table-wrapper .results-table table .points, .results .completedGames .content .tournament-wrapper .table-wrapper .results-table table .place, .results .finalResults .content .tournament-wrapper .table-wrapper .results-table table .points, .results .finalResults .content .tournament-wrapper .table-wrapper .results-table table .place {
                 background: #FFF;
                 color: #000; }
-  .display #showResult {
+  .display #showResult, .completed #showResult, .results #showResult {
     display: none; }
+
+.completed .completedGames {
+  cursor: default; }
+  .completed .completedGames-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 84%;
+    gap: 10px;
+    margin-top: 20px;
+    overflow-x: auto; }
+    .completed .completedGames-wrapper::-webkit-scrollbar {
+      padding-right: 8px;
+      width: 2px; }
+    .completed .completedGames-wrapper::-webkit-scrollbar-track {
+      background: #262630; }
+    .completed .completedGames-wrapper::-webkit-scrollbar-thumb {
+      background: #666877; }
+    .completed .completedGames-wrapper::-webkit-scrollbar-thumb:hover {
+      background: #666877; }
+    .completed .completedGames-wrapper_pair {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 22px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #3F3F4C; }
+      .completed .completedGames-wrapper_pair h4, .completed .completedGames-wrapper_pair h5 {
+        color: #fff;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 130%; }
+      .completed .completedGames-wrapper_pair h4 {
+        width: 200px; }
+      .completed .completedGames-wrapper_pair_player1 {
+        text-align: end; }
+      .completed .completedGames-wrapper_pair_player1_score, .completed .completedGames-wrapper_pair_player2_score {
+        position: relative;
+        box-sizing: border-box;
+        width: 58px;
+        height: 35px;
+        border-radius: 6px;
+        background: #FFF;
+        color: #000;
+        font-family: Inter;
+        font-size: 14px;
+        font-style: normal;
+        text-align: center;
+        align-content: center;
+        font-weight: 400;
+        line-height: normal; }
+      .completed .completedGames-wrapper_pair .wins {
+        background-color: #FA6400;
+        color: #fff; }
+      .completed .completedGames-wrapper_pair .losers {
+        background-color: #D10000;
+        color: #fff; }
+
+.results .finalResults {
+  cursor: default; }
+  .results .finalResults_table {
+    border-radius: 14px;
+    background: #262630;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 84%;
+    overflow-y: scroll; }
+    .results .finalResults_table::-webkit-scrollbar {
+      padding-right: 8px;
+      width: 2px; }
+    .results .finalResults_table::-webkit-scrollbar-track {
+      background: #262630; }
+    .results .finalResults_table::-webkit-scrollbar-thumb {
+      background: #666877; }
+    .results .finalResults_table::-webkit-scrollbar-thumb:hover {
+      background: #666877; }
+    .results .finalResults_table_content {
+      width: 100%; }
+    .results .finalResults_table_header {
+      border-radius: 8px;
+      background: #3F3F4C;
+      padding: 15px 30px;
+      display: grid;
+      grid-template-columns: 20px 4fr 8fr repeat(5, 1fr);
+      gap: 16px;
+      color: #fff;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 130%; }
+      .results .finalResults_table_header .finalResults_avarage {
+        text-align: left; }
+    .results .finalResults_table_player {
+      position: relative;
+      padding: 15px 30px;
+      display: grid;
+      grid-template-columns: 20px 4fr 8fr repeat(5, 1fr);
+      gap: 16px;
+      color: #fff;
+      font-family: Inter;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 130%; }
+      .results .finalResults_table_player::after {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        content: '';
+        display: block;
+        height: 1px;
+        width: 100%;
+        background: #3F3F4C; }
+      .results .finalResults_table_player .finalResults_number {
+        align-content: center;
+        font-size: 20px;
+        color: #ADADAD; }
+      .results .finalResults_table_player .finalResults_player {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        justify-content: flex-start;
+        align-content: center;
+        gap: 8px; }
+        .results .finalResults_table_player .finalResults_player .playerLogo {
+          width: 27px;
+          height: 27px; }
+        .results .finalResults_table_player .finalResults_player span {
+          align-content: center; }
+      .results .finalResults_table_player .finalResults_city {
+        color: #ADADAD;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
+      .results .finalResults_table_player .finalResults_avarage {
+        color: #007026;
+        text-align: left; }
+      .results .finalResults_table_player:nth-child(1) .finalResults_number {
+        color: #E0A100; }
+      .results .finalResults_table_player:nth-child(2) .finalResults_number {
+        color: #ADADAD; }
+      .results .finalResults_table_player:nth-child(3) .finalResults_number {
+        color: #966C00; }
+  .results .finalResults .cell {
+    font-size: 16px;
+    font-weight: 400;
+    align-content: center; }
+  .results .finalResults_player {
+    display: flex;
+    justify-content: flex-start;
+    align-content: center;
+    gap: 8px; }
+    .results .finalResults_player .playerLogo {
+      width: 27px;
+      height: 27px; }
+    .results .finalResults_player span {
+      align-content: center; }
+  .results .finalResults_games {
+    text-align: left; }
+  .results .finalResults_sets {
+    text-align: left; }
+  .results .finalResults_avarage {
+    text-align: left; }
+  .results .finalResults_before {
+    text-align: left; }
+  .results .finalResults_after {
+    text-align: left; }
 
 /* Контейнер с контентом внутри */
 .graySoftBlock {

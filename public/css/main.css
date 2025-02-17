@@ -7816,178 +7816,182 @@ textarea:-webkit-autofill:focus {
   .display #showResult, .completed #showResult, .results #showResult {
     display: none; }
 
-.completed .completedGames {
-  cursor: default; }
-  .completed .completedGames-wrapper {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 84%;
-    gap: 10px;
-    margin-top: 20px;
-    overflow-x: auto; }
-    .completed .completedGames-wrapper::-webkit-scrollbar {
-      padding-right: 8px;
-      width: 2px; }
-    .completed .completedGames-wrapper::-webkit-scrollbar-track {
-      background: #262630; }
-    .completed .completedGames-wrapper::-webkit-scrollbar-thumb {
-      background: #666877; }
-    .completed .completedGames-wrapper::-webkit-scrollbar-thumb:hover {
-      background: #666877; }
-    .completed .completedGames-wrapper_pair {
+.completed {
+  display: none; }
+  .completed .completedGames {
+    cursor: default; }
+    .completed .completedGames-wrapper {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 22px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #3F3F4C; }
-      .completed .completedGames-wrapper_pair h4, .completed .completedGames-wrapper_pair h5 {
+      flex-direction: column;
+      width: 100%;
+      height: 84%;
+      gap: 10px;
+      margin-top: 20px;
+      overflow-x: auto; }
+      .completed .completedGames-wrapper::-webkit-scrollbar {
+        padding-right: 8px;
+        width: 2px; }
+      .completed .completedGames-wrapper::-webkit-scrollbar-track {
+        background: #262630; }
+      .completed .completedGames-wrapper::-webkit-scrollbar-thumb {
+        background: #666877; }
+      .completed .completedGames-wrapper::-webkit-scrollbar-thumb:hover {
+        background: #666877; }
+      .completed .completedGames-wrapper_pair {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 22px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #3F3F4C; }
+        .completed .completedGames-wrapper_pair h4, .completed .completedGames-wrapper_pair h5 {
+          color: #fff;
+          font-family: Inter;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 130%; }
+        .completed .completedGames-wrapper_pair h4 {
+          width: 200px; }
+        .completed .completedGames-wrapper_pair_player1 {
+          text-align: end; }
+        .completed .completedGames-wrapper_pair_player1_score, .completed .completedGames-wrapper_pair_player2_score {
+          position: relative;
+          box-sizing: border-box;
+          width: 58px;
+          height: 35px;
+          border-radius: 6px;
+          background: #FFF;
+          color: #000;
+          font-family: Inter;
+          font-size: 14px;
+          font-style: normal;
+          text-align: center;
+          align-content: center;
+          font-weight: 400;
+          line-height: normal; }
+        .completed .completedGames-wrapper_pair .wins {
+          background-color: #FA6400;
+          color: #fff; }
+        .completed .completedGames-wrapper_pair .losers {
+          background-color: #D10000;
+          color: #fff; }
+
+.results {
+  display: none; }
+  .results .finalResults {
+    cursor: default; }
+    .results .finalResults_table {
+      border-radius: 14px;
+      background: #262630;
+      width: 100%;
+      height: auto;
+      padding: 20px;
+      box-sizing: border-box;
+      height: 84%;
+      overflow-y: scroll; }
+      .results .finalResults_table::-webkit-scrollbar {
+        padding-right: 8px;
+        width: 2px; }
+      .results .finalResults_table::-webkit-scrollbar-track {
+        background: #262630; }
+      .results .finalResults_table::-webkit-scrollbar-thumb {
+        background: #666877; }
+      .results .finalResults_table::-webkit-scrollbar-thumb:hover {
+        background: #666877; }
+      .results .finalResults_table_content {
+        width: 100%; }
+      .results .finalResults_table_header {
+        border-radius: 8px;
+        background: #3F3F4C;
+        padding: 15px 30px;
+        display: grid;
+        grid-template-columns: 20px 4fr 8fr repeat(5, 1fr);
+        gap: 16px;
         color: #fff;
         font-family: Inter;
         font-size: 16px;
         font-style: normal;
-        font-weight: 400;
+        font-weight: 500;
         line-height: 130%; }
-      .completed .completedGames-wrapper_pair h4 {
-        width: 200px; }
-      .completed .completedGames-wrapper_pair_player1 {
-        text-align: end; }
-      .completed .completedGames-wrapper_pair_player1_score, .completed .completedGames-wrapper_pair_player2_score {
+        .results .finalResults_table_header .finalResults_avarage {
+          text-align: left; }
+      .results .finalResults_table_player {
         position: relative;
-        box-sizing: border-box;
-        width: 58px;
-        height: 35px;
-        border-radius: 6px;
-        background: #FFF;
-        color: #000;
+        padding: 15px 30px;
+        display: grid;
+        grid-template-columns: 20px 4fr 8fr repeat(5, 1fr);
+        gap: 16px;
+        color: #fff;
         font-family: Inter;
-        font-size: 14px;
+        font-size: 16px;
         font-style: normal;
-        text-align: center;
-        align-content: center;
-        font-weight: 400;
-        line-height: normal; }
-      .completed .completedGames-wrapper_pair .wins {
-        background-color: #FA6400;
-        color: #fff; }
-      .completed .completedGames-wrapper_pair .losers {
-        background-color: #D10000;
-        color: #fff; }
-
-.results .finalResults {
-  cursor: default; }
-  .results .finalResults_table {
-    border-radius: 14px;
-    background: #262630;
-    width: 100%;
-    height: auto;
-    padding: 20px;
-    box-sizing: border-box;
-    height: 84%;
-    overflow-y: scroll; }
-    .results .finalResults_table::-webkit-scrollbar {
-      padding-right: 8px;
-      width: 2px; }
-    .results .finalResults_table::-webkit-scrollbar-track {
-      background: #262630; }
-    .results .finalResults_table::-webkit-scrollbar-thumb {
-      background: #666877; }
-    .results .finalResults_table::-webkit-scrollbar-thumb:hover {
-      background: #666877; }
-    .results .finalResults_table_content {
-      width: 100%; }
-    .results .finalResults_table_header {
-      border-radius: 8px;
-      background: #3F3F4C;
-      padding: 15px 30px;
-      display: grid;
-      grid-template-columns: 20px 4fr 8fr repeat(5, 1fr);
-      gap: 16px;
-      color: #fff;
-      font-family: Inter;
+        font-weight: 500;
+        line-height: 130%; }
+        .results .finalResults_table_player::after {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          content: '';
+          display: block;
+          height: 1px;
+          width: 100%;
+          background: #3F3F4C; }
+        .results .finalResults_table_player .finalResults_number {
+          align-content: center;
+          font-size: 20px;
+          color: #ADADAD; }
+        .results .finalResults_table_player .finalResults_player {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: flex;
+          justify-content: flex-start;
+          align-content: center;
+          gap: 8px; }
+          .results .finalResults_table_player .finalResults_player .playerLogo {
+            width: 27px;
+            height: 27px; }
+          .results .finalResults_table_player .finalResults_player span {
+            align-content: center; }
+        .results .finalResults_table_player .finalResults_city {
+          color: #ADADAD;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis; }
+        .results .finalResults_table_player .finalResults_avarage {
+          color: #007026;
+          text-align: left; }
+        .results .finalResults_table_player:nth-child(1) .finalResults_number {
+          color: #E0A100; }
+        .results .finalResults_table_player:nth-child(2) .finalResults_number {
+          color: #ADADAD; }
+        .results .finalResults_table_player:nth-child(3) .finalResults_number {
+          color: #966C00; }
+    .results .finalResults .cell {
       font-size: 16px;
-      font-style: normal;
-      font-weight: 500;
-      line-height: 130%; }
-      .results .finalResults_table_header .finalResults_avarage {
-        text-align: left; }
-    .results .finalResults_table_player {
-      position: relative;
-      padding: 15px 30px;
-      display: grid;
-      grid-template-columns: 20px 4fr 8fr repeat(5, 1fr);
-      gap: 16px;
-      color: #fff;
-      font-family: Inter;
-      font-size: 16px;
-      font-style: normal;
-      font-weight: 500;
-      line-height: 130%; }
-      .results .finalResults_table_player::after {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        content: '';
-        display: block;
-        height: 1px;
-        width: 100%;
-        background: #3F3F4C; }
-      .results .finalResults_table_player .finalResults_number {
-        align-content: center;
-        font-size: 20px;
-        color: #ADADAD; }
-      .results .finalResults_table_player .finalResults_player {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: flex;
-        justify-content: flex-start;
-        align-content: center;
-        gap: 8px; }
-        .results .finalResults_table_player .finalResults_player .playerLogo {
-          width: 27px;
-          height: 27px; }
-        .results .finalResults_table_player .finalResults_player span {
-          align-content: center; }
-      .results .finalResults_table_player .finalResults_city {
-        color: #ADADAD;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis; }
-      .results .finalResults_table_player .finalResults_avarage {
-        color: #007026;
-        text-align: left; }
-      .results .finalResults_table_player:nth-child(1) .finalResults_number {
-        color: #E0A100; }
-      .results .finalResults_table_player:nth-child(2) .finalResults_number {
-        color: #ADADAD; }
-      .results .finalResults_table_player:nth-child(3) .finalResults_number {
-        color: #966C00; }
-  .results .finalResults .cell {
-    font-size: 16px;
-    font-weight: 400;
-    align-content: center; }
-  .results .finalResults_player {
-    display: flex;
-    justify-content: flex-start;
-    align-content: center;
-    gap: 8px; }
-    .results .finalResults_player .playerLogo {
-      width: 27px;
-      height: 27px; }
-    .results .finalResults_player span {
+      font-weight: 400;
       align-content: center; }
-  .results .finalResults_games {
-    text-align: left; }
-  .results .finalResults_sets {
-    text-align: left; }
-  .results .finalResults_avarage {
-    text-align: left; }
-  .results .finalResults_before {
-    text-align: left; }
-  .results .finalResults_after {
-    text-align: left; }
+    .results .finalResults_player {
+      display: flex;
+      justify-content: flex-start;
+      align-content: center;
+      gap: 8px; }
+      .results .finalResults_player .playerLogo {
+        width: 27px;
+        height: 27px; }
+      .results .finalResults_player span {
+        align-content: center; }
+    .results .finalResults_games {
+      text-align: left; }
+    .results .finalResults_sets {
+      text-align: left; }
+    .results .finalResults_avarage {
+      text-align: left; }
+    .results .finalResults_before {
+      text-align: left; }
+    .results .finalResults_after {
+      text-align: left; }
 
 /* Контейнер с контентом внутри */
 .graySoftBlock {

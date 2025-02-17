@@ -468,7 +468,14 @@ app.get('/:lang(en|ru|th)/tournaments/:tournamentId', async (req, res) => {
     if (!tournamentId || !lang) {
       return res.status(404).render('404');
     }
-    await renderTournament(tournamentId, lang, res);
+    if (!tournamentId || tournamentId === "undefined") {
+      console.log("⚠️ Ошибка: передан некорректный tournamentId:", tournamentId);
+      // return res.status(400).send("Invalid tournament ID");
+    } else {
+      await renderTournament(tournamentId, lang, res);
+    }
+    
+    
   } catch (error) {
     console.error('Error in route handler:', error);
     res.status(500).send('Server error');
@@ -517,6 +524,27 @@ app.get('/:lang(en|ru|th)/dashboard/edittournament/:tournamentId/:userId', async
   }
 });
 
+// async function renderTournament(id, lang, res) {
+//   try {
+//     const db = getDB();
+//     const tournament = await db.collection('tournaments').findOne({ _id: new ObjectId(id) });
+
+//     if (!tournament) {
+//       return res.status(404).render('404');
+//     }
+
+//     if (tournament.datetime < new Date()) {
+//       return res.render(`${lang}/tournaments/past-tournament`);
+//     }
+//     if (tournament.datetime > new Date()) {
+//       return res.render(`${lang}/tournaments/upcoming-tournament`);
+//     }
+//   } catch (error) {
+//     console.error('Error fetching tournament:', error);
+//     res.status(500).send('Error fetching tournament');
+//   }
+// }
+
 async function renderTournament(id, lang, res) {
   try {
     const db = getDB();
@@ -526,10 +554,12 @@ async function renderTournament(id, lang, res) {
       return res.status(404).render('404');
     }
 
-    if (tournament.datetime < new Date()) {
+    const isFinished = tournament.finished === true; // Проверяем статус завершённости
+    const isPast = new Date(tournament.datetime) < new Date(); // Проверяем дату
+
+    if (isFinished || isPast) {
       return res.render(`${lang}/tournaments/past-tournament`);
-    }
-    if (tournament.datetime > new Date()) {
+    } else {
       return res.render(`${lang}/tournaments/upcoming-tournament`);
     }
   } catch (error) {
@@ -537,6 +567,7 @@ async function renderTournament(id, lang, res) {
     res.status(500).send('Error fetching tournament');
   }
 }
+
 
 
 app.get('/:lang(en|ru|th)/alltournaments', (req, res) => {
@@ -1167,7 +1198,8 @@ app.post('/saveTournament', async (req, res) => {
               wins: player.wins, 
               totalPoints: player.totalPoints,
               setsWon: player.setsWon,
-              setsLost: player.setsLost
+              setsLost: player.setsLost,
+              city: player.city
           }));
       }
 
@@ -1894,13 +1926,16 @@ app.get('/get-data-adv', async (req, res) => {
 });
 
 app.get('/get-data-tournament', async (req, res) => {
+  
   const { tournamentId } = req.query;
+  console.log("🔍 Получен запрос с ID:", tournamentId);
   try {
     const db = getDB();
     const dataTournament = await db.collection('tournaments').findOne({ _id: new ObjectId(tournamentId) });
     if (!dataTournament) {
       return res.status(404).send('Tournament not found');
     }
+    console.log('турнир получен');
     res.json(dataTournament);
   } catch (error) {
     console.error('Error fetching tournament data:', error);

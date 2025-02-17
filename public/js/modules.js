@@ -5888,8 +5888,16 @@ export async function getAllTournaments(user) {
             const currentLang = localStorage.getItem('clientLang') || 'english';
             const langKey = languageMap[currentLang];
 
-            let upcomingTournaments = tournaments.filter(tournament => new Date(tournament.datetime) >= new Date());
-            let pastTournaments = tournaments.filter(tournament => new Date(tournament.datetime) < new Date());
+            // let upcomingTournaments = tournaments.filter(tournament => new Date(tournament.datetime) >= new Date());
+            // let pastTournaments = tournaments.filter(tournament => new Date(tournament.datetime) < new Date());
+
+            //  **Фильтруем турниры**
+            let upcomingTournaments = tournaments.filter(tournament =>
+                new Date(tournament.datetime) >= new Date() && (tournament.finished === false || tournament.finished === undefined)
+            );
+
+            let pastTournaments = tournaments.filter(tournament => tournament.finished === true);
+
 
             // Сортируем турниры по дате
             upcomingTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
@@ -5956,6 +5964,7 @@ export async function getAllTournaments(user) {
 
                 let tournamentDiv = document.createElement('a');
                 tournamentDiv.className = `${className}_tournament`;
+                console.log(tournament._id);
                 if (user === 'admin') {
                     tournamentDiv.href = `/ru/dashboard/admin/edittournament/${tournament._id}`;
                 } else {

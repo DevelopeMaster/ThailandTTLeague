@@ -43,15 +43,90 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderPastTournamentResults(tournamentData);
     }
 
+    const clubNameBlock = document.querySelector('.tournament_mainInfo_info_name');
+    const logoBlock = document.querySelector('.tournament_mainInfo_logo');
+    const playersAndGames = document.querySelector('.tournament_mainInfo_info_descr_path_wrapp span');
+    const restrictionsBlock = document.querySelector('.restriction');
+    const avrRatingBlock = document.querySelector('.tournament_mainInfo_info_descr_path_avrRating');
+    const coefficientBlock = document.querySelector('.tournament_mainInfo_info_descr_path_coefficient');
+    const cityBlock = document.querySelector('.tournament_mainInfo_info_descr_path_city');
+    const popularScoreBlock = document.querySelector('.tournament_mainInfo_info_descr_path_wrapp_popularScore');
+
+    clubNameBlock.textContent = `${tournamentData.club.name}`;
+    logoBlock.style = `background-image: url(${tournamentData.club.logo}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;`;
+    playersAndGames.textContent = `${tournamentData.players.length} participants/${tournamentData.finishedPairs.length} games`;
+    restrictionsBlock.textContent = `${tournamentData.restrictions || tournamentData.ratingLimit}`;
+    
+    avrRatingBlock.textContent = `${tournamentData.averageRating}`;
+    coefficientBlock.textContent = `${tournamentData.coefficient}`;
 
 
+    const mostPopular = findMostPopularScore(tournamentData.results);   
+    popularScoreBlock.textContent =`${mostPopular}`;
 
-
+    const curCity = await getCityName(tournamentData.city._id);
+    console.log(curCity);
+    cityBlock.textContent = `${curCity}`;
 });
+
+async function getCityName(cityId) {
+    let currentLang = localStorage.getItem('clientLang');
+    
+    try {
+        const response = await fetch(`/cities/${cityId}`);
+        if (!response.ok) {
+            throw new Error('City data not found');
+        }
+        const city = await response.json();
+       
+        return city[currentLang] || city['english'];
+    } catch (error) {
+        console.error('Ошибка при получении названия города:', error);
+        return 'Unknown City';
+    }
+}
+
+function findMostPopularScore(results) {
+    if (!results || Object.keys(results).length === 0) {
+        console.warn("⚠️ Нет данных о результатах матчей.");
+        return null;
+    }
+
+    const scoreCount = {}; // Объект для подсчета встречаемости счетов
+
+    // Перебираем все результаты
+    Object.values(results).forEach(matches => {
+        Object.entries(matches).forEach(([opponentId, score]) => {
+            if (opponentId === "sets" || opponentId === "points") return; // Пропускаем технические поля
+
+            let [score1, score2] = score.split(":").map(Number);
+            if (isNaN(score1) || isNaN(score2)) return;
+
+            // Всегда записываем счет в формате "большее:меньшее"
+            const normalizedScore = score1 > score2 ? `${score1}:${score2}` : `${score2}:${score1}`;
+
+            scoreCount[normalizedScore] = (scoreCount[normalizedScore] || 0) + 1;
+        });
+    });
+
+    // Найти самый частый счет
+    let mostPopularScore = null;
+    let maxCount = 0;
+
+    Object.entries(scoreCount).forEach(([score, count]) => {
+        if (count > maxCount) {
+            mostPopularScore = score;
+            maxCount = count;
+        }
+    });
+
+    return mostPopularScore; // Возвращаем только счет
+}
+
+
 
 async function fetchTournament(tournamentId) {
     
-
     try {
         const response = await fetch(`/get-data-tournament?tournamentId=${tournamentId}`);
         

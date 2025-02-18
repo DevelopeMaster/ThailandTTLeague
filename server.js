@@ -1184,8 +1184,8 @@ app.post('/saveTournament', async (req, res) => {
           return res.status(400).json({ error: 'Tournament ID is required' });
       }
 
-      const { players, retiredPlayers, unratedPlayers, waitingPairs, finishedPairs, currentPairs, results, finished } = state;
-
+      const { players, retiredPlayers, unratedPlayers, waitingPairs, finishedPairs, currentPairs, results, finished, coefficient, averageRating } = state;
+      console.log('players from client', players);
       // Обновляем турнирные данные
       const updateData = {};
 
@@ -1248,6 +1248,12 @@ app.post('/saveTournament', async (req, res) => {
       }
       if (finished) {
         updateData.finished = finished;
+      }
+      if (averageRating) {
+        updateData.averageRating = averageRating;
+      }
+      if (coefficient) {
+        updateData.coefficient = coefficient;
       }
 
       // Проверяем, есть ли уже `initialRatings`

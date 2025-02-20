@@ -2667,7 +2667,8 @@ export async function fetchPastTournaments() {
       .then(response => response.json())
       .then(data => {
         
-        let pastTournaments = data.filter(tournament => new Date(tournament.datetime) <= new Date());
+        let pastTournaments = data.filter(tournament => tournament.finished === true);
+        // let pastTournaments = data.filter(tournament => new Date(tournament.datetime) <= new Date());
         pastTournaments.sort((a, b) => new Date(b.datetime) - new Date(a.datetime)).slice(0, 6);
         pastTournaments = pastTournaments.slice(0, 6);
 
@@ -2862,7 +2863,12 @@ export async function fetchFutureTournaments() {
         .then(data => {
             // let allClubs;
             // fetchAllClubs();
-            let futureTournaments = data.filter(tournament => new Date(tournament.datetime) > new Date());
+            let futureTournaments = data.filter(tournament =>
+                new Date(tournament.datetime) >= new Date() && (tournament.finished === false || tournament.finished === undefined)
+            );
+
+
+            // let futureTournaments = data.filter(tournament => new Date(tournament.datetime) > new Date());
             futureTournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
             futureTournaments = futureTournaments.slice(0, 10);
  

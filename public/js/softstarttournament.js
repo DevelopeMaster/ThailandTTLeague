@@ -2194,6 +2194,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const playerStats = tournament.players.map((player, index) => {
             const playerResults = tournament.results[index] || {};
+            console.log('игрок с результатами:', player.fullname || player.name, results[index]);
             const totalGames = Object.keys(playerResults).filter(key => key !== "sets" && key !== "points").length;
             let fullPlayerData = allplayers.find(p => p.id === player.id);
             const city = fullPlayerData ? fullPlayerData.cityName || fullPlayerData.city : "Unknown";

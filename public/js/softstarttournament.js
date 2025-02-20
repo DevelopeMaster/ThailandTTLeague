@@ -476,7 +476,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('city').value = '';
     });
 
-    async function saveTournament(state = null, byUser = false, standings = null) {
+    async function saveTournament(state = null, byUser = false, standings = null, final) {
         // Если состояние не передано, собираем его из текущих данных
         if (isRestoringState) {
             console.warn('State is still restoring. Save operation skipped.');
@@ -518,7 +518,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             };
             console.log(state, isRestoringState);
         }
-        console.log('standings', standings, state);
+        // console.log('standings', standings, state);
         if (standings) {
             console.log('standings', standings);
             console.log('state', state);
@@ -562,6 +562,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             
         }
         
+        if (final) {
+            state = final;
+        }
 
         isRestoringState = true;
         console.log('standings', standings);
@@ -2030,19 +2033,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.querySelector('.completed').style.display = 'block';
         document.querySelector('.results').style.display = 'block';
         // Устанавливаем флаг "finished" в `state`
+        tournamentData = await fetchTournament(tournamentId);
         tournamentData.finished = true;
 
         getTournamentCoefficient(tournamentData.initialRatings);
         tournamentData.averageRating = averageRating;
         tournamentData.coefficient = tournamentCoefficient;
 
-        await saveTournament(null, false, tournamentData.players);
+        // await saveTournament(null, false, tournamentData.players);
 
 
-        showErrorModal('Tournament saved successfully! Reloading page...', 'Congratulation');
-        setTimeout(() => {
-            window.location.reload();
-        }, 500);
+        // showErrorModal('Tournament saved successfully! Reloading page...', 'Congratulation');
+        // setTimeout(() => {
+        //     window.location.reload();
+        // }, 500);
+
+
         // console.log(tournamentData);
         // tournamentData = await saveFinal(tournamentData);
         // console.log('клииииик есть')
@@ -2055,10 +2061,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // document.getElementById("showResult").disabled = true;
         // tournamentData = await fetchTournament(tournamentId);
+
         renderCompletedGames(finishedPairs);
-        renderFinalResults();
+        renderFinalResults(tournamentData);
 
        
+        await saveTournament(null, false, null, tournamentData);
 
     });
 
@@ -2099,8 +2107,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         tournamentData = await fetchTournament(tournamentId);
         // Рендерим финальные результаты
-        renderCompletedGames(finishedPairs);
-        renderFinalResults();
+        renderCompletedGames(tournamentData.finishedPairs);
+        renderFinalResults(tournamentData);
     }
     
     function renderCompletedGames(pairs) {
@@ -2171,164 +2179,141 @@ document.addEventListener('DOMContentLoaded', async function() {
     
 
 
-    function renderFinalResults() {
+    function renderFinalResults(tournament) {
         const container = document.querySelector(".finalResults_table_content");
         if (!container) {
             console.error("❌ Элемент .finalResults_table_content не найден!");
             return;
         }
         container.innerHTML = ""; // Очищаем контейнер перед рендерингом
-    
-        if (!standingsGlobal || standingsGlobal.length === 0) {
+
+        if (!tournament.players || tournament.players.length === 0) {
             console.warn("⚠️ Нет данных для рендеринга финальных результатов.");
             return;
         }
-    
-        // const playerStats = standingsGlobal.map((player, index) => {
-        //     const playerIndex = tournamentData.players.findIndex(p => p.id === player.id);
-        //     if (playerIndex === -1) {
-        //         console.warn(`⚠️ Игрок с ID ${player.id} не найден.`);
-        //         return null;
-        //     }
-    
-        //     const playerData = tournamentData.players[playerIndex];
-            
-        //     // ⚡️ Находим игрока в `allPlayers` для получения города
-        //     let fullPlayerData = allplayers.find(p => p.id === player.id);
-        //     console.log('fullPlayerData', fullPlayerData);
-           
-        //     const city = fullPlayerData ? fullPlayerData.cityName : "Unknown";
-    
-        //     let totalGames = 0;
-        //     let wins = 0;
-        //     let losses = 0;
-        //     let totalSets = 0;
-        //     let wonSets = 0;
-        //     let lostSets = 0;
 
-        //     console.log('playerData', playerData);
-    
-            
-        //     // ⚡️ Ищем рейтинг ДО турнира в `initialRatings`
-        //     const ratingBeforeObj = tournamentData.initialRatings.find(r => r.id === player.id);
-        //     const ratingBefore = ratingBeforeObj ? ratingBeforeObj.rating : 0;
+        const playerStats = tournament.players.map((player, index) => {
+            const playerResults = tournament.results[index] || {};
+            const totalGames = Object.keys(playerResults).filter(key => key !== "sets" && key !== "points").length;
+            let fullPlayerData = allplayers.find(p => p.id === player.id);
+            const city = fullPlayerData ? fullPlayerData.cityName || fullPlayerData.city : "Unknown";
 
-        //     const ratingAfter = playerData.rating ?? 0;
-        //     const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
+            // ✅ Получаем рейтинг ДО турнира
+            const ratingBefore = tournament.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
+            // ✅ Рейтинг ПОСЛЕ турнира
+            const ratingAfter = player.rating ?? ratingBefore;
+            // ✅ Изменение рейтинга
+            const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
 
-        //     const userSets = parseInt(document.querySelector('#numberOfParties').value);
-    
-        //     // Подсчёт игр, побед, поражений, сетов
-        //     if (results[playerIndex]) {
-        //         Object.entries(results[playerIndex]).forEach(([opponentIndex, score]) => {
-        //             if (opponentIndex === "sets" || opponentIndex === "points") return;
-            
-        //             const [score1, score2] = score.split(":").map(Number);
-            
-        //             // 🛠️ Учитываем только 3 матча, чтобы не было лишних данных
-        //             if (totalGames < userSets) {  
-        //                 totalGames++;
-        //                 totalSets += score1 + score2;
-        //                 wonSets += score1;
-        //                 lostSets += score2;
-            
-        //                 // ✅ Добавляем логику побед и поражений
-        //                 if (score1 > score2) {
-        //                     wins++;  // Победа
-        //                 } else {
-        //                     losses++; // Поражение
-        //                 }
-        //             }
-        //         });
-        //     }
-            
-    
-        //     return {
-        //         place: playerData.place,
-        //         name: playerData.name || playerData.fullname,
-        //         city,
-        //         games: `${totalGames}(${wins}-${losses})`,
-        //         sets: `${totalSets}(${wonSets}-${lostSets})`,
-        //         ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
-        //         ratingBefore: ratingBefore.toFixed(1),
-        //         ratingAfter: ratingAfter.toFixed(1),
-        //         logo: playerData.logo
-        //     };
-        // }).filter(Boolean);
+            console.log('данные игрока', {place: player.place,
+                name: player.name || player.fullname,
+                city: city,
+                games: `${totalGames}(${player.wins}-${player.losses})`,
+                sets: `${player.setsWon + player.setsLost}(${player.setsWon}-${player.setsLost})`,
+                ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+                ratingBefore: ratingBefore.toFixed(1),
+                ratingAfter: ratingAfter.toFixed(1),
+                logo: player.logo});
 
-        const playerStats = standingsGlobal
-            .map((player, index) => {
-                const playerIndex = tournamentData.players.findIndex(p => p.id === player.id);
-                if (playerIndex === -1) {
-                    console.warn(`⚠️ Игрок с ID ${player.id} не найден.`);
-                    return null;
-                }
-                console.log(`Игрок ${player.name} (ID: ${player.id}) - индекс в results: ${playerIndex}`);
-                console.log('Текущий результат:', results[playerIndex]);
-
-                const playerData = tournamentData.players[playerIndex];
-
-                // ⚡️ Находим игрока в `allPlayers` для получения города
-                let fullPlayerData = allplayers.find(p => p.id === player.id);
-                console.log('fullPlayerData', fullPlayerData);
-            
-                const city = fullPlayerData ? fullPlayerData.cityName : "Unknown";
-
-                let totalGames = 0;
-                let wins = playerData.wins;
-                let losses = playerData.losses;
-                let wonSets = playerData.setsWon;
-                let lostSets = playerData.setsLost;
-                let totalSets = wonSets + lostSets;
-                let ratingChange = 0;
-
-                // ✅ Получаем рейтинг ДО турнира
-                const ratingBefore = tournamentData.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
-                // ✅ Рейтинг ПОСЛЕ турнира
-                const ratingAfter = playerData.rating ?? ratingBefore;
-                // ✅ Изменение рейтинга
-                ratingChange = (ratingAfter - ratingBefore).toFixed(1);
-
-                // ✅ Подсчёт игр, побед, поражений, сетов
-                if (results[playerIndex]) {
-                    Object.entries(results[playerIndex]).forEach(([opponentIndex, score]) => {
-                        if (opponentIndex === "sets" || opponentIndex === "points") return;
-                
-                        const [score1, score2] = score.split(":").map(Number);
-                        if (isNaN(score1) || isNaN(score2)) return;
-                
-                        totalGames++; // Увеличиваем количество сыгранных матчей
-                        // wonSets += score1; // Добавляем выигранные сеты
-                        // lostSets += score2; // Добавляем проигранные сеты
-
-                        // if (score1 <= score2) {
-                        //     losses++; // Поражение
-                        // } 
-                        // else {
-                        //     // wins++; // Победа
-                        // }
-                
-                    });
-                
-                    // totalSets = wonSets + lostSets; // Общий подсчёт сетов
-                }
-                
-                return {
-                    place: playerData.place, // 🏆 Используем `place` для сортировки
-                    name: playerData.name || playerData.fullname,
-                    city: city || "Unknown",
-                    games: `${totalGames}(${wins}-${losses})`,
-                    sets: `${totalSets}(${wonSets}-${lostSets})`,
-                    ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
-                    ratingBefore: ratingBefore.toFixed(1),
-                    ratingAfter: ratingAfter.toFixed(1),
-                    logo: `${playerData.logo}`
-                };
-            })
-            .filter(Boolean) // Убираем `null`, если игрока нет
-            .sort((a, b) => a.place - b.place); // ✅ Сортируем по `place`
+            return {
+                place: player.place,
+                name: player.name || player.fullname,
+                city: city,
+                games: `${totalGames}(${player.wins}-${player.losses})`,
+                sets: `${player.setsWon + player.setsLost}(${player.setsWon}-${player.setsLost})`,
+                ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+                ratingBefore: ratingBefore.toFixed(1),
+                ratingAfter: ratingAfter.toFixed(1),
+                logo: player.logo
+            };
+        }).sort((a, b) => a.place - b.place); // ✅ Сортируем по `place`
 
         console.log("📊 Финальная статистика игроков (отсортирована):", playerStats);
+        // const container = document.querySelector(".finalResults_table_content");
+        // if (!container) {
+        //     console.error("❌ Элемент .finalResults_table_content не найден!");
+        //     return;
+        // }
+        // container.innerHTML = ""; // Очищаем контейнер перед рендерингом
+    
+        // if (!standingsGlobal || standingsGlobal.length === 0) {
+        //     console.warn("⚠️ Нет данных для рендеринга финальных результатов.");
+        //     return;
+        // }
+    
+        // const playerStats = standingsGlobal
+        //     .map((player, index) => {
+        //         const playerIndex = tournamentData.players.findIndex(p => p.id === player.id);
+        //         if (playerIndex === -1) {
+        //             console.warn(`⚠️ Игрок с ID ${player.id} не найден.`);
+        //             return null;
+        //         }
+        //         console.log(`Игрок ${player.name} (ID: ${player.id}) - индекс в results: ${playerIndex}`);
+        //         console.log('Текущий результат:', results[playerIndex]);
+
+        //         const playerData = tournamentData.players[playerIndex];
+        //         console.log('playerData', playerData);
+        //         // ⚡️ Находим игрока в `allPlayers` для получения города
+        //         let fullPlayerData = allplayers.find(p => p.id === player.id);
+        //         console.log('fullPlayerData', fullPlayerData);
+            
+        //         const city = fullPlayerData ? fullPlayerData.cityName : "Unknown";
+
+        //         let totalGames = 0;
+        //         let wins = playerData.wins;
+        //         let losses = playerData.losses;
+        //         let wonSets = playerData.setsWon;
+        //         let lostSets = playerData.setsLost;
+        //         let totalSets = wonSets + lostSets;
+        //         let ratingChange = 0;
+
+        //         // ✅ Получаем рейтинг ДО турнира
+        //         const ratingBefore = tournamentData.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
+        //         // ✅ Рейтинг ПОСЛЕ турнира
+        //         const ratingAfter = playerData.rating ?? ratingBefore;
+        //         // ✅ Изменение рейтинга
+        //         ratingChange = (ratingAfter - ratingBefore).toFixed(1);
+
+        //         // ✅ Подсчёт игр, побед, поражений, сетов
+        //         if (results[playerIndex]) {
+        //             Object.entries(results[playerIndex]).forEach(([opponentIndex, score]) => {
+        //                 if (opponentIndex === "sets" || opponentIndex === "points") return;
+                
+        //                 const [score1, score2] = score.split(":").map(Number);
+        //                 if (isNaN(score1) || isNaN(score2)) return;
+                
+        //                 totalGames++; // Увеличиваем количество сыгранных матчей
+        //                 // wonSets += score1; // Добавляем выигранные сеты
+        //                 // lostSets += score2; // Добавляем проигранные сеты
+
+        //                 // if (score1 <= score2) {
+        //                 //     losses++; // Поражение
+        //                 // } 
+        //                 // else {
+        //                 //     // wins++; // Победа
+        //                 // }
+                
+        //             });
+                
+        //             // totalSets = wonSets + lostSets; // Общий подсчёт сетов
+        //         }
+                
+        //         return {
+        //             place: playerData.place, // 🏆 Используем `place` для сортировки
+        //             name: playerData.name || playerData.fullname,
+        //             city: city || "Unknown",
+        //             games: `${totalGames}(${wins}-${losses})`,
+        //             sets: `${totalSets}(${wonSets}-${lostSets})`,
+        //             ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+        //             ratingBefore: ratingBefore.toFixed(1),
+        //             ratingAfter: ratingAfter.toFixed(1),
+        //             logo: `${playerData.logo}`
+        //         };
+        //     })
+        //     .filter(Boolean) // Убираем `null`, если игрока нет
+        //     .sort((a, b) => a.place - b.place); // ✅ Сортируем по `place`
+
+        // console.log("📊 Финальная статистика игроков (отсортирована):", playerStats);
 
     
         // console.log("📊 Финальная статистика игроков:", playerStats);

@@ -194,6 +194,22 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function renderPlayerData() {
         const playerMainInfo = document.querySelector('.player_mainInfo');
+        const currentRating = player.rating;
+        const sundayRating = player.sundaysRating;
+        const ratingChange = currentRating - sundayRating;
+        let changeRatingColor;
+        let changeRatingSymbol;
+
+        if (ratingChange > 0) {
+            changeRatingColor = '#007026';  // Рейтинг увеличился
+            changeRatingSymbol = '+';
+        } else if (ratingChange < 0) {
+            changeRatingColor = '#ff0000c7';    // Рейтинг уменьшился
+            changeRatingSymbol = '';
+        } else {
+            changeRatingColor = '#adadada1';   // Рейтинг не изменился
+            changeRatingSymbol = '+';
+        } 
         // console.log(playerMainInfo);
         playerMainInfo.innerHTML = `
             <div class="player_mainInfo_logo" style="background-image: url(${player.logo || 'icons/playerslogo/default_avatar.svg'}); background-position: 50% center; background-size: cover; background-repeat: no-repeat;"></div>
@@ -204,7 +220,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="player_mainInfo_info_descr">
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Playing hand')}: <span>${getTranslation(player.hand)}</span></p>
-                        <p>${getTranslation('Rating')}: <span>${Math.round(player.rating) || ' - '}</span></p>
+                        <p>${getTranslation('Rating')}: <span style="margin-left: 5px">${Math.round(player.rating) || ' - '}</span> <span style="margin-left: 5px; color: ${changeRatingColor}">${changeRatingSymbol || ''}${ratingChange.toFixed(1) || ''}</span></p>
                         <p>${getTranslation('Training')}: <span>${player.trainingDuration / 60 || ' - '} ${getTranslation('hours')}</span></p>
                     </div>
                     <div class="player_mainInfo_info_descr_path">

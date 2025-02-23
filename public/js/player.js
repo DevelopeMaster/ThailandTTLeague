@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="player_mainInfo_info_descr">
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Playing hand')}: <span>${getTranslation(player.hand)}</span></p>
-                        <p>${getTranslation('Rating')}: <span style="margin-left: 5px">${Math.round(player.rating) || ' - '}</span> <span style="margin-left: 5px; color: ${changeRatingColor}">${changeRatingSymbol || ''}${ratingChange || ''}</span></p>
+                        <p>${getTranslation('Rating')}: <span style="margin-left: 5px">${Math.round(player.rating) || ' - '}</span> <span style="margin-left: 5px; color: ${changeRatingColor}">${changeRatingSymbol || ''}${ratingChange.toFixed(1) || ''}</span></p>
                         <p>${getTranslation('Coach')}: <span>${player.coach || ' - '}</span></p>
                     </div>
                     <div class="player_mainInfo_info_descr_path">

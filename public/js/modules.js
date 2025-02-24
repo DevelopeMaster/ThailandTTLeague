@@ -5732,9 +5732,9 @@ export async function getAllTournaments(user) {
             const response = await fetch(`/get-future-tournaments`);
             const tournaments = await response.json();
             allTournaments = tournaments;
-
+            // console.log(allTournaments);
             // Display first 12 tournaments initially
-            displayTournaments(tournaments.slice(0, 12), upcomingBlock, pastBlock);
+            displayTournaments(tournaments, upcomingBlock, pastBlock);
 
             const clubs = [...new Set(tournaments.map(tournament => tournament.club.name))];
             clubs.sort();
@@ -5912,7 +5912,7 @@ export async function getAllTournaments(user) {
             const renderTournament = async (tournament, container, className) => {
                 let tournamentDate = new Date(tournament.datetime);
                 let langMap = { 'english': 'en-US', 'thai': 'th-TH', 'russian': 'ru-RU' };
-
+                
 
                 const allPlayerIds = tournament.players && tournament.players.length > 0
                     ? [...new Set(tournament.players.map(player => player._id || player.id))]
@@ -6046,7 +6046,7 @@ export async function getAllTournaments(user) {
                     await renderTournament(tournaments[i], container, className);
                 }
             };
-
+            
             // Изначально отображаем по 12 турниров
             await displayTournamentsInParts(upcomingTournaments, upcomingContainer, 'upcommingTable', 0, 12);
             await displayTournamentsInParts(pastTournaments, pastContainer, 'lastTournamentsTable', 0, 12);

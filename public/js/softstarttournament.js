@@ -1354,7 +1354,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // console.log('results', results);
                 const finalStandings = determineTournamentStandings(standingsGlobal, results);
                 updateTournamentStandings(finalStandings, results);
-                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
             }
           
             renderPairsInWaitingBlock(waitingPairs);

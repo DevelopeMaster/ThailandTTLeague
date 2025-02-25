@@ -642,6 +642,7 @@ h2 {
         justify-content: space-between;
         align-items: flex-start;
         width: 33%;
+        flex: 1;
         color: #FFF;
         font-family: Inter;
         font-style: normal;
@@ -652,14 +653,25 @@ h2 {
           gap: 10px;
           font-size: 16px;
           font-weight: 400; }
-          .last_tournaments_tournament_clubDate_date span::first-letter {
-            text-transform: uppercase; }
+          .last_tournaments_tournament_clubDate_date span {
+            display: inline-block;
+            min-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; }
+            .last_tournaments_tournament_clubDate_date span::first-letter {
+              text-transform: uppercase; }
         .last_tournaments_tournament_clubDate_club {
           display: flex;
           align-items: center;
           gap: 10px;
           font-size: 20px;
           font-weight: 500; }
+          .last_tournaments_tournament_clubDate_club span {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; }
       .last_tournaments_tournament_winners {
         display: flex;
         flex-direction: column;
@@ -675,6 +687,12 @@ h2 {
           font-style: normal;
           font-weight: 400;
           line-height: normal; }
+          .last_tournaments_tournament_winners a span {
+            min-width: 150px;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; }
       .last_tournaments_tournament_aditInfo {
         display: flex;
         flex-direction: column;

@@ -141,6 +141,10 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.set('trust proxy', 1);
 
+app.use(express.static('public', {
+  maxAge: '30d'
+}));
+
 // app.get('/images', (req, res) => {
 //   // const { fileName } = req.params;
 //   console.log('перенаправлено');

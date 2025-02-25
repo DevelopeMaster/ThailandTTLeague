@@ -168,6 +168,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     let tournamentCoefficient;
     let allParticipants;
     let standingsGlobal;
+    let byUser = false;
     
 
     await fetchAllPlayers();
@@ -596,12 +597,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             const responseData = await response.json();
             console.log("✅ Tournament saved:", responseData);
             
-            // if (byUser) {
-            //     showErrorModal('Tournament saved successfully! Reloading page...', 'Congratulation');
-            //     setTimeout(() => {
-            //         window.location.reload();
-            //     }, 500);
-            // }
+            if (byUser) {
+                showErrorModal('Tournament saved successfully!', 'Congratulation');
+                byUser = false;
+            }
         } catch (error) {
             console.error('Error saving tournament:', error);
             // if (byUser) {
@@ -613,6 +612,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     document.getElementById('saveTournamentData').addEventListener('click', () => {
+        byUser = true;
         saveTournament(null);
     });
 

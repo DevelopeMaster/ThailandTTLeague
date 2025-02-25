@@ -598,6 +598,8 @@
                 justify-content: space-between
                 align-items: flex-start
                 width: 33%
+                // min-width: 190px
+                flex: 1
 
                 color: #FFF
                 font-family: Inter
@@ -611,6 +613,11 @@
                     font-size: 16px
                     font-weight: 400
                     span
+                        display: inline-block
+                        min-width: 150px
+                        white-space: nowrap
+                        overflow: hidden
+                        text-overflow: ellipsis
                         &::first-letter
                             text-transform: uppercase
                     
@@ -621,6 +628,12 @@
 
                     font-size: 20px
                     font-weight: 500
+                    span
+                        display: inline-block
+                        // min-width: 150px
+                        white-space: nowrap
+                        overflow: hidden
+                        text-overflow: ellipsis
             &_winners
                 display: flex
                 flex-direction: column
@@ -637,6 +650,13 @@
                     font-style: normal
                     font-weight: 400
                     line-height: normal
+                    span
+                        min-width: 150px
+                        display: inline-block
+                        white-space: nowrap
+                        overflow: hidden
+                        text-overflow: ellipsis
+
             &_aditInfo
                 display: flex
                 flex-direction: column

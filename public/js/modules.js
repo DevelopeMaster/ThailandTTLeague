@@ -2797,7 +2797,7 @@ export async function fetchPastTournaments() {
             pastRestrictionStatusDiv.style.background = '#ADADAD';
             let pastRestrictionDiv = document.createElement('div');
             pastRestrictionDiv.className = 'restriction';
-            pastRestrictionDiv.textContent = tournament.restrictions;
+            pastRestrictionDiv.textContent = tournament.restrictions || tournament.ratingLimit;
             pastRestrictionStatusDiv.appendChild(pastRestrictionDiv);
 
             playersLimitDiv.appendChild(pastPlayersDiv);

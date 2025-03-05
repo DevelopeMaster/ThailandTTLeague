@@ -761,7 +761,7 @@ h2 {
         .clubs_content_club_info_name {
           font-size: 20px;
           white-space: nowrap;
-          overflow: hidden;
+          overflow-x: clip;
           text-overflow: ellipsis;
           width: 100%; }
         .clubs_content_club_info_city {

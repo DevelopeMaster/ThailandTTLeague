@@ -1188,8 +1188,8 @@ app.post('/saveTournament', async (req, res) => {
           return res.status(400).json({ error: 'Tournament ID is required' });
       }
 
-      const { players, retiredPlayers, unratedPlayers, waitingPairs, finishedPairs, currentPairs, results, finished, coefficient, averageRating } = state;
-      console.log('players from client', players);
+      const { players, retiredPlayers, unratedPlayers, waitingPairs, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament } = state;
+      // console.log('players from client', players);
       // Обновляем турнирные данные
       const updateData = {};
 
@@ -1200,6 +1200,7 @@ app.post('/saveTournament', async (req, res) => {
               place: player.place || '',
               rating: player.rating,
               wins: player.wins,
+              logo: player.logo || "/icons/playerslogo/default_avatar.svg",
               losses: player.losses,
               totalPoints: player.totalPoints,
               setsWon: player.setsWon,
@@ -1212,6 +1213,7 @@ app.post('/saveTournament', async (req, res) => {
           updateData.retiredPlayers = retiredPlayers.map(player => ({
               id: player.id,
               fullname: player.fullname || player.name,
+              logo: player.logo || "/icons/playerslogo/default_avatar.svg",
               place: player.place || '',
               rating: player.rating,
           }));
@@ -1222,6 +1224,13 @@ app.post('/saveTournament', async (req, res) => {
               id: player.id,
               fullname: player.fullname || player.name,
               birthYear: player.birthYear,
+              place: player.place || '',
+              wins: player.wins,
+              losses: player.losses,
+              totalPoints: player.totalPoints,
+              setsWon: player.setsWon,
+              setsLost: player.setsLost,
+              logo: '/icons/playerslogo/default_avatar.svg',
               city: player.city,
               nickname: player.nickname,
               unrated: true,
@@ -1261,6 +1270,10 @@ app.post('/saveTournament', async (req, res) => {
         updateData.coefficient = coefficient;
       }
 
+      if (typeOfTournament) {
+        updateData.typeOfTournament = typeOfTournament;
+      }
+
       // Проверяем, есть ли уже `initialRatings`
       const existingTournament = await db.collection('tournaments').findOne(
           { _id: tournamentObjectId },
@@ -1273,7 +1286,7 @@ app.post('/saveTournament', async (req, res) => {
               fullname: player.fullname || player.name,
               rating: player.rating, // Сохраняем начальный рейтинг
           }));
-          console.log('рейтинги ДО сохранены');
+          // console.log('рейтинги ДО сохранены');
       }
       
 
@@ -1319,25 +1332,46 @@ app.post('/saveTournament', async (req, res) => {
 app.post("/updatePlayerRatings", async (req, res) => {
     try {
       const { players } = req.body;
-      // console.log(players);
+      console.log('players', players);
       const db = getDB();
   
       if (!players || players.length !== 2) {
+        console.log("Нужно передать двух игроков");
         return res.status(400).json({ error: "Нужно передать двух игроков" });
       }
   
       const [player1, player2] = players;
   
-      // Проверяем, что ID валидные
-      if (!ObjectId.isValid(player1.id) || !ObjectId.isValid(player2.id)) {
-        return res.status(400).json({ error: "Некорректный ID игрока" });
+      // Проверяем, что объекты игроков не пустые
+      if (!player1 || !player2) {
+        console.log("Игроки не переданы");
+        return res.status(400).json({ error: "Игроки не переданы" });
       }
+
+      // Проверяем, что у игроков есть ID
+      if (!player1.id || !player2.id) {
+        console.log("Отсутствует ID у одного из игроков");
+        return res.status(400).json({ error: "Отсутствует ID у одного из игроков" });
+      }
+
+      // // Проверяем, что ID валидные
+      // if (!ObjectId.isValid(player1.id) || !ObjectId.isValid(player2.id)) {
+      //   console.log("Некорректный ID игрока");
+      //   return res.status(400).json({ error: "Некорректный ID игрока" });
+      // }
   
       // Функция поиска игрока в коллекции и обновления рейтинга
       const updatePlayerRating = async (collection, player) => {
+        console.log("обьект игрока", player);
         if (player.unrated) {
           console.log(`Игрок ${player.name} внерейтинговый (unrated), обновление пропущено.`);
           return player; // Просто возвращаем игрока, ничего не меняя
+        }
+
+        // Проверяем, что ID валидные
+        if (!ObjectId.isValid(player.id)) {
+          console.log("Некорректный ID игрока");
+          return res.status(400).json({ error: "Некорректный ID игрока" });
         }
   
         const existingPlayer = await db.collection(collection).findOne({ _id: new ObjectId(player.id) });
@@ -2153,6 +2187,7 @@ app.get('/get-players-with-city/', async (req, res) => {
       return res.status(200).json(allPlayers.map(player => ({
         id: player._id,
         name: player.fullname || player.name,
+        logo: player.logo,
         birthYear: player.birthdayDate ? new Date(player.birthdayDate).getFullYear() : '',
         cityName: 'Unknown City',
         role: player.role,
@@ -2173,6 +2208,7 @@ app.get('/get-players-with-city/', async (req, res) => {
       id: player._id,
       name: player.fullname || player.name,
       nickname: player.nickname,
+      logo: player.logo,
       rating: player.rating,
       birthYear: player.birthdayDate ? new Date(player.birthdayDate).getFullYear() : ' ',
       cityName: cityMap[player.city?.toString()] || ' '

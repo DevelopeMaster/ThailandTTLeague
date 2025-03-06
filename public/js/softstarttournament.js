@@ -2331,7 +2331,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             return {
                 place: player.place,
                 name: player.name || player.fullname,
-                city: city,
+                city: (city === "Unknown") ? player.city : city,
                 games: `${totalGames}(${player.wins}-${player.losses})`,
                 sets: `${player.setsWon + player.setsLost}(${player.setsWon}-${player.setsLost})`,
                 ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,

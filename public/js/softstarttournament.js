@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     let club;
     let tournaments;
     let ratingLimit;
-    let isRestoringState = false;
 
     console.log('user:', userId, 'tournament:', tournamentId );
 
@@ -89,34 +88,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     
 
-    async function fetchTournament(tournamentId) {
-        isRestoringState = true;
-        try {
-          const response = await fetch(`/get-data-tournament?tournamentId=${tournamentId}`);
-          
-          if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to fetch tournament data.');
-          }
-      
-          const tournament = await response.json();
-        //   console.log('Tournament data:', tournament);
-          ratingLimit = tournament.ratingLimit || tournament.restrictions;
-          isRestoringState = false;
-          return tournament;
-        } catch (error) {
-          console.error('Error fetching tournament:', error.message);
-          showErrorModal(error.message || 'Failed to fetch tournament data.');
-          isRestoringState = true;
-          return null;
-        }
-    }
+    
 
     let tournamentData = await fetchTournament(tournamentId);
-    // console.log('данные турнира на входе:', tournamentData);
     let waitingPairs = tournamentData.waitingPairs || [];
     let currentPairs = tournamentData.currentPairs || [];
     let finishedPairs = tournamentData.finishedPairs || [];
+    let roundCounter = tournamentData.roundCounter || 1;
     const numberOfTabels = document.querySelector('#numberOfTables');
     numberOfTabels.value = `${clubData.tables}`;
     const ratingLimitInput = document.querySelector('#ratingLimit');
@@ -126,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const dropdownTypeOfTournament = document.querySelector('#typeOfTournamentDropdown');
     const dropdownItems = dropdownTypeOfTournament.querySelectorAll('div');
     let selectedType = tournamentData.typeOfTournament || 'roundRobin';
-    console.log(selectedType);
+
     dropdownItems.forEach(item => {
         if (item.getAttribute('data-type') === selectedType) {
             inputTypeOfTournament.value = item.textContent;
@@ -140,24 +118,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         dropdownTypeOfTournament.style.display =
             dropdownTypeOfTournament.style.display === 'none' ? 'block' : 'none';
     });
-
     // Выбор элемента из списка
     dropdownItems.forEach(item => {
         item.addEventListener('click', () => {
-            // Устанавливаем значение в поле ввода
             inputTypeOfTournament.value = item.textContent;
-
-            // Можно сохранить выбранный тип в скрытом поле или обработать как вам нужно
             selectedType = item.getAttribute('data-type');
-            console.log('Selected tournament type:', selectedType);
             const displayHeader = document.querySelector('.display_header h3');
             displayHeader.textContent = item.textContent;
-
-            // Закрываем выпадающий список
             dropdownTypeOfTournament.style.display = 'none';
         });
     });
-
     // Закрытие выпадающего списка при клике вне его
     document.addEventListener('click', (event) => {
         if (!dropdownTypeOfTournament.contains(event.target) && event.target !== inputTypeOfTournament) {
@@ -172,13 +142,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     const dropdown = document.getElementById('headerPlayerDropdown');
     let allplayers = [];
     let results = {};
+    let round1Results = {};
+    let round2Results = {};
     let averageRating;
     let tournamentCoefficient;
     let allParticipants;
     let standingsGlobal;
     let byUser = false;
-    let isTwoRoundsTournament = false;
-    
 
     await fetchAllPlayers();
     
@@ -211,7 +181,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             dropdown.style.display = 'none';
         }
     });
-
 
     async function fetchAllPlayers() {
         try {
@@ -249,50 +218,40 @@ document.addEventListener('DOMContentLoaded', async function() {
             playerDiv.addEventListener('click', () => {
                 input.value = player.name;
                 input.setAttribute('data-id', player.id);
-                
-                 // Удаляем обработчик focus
+                // Удаляем обработчик focus
                 input.removeEventListener('focus', handleFocus);
-                
                 dropdown.style.display = 'none';
-
                 // Восстанавливаем обработчик после небольшой задержки
                 setTimeout(() => {
                     input.addEventListener('focus', handleFocus);
                 }, 100);
             });
         });
-        
     }
-
 
     let selectedPlayers = (tournamentData.players || []).map(player => {
         const fullPlayerData = allplayers.find(p => p.id === player.id);
         return fullPlayerData ? { ...player, ...fullPlayerData } : null; // Если игрок найден, объединяем данные
     }).filter(player => player !== null); // Удаляем игроков, которые не найдены в allplayers
-    // console.log('selectedPlayers', selectedPlayers);
-    // Преобразование списка выбывших игроков
+   
     let retiredPlayers = (tournamentData.retiredPlayers || []).map(player => {
         const fullPlayerData = allplayers.find(p => p.id === player.id);
         return fullPlayerData ? { ...player, ...fullPlayerData } : null; // Если игрок найден, объединяем данные
     }).filter(player => player !== null);
-    // console.log(retiredPlayers);
 
     let unratedPlayersList = tournamentData.unratedPlayers || []; // Массив для внерейтинговых игроков
    
     if (tournamentData.results) {
         results = tournamentData.results; // Восстанавливаем сохранённые результаты
-        // restoreSavedResults(results); // Перерисовываем таблицу с данными
     }
-    // console.log('выбраные игроки', selectedPlayers, unratedPlayersList);
-    allParticipants = [...selectedPlayers, ...unratedPlayersList]
-        .sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    // console.log('выбраные игроки после слияния', allParticipants);
-    //добавление игрока в список
 
+    allParticipants = [...selectedPlayers, ...unratedPlayersList].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    
+    //добавление игрока в список
     const addPlayerButton = document.getElementById('addPlayertoTournament');
     const playerListContainer = document.querySelector('.startTournament_panelWrapp_players_registration_showPlayers');
     const retiredPlayerListContainer = document.querySelector('.startTournament_panelWrapp_players_retired_list');
-    // Обработчик для кнопки Add
+    
     addPlayerButton.addEventListener('click', () => {
         const playerId = input.getAttribute('data-id'); // Получаем ID выбранного игрока из атрибута
         if (!playerId) {
@@ -343,12 +302,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         } else {
             showErrorModal('Player not found.');
         }
-        saveTournament(null, selectedPlayers);
+        saveTournament(null, allParticipants);
     });
 
     // Функция для рендеринга списка активных и выбывших игроков
     function renderPlayerList(players, retired, unrated) {
-        // Очищаем контейнеры перед рендерингом
         playerListContainer.innerHTML = '';
         retiredPlayerListContainer.innerHTML = '';
     
@@ -381,20 +339,21 @@ document.addEventListener('DOMContentLoaded', async function() {
     
         // Рендеринг выбывших игроков
         if (retired.length > 0) {
-            
             retired.forEach((player, index) => {
                 const playerDiv = createPlayerDiv(player, index + 1, true);
                 retiredPlayerListContainer.appendChild(playerDiv);
             });
         }
-        // saveTournament();
     }
 
     // Функция для создания элемента игрока
     function createPlayerDiv(player, number, isRetired = false) {
         const playerDiv = document.createElement('div');
         playerDiv.classList.add('startTournament_panelWrapp_players_registration_showPlayers_item');
-
+        const initialPlayer = tournamentData?.initialRatings?.find(p => p.id === player.id) || null;
+        const initialPlayerRating = initialPlayer ? initialPlayer.rating : null;
+       
+        const playerRating = initialPlayerRating || player.rating;
         playerDiv.innerHTML = `
             <div class="number">
                 <h3>${number}</h3>
@@ -406,7 +365,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <h3>${player.birthYear || player}</h3>
             </div>
             <div class="rating">
-                <h3>${Number.isFinite(player.rating) ? Math.round(player.rating) : '-'}</h3>
+                <h3>${Number.isFinite(playerRating) ? Math.round(playerRating) : '-'}</h3>
             </div>
             <div class="city">
                 <h3>${player.city || player.cityName}</h3>
@@ -434,8 +393,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 retiredPlayers.push({ ...player, retired: true });
             }
             renderPlayerList(selectedPlayers, retiredPlayers, unratedPlayersList); // Перерисовываем списки
+            allParticipants = [...selectedPlayers, ...unratedPlayersList].sort((a, b) => (b.rating || 0) - (a.rating || 0))
+            saveTournament();
         });
-
         return playerDiv;
     }
 
@@ -488,129 +448,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('city').value = '';
     });
 
-    async function saveTournament(state = null, standings = null, final) {
-        // console.log('сохранение...');
-        // console.log(standings);
-        // if (isRestoringState) {
-        //     console.warn('State is still restoring. Save operation skipped.');
-        //     return;
-        // }
-
-       
-
-        if (!state) {
-            state = {
-                players: selectedPlayers.map(player => {
-                    const fullPlayerData = allplayers.find(p => p.id === player.id);
-                    return {
-                        id: player.id,
-                        birthYear: player.birthYear,
-                        fullname: player.fullname || player.name,
-                        place: player.place,
-                        rating: player.rating,
-                        city: fullPlayerData ? fullPlayerData.city  || fullPlayerData.cityName : "Unknown"
-                    };
-                }),
-                retiredPlayers: retiredPlayers.map(player => ({
-                    id: player.id,
-                    birthYear: player.birthYear,
-                    fullname: player.fullname || player.name,
-                    rating: player.rating,
-                    retired: true // Флаг выбывшего игрока
-                })),
-                unratedPlayers: unratedPlayersList.map(player => ({
-                    id: player.id,
-                    name: player.name || player.fullname,
-                    birthYear: player.birthYear,
-                    city: player.city,
-                    nickname: player.nickname,
-                    unrated: true // Флаг внерейтингового игрока
-                })),
-                waitingPairs,
-                currentPairs,
-                finishedPairs,
-                results,
-                initialRatings: tournamentData.initialRatings,
-                typeOfTournament: tournamentData.typeOfTournament || selectedType || 'roundRobin'
-            };
-        }
-        // console.log('state', state);
-        // console.log('standings', standings);
-        
-        if (Array.isArray(standings) && standings.length > 0) {
-            const updatedPlayers = [];
-            const updatedUnratedPlayers = [];
-        
-            standings.forEach(player => {
-                const updatedPlayer = state.players.find(p => p.id === player.id);
-                const mergedPlayer = updatedPlayer ? { ...updatedPlayer, ...player } : player;
-        
-                if (mergedPlayer.unrated) {
-                    updatedUnratedPlayers.push(mergedPlayer); // Нерейтинговые игроки
-                } else {
-                    updatedPlayers.push(mergedPlayer); // Рейтинговые игроки
-                }
-            });
-        
-            state.players = updatedPlayers;
-            state.unratedPlayers = updatedUnratedPlayers;
-        }
-
-       
-
-        if (
-            (!standings || standings.length === 0) &&
-            (!state || Object.keys(state).length === 0 || waitingPairs.length > 0 || currentPairs.length > 0 || finishedPairs.length > 0)
-        ) {
-            if (!tournamentData.finished) {
-                console.log("`standings` отсутствует, но пары есть. Ждем обновления...");
-                return;
-            } 
-            
-        }
-        
-        if (final) {
-            state = { ...state, ...final }; // Объединяем данные без потери информации
-        }
-
-        // isRestoringState = true;
-        state.finished = tournamentData.finished || false;
-
-
-        // console.log('standings', standings);
-        // console.log('state for save', state);
-        try {
-            const response = await fetch('/saveTournament', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tournamentId, state }),
-            });
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Failed to save tournament');
-            }
-
-            const responseData = await response.json();
-            console.log("✅ Tournament saved:", responseData);
-            
-            if (byUser) {
-                showErrorModal('Tournament saved successfully!', 'Congratulation');
-                byUser = false;
-            }
-        } catch (error) {
-            console.error('Error saving tournament:', error);
-            // if (byUser) {
-            showErrorModal(error.message || 'Failed to save tournament');
-            // }
-        } finally {
-            isRestoringState = false; // Разблокируем сохранение
-        }
-    }
+    
 
     document.getElementById('saveTournamentData').addEventListener('click', () => {
         byUser = true; 
-        saveTournament(null);
+        if (selectedType === 'roundRobin') {
+            saveTournament(null);
+        }
+        if (selectedType === 'twoRound') {
+            saveTournamentTwoRound(null, allParticipants);
+        }
     });
 
 
@@ -623,24 +470,53 @@ document.addEventListener('DOMContentLoaded', async function() {
         startTournament.classList.add('disabledButton'); // Обновляем текст кнопки (по желанию)
         addPlayertoTournament.disabled = true;
         addPlayertoTournament.classList.add('disabledButton');
-        startTournamentDisplay(allParticipants);
-        if (tournamentData.results) {
-            results = tournamentData.results; // Восстанавливаем сохранённые результаты
-            restoreSavedResults(results); // Перерисовываем таблицу с данными
+
+        if (selectedType === 'roundRobin') {
+            startTournamentDisplay(allParticipants, '.displayTournamentFirst');
+            if (tournamentData.results) {
+                results = tournamentData.results; // Восстанавливаем сохранённые результаты
+                restoreSavedResults(results); // Перерисовываем таблицу с данными
+            }
         }
+        if (selectedType === 'twoRound') {
+            
+            // startTournamentDisplay([...tournamentData.players, ...tournamentData.unratedPlayers], '.displayTournamentFirst');
+            startTournamentDisplay(allParticipants, '.displayTournamentFirst');
+            if (tournamentData.roundCounter === 2) {
+                document.querySelector('.displayTournamentSecond').style.display = 'block';
+                startTournamentDisplay(allParticipants, '.displayTournamentSecond');
+                // startTournamentDisplay([...tournamentData.players, ...tournamentData.unratedPlayers], '.displayTournamentSecond');
+            }
+
+            if (tournamentData.round1Results) {
+                console.log('Первый круг есть. Восстанавливаем...', tournamentData.round1Results);
+                round1Results = tournamentData.round1Results; // Восстанавливаем сохранённые результаты
+                restoreSavedResultsTwoRound(round1Results, 1); // Перерисовываем таблицу с данными
+            }
+
+            if (tournamentData.round2Results && tournamentData.players[1].place_round1 > 0) {
+                console.log('Второй круг есть. Восстанавливаем...',tournamentData.round2Results);
+                round2Results = tournamentData.round2Results; // Восстанавливаем сохранённые результаты
+                restoreSavedResultsTwoRound(round2Results, 2); // Перерисовываем таблицу с данными
+            }
+        }
+
     } else {
         startTournament.disabled = false; // Оставляем кнопку активной
         startTournament.classList.remove('disabledButton');
+
         startTournament.addEventListener('click', () => {
             // console.log('selectedPlayers', [...selectedPlayers, ...unratedPlayersList]);
-            if ([...selectedPlayers, ...unratedPlayersList] && [...selectedPlayers, ...unratedPlayersList].length > 2) {
+            if ((allParticipants && allParticipants.length > 2) || ([...selectedPlayers, ...unratedPlayersList] && [...selectedPlayers, ...unratedPlayersList].length > 2)) {
                 if (selectedType === 'roundRobin') {
                     console.log('start round robin tournament');
                     // Генерируем пары игроков
                     const pairs = generateRoundRobinPairs([...selectedPlayers, ...unratedPlayersList]);
                     saveInitialRatings([...selectedPlayers, ...unratedPlayersList]);
-                    
-                    startTournamentDisplay([...selectedPlayers, ...unratedPlayersList]);
+                    allParticipants = [...selectedPlayers, ...unratedPlayersList].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                    console.log('allParticipants',allParticipants);
+                    startTournamentDisplay(allParticipants, '.displayTournamentFirst');
+                    // startTournamentDisplay([...selectedPlayers, ...unratedPlayersList], '.displayTournamentFirst');
                     // Отображаем пары в блоке ожидания
                     renderPairsInWaitingBlock(pairs);
                     startTournament.disabled = true; // Отключаем кнопку
@@ -648,28 +524,32 @@ document.addEventListener('DOMContentLoaded', async function() {
                     saveTournament();
                 } else 
                 if (selectedType === 'twoRound') {
-                    console.log('start two-round tournament');
+                    console.log(`start two-round tournament (roundCounter: ${roundCounter})`);
+                    console.log('allParticipants', allParticipants);
                     // Генерируем пары игроков
                     const pairs = generateRoundRobinPairs([...selectedPlayers, ...unratedPlayersList]);
                     saveInitialRatings([...selectedPlayers, ...unratedPlayersList]);
                     
-                    startTournamentDisplay([...selectedPlayers, ...unratedPlayersList]);
+                    // startTournamentDisplay([...selectedPlayers, ...unratedPlayersList], '.displayTournamentFirst');
+                    startTournamentDisplay(allParticipants, '.displayTournamentFirst');
                     // Отображаем пары в блоке ожидания
                     renderPairsInWaitingBlock(pairs);
+                    waitingPairs = pairs;
                     startTournament.disabled = true; // Отключаем кнопку
                     startTournament.classList.add('disabledButton'); // Обновляем стиль кнопки
-                    saveTournament();
+                    saveTournamentTwoRound(null, allParticipants);
                 }
             } else {
-                // console.log('меньше 3')
                 showErrorModal('Cannot start the tournament with fewer than three players.', 'OPS!');
             }
             
         });
     }
 
-    function renderTournamentTable(players) {
-        const tournamentWrapper = document.querySelector('.tournament-wrapper');
+
+    function renderTournamentTable(players, containerSelector) {
+        // console.log(containerSelector);
+        const tournamentWrapper = document.querySelector(`${containerSelector} .tournament-wrapper`);
         tournamentWrapper.innerHTML = ""; // Очищаем контейнер перед рендером
     
         // 📌 1. Рендер списка игроков
@@ -768,12 +648,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         addBracketsAndHighlightResults();
 
         // 📌 4. Обновляем места игроков
-        updateTournamentStandings(players, results);
+        if ( selectedType === 'roundRobin') {
+            updateTournamentStandings(players, results);
+        } else if ( selectedType === 'twoRound') {
+            updateTournamentStandingsTwoRound(players, results, roundCounter);
+        }
+        
+        
 
     }
 
-    function startTournamentDisplay(players) {
-        renderTournamentTable(players);
+    function startTournamentDisplay(players, block) {
+        renderTournamentTable(players, block);
         // console.log(players);
         // Добавление обработчиков для завершения игр
         document.querySelectorAll("td[contenteditable]").forEach((cell) => {
@@ -802,44 +688,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         return `${p2}:${p1}`;
     }
     
-    // function calculatePoints(playerCount) {
-    //     const points = new Array(playerCount).fill(0);
-    
-    //     for (const row in results) {
-    //         for (const col in results[row]) {
-    //             const [p1, p2] = results[row][col].trim().split(":").map(Number);
-    
-    //             // if (p1 > p2) points[row] += 3; // Победа
-    //             // else if (p1 === p2) {
-    //             //     points[row] += 1; // Ничья
-    //             //     points[col] += 1;
-    //             // } else points[col] += 3; // Проигрыш
-
-    //             if (p1 > p2) {
-    //                 points[row] += 2; // ✅ Победителю 2 очка
-    //                 points[col] += 1; // ✅ Проигравшему 1 очко
-    //             } else if (p1 < p2) {
-    //                 points[col] += 2; // ✅ Победителю 2 очка
-    //                 points[row] += 1; // ✅ Проигравшему 1 очко
-    //             }
-    //         }
-    //     }
-    
-    //     // Обновляем очки в таблице
-    //     document.querySelectorAll(".points").forEach((cell, index) => {
-    //         cell.textContent = points[index] || "0";
-    //     });
-    
-    //     // Сортировка мест
-    //     const sorted = points.map((p, i) => ({ index: i, points: p }))
-    //         .sort((a, b) => b.points - a.points)
-    //         .map((p, i) => ({ ...p, place: i + 1 }));
-    
-    //     // Обновляем места в таблице
-    //     sorted.forEach(({ index, place }) => {
-    //         document.querySelectorAll(".place")[index].textContent = place;
-    //     });
-    // }
 
     function calculatePoints(playerCount) {
         const points = new Array(playerCount).fill(0);
@@ -849,8 +697,17 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const [p1, p2] = results[row][col].trim().split(":").map(Number);
                 const player1 = allParticipants[row];
                 const player2 = allParticipants[col];
-    
-                if (player1.unrated || player2.unrated) {
+
+                if (player1.unrated && player2.unrated) {
+                    // Если оба игрока нерейтинговые
+                    if (p1 > p2) {
+                        points[row] += 2;
+                        points[col] += 1;
+                    } else if (p1 < p2) {
+                        points[col] += 2;
+                        points[row] += 1;
+                    }
+                } else if (player1.unrated || player2.unrated) {
                     // Если один из игроков нерейтинговый
                     if (player1.unrated) {
                         points[row] += 1; // Нерейтинговый игрок всегда получает 1 очко
@@ -871,14 +728,18 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             }
         }
-    
         // Обновляем очки в таблице
         document.querySelectorAll(".points").forEach((cell, index) => {
             cell.textContent = points[index] || "0";
         });
     
         // Обновляем места игроков
-        updateTournamentStandings(players, results);
+        if ( selectedType === 'roundRobin') {
+            updateTournamentStandings(players, results);
+        } 
+        else if ( selectedType === 'twoRound') {
+            updateTournamentStandingsTwoRound(allParticipants, results, roundCounter);
+        }
     }
     
 
@@ -936,36 +797,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         return sortedPairs;
     }
 
-    // Функция для рендера пар в блок ожидания
-    // function renderPairsInWaitingBlock(pairs) {
-    //     waitingPairs = pairs;
-    //     waitingBlockContainer.innerHTML = ''; // Очищаем блок ожидания
-
-    //     pairs.forEach((pair, index) => {
-    //         const pairDiv = document.createElement('div');
-    //         pairDiv.classList.add('startTournament_panelWrapp_tournament_games_watingBlock_pairs_item');
-    //         pairDiv.setAttribute('data-player1-id', pair.player1.id);
-    //         pairDiv.setAttribute('data-player2-id', pair.player2.id);
-
-    //         pairDiv.innerHTML = `
-    //             <div class="group">
-    //                 <span>Gr.1</span>
-    //             </div>
-    //             <div class="pair">
-    //                 <h6>${pair.player1.name || pair.player1.fullname}</h6>
-    //                 <h6>:</h6>
-    //                 <h6>${pair.player2.name || pair.player2.fullname}</h6>
-    //             </div>
-    //         `;
-
-    //         // Добавляем обработчик события для выбора пары
-    //         pairDiv.addEventListener('click', () => {
-    //             movePairToPlaying(pair, false, pairDiv);
-    //         });
-
-    //         waitingBlockContainer.appendChild(pairDiv);
-    //     });
-    // }
 
     function renderPairsInWaitingBlock(pairs) {
         waitingPairs = pairs;
@@ -985,9 +816,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             pairDiv.classList.add('startTournament_panelWrapp_tournament_games_watingBlock_pairs_item');
             pairDiv.setAttribute('data-player1-id', pair.player1.id);
             pairDiv.setAttribute('data-player2-id', pair.player2.id);
-    
-            
-            // pairDiv.style.color = isBlocked ? 'red' : 'white';
             
             // Если хотя бы один игрок уже играет, блокируем клик
             if (!isBlocked) {
@@ -1070,7 +898,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                                     waitingPair.player2.id === pair.player2.id
                                 )
                         );
-                        // console.log('waitingPairs', waitingPairs);
                         
                         currentPairs.push(pair);
                         renderPairsInWaitingBlock(waitingPairs);
@@ -1191,17 +1018,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             `;
 
             // Проверяем, играет ли игрок последний матч в турнире
-            // function isLastGame(playerId) {
-            //     return !waitingPairs.some(pair => pair.player1.id === playerId || pair.player2.id === playerId);
-            // }
             function isLastGame(playerId) {
-                // Проверяем, сколько раз игрок встречается в waitingPairs
                 const occurrences = waitingPairs.filter(pair => pair.player1.id === playerId || pair.player2.id === playerId).length;
-                
                 // Если игрок найден только один раз (это текущая пара), значит, это его последняя игра
                 return occurrences === 1;
             }
-            
 
             // Получаем элементы для отображения информации о последней игре
             const firstPlayerLastGame = modal.querySelector('.modalPairBlock_firstPlayer_lastGame');
@@ -1335,8 +1156,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
         document.getElementById("saveGameResult").onclick = async () => {
-                  
-
             let player1Score = scoreInputs[0].value.trim();
             let player2Score = scoreInputs[1].value.trim();
 
@@ -1384,43 +1203,94 @@ document.addEventListener('DOMContentLoaded', async function() {
             playingDiv.remove();
 
             // **Обновляем таблицу результатов**
-            updateTableResults(pair, player1Score, player2Score, setsSummary);
-        
+            if (selectedType === 'roundRobin') {
+                updateTableResults(pair, player1Score, player2Score, setsSummary);
+            }
+
+            if (selectedType === 'twoRound') {
+                updateTableResultsTwoRounds(pair, player1Score, player2Score, setsSummary);
+            }
+            
             // **Расчёт рейтинга**
             const isWinnerNewbie = winner.tournamentsPlayed < 5;
             const isLoserNewbie = loser.tournamentsPlayed < 5;
             
             updatePlayerRating(winner, loser, scoreDiff, isWinnerNewbie, isLoserNewbie);
-        
-            
+         
             // **Закрываем модальное окно**
             modal.style.display = "none";
-        
             
-        
-            updateTournamentStandings([...selectedPlayers, ...unratedPlayersList], results);
+            if ( selectedType === 'roundRobin') {
+                updateTournamentStandings([...selectedPlayers, ...unratedPlayersList], results);
+            } 
+            // else if ( selectedType === 'twoRound') {
+            //     updateTournamentStandingsTwoRound([...selectedPlayers, ...unratedPlayersList], results, roundCounter);
+            // }
+            
             // **Сохраняем изменения в БД**
             await saveUpdatedRatings(winner, loser);
             // saveTournament();
             addBracketsAndHighlightResults();
 
             if (currentPairs.length === 0 && waitingPairs.length === 0) {
-                document.querySelector('#showResult').style = 'display: block';
-                console.log("Все игры завершены! Распределяем места...");
-                // console.log('standingsGlobal', standingsGlobal);
-                // console.log('results', results);
-                const finalStandings = determineTournamentStandings(standingsGlobal, results);
-                updateTournamentStandings(finalStandings, results);
-
-                if (selectedType === 'twoRound') {
-                    const secondRoundPairs = generateRoundRobinPairs([...selectedPlayers, ...unratedPlayersList]);
-                    renderSecondRoundTable(secondRoundPairs); // Рендер второго круга
+                console.log('standingsGlobal перед финальным расчетом:', standingsGlobal);
+                console.log('results перед финалом:', results);
+                console.log('round1Results перед финалом:', round1Results);
+                console.log('round2Results перед финалом:', round2Results);
+                
+                if (selectedType === 'roundRobin') {
+                    document.querySelector('#showResult').style = 'display: block';
+                    console.log("Все игры завершены! Распределяем места...");
+                    let sortedStandings = allParticipants.map(player => {
+                        const updated = standingsGlobal.find(p => p.id === player.id);
+                        return updated ? { ...player, ...updated } : player;
+                    });
+                    console.log('sortedStandings', sortedStandings)
+                    const finalStandings = determineTournamentStandings(sortedStandings, results);
+                    console.log('finalStandings', finalStandings)
+                    updateTournamentStandings(finalStandings, results);
+                    // setTimeout(() => {
+                    //     window.location.reload();
+                    // }, 500);
                 }
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
+
+                if (selectedType === 'twoRound' && roundCounter === 1) {
+                    console.log('глобал перед теминейт', standingsGlobal);
+                    roundCounter = 2;
+                    const final1RoundStandings = determineTournamentStandingsTwoRounds(standingsGlobal, round1Results, null);
+                    console.log('после теминейт', final1RoundStandings);
+                    updateTournamentStandingsTwoRound(final1RoundStandings, round1Results, 1);
+                    roundCounter = 2;
+                    
+
+                    document.querySelector('.displayTournamentSecond').style.display = ' block';
+                    const secondRoundPairs = generateRoundRobinPairs([...selectedPlayers, ...unratedPlayersList]);
+                    renderTournamentTable(allParticipants, '.displayTournamentSecond'); // Рендер второго круга
+                    // Отображаем пары в блоке ожидания
+                    renderPairsInWaitingBlock(secondRoundPairs);
+                    waitingPairs = secondRoundPairs;
+                    saveTournamentTwoRound(null, standingsGlobal);
+                    return;
+                } else if (selectedType === 'twoRound' && roundCounter === 2) {
+                    document.querySelector('#showResult').style = 'display: block';
+                    console.log("2 круга завершены! Распределяем места...");
+                    console.log('round2Results', round2Results);
+                    const final2RoundStandings = determineTournamentStandingsTwoRounds(standingsGlobal, null, round2Results);
+                    console.log('тут стэндингс при завершении последнего матча:', final2RoundStandings);
+                    updateTournamentStandingsTwoRound(final2RoundStandings, round2Results, 2);
+
+                    // Создаём копию `allParticipants`, чтобы избежать потери данных
+                    const finalStandings = determineTournamentStandingsTwoRounds(standingsGlobal, round1Results, round2Results);
+                    console.log('finalStandings сформированы', finalStandings)
+                    // const finalStandings = determineTournamentStandingsTwoRounds(standingsGlobal, round1Results, round2Results);
+                    // updateTournamentStandingsTwoRound(finalStandings, results, "final");
+                    saveTournamentTwoRound(null, finalStandings);
+                } else {
+                    // setTimeout(() => {
+                    //     window.location.reload();
+                    // }, 500);
+                }
             }
-          
             renderPairsInWaitingBlock(waitingPairs);
         };
     
@@ -1465,37 +1335,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         modal.style.display = "block";
     }
 
-    // function determineTournamentStandings(standings, results) {
-    //     // Копируем массив, чтобы не менять оригинальные данные
-    //     let sortedStandings = [...standings];
-    
-    //     // Сортируем игроков по очкам, выигранным сетам и победам
-    //     sortedStandings.sort((a, b) => {
-    //         if (b.totalPoints !== a.totalPoints) return b.totalPoints - a.totalPoints; // 1️⃣ Сортируем по очкам
-    //         if (b.setsWon !== a.setsWon) return b.setsWon - a.setsWon;                 // 2️⃣ По выигранным сетам
-    //         if (b.wins !== a.wins) return b.wins - a.wins;                             // 3️⃣ По количеству побед
-    //         return 0;
-    //     });
-    
-
-    //     // Создаем объект для хранения мест
-    //     const placesMap = new Map();
-    //     sortedStandings.forEach((player, index) => {
-    //         placesMap.set(player.id, index + 1);
-    //     });
-    
-    //     // Вставляем места в оригинальный массив standings
-    //     standings.forEach(player => {
-    //         player.place = placesMap.get(player.id);
-    //     });
-    
-    //     return standings;
-    // }
 
     function determineTournamentStandings(standings, results) {
         // Копируем массив, чтобы не менять оригинальные данные
+        console.log('determinate standings', standings);
         let sortedStandings = [...standings];
-    
+       
+        // let sortedStandings = allParticipants.map(player => {
+        //     const updated = standings.find(p => p.id === player.id);
+        //     return updated ? { ...player, ...updated } : player;
+        // });
+
+        console.log('determinate список', sortedStandings);
         // 1️⃣ Сортируем сначала только по очкам (по убыванию)
         sortedStandings.sort((a, b) => b.totalPoints - a.totalPoints);
     
@@ -1538,149 +1389,478 @@ document.addEventListener('DOMContentLoaded', async function() {
                 player.place = index + 1;
             });
         }
-        
-
-        // // Вставляем места в оригинальный массив standings
-        // standings.forEach(player => {
-        //     player.place = placesMap.get(player.id);
-        // });
     
         return sortedStandings;
     }
-    
-    // Функция для сравнения личных встреч
+
     function compareHeadToHead(playerA, playerB, results) {
-        const playerAId = playerA.id;
-        const playerBId = playerB.id;
+        const indexA = allParticipants.findIndex(p => p.id === playerA.id);
+        const indexB = allParticipants.findIndex(p => p.id === playerB.id);
     
-        if (results[playerAId] && results[playerAId][playerBId]) {
-            const [scoreA, scoreB] = results[playerAId][playerBId].split(":").map(Number);
-            if (scoreA > scoreB) return -1; // Победа игрока A
-            if (scoreA < scoreB) return 1;  // Победа игрока B
+        if (indexA === -1 || indexB === -1) return 0;
+    
+        const isAUnrated = playerA.unrated;
+        const isBUnrated = playerB.unrated;
+    
+        // ✅ Если один из игроков нерейтинговый — автоматически выигрывает рейтинговый
+        if (isAUnrated && !isBUnrated) return 1;  // Побеждает B
+        if (!isAUnrated && isBUnrated) return -1; // Побеждает A
+    
+        // ✅ Если оба нерейтинговые — считаем по сетам
+        let scoreA = 0, scoreB = 0;
+    
+        if (results[indexA] && results[indexA][indexB]) {
+            const [a, b] = results[indexA][indexB].split(":").map(Number);
+            scoreA += a;
+            scoreB += b;
         }
     
-        if (results[playerBId] && results[playerBId][playerAId]) {
-            const [scoreB, scoreA] = results[playerBId][playerAId].split(":").map(Number);
-            if (scoreA > scoreB) return 1;  // Победа игрока B
-            if (scoreA < scoreB) return -1; // Победа игрока A
+        if (results[indexB] && results[indexB][indexA]) {
+            const [b, a] = results[indexB][indexA].split(":").map(Number);
+            scoreA += a;
+            scoreB += b;
         }
     
-        return 0; // Если личная встреча не решает
+        return scoreB - scoreA;
     }
     
-    // function determineTournamentStandings(standings, results) {
-    //     // Создаем копию массива standings, чтобы не нарушать оригинальный порядок
+    
+    
+    // Функция для сравнения личных встреч
+    // function compareHeadToHead(playerA, playerB, results) {
+    //     const playerAId = playerA.id;
+    //     const playerBId = playerB.id;
+    
+    //     if (results[playerAId] && results[playerAId][playerBId]) {
+    //         const [scoreA, scoreB] = results[playerAId][playerBId].split(":").map(Number);
+    //         if (scoreA > scoreB) return -1; // Победа игрока A
+    //         if (scoreA < scoreB) return 1;  // Победа игрока B
+    //     }
+    
+    //     if (results[playerBId] && results[playerBId][playerAId]) {
+    //         const [scoreB, scoreA] = results[playerBId][playerAId].split(":").map(Number);
+    //         if (scoreA > scoreB) return 1;  // Победа игрока B
+    //         if (scoreA < scoreB) return -1; // Победа игрока A
+    //     }
+    
+    //     return 0; // Если личная встреча не решает
+    // }
+
+    function determineTournamentStandingsTwoRounds(players, round1Results = null, round2Results = null) {
+        let standings = [...players];
+        const allPlayers = [...players];
+    
+        const isRound1 = round1Results && !round2Results;
+        const isRound2 = !round1Results && round2Results;
+        const isFinal = round1Results && round2Results;
+    
+        let pointsKey, placeKey, results;
+        if (isRound1) {
+            pointsKey = "points_round1";
+            placeKey = "place_round1";
+            results = round1Results;
+        } else if (isRound2) {
+            pointsKey = "points_round2";
+            placeKey = "place_round2";
+            results = round2Results;
+        } else if (isFinal) {
+            pointsKey = "totalPoints";
+            placeKey = "place";
+        }
+    
+        // 🧠 При финальном расчёте пересчитываем total победы, поражения и сеты
+        if (isFinal) {
+            standings = standings.map((player, index) => {
+                const playerIndex = allPlayers.findIndex(p => p.id === player.id);
+                let wins = 0, losses = 0, setsWon = 0, setsLost = 0;
+    
+                const combinedResults = [round1Results, round2Results];
+                for (const round of combinedResults) {
+                    const row = round?.[playerIndex];
+                    if (!row) continue;
+    
+                    for (let opponentIndex in row) {
+                        if (opponentIndex === "sets" || opponentIndex === "points") continue;
+                        const opponent = allPlayers[opponentIndex];
+                        if (!opponent) continue;
+    
+                        const [score1, score2] = row[opponentIndex].split(":").map(Number);
+    
+                        setsWon += score1;
+                        setsLost += score2;
+    
+                        const isUnratedOpponent = opponent.unrated;
+                        const isUnratedPlayer = player.unrated;
+    
+                        if (isUnratedPlayer && isUnratedOpponent) {
+                            if (score1 > score2) wins++;
+                            else losses++;
+                        } else if (isUnratedOpponent) {
+                            // Победа автоматически зачисляется игроку
+                            wins++;
+                        } else if (isUnratedPlayer) {
+                            losses++;
+                        } else {
+                            if (score1 > score2) wins++;
+                            else losses++;
+                        }
+                    }
+                }
+    
+                return {
+                    ...player,
+                    wins,
+                    losses,
+                    setsWon,
+                    setsLost
+                };
+            });
+        }
+    
+        // 🔽 Сортировка по очкам
+        let sortedStandings = [...standings];
+        sortedStandings.sort((a, b) => b[pointsKey] - a[pointsKey]);
+    
+        // 🔁 Группировка по очкам
+        let groupedStandings = [];
+        let currentGroup = [sortedStandings[0]];
+    
+        for (let i = 1; i < sortedStandings.length; i++) {
+            if (sortedStandings[i][pointsKey] === sortedStandings[i - 1][pointsKey]) {
+                currentGroup.push(sortedStandings[i]);
+            } else {
+                groupedStandings.push(currentGroup);
+                currentGroup = [sortedStandings[i]];
+            }
+        }
+        groupedStandings.push(currentGroup);
+    
+        // 🧠 Сортировка в группе по личным встречам и сетам
+        groupedStandings.forEach(group => {
+            if (group.length > 1) {
+                group.sort((a, b) => {
+                    const matchResult = isFinal
+                        ? compareHeadToHeadTwoRounds(a, b, round1Results, round2Results, allPlayers)
+                        : compareHeadToHead(a, b, results);
+    
+                    if (matchResult !== 0) return matchResult;
+    
+                    const setsDiffA = a.setsWon - a.setsLost;
+                    const setsDiffB = b.setsWon - b.setsLost;
+                    return setsDiffB - setsDiffA;
+                });
+            }
+        });
+    
+        // 🏆 Назначение мест
+        const sortedPlayers = groupedStandings.flat();
+        sortedPlayers.forEach((player, index) => {
+            player[placeKey] = index + 1;
+        });
+    
+        return standings.map(player => {
+            const updated = sortedPlayers.find(p => p.id === player.id);
+            return {
+                ...player,
+                [placeKey]: updated[placeKey],
+                points_round1: player.points_round1 ?? updated.points_round1,
+                points_round2: player.points_round2 ?? updated.points_round2
+            };
+        });
+    }
+    
+    
+    // function determineTournamentStandingsTwoRounds(players, round1Results = null, round2Results = null) {
+    //     let standings = [...players];
+    //     const allPlayers = [...players];
+    
+    //     let isRound1 = round1Results && !round2Results;
+    //     let isRound2 = !round1Results && round2Results;
+    //     let isFinal = round1Results && round2Results;
+    
+    //     let pointsKey, placeKey, results;
+    //     if (isRound1) {
+    //         pointsKey = "points_round1";
+    //         placeKey = "place_round1";
+    //         results = round1Results;
+    //     } else if (isRound2) {
+    //         pointsKey = "points_round2";
+    //         placeKey = "place_round2";
+    //         results = round2Results;
+    //     } else if (isFinal) {
+    //         pointsKey = "totalPoints";
+    //         placeKey = "place";
+    //     }
+    
+    //     let sortedStandings = [...standings];
+    //     sortedStandings.sort((a, b) => b[pointsKey] - a[pointsKey]);
+    
+    //     let groupedStandings = [];
+    //     let currentGroup = [sortedStandings[0]];
+    
+    //     for (let i = 1; i < sortedStandings.length; i++) {
+    //         if (sortedStandings[i][pointsKey] === sortedStandings[i - 1][pointsKey]) {
+    //             currentGroup.push(sortedStandings[i]);
+    //         } else {
+    //             groupedStandings.push(currentGroup);
+    //             currentGroup = [sortedStandings[i]];
+    //         }
+    //     }
+    //     groupedStandings.push(currentGroup);
+    
+    //     groupedStandings.forEach(group => {
+    //         if (group.length > 1) {
+    //             group.sort((a, b) => {
+    //                 const matchResult = isFinal
+    //                     ? compareHeadToHeadTwoRounds(a, b, round1Results, round2Results, allPlayers)
+    //                     : compareHeadToHead(a, b, results);
+    
+    //                 if (matchResult !== 0) return matchResult;
+    
+    //                 const setsDifferenceA = a.setsWon - a.setsLost;
+    //                 const setsDifferenceB = b.setsWon - b.setsLost;
+    //                 return setsDifferenceB - setsDifferenceA;
+    //             });
+    //         }
+    //     });
+    
+    //     let sortedPlayers = groupedStandings.flat();
+    //     sortedPlayers.forEach((player, index) => {
+    //         player[placeKey] = index + 1;
+    //     });
+    
+    //     return standings.map(player => {
+    //         const updated = sortedPlayers.find(p => p.id === player.id);
+    //         return {
+    //             ...player,
+    //             [placeKey]: updated[placeKey],
+    //             points_round1: player.points_round1 ?? updated.points_round1,
+    //             points_round2: player.points_round2 ?? updated.points_round2
+    //         };
+    //     });
+    // }
+    
+    // function determineTournamentStandingsTwoRounds(players, round1Results = null, round2Results = null) {
+    //     let standings = [...players];
+    
+    //     let isRound1 = round1Results && !round2Results;
+    //     let isRound2 = !round1Results && round2Results;
+    //     let isFinal = round1Results && round2Results;
+    
+    //     let pointsKey, placeKey, results;
+    //     if (isRound1) {
+    //         pointsKey = "points_round1";
+    //         placeKey = "place_round1";
+    //         results = round1Results;
+    //     } else if (isRound2) {
+    //         pointsKey = "points_round2";
+    //         placeKey = "place_round2";
+    //         results = round2Results;
+    //     } else if (isFinal) {
+    //         pointsKey = "totalPoints";
+    //         placeKey = "place";
+    
+    //         // 1️⃣ Пересчитываем всё для финального ранжирования
+    //         standings.forEach((player, index) => {
+    //             let wins = 0;
+    //             let losses = 0;
+    //             let setsWon = 0;
+    //             let setsLost = 0;
+    
+    //             [round1Results, round2Results].forEach(resultObj => {
+    //                 const row = resultObj[index];
+    //                 if (!row) return;
+    
+    //                 for (let col in row) {
+    //                     if (col === "sets" || col === "points") continue;
+    //                     const [score1, score2] = row[col].split(":").map(Number);
+    //                     setsWon += score1;
+    //                     setsLost += score2;
+    //                     if (score1 > score2) wins++;
+    //                     else losses++;
+    //                 }
+    //             });
+    
+    //             player.setsWon = setsWon;
+    //             player.setsLost = setsLost;
+    //             player.wins = wins;
+    //             player.losses = losses;
+    //             player.totalPoints = (player.points_round1 || 0) + (player.points_round2 || 0);
+    //         });
+    //     }
+    
+    //     // 2️⃣ Копия для сортировки
     //     let sortedStandings = [...standings];
     
-    //     // 1️⃣ Сортируем по очкам (по убыванию)
-    //     sortedStandings.sort((a, b) => b.totalPoints - a.totalPoints);
+    //     // 3️⃣ Сортируем по очкам
+    //     sortedStandings.sort((a, b) => b[pointsKey] - a[pointsKey]);
     
-    //     // Функция для сравнения двух игроков
-    //     function comparePlayers(playerA, playerB) {
-    //         // 2️⃣ Проверяем по количеству очков
-    //         if (playerA.totalPoints !== playerB.totalPoints) {
-    //             return playerB.totalPoints - playerA.totalPoints;
+    //     // 4️⃣ Группируем по одинаковым очкам
+    //     let groupedStandings = [];
+    //     let currentGroup = [sortedStandings[0]];
+    //     for (let i = 1; i < sortedStandings.length; i++) {
+    //         if (sortedStandings[i][pointsKey] === sortedStandings[i - 1][pointsKey]) {
+    //             currentGroup.push(sortedStandings[i]);
+    //         } else {
+    //             groupedStandings.push(currentGroup);
+    //             currentGroup = [sortedStandings[i]];
     //         }
+    //     }
+    //     groupedStandings.push(currentGroup);
     
-    //         // 3️⃣ Проверяем по количеству выигранных сетов
-    //         if (playerA.setsWon !== playerB.setsWon) {
-    //             return playerB.setsWon - playerA.setsWon;
+    //     // 5️⃣ Сортировка внутри группы
+    //     groupedStandings.forEach(group => {
+    //         if (group.length > 1) {
+    //             group.sort((a, b) => {
+    //                 const matchResult = isFinal
+    //                     ? compareHeadToHeadTwoRounds(a, b, round1Results, round2Results)
+    //                     : compareHeadToHead(a, b, results);
+    
+    //                 if (matchResult !== 0) return matchResult;
+    
+    //                 const setsDiffA = a.setsWon - a.setsLost;
+    //                 const setsDiffB = b.setsWon - b.setsLost;
+    //                 return setsDiffB - setsDiffA;
+    //             });
     //         }
+    //     });
     
-    //         // 4️⃣ Проверяем по соотношению побед и поражений
-    //         const ratioA = playerA.wins / Math.max(1, playerA.setsLost);
-    //         const ratioB = playerB.wins / Math.max(1, playerB.setsLost);
+    //     // 6️⃣ Проставляем места
+    //     let sortedPlayers = groupedStandings.flat();
+    //     sortedPlayers.forEach((player, index) => {
+    //         player[placeKey] = index + 1;
+    //     });
     
-    //         if (ratioA !== ratioB) {
-    //             return ratioB - ratioA;
-    //         }
+    //     // 7️⃣ Возвращаем игроков в исходном порядке
+    //     return standings.map(player => {
+    //         const updated = sortedPlayers.find(p => p.id === player.id);
+    //         console.log({
+    //             ...player,
+    //             [placeKey]: updated?.[placeKey],
+    //             totalPoints: isFinal ? updated?.totalPoints : player.totalPoints,
+    //             setsWon: isFinal ? updated?.setsWon : player.setsWon,
+    //             setsLost: isFinal ? updated?.setsLost : player.setsLost,
+    //             wins: isFinal ? updated?.wins : player.wins,
+    //             losses: isFinal ? updated?.losses : player.losses
+    //         });
+    //         return {
+    //             ...player,
+    //             [placeKey]: updated?.[placeKey],
+    //             totalPoints: isFinal ? updated?.totalPoints : player.totalPoints,
+    //             setsWon: isFinal ? updated?.setsWon : player.setsWon,
+    //             setsLost: isFinal ? updated?.setsLost : player.setsLost,
+    //             wins: isFinal ? updated?.wins : player.wins,
+    //             losses: isFinal ? updated?.losses : player.losses
+    //         };
+    //     });
+    // }
     
-    //         // 5️⃣ Если всё ещё равенство, ищем личную встречу в results
-    //         const playerAIndex = standings.findIndex(p => p.id === playerA.id);
-    //         const playerBIndex = standings.findIndex(p => p.id === playerB.id);
+    function compareHeadToHeadTwoRounds(playerA, playerB, round1Results, round2Results, allPlayers) {
+        const indexA = allPlayers.findIndex(p => p.id === playerA.id);
+        const indexB = allPlayers.findIndex(p => p.id === playerB.id);
     
-    //         if (results[playerAIndex] && results[playerAIndex][playerBIndex]) {
-    //             const [scoreA, scoreB] = results[playerAIndex][playerBIndex].split(":").map(Number);
-    //             if (scoreA > scoreB) return -1; // Победил playerA
-    //             if (scoreA < scoreB) return 1;  // Победил playerB
-    //         }
+        let scoreA = 0, scoreB = 0;
     
-    //         // 6️⃣ Если ничья по всем критериям, оставляем порядок как есть
+        const compareResults = (results) => {
+            if (results?.[indexA]?.[indexB]) {
+                const [p1, p2] = results[indexA][indexB].split(":").map(Number);
+                const isUnratedB = allPlayers[indexB]?.unrated;
+                scoreA += isUnratedB && p1 < p2 ? p1 + 1 : p1;  // Победа при игре с нерейтинговым
+                scoreB += isUnratedB && p1 < p2 ? p2 - 1 : p2;
+            }
+            if (results?.[indexB]?.[indexA]) {
+                const [p2, p1] = results[indexB][indexA].split(":").map(Number);
+                const isUnratedA = allPlayers[indexA]?.unrated;
+                scoreA += isUnratedA && p1 < p2 ? p1 - 1 : p1;
+                scoreB += isUnratedA && p1 < p2 ? p2 + 1 : p2;
+            }
+        };
+    
+        compareResults(round1Results);
+        compareResults(round2Results);
+    
+        return scoreB - scoreA;
+    }
+    
+    
+    // function compareHeadToHeadTwoRounds(playerA, playerB, round1Results, round2Results) {
+    //     const playerAId = playerA.id;
+    //     const playerBId = playerB.id;
+    
+    //     // ✅ Находим индексы игроков в общем списке
+    //     const playerAIndex = allParticipants.findIndex(p => p.id === playerAId);
+    //     const playerBIndex = allParticipants.findIndex(p => p.id === playerBId);
+    
+    //     if (playerAIndex === -1 || playerBIndex === -1) {
+    //         console.warn(`⚠️ Ошибка: Не удалось найти индекс для одного из игроков (${playerAId}, ${playerBId})`);
     //         return 0;
     //     }
     
-    //     // Применяем кастомную сортировку
-    //     sortedStandings.sort(comparePlayers);
+    //     let scoreA = 0, scoreB = 0;
     
-    //     // Создаем объект для хранения мест
-    //     const placesMap = new Map();
-    //     sortedStandings.forEach((player, index) => {
-    //         placesMap.set(player.id, index + 1);
-    //     });
+    //     // ✅ Проверяем личные встречи в 1-м круге (используем индексы)
+    //     if (round1Results[playerAIndex] && round1Results[playerAIndex][playerBIndex]) {
+    //         const [p1, p2] = round1Results[playerAIndex][playerBIndex].split(":").map(Number);
+    //         scoreA += p1;
+    //         scoreB += p2;
+    //     }
+    //     if (round1Results[playerBIndex] && round1Results[playerBIndex][playerAIndex]) {
+    //         const [p2, p1] = round1Results[playerBIndex][playerAIndex].split(":").map(Number);
+    //         scoreA += p1;
+    //         scoreB += p2;
+    //     }
     
-    //     // Вставляем места в оригинальный массив standings
-    //     standings.forEach(player => {
-    //         player.place = placesMap.get(player.id);
-    //     });
+    //     // ✅ Проверяем личные встречи во 2-м круге (используем индексы)
+    //     if (round2Results[playerAIndex] && round2Results[playerAIndex][playerBIndex]) {
+    //         const [p1, p2] = round2Results[playerAIndex][playerBIndex].split(":").map(Number);
+    //         scoreA += p1;
+    //         scoreB += p2;
+    //     }
+    //     if (round2Results[playerBIndex] && round2Results[playerBIndex][playerAIndex]) {
+    //         const [p2, p1] = round2Results[playerBIndex][playerAIndex].split(":").map(Number);
+    //         scoreA += p1;
+    //         scoreB += p2;
+    //     }
     
-    //     return standings;
+    //     console.log(`⚔️ Личные встречи ${playerA.name} vs ${playerB.name}: ${scoreA}:${scoreB}`);
+    
+    //     return scoreB - scoreA; // У кого больше очков в личных встречах — тот выше
     // }
     
-
-    // function addBracketsAndHighlightResults() {
-    //     document.querySelectorAll("td[data-row][data-col]").forEach(td => {
-    //         const text = td.textContent.trim();
+    // function compareHeadToHeadTwoRounds(playerA, playerB, round1Results, round2Results) {
+    //     const playerAId = playerA.id;
+    //     const playerBId = playerB.id;
     
-    //         // Проверяем, есть ли результат в формате "X:Y"
-    //         if (/^\d+:\d+$/.test(text) && !td.classList.contains("points") && !td.classList.contains("place")) {
-    //             const [score1, score2] = text.split(":").map(n => parseInt(n, 10));
+    //     let scoreA = 0, scoreB = 0;
     
-    //             // Удаляем старую дужку, если есть
-    //             td.querySelector(".svg-bracket")?.remove();
+    //     // Считаем очки личных встреч за 1-й круг
+    //     if (round1Results[playerAId] && round1Results[playerAId][playerBId]) {
+    //         const [p1, p2] = round1Results[playerAId][playerBId].split(":").map(Number);
+    //         scoreA += p1;
+    //         scoreB += p2;
+    //     }
+    //     if (round1Results[playerBId] && round1Results[playerBId][playerAId]) {
+    //         const [p2, p1] = round1Results[playerBId][playerAId].split(":").map(Number);
+    //         scoreA += p1;
+    //         scoreB += p2;
+    //     }
     
-    //             // Создаём контейнер, чтобы текст и дужка не мешали друг другу
-    //             if (!td.querySelector(".td-wrapper")) {
-    //                 const wrapper = document.createElement("div");
-    //                 wrapper.classList.add("td-wrapper");
-    //                 wrapper.style.position = "relative"; // Для абсолютного позиционирования дужки
-    //                 wrapper.style.display = "flex";
-    //                 wrapper.style.alignItems = "center"; // Выравнивание по центру
-    //                 wrapper.style.justifyContent = "center";
-    //                 wrapper.style.height = "100%";
-    //                 wrapper.innerHTML = text;
-    //                 td.innerHTML = "";
-    //                 td.appendChild(wrapper);
-    //             }
+    //     // Считаем очки личных встреч за 2-й круг
+    //     if (round2Results[playerAId] && round2Results[playerAId][playerBId]) {
+    //         const [p1, p2] = round2Results[playerAId][playerBId].split(":").map(Number);
+    //         scoreA += p1;
+    //         scoreB += p2;
+    //     }
+    //     if (round2Results[playerBId] && round2Results[playerBId][playerAId]) {
+    //         const [p2, p1] = round2Results[playerBId][playerAId].split(":").map(Number);
+    //         scoreA += p1;
+    //         scoreB += p2;
+    //     }
     
-    //             // Добавляем SVG-дужку
-    //             const svg = document.createElement("img");
-    //             svg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='58' height='10' viewBox='0 0 58 10' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0V4C0 7.31372 2.68628 10 6 10H52C55.3137 10 58 7.31372 58 4V0C58 3.31372 55.3137 6 52 6H6C2.68628 6 0 3.31372 0 0Z' fill='white'/%3E%3C/svg%3E";
-    //             svg.classList.add("svg-bracket");
-    //             svg.style.width = "58px";
-    //             svg.style.height = "10px";
-    //             svg.style.position = "absolute"; // Абсолютное позиционирование
-    //             svg.style.bottom = "0px"; // Чуть ниже текста
-    //             svg.style.left = "50%"; // Центрирование
-    //             svg.style.transform = "translateX(-50%)"; // Точная центровка
-    
-    //             td.appendChild(svg);
-    
-    //             // Окрашивание ячейки в зависимости от результата
-    //             if (score1 > score2) {
-    //                 td.style.background = "#FA6400"; // Победитель
-    //             } else {
-    //                 td.style.background = "#D10000"; // Проигравший
-    //             }
-    //         } else {
-    //             // Если формат неверный или ячейка не должна содержать дужку — сбрасываем стили
-    //             td.style.background = "";
-    //             td.querySelector(".svg-bracket")?.remove();
-    //             if (td.querySelector(".td-wrapper")) {
-    //                 td.innerHTML = td.querySelector(".td-wrapper").textContent;
-    //             }
-    //         }
-    //     });
+    //     return scoreB - scoreA; // У кого больше очков в личных встречах — тот выше
     // }
+    
+    
 
     function addBracketsAndHighlightResults() {
         document.querySelectorAll("td[data-row][data-col]").forEach(td => {
@@ -1691,9 +1871,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const [score1, score2] = text.split(":").map(n => parseInt(n, 10));
                 const row = parseInt(td.getAttribute("data-row"));
                 const col = parseInt(td.getAttribute("data-col"));
-                const player1 = allParticipants[row];
-                const player2 = allParticipants[col];
+                const player1 = [...selectedPlayers, ...unratedPlayersList][row];
+                const player2 = [...selectedPlayers, ...unratedPlayersList][col];
     
+                if (!player1 || !player2) {
+                    console.log('игрок не найден')
+                }
                 // Удаляем старую дужку, если есть
                 td.querySelector(".svg-bracket")?.remove();
     
@@ -1750,127 +1933,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
-
-    function updateTableResults(pair, player1Score, player2Score, setsSummary) {
-        // console.log('allParticipants', pair);
-        
-        const rowIndex = [...selectedPlayers, ...unratedPlayersList].findIndex(p => p.id === pair.player1.id);
-        const colIndex = [...selectedPlayers, ...unratedPlayersList].findIndex(p => p.id === pair.player2.id);
-    
-        if (rowIndex === -1 || colIndex === -1) {
-            console.error("Ошибка: игрок не найден в списке.");
-            return;
-        }
-    
-        // Определяем победителя и проигравшего
-        const winner = player1Score > player2Score ? pair.player1 : pair.player2;
-        const loser = player1Score > player2Score ? pair.player2 : pair.player1;
-
-        // Добавляем очки в results**
-        if (!results[rowIndex]) results[rowIndex] = {};
-        if (!results[colIndex]) results[colIndex] = {};
-
-        // Сохраняем результат в `results`
-        results[rowIndex][colIndex] = `${player1Score}:${player2Score}`;
-        results[colIndex][rowIndex] = `${player2Score}:${player1Score}`;
-
-        // Добавляем данные о партиях
-        if (!results[rowIndex].sets) results[rowIndex].sets = {};
-        if (!results[colIndex].sets) results[colIndex].sets = {};
-
-        // Разворачиваем счета партий для второго игрока
-        let reversedSetsSummary = setsSummary
-            .split(", ")
-            .map(set => set.split("-").reverse().join("-"))
-            .join(", ");
-
-        results[rowIndex].sets[colIndex] = setsSummary;       // Оригинальный счет для первого игрока
-        results[colIndex].sets[rowIndex] = reversedSetsSummary; // Перевернутый счет для второго игрока
-
-        // **Обновляем очки (если поле points не существует, создаём его)**
-        if (!results[rowIndex].points) results[rowIndex].points = 0;
-        if (!results[colIndex].points) results[colIndex].points = 0;
-
-        // // Определяем, кто победил, и обновляем очки
-        // if (player1Score > player2Score) {
-        //     results[rowIndex].points += 2; // Победитель
-        //     results[colIndex].points += 1; // Проигравший
-        // } else {
-        //     results[rowIndex].points += 1; // Проигравший
-        //     results[colIndex].points += 2; // Победитель
-        // }
-
-        // Если один из игроков нерейтинговый
-        if (pair.player1.unrated || pair.player2.unrated) {
-            if (pair.player1.unrated) {
-                results[rowIndex].points += 1; // Нерейтинговый игрок всегда получает 1 очко
-                results[colIndex].points += 2; // Его соперник получает 2 очка
-            } else {
-                results[rowIndex].points += 2; // Победитель получает 2 очка
-                results[colIndex].points += 1; // Нерейтинговый игрок получает 1 очко
-            }
-        } else {
-            // Обычное начисление очков для рейтинговых игроков
-            if (player1Score > player2Score) {
-                results[rowIndex].points += 2;
-                results[colIndex].points += 1;
-            } else {
-                results[rowIndex].points += 1;
-                results[colIndex].points += 2;
-            }
-        }
-    
-        // console.log(`Очки обновлены: ${pair.player1.fullname || pair.player1.name} - ${results[rowIndex].points}, ${pair.player2.fullname || pair.player2.name} - ${results[colIndex].points}`);
-    
-        // **Записываем очки в таблицу (предпоследний столбец)**
-        const winnerPointsCell = document.querySelector(`td[data-row="${rowIndex}"][data-col="points"]`);
-        const loserPointsCell = document.querySelector(`td[data-row="${colIndex}"][data-col="points"]`);
-    
-        if (winnerPointsCell) winnerPointsCell.textContent = results[winner.id].points;
-        if (loserPointsCell) loserPointsCell.textContent = results[loser.id].points;
-    
-        // Отображаем результат в таблице игр
-        const cell = document.querySelector(`td[data-row="${rowIndex}"][data-col="${colIndex}"]`);
-        if (cell) cell.textContent = `${player1Score}:${player2Score}`;
-    
-        const reverseCell = document.querySelector(`td[data-row="${colIndex}"][data-col="${rowIndex}"]`);
-        if (reverseCell) reverseCell.textContent = `${player2Score}:${player1Score}`;
-    
-        // **Обновляем таблицу турнирного положения**
-        updateTournamentStandings([...selectedPlayers, ...unratedPlayersList], results);
-    }
-    
-    
-
-    function restoreSavedResults(savedResults) {
-        results = savedResults; // Восстанавливаем сохранённые результаты
-    
-        for (const row in results) {
-            for (const col in results[row]) {
-                const cell = document.querySelector(`td[data-row="${row}"][data-col="${col}"]`);
-                if (cell) {
-                    cell.textContent = results[row][col];
-                }
-            }
-        }
-        addBracketsAndHighlightResults();
-        // Пересчитываем очки и места
-        updateTournamentStandings([...selectedPlayers, ...unratedPlayersList], results);
-        if (waitingPairs && waitingPairs.length === 0 && currentPairs && currentPairs.length === 0) {
-            document.querySelector('#showResult').style = 'display: block';
-            
-        }
-    }
-
-    if (waitingPairs && waitingPairs.length > 0) {
-        renderPairsInWaitingBlock(waitingPairs);
-    }
-    
-    if (currentPairs && currentPairs.length > 0) {
-        currentPairs.forEach(pair => {
-            movePairToPlaying(pair, true, null);
-        })
-    }
 
     // сохранение рейтинга до турнира
     function saveInitialRatings(players) {
@@ -1962,8 +2024,1048 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log(`Рейтинг обновлён: ${winner.name || winner.fullname} (${winner.rating}) vs ${loser.name || loser.fullname} (${loser.rating})`);
     }
 
+    
+   
+    function highlightWinnerLoser() {
+        const scoreInputs = document.querySelectorAll(".modalPairBlockDone input");
+        const player1Score = parseInt(scoreInputs[0].value) || 0;
+        const player2Score = parseInt(scoreInputs[1].value) || 0;
+    
+        // Получаем блоки игроков
+        const player1Block = document.querySelector(".modalScoreBlock_points_row.firstPlayer");
+        const player2Block = document.querySelector(".modalScoreBlock_points_row.secondPlayer");
+    
+        // Получаем все инпуты заработанных очков
+        const player1PointInputs = player1Block.querySelectorAll(".modalScoreBlock_points_right input");
+        const player2PointInputs = player2Block.querySelectorAll(".modalScoreBlock_points_right input");
+    
+        // Сброс цветов перед новой проверкой
+        [scoreInputs[0], scoreInputs[1], ...player1PointInputs, ...player2PointInputs].forEach(input => {
+            input.style.background = "";
+        });
+    
+        if (player1Score > player2Score) {
+            // Победил первый игрок
+            scoreInputs[0].style.background = "#FA6400";
+            scoreInputs[1].style.background = "#D10000";
+    
+            player1PointInputs.forEach(input => {
+                if (input.value.trim() !== "") input.style.background = "#FA6400";
+            });
+            player2PointInputs.forEach(input => {
+                if (input.value.trim() !== "") input.style.background = "#D10000";
+            });
+        } else if (player2Score > player1Score) {
+            // Победил второй игрок
+            scoreInputs[1].style.background = "#FA6400";
+            scoreInputs[0].style.background = "#D10000";
+    
+            player2PointInputs.forEach(input => {
+                if (input.value.trim() !== "") input.style.background = "#FA6400";
+            });
+            player1PointInputs.forEach(input => {
+                if (input.value.trim() !== "") input.style.background = "#D10000";
+            });
+        }
+    }
+
+
+
+    document.getElementById("showResult").addEventListener("click", async () => {
+        document.querySelector('.completed').style.display = 'block';
+        document.querySelector('.results').style.display = 'block';
+        // Устанавливаем флаг "finished" в `state`
+        tournamentData = await fetchTournament(tournamentId);
+        tournamentData.finished = true;
+
+        getTournamentCoefficient(tournamentData.initialRatings);
+        tournamentData.averageRating = averageRating;
+        tournamentData.coefficient = tournamentCoefficient;
+
+        // Блокируем кнопку
+        const btn = document.getElementById("showResult");
+        // console.log("🔍 Перед блокировкой:", btn.disabled); // Проверяем начальное состояние
+        btn.disabled = true;
+        btn.classList.add('disabledButton');
+        
+        if (selectedType === 'roundRobin') {
+            renderCompletedGames(finishedPairs);
+            renderFinalResults(tournamentData);
+        }
+
+        if (selectedType === 'twoRound') {
+
+            renderCompletedGamesTwoRound(finishedPairs);
+            console.log("Игроки:", tournamentData.players);
+            renderFinalResultsTwoRound(tournamentData);
+        }
+        
+        if (selectedType === 'roundRobin') {
+            await saveTournament(null, null, tournamentData);
+        } else if (selectedType === 'twoRound') {
+            console.log('тут сохраняю FINISHED');
+            saveTournamentTwoRound(tournamentData, null, { finished: true });
+        }
+       
+        
+
+    });
+
+
+    if (tournamentData.finished) {
+        console.log("🎉 Турнир уже завершён. Показываем результаты!");
+        document.querySelector('.completed').style.display = 'block';
+        document.querySelector('.results').style.display = 'block';
+        // Блокируем кнопку
+        const btn = document.getElementById("showResult");
+        // console.log("🔍 Перед блокировкой:", btn.disabled); // Проверяем начальное состояние
+        btn.disabled = true;
+        btn.classList.add('disabledButton');
+
+        tournamentData = await fetchTournament(tournamentId);
+        // Рендерим финальные результаты
+        
+
+        if (selectedType === 'roundRobin') {
+            renderCompletedGames(tournamentData.finishedPairs);
+            renderFinalResults(tournamentData);
+        }
+
+        if (selectedType === 'twoRound') {
+            renderCompletedGamesTwoRound(tournamentData.finishedPairs);
+            console.log("Игроки:", tournamentData.players);
+            renderFinalResultsTwoRound(tournamentData);
+        }
+    }
+    
+    function renderCompletedGames(pairs) {
+        const container = document.querySelector(".completedGames-wrapper");
+        if (!container) {
+            console.error("Элемент .completedGames-wrapper не найден!");
+            return;
+        }
+        container.innerHTML = ""; // Очищаем контейнер перед рендерингом
+    
+        if (!pairs || pairs.length === 0) {
+            console.warn("Нет завершённых игр для рендеринга.");
+            return;
+        }
+    
+        const uniquePairs = new Set();
+    
+        pairs.forEach(pair => {
+            if (!pair.player1 || !pair.player2) {
+                console.log("Пропущена пара без игроков:", pair);
+                return;
+            }
+    
+            // Получаем индексы игроков в массиве players
+            const player1Index = [...tournamentData.players, ...tournamentData.unratedPlayers].findIndex(p => p.id === pair.player1.id);
+            const player2Index = [...tournamentData.players, ...tournamentData.unratedPlayers].findIndex(p => p.id === pair.player2.id);
+    
+            if (player1Index === -1 || player2Index === -1) {
+                console.log(`Игроки не найдены в списке players:`, pair);
+                // console.warn(`Игроки не найдены в списке players:`, pair);
+                return;
+            }
+    
+            // Получаем результаты из объекта results
+            const score = results[player1Index]?.[player2Index] || results[player2Index]?.[player1Index];
+    
+            if (!score) {
+                console.log(`⚠️ Счёт не найден для пары ${pair.player1.fullname} vs ${pair.player2.fullname}`);
+                return;
+            }
+    
+            console.log(`✅ Найден счёт: ${score} для ${pair.player1.fullname} vs ${pair.player2.fullname}`);
+    
+            const [score1, score2] = score.split(":").map(Number);
+    
+            
+            // Проверяем, есть ли нерейтинговый игрок в паре
+            const isPlayer1Unrated = pair.player1.unrated;
+            const isPlayer2Unrated = pair.player2.unrated;
+            console.log('isPlayer1Unrated', isPlayer1Unrated, 'isPlayer2Unrated', isPlayer2Unrated);
+            // let leftPlayer, rightPlayer, leftScore, rightScore;
+            let winner, loser, winnerScore, loserScore;
+
+            if (isPlayer1Unrated && isPlayer2Unrated) {
+                // Оба игрока нерейтинговые → оставляем как есть
+                winner = pair.player1;
+                loser = pair.player2;
+                winnerScore = score1;
+                loserScore = score2;
+            } else if (isPlayer1Unrated || isPlayer2Unrated) {
+                // Если один из игроков нерейтинговый, победителем всегда считается рейтинговый
+                if (isPlayer1Unrated) {
+                    winner = pair.player2; // Рейтинговый игрок
+                    loser = pair.player1; // Нерейтинговый игрок
+                    winnerScore = score2;
+                    loserScore = score1;
+                } else {
+                    winner = pair.player1; // Рейтинговый игрок
+                    loser = pair.player2; // Нерейтинговый игрок
+                    winnerScore = score1;
+                    loserScore = score2;
+                }
+            } else {
+                // Обычная логика: победитель всегда слева
+                if (score1 > score2) {
+                    winner = pair.player1;
+                    loser = pair.player2;
+                    winnerScore = score1;
+                    loserScore = score2;
+                } else {
+                    winner = pair.player2;
+                    loser = pair.player1;
+                    winnerScore = score2;
+                    loserScore = score1;
+                }
+            }
+            
+    
+            const pairDiv = document.createElement("div");
+            pairDiv.classList.add("completedGames-wrapper_pair");
+    
+            pairDiv.innerHTML = `
+                <h4 class="completedGames-wrapper_pair_player1">${winner.name || winner.fullname}</h4>
+                <div class="completedGames-wrapper_pair_player1_score wins">${winnerScore}</div>
+                <h5>:</h5>
+                <div class="completedGames-wrapper_pair_player2_score losers">${loserScore}</div>
+                <h4 class="completedGames-wrapper_pair_player2">${loser.name || loser.fullname}</h4>
+            `;
+    
+            container.appendChild(pairDiv);
+        });
+    
+        console.log("🎉 Завершённые игры рендерены:", uniquePairs);
+    }
+    
+    function renderCompletedGamesTwoRound(finishedPairs) {
+        const container = document.querySelector(".completedGames-wrapper");
+        if (!container) {
+            console.error("Элемент .completedGames-wrapper не найден!");
+            return;
+        }
+    
+        container.innerHTML = ""; // Очищаем контейнер перед рендерингом
+    
+        if (!finishedPairs || finishedPairs.length === 0) {
+            console.warn("Нет завершённых игр для рендеринга.");
+            return;
+        }
+    
+        const allPlayers = [...tournamentData.players, ...tournamentData.unratedPlayers];
+        const halfway = Math.floor(finishedPairs.length / 2); // Разделение кругов
+    
+        finishedPairs.forEach((pair, index) => {
+            if (!pair.player1 || !pair.player2) {
+                console.log("Пропущена пара без игроков:", pair);
+                return;
+            }
+    
+            const roundResults = index < halfway ? round1Results : round2Results;
+    
+            const player1Index = allPlayers.findIndex(p => p.id === pair.player1.id);
+            const player2Index = allPlayers.findIndex(p => p.id === pair.player2.id);
+    
+            if (player1Index === -1 || player2Index === -1) {
+                console.log(`Игроки не найдены в списке players:`, pair);
+                return;
+            }
+    
+            const score = roundResults[player1Index]?.[player2Index] || roundResults[player2Index]?.[player1Index];
+            if (!score || typeof score !== "string") {
+                console.log(`⚠️ Счёт не найден для пары ${pair.player1.fullname} vs ${pair.player2.fullname}`);
+                return;
+            }
+    
+            const [score1, score2] = score.split(":").map(Number);
+    
+            let winner, loser, winnerScore, loserScore;
+            const isPlayer1Unrated = pair.player1.unrated;
+            const isPlayer2Unrated = pair.player2.unrated;
+    
+            if (isPlayer1Unrated && isPlayer2Unrated) {
+                winner = pair.player1;
+                loser = pair.player2;
+                winnerScore = score1;
+                loserScore = score2;
+            } else if (isPlayer1Unrated || isPlayer2Unrated) {
+                if (isPlayer1Unrated) {
+                    winner = pair.player2;
+                    loser = pair.player1;
+                    winnerScore = score2;
+                    loserScore = score1;
+                } else {
+                    winner = pair.player1;
+                    loser = pair.player2;
+                    winnerScore = score1;
+                    loserScore = score2;
+                }
+            } else {
+                if (score1 > score2) {
+                    winner = pair.player1;
+                    loser = pair.player2;
+                    winnerScore = score1;
+                    loserScore = score2;
+                } else {
+                    winner = pair.player2;
+                    loser = pair.player1;
+                    winnerScore = score2;
+                    loserScore = score1;
+                }
+            }
+    
+            const pairDiv = document.createElement("div");
+            pairDiv.classList.add("completedGames-wrapper_pair");
+    
+            if (index === halfway - 1) {
+                pairDiv.classList.add("round-separator"); // ✅ Ставим после последней пары 1-го круга
+            }
+            pairDiv.innerHTML = `
+                <h4 class="completedGames-wrapper_pair_player1">${winner.name || winner.fullname}</h4>
+                <div class="completedGames-wrapper_pair_player1_score wins">${winnerScore}</div>
+                <h5>:</h5>
+                <div class="completedGames-wrapper_pair_player2_score losers">${loserScore}</div>
+                <h4 class="completedGames-wrapper_pair_player2">${loser.name || loser.fullname}</h4>
+            `;
+    
+            container.appendChild(pairDiv);
+        });
+    
+        console.log("🎉 Завершённые игры рендерены (2 круга):", finishedPairs.length);
+    }
+
+    function renderFinalResults(tournament) {
+        const container = document.querySelector(".finalResults_table_content");
+        if (!container) {
+            console.error("❌ Элемент .finalResults_table_content не найден!");
+            return;
+        }
+        container.innerHTML = "";
+    
+        if (!tournament.players || tournament.players.length === 0) {
+            console.warn("⚠️ Нет данных для рендеринга финальных результатов.");
+            return;
+        }
+    
+        const allPlayers = [...tournament.players, ...(tournament.unratedPlayers || [])];
+        const playerStats = allPlayers.map(player => {
+            const fullPlayerData = allplayers.find(p => p.id === player.id);
+            const city = fullPlayerData?.cityName || fullPlayerData?.city || player.city || "Unknown";
+    
+            const ratingBefore = tournament.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
+            const ratingAfter = player.rating ?? ratingBefore;
+            const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
+    
+            const wins = player.wins ?? 0;
+            const losses = player.losses ?? 0;
+            const setsWon = player.setsWon ?? 0;
+            const setsLost = player.setsLost ?? 0;
+            const totalGames = wins + losses;
+            const totalSets = setsWon + setsLost;
+    
+            return {
+                place: player.place || 0,
+                name: player.name || player.fullname,
+                city,
+                games: `${totalGames}(${wins}-${losses})`,
+                sets: `${totalSets}(${setsWon}-${setsLost})`,
+                ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+                ratingBefore: ratingBefore.toFixed(1),
+                ratingAfter: ratingAfter.toFixed(1),
+                logo: player.logo
+            };
+        });
+    
+        playerStats.sort((a, b) => a.place - b.place);
+    
+        playerStats.forEach(player => {
+            const playerDiv = document.createElement("div");
+            playerDiv.classList.add("finalResults_table_player");
+    
+            const ratingColor =
+                player.ratingChange > 0 ? "#007026" :
+                player.ratingChange < 0 ? "#F00" : "#666877";
+    
+            playerDiv.innerHTML = `
+                <div class="finalResults_number">${player.place || '0'}</div>
+                <div class="cell finalResults_player">
+                    <div class="playerLogo" style="background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                    <span>${player.name}</span>
+                </div>
+                <div class="cell finalResults_city">${player.city}</div>
+                <div class="cell finalResults_games">${player.games}</div>
+                <div class="cell finalResults_sets">${player.sets}</div>
+                <div class="cell finalResults_avarage" style="color: ${ratingColor}; font-weight: bold;">
+                    ${player.ratingChange}
+                </div>
+                <div class="cell finalResults_before">${player.ratingBefore}</div>
+                <div class="cell finalResults_after">${player.ratingAfter}</div>
+            `;
+    
+            container.appendChild(playerDiv);
+        });
+    
+        console.log("📊 Финальные результаты (круговой турнир):", playerStats);
+    }
+    
+    
+    // function renderFinalResults(tournament) {
+    //     const container = document.querySelector(".finalResults_table_content");
+    //     if (!container) {
+    //         console.error("❌ Элемент .finalResults_table_content не найден!");
+    //         return;
+    //     }
+    //     container.innerHTML = "";
+    
+    //     if (!tournament.players || tournament.players.length === 0 || !tournament.results) {
+    //         console.warn("⚠️ Нет данных для рендеринга финальных результатов.");
+    //         return;
+    //     }
+    
+    //     const allPlayers = [...tournament.players, ...tournament.unratedPlayers];
+    //     console.log(allPlayers);
+    //     const playerStats = allPlayers.map(player => {
+    //         const fullPlayerData = allplayers.find(p => p.id === player.id);
+    //         const city = fullPlayerData?.cityName || fullPlayerData?.city || player.city || "Unknown";
+    
+    //         const ratingBefore = tournament.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
+    //         const ratingAfter = player.rating ?? ratingBefore;
+    //         const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
+    
+    //         // 🧠 Найдём индекс игрока в results по позиции
+    //         const playerIndex = allPlayers.findIndex(p => p.id === player.id);
+    //         const resultRow = tournament.results[playerIndex] || {};
+    //         let gamesPlayed = 0;
+    //         let setsWon = 0;
+    //         let setsLost = 0;
+    //         let wins = 0;
+    //         let losses = 0;
+    
+    //         for (let opponentIndex in resultRow) {
+    //             if (opponentIndex === "sets" || opponentIndex === "points") continue;
+    //             const [score1, score2] = resultRow[opponentIndex].split(":").map(Number);
+    //             gamesPlayed++;
+    //             setsWon += score1;
+    //             setsLost += score2;
+    //             if (score1 > score2) wins++;
+    //             else losses++;
+    //         }
+    
+    //         return {
+    //             place: player.place || 0,
+    //             name: player.name || player.fullname,
+    //             city,
+    //             games: `${gamesPlayed}(${wins}-${losses})`,
+    //             sets: `${setsWon + setsLost}(${setsWon}-${setsLost})`,
+    //             ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+    //             ratingBefore: ratingBefore.toFixed(1),
+    //             ratingAfter: ratingAfter.toFixed(1),
+    //             logo: player.logo
+    //         };
+    //     });
+    
+    //     playerStats.sort((a, b) => a.place - b.place);
+    
+    //     playerStats.forEach(player => {
+    //         const playerDiv = document.createElement("div");
+    //         playerDiv.classList.add("finalResults_table_player");
+    
+    //         const ratingColor =
+    //             player.ratingChange > 0 ? "#007026" :
+    //             player.ratingChange < 0 ? "#F00" : "#666877";
+    
+    //         playerDiv.innerHTML = `
+    //             <div class="finalResults_number">${player.place || '0'}</div>
+    //             <div class="cell finalResults_player">
+    //                 <div class="playerLogo" style="background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+    //                 <span>${player.name}</span>
+    //             </div>
+    //             <div class="cell finalResults_city">${player.city}</div>
+    //             <div class="cell finalResults_games">${player.games}</div>
+    //             <div class="cell finalResults_sets">${player.sets}</div>
+    //             <div class="cell finalResults_avarage" style="color: ${ratingColor}; font-weight: bold;">
+    //                 ${player.ratingChange}
+    //             </div>
+    //             <div class="cell finalResults_before">${player.ratingBefore}</div>
+    //             <div class="cell finalResults_after">${player.ratingAfter}</div>
+    //         `;
+    
+    //         container.appendChild(playerDiv);
+    //     });
+    
+    //     console.log("📊 Финальные результаты (круговой турнир):", playerStats);
+    // }
+    
+
+    // function renderFinalResults(tournament) {
+    //     const container = document.querySelector(".finalResults_table_content");
+    //     if (!container) {
+    //         console.error("❌ Элемент .finalResults_table_content не найден!");
+    //         return;
+    //     }
+    //     container.innerHTML = ""; // Очищаем контейнер перед рендерингом
+    
+    //     if (!tournament.players || tournament.players.length === 0 || !tournament.results) {
+    //         console.log("⚠️ Нет данных для рендеринга финальных результатов.");
+    //         console.warn("⚠️ Нет данных для рендеринга финальных результатов.");
+    //         return;
+    //     }
+    
+    //     let playerStats = [...tournament.players, ...tournament.unratedPlayers].map((player, index) => {
+    //         // console.log('inex', index);
+    //         // console.log('player', player.fullname);
+    //         const playerResults = tournament.results[index] || {}; // Используем индекс для сопоставления
+    //         const totalGames = Object.keys(playerResults).filter(key => key !== "sets" && key !== "points").length;
+    //         // const city = player.cityName || "Unknown";
+    //         let fullPlayerData = allplayers.find(p => p.id === player.id);
+    //         const city = fullPlayerData ? fullPlayerData.cityName || fullPlayerData.city : "Unknown";
+            
+    //         // ✅ Получаем рейтинг ДО турнира
+    //         const ratingBefore = tournament.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
+    //         // ✅ Рейтинг ПОСЛЕ турнира
+    //         const ratingAfter = player.rating ?? ratingBefore;
+    //         // ✅ Изменение рейтинга
+    //         const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
+            
+    //         // console.log(`данные игрока ${player.name || player.fullname}`, {place: player.place,
+    //         //     name: player.name || player.fullname,
+    //         //     city: city,
+    //         //     games: `${totalGames}(${player.wins}-${player.losses})`,
+    //         //     sets: `${player.setsWon + player.setsLost}(${player.setsWon}-${player.setsLost})`,
+    //         //     ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+    //         //     ratingBefore: ratingBefore.toFixed(1),
+    //         //     ratingAfter: ratingAfter.toFixed(1),
+    //         //     logo: player.logo}
+    //         // );
+
+    //         return {
+    //             place: player.place,
+    //             name: player.name || player.fullname,
+    //             city: (city === "Unknown") ? player.city : city,
+    //             games: `${totalGames}(${player.wins}-${player.losses})`,
+    //             sets: `${player.setsWon + player.setsLost}(${player.setsWon}-${player.setsLost})`,
+    //             ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+    //             ratingBefore: ratingBefore.toFixed(1),
+    //             ratingAfter: ratingAfter.toFixed(1),
+    //             logo: player.logo
+    //         };
+    //     });
+    //     console.log('список игроков с результатами:', playerStats);
+    //     playerStats.sort((a, b) => a.place - b.place); // ✅ Сортируем по `place`
+        
+    //     console.log("📊 Финальная статистика игроков (отсортирована):", playerStats);
+    
+    //     // Рендеринг таблицы
+    //     playerStats.forEach(player => {
+    //         const playerDiv = document.createElement("div");
+    //         playerDiv.classList.add("finalResults_table_player");
+    
+    //         const ratingColor = player.ratingChange > 0 ? "#007026" : player.ratingChange < 0 ? "#F00" : "#666877";
+    
+    //         playerDiv.innerHTML = `
+    //             <div class="finalResults_number">${player.place || '0'}</div>
+    //             <div class="cell finalResults_player">
+    //                 <div class="playerLogo" style="background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+    //                 <span>${player.name}</span>
+    //             </div>
+    //             <div class="cell finalResults_city">${player.city}</div>
+    //             <div class="cell finalResults_games">${player.games}</div>
+    //             <div class="cell finalResults_sets">${player.sets}</div>
+    //             <div class="cell finalResults_avarage" style="color: ${ratingColor}; font-weight: bold;">
+    //                 ${player.ratingChange}
+    //             </div>
+    //             <div class="cell finalResults_before">${player.ratingBefore}</div>
+    //             <div class="cell finalResults_after">${player.ratingAfter}</div>
+    //         `;
+    
+    //         container.appendChild(playerDiv);
+    //     });
+    // }
+
+
+    function renderFinalResultsTwoRound(tournament) {
+        const container = document.querySelector(".finalResults_table_content");
+        if (!container) {
+            console.error("❌ Элемент .finalResults_table_content не найден!");
+            return;
+        }
+        container.innerHTML = "";
+    
+        const allPlayers = [...tournament.players, ...tournament.unratedPlayers];
+    
+        const playerStats = allPlayers.map(player => {
+            const fullPlayerData = allplayers.find(p => p.id === player.id);
+            const city = fullPlayerData?.cityName || fullPlayerData?.city || player.city || "Unknown";
+    
+            const ratingBefore = tournament.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
+            const ratingAfter = player.rating ?? ratingBefore;
+            const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
+    
+            const totalGames = player.wins + player.losses;
+            const totalSets = player.setsWon + player.setsLost;
+    
+            return {
+                place: player.place || 0,
+                name: player.name || player.fullname,
+                city,
+                games: `${totalGames}(${player.wins}-${player.losses})`,
+                sets: `${totalSets}(${player.setsWon}-${player.setsLost})`,
+                ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+                ratingBefore: ratingBefore.toFixed(1),
+                ratingAfter: ratingAfter.toFixed(1),
+                logo: player.logo
+            };
+        });
+    
+        playerStats.sort((a, b) => a.place - b.place);
+    
+        playerStats.forEach(player => {
+            const playerDiv = document.createElement("div");
+            playerDiv.classList.add("finalResults_table_player");
+    
+            const ratingColor = player.ratingChange > 0
+                ? "#007026"
+                : player.ratingChange < 0
+                    ? "#F00"
+                    : "#666877";
+    
+            playerDiv.innerHTML = `
+                <div class="finalResults_number">${player.place}</div>
+                <div class="cell finalResults_player">
+                    <div class="playerLogo" style="background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                    <span>${player.name}</span>
+                </div>
+                <div class="cell finalResults_city">${player.city}</div>
+                <div class="cell finalResults_games">${player.games}</div>
+                <div class="cell finalResults_sets">${player.sets}</div>
+                <div class="cell finalResults_avarage" style="color: ${ratingColor}; font-weight: bold;">
+                    ${player.ratingChange}
+                </div>
+                <div class="cell finalResults_before">${player.ratingBefore}</div>
+                <div class="cell finalResults_after">${player.ratingAfter}</div>
+            `;
+    
+            container.appendChild(playerDiv);
+        });
+    
+        console.log("📊 Финальные результаты (2 круга):", playerStats);
+    }
+    
+    // function renderFinalResultsTwoRound(tournament) {
+    //     const container = document.querySelector(".finalResults_table_content");
+    //     if (!container) {
+    //         console.error("❌ Элемент .finalResults_table_content не найден!");
+    //         return;
+    //     }
+    //     container.innerHTML = "";
+    
+    //     const {
+    //         players = [],
+    //         unratedPlayers = [],
+    //         initialRatings = [],
+    //         round1Results = {},
+    //         round2Results = {}
+    //     } = tournament;
+    
+    //     const allPlayers = [...players, ...unratedPlayers];
+    
+    //     const playerStats = allPlayers.map((player, index) => {
+    //         let gamesPlayed = 0;
+    //         let wins = 0;
+    //         let losses = 0;
+    //         let setsWon = 0;
+    //         let setsLost = 0;
+    
+    //         [round1Results, round2Results].forEach(results => {
+    //             const row = results[index];
+    //             console.log(row);
+    //             if (row) {
+    //                 for (let opponentIndex in row) {
+    //                     if (opponentIndex === "sets" || opponentIndex === "points") continue;
+    //                     const scoreStr = row[opponentIndex];
+    //                     if (typeof scoreStr !== "string" || !scoreStr.includes(":")) continue;
+    
+    //                     const [score1, score2] = scoreStr.split(":").map(Number);
+    //                     gamesPlayed++;
+    //                     setsWon += score1;
+    //                     setsLost += score2;
+    //                     if (score1 > score2) wins++;
+    //                     else losses++;
+    //                 }
+    //             }
+    //         });
+    
+    //         const fullPlayerData = allplayers.find(p => p.id === player.id);
+    //         const city = fullPlayerData ? fullPlayerData.cityName || fullPlayerData.city : player.city || "Unknown";
+    //         const ratingBefore = initialRatings.find(p => p.id === player.id)?.rating ?? 0;
+    //         const ratingAfter = player.rating ?? ratingBefore;
+    //         const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
+    
+    //         return {
+    //             place: player.place || 0,
+    //             name: player.name || player.fullname,
+    //             city,
+    //             games: `${gamesPlayed}(${wins}-${losses})`,
+    //             sets: `${setsWon + setsLost}(${setsWon}-${setsLost})`,
+    //             ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+    //             ratingBefore: ratingBefore.toFixed(1),
+    //             ratingAfter: ratingAfter.toFixed(1),
+    //             logo: player.logo
+    //         };
+    //     });
+    
+    //     playerStats.sort((a, b) => a.place - b.place);
+    
+    //     playerStats.forEach(player => {
+    //         const playerDiv = document.createElement("div");
+    //         playerDiv.classList.add("finalResults_table_player");
+    
+    //         const ratingColor =
+    //             player.ratingChange > 0
+    //                 ? "#007026"
+    //                 : player.ratingChange < 0
+    //                     ? "#F00"
+    //                     : "#666877";
+    
+    //         playerDiv.innerHTML = `
+    //             <div class="finalResults_number">${player.place}</div>
+    //             <div class="cell finalResults_player">
+    //                 <div class="playerLogo" style="background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+    //                 <span>${player.name}</span>
+    //             </div>
+    //             <div class="cell finalResults_city">${player.city}</div>
+    //             <div class="cell finalResults_games">${player.games}</div>
+    //             <div class="cell finalResults_sets">${player.sets}</div>
+    //             <div class="cell finalResults_avarage" style="color: ${ratingColor}; font-weight: bold;">
+    //                 ${player.ratingChange}
+    //             </div>
+    //             <div class="cell finalResults_before">${player.ratingBefore}</div>
+    //             <div class="cell finalResults_after">${player.ratingAfter}</div>
+    //         `;
+    
+    //         container.appendChild(playerDiv);
+    //     });
+    
+    //     console.log("📊 Финальные результаты (идеальный подсчёт по индексам):", playerStats);
+    // }
+    
+        
+    
+    
+
+    // function renderFinalResultsTwoRound(tournament) {
+    //     const container = document.querySelector(".finalResults_table_content");
+    //     if (!container) {
+    //         console.error("❌ Элемент .finalResults_table_content не найден!");
+    //         return;
+    //     }
+    //     container.innerHTML = ""; // Очищаем перед отрисовкой
+    
+    //     if (!tournament.players || tournament.players.length === 0) {
+    //         console.warn("⚠️ Нет данных для рендеринга финальных результатов.");
+    //         return;
+    //     }
+    
+    //     const allPlayers = [...tournament.players, ...tournament.unratedPlayers];
+    //     const playerStats = allPlayers.map(player => {
+    //         const fullPlayerData = allplayers.find(p => p.id === player.id);
+    //         const city = fullPlayerData ? fullPlayerData.cityName || fullPlayerData.city : player.city || "Unknown";
+    
+    //         const ratingBefore = tournament.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
+    //         const ratingAfter = player.rating ?? ratingBefore;
+    //         const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
+    
+    //         const totalGames = player.wins + player.losses;
+    //         const totalSets = player.setsWon + player.setsLost;
+    //         console.log({
+    //             place: player.place || 0,
+    //             name: player.name || player.fullname,
+    //             city,
+    //             games: `${totalGames}(${player.wins}-${player.losses})`,
+    //             sets: `${totalSets}(${player.setsWon}-${player.setsLost})`,
+    //             ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+    //             ratingBefore: ratingBefore.toFixed(1),
+    //             ratingAfter: ratingAfter.toFixed(1),
+    //             logo: player.logo
+    //         })
+    //         return {
+    //             place: player.place || 0,
+    //             name: player.name || player.fullname,
+    //             city,
+    //             games: `${totalGames}(${player.wins}-${player.losses})`,
+    //             sets: `${totalSets}(${player.setsWon}-${player.setsLost})`,
+    //             ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
+    //             ratingBefore: ratingBefore.toFixed(1),
+    //             ratingAfter: ratingAfter.toFixed(1),
+    //             logo: player.logo
+    //         };
+    //     });
+    
+    //     playerStats.sort((a, b) => a.place - b.place);
+    
+    //     playerStats.forEach(player => {
+    //         const playerDiv = document.createElement("div");
+    //         playerDiv.classList.add("finalResults_table_player");
+    
+    //         const ratingColor = player.ratingChange > 0
+    //             ? "#007026"
+    //             : player.ratingChange < 0
+    //                 ? "#F00"
+    //                 : "#666877";
+    
+    //         playerDiv.innerHTML = `
+    //             <div class="finalResults_number">${player.place}</div>
+    //             <div class="cell finalResults_player">
+    //                 <div class="playerLogo" style="background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+    //                 <span>${player.name}</span>
+    //             </div>
+    //             <div class="cell finalResults_city">${player.city}</div>
+    //             <div class="cell finalResults_games">${player.games}</div>
+    //             <div class="cell finalResults_sets">${player.sets}</div>
+    //             <div class="cell finalResults_avarage" style="color: ${ratingColor}; font-weight: bold;">
+    //                 ${player.ratingChange}
+    //             </div>
+    //             <div class="cell finalResults_before">${player.ratingBefore}</div>
+    //             <div class="cell finalResults_after">${player.ratingAfter}</div>
+    //         `;
+    
+    //         container.appendChild(playerDiv);
+    //     });
+    
+    //     console.log("📊 Финальные результаты (2 круга):", playerStats);
+    // }
+    
+
+
+    async function fetchTournament(tournamentId) {
+        try {
+          const response = await fetch(`/get-data-tournament?tournamentId=${tournamentId}`);
+          
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to fetch tournament data.');
+          }
+      
+          const tournament = await response.json();
+        //   console.log('Tournament data:', tournament);
+          ratingLimit = tournament.ratingLimit || tournament.restrictions;
+          return tournament;
+        } catch (error) {
+          console.error('Error fetching tournament:', error.message);
+          showErrorModal(error.message || 'Failed to fetch tournament data.');
+          return null;
+        }
+    }
+
+
+    // ------------------------------------------------------ КРУГОВОЙ ------ КРУГОВОЙ ------КРУГОВОЙ-----------------------------------------
+
+    async function saveTournament(state = null, standings = null, final) {
+        // 1️⃣ Формируем `state` вручную, если он не передан
+        if (!state) {
+            state = {
+                players: selectedPlayers.map(player => {
+                    const fullPlayerData = allplayers.find(p => p.id === player.id);
+                    return {
+                        id: player.id,
+                        birthYear: player.birthYear,
+                        fullname: player.fullname || player.name,
+                        place: player.place,
+                        rating: player.rating,
+                        city: fullPlayerData ? fullPlayerData.city || fullPlayerData.cityName : "Unknown"
+                    };
+                }),
+                retiredPlayers: retiredPlayers.map(player => ({
+                    id: player.id,
+                    birthYear: player.birthYear,
+                    fullname: player.fullname || player.name,
+                    rating: player.rating,
+                    retired: true
+                })),
+                unratedPlayers: unratedPlayersList.map(player => ({
+                    id: player.id,
+                    name: player.name || player.fullname,
+                    birthYear: player.birthYear,
+                    city: player.city,
+                    nickname: player.nickname,
+                    unrated: true
+                })),
+                waitingPairs,
+                currentPairs,
+                finishedPairs,
+                roundCounter,
+                results,
+                initialRatings: tournamentData.initialRatings,
+                typeOfTournament: selectedType || 'roundRobin',
+            };
+        }
+    
+        // 2️⃣ Если есть standings — обновляем данные в state
+        if (Array.isArray(standings) && standings.length > 0) {
+            const updatedPlayers = [];
+            const updatedUnratedPlayers = [];
+    
+            standings.forEach(player => {
+                const updatedPlayer = state.players.find(p => p.id === player.id);
+                const mergedPlayer = updatedPlayer ? { ...updatedPlayer, ...player } : player;
+    
+                if (mergedPlayer.unrated) {
+                    updatedUnratedPlayers.push(mergedPlayer);
+                } else {
+                    updatedPlayers.push(mergedPlayer);
+                }
+            });
+    
+            state.players = updatedPlayers;
+            state.unratedPlayers = updatedUnratedPlayers;
+        }
+    
+        // 3️⃣ Добавляем финальные данные, если есть
+        if (final) {
+            state = { ...state, ...final };
+        }
+    
+        // 4️⃣ Обновляем флаг завершения
+        state.finished = tournamentData.finished || false;
+    
+        // 5️⃣ Отправляем на сервер
+        try {
+            const response = await fetch('/saveTournament', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tournamentId, state }),
+            });
+    
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to save tournament');
+            }
+    
+            const responseData = await response.json();
+            console.log("✅ Tournament saved:", responseData);
+    
+            if (byUser) {
+                showErrorModal('Tournament saved successfully!', 'Congratulation');
+                byUser = false;
+            }
+        } catch (error) {
+            console.error('Error saving tournament:', error);
+            showErrorModal(error.message || 'Failed to save tournament');
+        }
+    }
+    
+    // async function saveTournament(state = null, standings = null, final) {
+    //     // console.log(standings);
+
+    //     if (!state) {
+    //         state = {
+    //             players: selectedPlayers.map(player => {
+    //                 const fullPlayerData = allplayers.find(p => p.id === player.id);
+    //                 return {
+    //                     id: player.id,
+    //                     birthYear: player.birthYear,
+    //                     fullname: player.fullname || player.name,
+    //                     place: player.place,
+    //                     rating: player.rating,
+    //                     city: fullPlayerData ? fullPlayerData.city  || fullPlayerData.cityName : "Unknown"
+    //                 };
+    //             }),
+    //             retiredPlayers: retiredPlayers.map(player => ({
+    //                 id: player.id,
+    //                 birthYear: player.birthYear,
+    //                 fullname: player.fullname || player.name,
+    //                 rating: player.rating,
+    //                 retired: true // Флаг выбывшего игрока
+    //             })),
+    //             unratedPlayers: unratedPlayersList.map(player => ({
+    //                 id: player.id,
+    //                 name: player.name || player.fullname,
+    //                 birthYear: player.birthYear,
+    //                 city: player.city,
+    //                 nickname: player.nickname,
+    //                 unrated: true // Флаг внерейтингового игрока
+    //             })),
+    //             waitingPairs,
+    //             currentPairs,
+    //             finishedPairs,
+    //             roundCounter,
+    //             results,
+    //             initialRatings: tournamentData.initialRatings,
+    //             typeOfTournament:  selectedType !== tournamentData.typeOfTournament ? selectedType : tournamentData.typeOfTournament || 'roundRobin'
+    //         };
+    //     }
+    //     // console.log('state', state);
+    //     // console.log('standings', standings);
+        
+    //     if (Array.isArray(standings) && standings.length > 0) {
+    //         const updatedPlayers = [];
+    //         const updatedUnratedPlayers = [];
+        
+    //         standings.forEach(player => {
+    //             const updatedPlayer = state.players.find(p => p.id === player.id);
+    //             const mergedPlayer = updatedPlayer ? { ...updatedPlayer, ...player } : player;
+        
+    //             if (mergedPlayer.unrated) {
+    //                 updatedUnratedPlayers.push(mergedPlayer); // Нерейтинговые игроки
+    //             } else {
+    //                 updatedPlayers.push(mergedPlayer); // Рейтинговые игроки
+    //             }
+    //         });
+        
+    //         state.players = updatedPlayers;
+    //         state.unratedPlayers = updatedUnratedPlayers;
+    //     }
+
+       
+
+    //     if (
+    //         (!standings || standings.length === 0) &&
+    //         (!state || Object.keys(state).length === 0 || waitingPairs.length > 0 || currentPairs.length > 0 || finishedPairs.length > 0)
+    //     ) {
+    //         if (!tournamentData.finished) {
+    //             console.log("`standings` отсутствует, но пары есть. Ждем обновления...");
+    //             return;
+    //         } 
+            
+    //     }
+        
+    //     if (final) {
+    //         state = { ...state, ...final }; // Объединяем данные без потери информации
+    //     }
+
+    //     state.finished = tournamentData.finished || false;
+
+    //     try {
+    //         const response = await fetch('/saveTournament', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ tournamentId, state }),
+    //         });
+
+    //         if (!response.ok) {
+    //             const error = await response.json();
+    //             throw new Error(error.message || 'Failed to save tournament');
+    //         }
+
+    //         const responseData = await response.json();
+    //         console.log("✅ Tournament saved:", responseData);
+            
+    //         if (byUser) {
+    //             showErrorModal('Tournament saved successfully!', 'Congratulation');
+    //             byUser = false;
+    //         }
+    //     } catch (error) {
+    //         console.error('Error saving tournament:', error);
+    //         showErrorModal(error.message || 'Failed to save tournament');
+    //     }
+    // }
+
+
     function updateTournamentStandings(players, results) {
-        // console.log("players in update", players);
+        console.log("players in update", players);
         let standings = players.map(player => ({
             id: player.id,
             name: player.name || player.fullname,
@@ -1979,6 +3081,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             place: player.place || 0
         }));
     
+        // const playerIdsByIndex = players.map(p => p.id);
         const processedPairs = new Set(); // Храним обработанные пары
     
         // ✅ **Цикл по `results`, но избегаем дублирования**
@@ -1996,6 +3099,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     
                 const player1 = standings.find(p => p.id == players[row].id);
                 const player2 = standings.find(p => p.id == players[col].id);
+
+                // const rowIndex = parseInt(row);
+                // const colIndex = parseInt(col);
+
+                // const player1Id = playerIdsByIndex[rowIndex];
+                // const player2Id = playerIdsByIndex[colIndex];
+
+                // const player1 = standings.find(p => p.id === player1Id);
+                // const player2 = standings.find(p => p.id === player2Id);
     
                 if (!player1 || !player2) continue;
     
@@ -2079,334 +3191,641 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             });
         }
+        const updatedPlayers = allParticipants.map(player => {
+            const updated = standings.find(p => p.id === player.id);
+            return updated ? { ...player, ...updated } : player;
+        });
+        saveTournament(null, updatedPlayers);
     
-        console.log('✅ Итоговые standings:', standings);
-        saveTournament(null, standings);
+        console.log('✅ Итоговые standings:', updatedPlayers);
+        // saveTournament(null, standings);
+        standingsGlobal = updatedPlayers;
+    }
+
+
+    function updateTableResults(pair, player1Score, player2Score, setsSummary) {
+        // console.log('allParticipants', pair);
+        
+        const rowIndex = [...selectedPlayers, ...unratedPlayersList].findIndex(p => p.id === pair.player1.id);
+        const colIndex = [...selectedPlayers, ...unratedPlayersList].findIndex(p => p.id === pair.player2.id);
+    
+        if (rowIndex === -1 || colIndex === -1) {
+            console.error("Ошибка: игрок не найден в списке.");
+            return;
+        }
+    
+        // Определяем победителя и проигравшего
+        const winner = player1Score > player2Score ? pair.player1 : pair.player2;
+        const loser = player1Score > player2Score ? pair.player2 : pair.player1;
+
+        // Добавляем очки в results**
+        if (!results[rowIndex]) results[rowIndex] = {};
+        if (!results[colIndex]) results[colIndex] = {};
+
+        // Сохраняем результат в `results`
+        results[rowIndex][colIndex] = `${player1Score}:${player2Score}`;
+        results[colIndex][rowIndex] = `${player2Score}:${player1Score}`;
+
+        // Добавляем данные о партиях
+        if (!results[rowIndex].sets) results[rowIndex].sets = {};
+        if (!results[colIndex].sets) results[colIndex].sets = {};
+
+        // Разворачиваем счета партий для второго игрока
+        let reversedSetsSummary = setsSummary
+            .split(", ")
+            .map(set => set.split("-").reverse().join("-"))
+            .join(", ");
+
+        results[rowIndex].sets[colIndex] = setsSummary;       // Оригинальный счет для первого игрока
+        results[colIndex].sets[rowIndex] = reversedSetsSummary; // Перевернутый счет для второго игрока
+
+        // **Обновляем очки (если поле points не существует, создаём его)**
+        if (!results[rowIndex].points) results[rowIndex].points = 0;
+        if (!results[colIndex].points) results[colIndex].points = 0;
+
+
+        // Если один из игроков нерейтинговый
+        if (pair.player1.unrated || pair.player2.unrated) {
+            if (pair.player1.unrated) {
+                results[rowIndex].points += 1; // Нерейтинговый игрок всегда получает 1 очко
+                results[colIndex].points += 2; // Его соперник получает 2 очка
+            } else {
+                results[rowIndex].points += 2; // Победитель получает 2 очка
+                results[colIndex].points += 1; // Нерейтинговый игрок получает 1 очко
+            }
+        } else {
+            // Обычное начисление очков для рейтинговых игроков
+            if (player1Score > player2Score) {
+                results[rowIndex].points += 2;
+                results[colIndex].points += 1;
+            } else {
+                results[rowIndex].points += 1;
+                results[colIndex].points += 2;
+            }
+        }
+    
+        // console.log(`Очки обновлены: ${pair.player1.fullname || pair.player1.name} - ${results[rowIndex].points}, ${pair.player2.fullname || pair.player2.name} - ${results[colIndex].points}`);
+    
+        // **Записываем очки в таблицу (предпоследний столбец)**
+        const winnerPointsCell = document.querySelector(`td[data-row="${rowIndex}"][data-col="points"]`);
+        const loserPointsCell = document.querySelector(`td[data-row="${colIndex}"][data-col="points"]`);
+    
+        if (winnerPointsCell) winnerPointsCell.textContent = results[winner.id].points;
+        if (loserPointsCell) loserPointsCell.textContent = results[loser.id].points;
+    
+        // Отображаем результат в таблице игр
+        const cell = document.querySelector(`td[data-row="${rowIndex}"][data-col="${colIndex}"]`);
+        if (cell) cell.textContent = `${player1Score}:${player2Score}`;
+    
+        const reverseCell = document.querySelector(`td[data-row="${colIndex}"][data-col="${rowIndex}"]`);
+        if (reverseCell) reverseCell.textContent = `${player2Score}:${player1Score}`;
+    
+        // **Обновляем таблицу турнирного положения**
+        updateTournamentStandings([...selectedPlayers, ...unratedPlayersList], results);
+    }
+
+    function restoreSavedResults(savedResults) {
+        results = savedResults; // Восстанавливаем сохранённые результаты
+    
+        for (const row in results) {
+            for (const col in results[row]) {
+                const cell = document.querySelector(`td[data-row="${row}"][data-col="${col}"]`);
+                if (cell) {
+                    cell.textContent = results[row][col];
+                }
+            }
+        }
+        addBracketsAndHighlightResults();
+        // Пересчитываем очки и места
+        updateTournamentStandings([...selectedPlayers, ...unratedPlayersList], results);
+        if (waitingPairs && waitingPairs.length === 0 && currentPairs && currentPairs.length === 0) {
+            document.querySelector('#showResult').style = 'display: block';
+            
+        }
+
+        if (waitingPairs && waitingPairs.length > 0) {
+            renderPairsInWaitingBlock(waitingPairs);
+        }
+        
+        if (currentPairs && currentPairs.length > 0) {
+            currentPairs.forEach(pair => {
+                movePairToPlaying(pair, true, null);
+            })
+        }
+    }
+
+    
+
+    // ------------------------------------------------------2 КРУГА ------ 2 КРУГА ------2 КРУГА-----------------------------------------
+    
+    async function saveTournamentTwoRound(state = null, standings = null, final) {
+
+        if (!state) {
+            state = {
+                players: selectedPlayers.map(player => {
+                    const fullPlayerData = allplayers.find(p => p.id === player.id);
+                    return {
+                        id: player.id,
+                        birthYear: player.birthYear,
+                        fullname: player.fullname || player.name,
+                        logo: player.logo || null,
+                        place: player.place,
+                        place_round1: player.place_round1 || '',
+                        place_round2: player.place_round2 || '',
+                        wins: player.wins,
+                        losses: player.losses,
+                        points_round1: player.points_round1 || '',
+                        points_round2: player.points_round2 || '',
+                        totalPoints: player.totalPoints,
+                        setsWon: player.setsWon,
+                        setsLost: player.setsLost,
+                        rating: player.rating,
+                        city: fullPlayerData ? fullPlayerData.city  || fullPlayerData.cityName : "Unknown"
+                    };
+                }),
+                retiredPlayers: retiredPlayers.map(player => ({
+                    id: player.id,
+                    birthYear: player.birthYear,
+                    fullname: player.fullname || player.name,
+                    rating: player.rating,
+                    retired: true // Флаг выбывшего игрока
+                })),
+                unratedPlayers: unratedPlayersList.map(player => ({
+                    id: player.id,
+                    name: player.name || player.fullname,
+                    birthYear: player.birthYear,
+                    city: player.city,
+                    logo: "/icons/playerslogo/default_avatar.svg",
+                    place: player.place,
+                    place_round1: player.place_round1 || '',
+                    place_round2: player.place_round2 || '',
+                    wins: player.wins,
+                    losses: player.losses,
+                    points_round1: player.points_round1 || '',
+                    points_round2: player.points_round2 || '',
+                    totalPoints: player.totalPoints,
+                    setsWon: player.setsWon,
+                    setsLost: player.setsLost,
+                    nickname: player.nickname,
+                    unrated: true // Флаг внерейтингового игрока
+                })),
+                waitingPairs: waitingPairs,
+                currentPairs: currentPairs,
+                finishedPairs,
+                roundCounter,
+                results,
+                initialRatings: tournamentData.initialRatings,
+                typeOfTournament: selectedType !== tournamentData.typeOfTournament ? selectedType : tournamentData.typeOfTournament || 'roundRobin',
+                round1Results, // ✅ Сохранение результатов 1-го круга
+                round2Results, // ✅ Сохранение результатов 2-го круга
+            };
+        }
+
+        if (Array.isArray(standings) && standings.length > 0) {
+            const updatedPlayers = [];
+            const updatedUnratedPlayers = [];
+        
+            standings.forEach(player => {
+                const updatedPlayer = state.players.find(p => p.id === player.id);
+                const mergedPlayer = updatedPlayer ? { ...updatedPlayer, ...player } : player;
+        
+                if (mergedPlayer.unrated) {
+                    updatedUnratedPlayers.push(mergedPlayer); // Нерейтинговые игроки
+                } else {
+                    updatedPlayers.push(mergedPlayer); // Рейтинговые игроки
+                }
+            });
+        
+            state.players = updatedPlayers;
+            state.unratedPlayers = updatedUnratedPlayers;
+        }
+
+       
+
+        if (
+            (!standings || standings.length === 0) &&
+            (!state || Object.keys(state).length === 0 || waitingPairs.length > 0 || currentPairs.length > 0 || finishedPairs.length > 0)
+        ) {
+            if (!tournamentData.finished) {
+                console.log("`standings` отсутствует, но пары есть. Ждем обновления...");
+                return;
+            } 
+            
+        }
+        
+        if (final) {
+            state = { ...state, ...final }; // Объединяем данные без потери информации
+        }
+
+        if (state.finished === undefined) {
+            state.finished = tournamentData.finished || false;
+        }
+        
+        console.log("📦 Отправляем в БД state:", state);
+    
+        try {
+            const response = await fetch('/saveTournament', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tournamentId, state }),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to save tournament');
+            }
+
+            const responseData = await response.json();
+            console.log("✅ Tournament saved:", responseData);
+            
+            if (byUser) {
+                showErrorModal('Tournament saved successfully!', 'Congratulation');
+                byUser = false;
+            }
+        } catch (error) {
+            console.error('Error saving tournament:', error);
+            showErrorModal(error.message || 'Failed to save tournament');
+        }
+    }
+
+    function updateTableResultsTwoRounds(pair, player1Score, player2Score, setsSummary) {
+        const isFirstRound = roundCounter === 1;
+        // const isSecondRound = roundCounter === 2;
+    
+        // Определяем, в какую переменную сохранять результаты
+        const resultsToUpdate = isFirstRound ? round1Results : round2Results;
+    
+        // const rowIndex = [...selectedPlayers, ...unratedPlayersList].findIndex(p => p.id === pair.player1.id);
+        // const colIndex = [...selectedPlayers, ...unratedPlayersList].findIndex(p => p.id === pair.player2.id);
+
+        const rowIndex = allParticipants.findIndex(p => p.id === pair.player1.id);
+        const colIndex = allParticipants.findIndex(p => p.id === pair.player2.id);
+    
+        if (rowIndex === -1 || colIndex === -1) {
+            console.error("Ошибка: игрок не найден в списке.");
+            return;
+        }
+    
+        // Инициализация структуры данных
+        if (!resultsToUpdate[rowIndex]) resultsToUpdate[rowIndex] = {};
+        if (!resultsToUpdate[colIndex]) resultsToUpdate[colIndex] = {};
+    
+        // Записываем результаты для текущего круга
+        resultsToUpdate[rowIndex][colIndex] = `${player1Score}:${player2Score}`;
+        resultsToUpdate[colIndex][rowIndex] = `${player2Score}:${player1Score}`;
+    
+        // Добавляем данные о партиях
+        if (!resultsToUpdate[rowIndex].sets) resultsToUpdate[rowIndex].sets = {};
+        if (!resultsToUpdate[colIndex].sets) resultsToUpdate[colIndex].sets = {};
+    
+        let reversedSetsSummary = setsSummary
+            .split(", ")
+            .map(set => set.split("-").reverse().join("-"))
+            .join(", ");
+    
+        resultsToUpdate[rowIndex].sets[colIndex] = setsSummary;
+        resultsToUpdate[colIndex].sets[rowIndex] = reversedSetsSummary;
+    
+        // Обновляем очки (если поле points не существует, создаём его)
+        if (!resultsToUpdate[rowIndex].points) resultsToUpdate[rowIndex].points = 0;
+        if (!resultsToUpdate[colIndex].points) resultsToUpdate[colIndex].points = 0;
+    
+        // Обновляем очки в зависимости от типа игроков
+        if (pair.player1.unrated && pair.player2.unrated) {
+            // Оба игрока нерейтинговые - начисляем очки по стандарту
+            if (player1Score > player2Score) {
+                resultsToUpdate[rowIndex].points += 2;
+                resultsToUpdate[colIndex].points += 1;
+            } else {
+                resultsToUpdate[rowIndex].points += 1;
+                resultsToUpdate[colIndex].points += 2;
+            }
+        } else if (pair.player1.unrated || pair.player2.unrated) {
+            if (pair.player1.unrated) {
+                resultsToUpdate[rowIndex].points += 1;
+                resultsToUpdate[colIndex].points += 2;
+            } else {
+                resultsToUpdate[rowIndex].points += 2;
+                resultsToUpdate[colIndex].points += 1;
+            }
+        } else {
+            if (player1Score > player2Score) {
+                resultsToUpdate[rowIndex].points += 2;
+                resultsToUpdate[colIndex].points += 1;
+            } else {
+                resultsToUpdate[rowIndex].points += 1;
+                resultsToUpdate[colIndex].points += 2;
+            }
+        }
+    
+        // **Обновляем общий results**, чтобы он учитывал оба круга
+        // results[rowIndex] = { ...results[rowIndex], ...resultsToUpdate[rowIndex] };
+        // results[colIndex] = { ...results[colIndex], ...resultsToUpdate[colIndex] };
+    
+        // **Обновляем таблицу результатов**
+        const tableSelector = isFirstRound ? '.displayTournamentFirst' : '.displayTournamentSecond';
+        const cell = document.querySelector(`${tableSelector} td[data-row="${rowIndex}"][data-col="${colIndex}"]`);
+        if (cell) cell.textContent = `${player1Score}:${player2Score}`;
+    
+        const reverseCell = document.querySelector(`${tableSelector} td[data-row="${colIndex}"][data-col="${rowIndex}"]`);
+        if (reverseCell) reverseCell.textContent = `${player2Score}:${player1Score}`;
+    
+        // **Обновляем standings для текущего круга**
+        // updateTournamentStandingsTwoRound([...selectedPlayers, ...unratedPlayersList], resultsToUpdate, roundCounter);
+        updateTournamentStandingsTwoRound(allParticipants, resultsToUpdate, roundCounter);
+
+        console.log(`✅ Обновлены результаты (Круг ${roundCounter}):`, resultsToUpdate);
+    }
+
+    function updateTournamentStandingsTwoRound(players, resultsObject, roundCounter) {
+        console.log(`🔄 Обновляем standings (Круг ${roundCounter})`);
+    
+        const isFinalCalculation = roundCounter === "final";
+        const resultsToUse = isFinalCalculation ? results : resultsObject;
+        console.log('resultsToUse', resultsToUse);
+    
+        let standings = players.map(player => {
+            let previousStanding = standingsGlobal?.find(p => p.id === player.id) || {};
+            return {
+                id: player.id,
+                name: player.name || player.fullname,
+                birthYear: player.birthYear,
+                city: player.city || "Unknown",
+                nickname: player.nickname,
+                unrated: player.unrated || false,
+                wins: 0,  // Сбрасываем перед расчетом
+                losses: 0,
+                totalPoints: 0,
+                setsWon: 0,
+                setsLost: 0,
+                place: previousStanding.place || 0,
+                place_round1: previousStanding.place_round1 || 0,
+                place_round2: previousStanding.place_round2 || 0,
+                // points_round1: 0,
+                // points_round2: 0
+                points_round1: roundCounter === 1 ? 0 : (previousStanding.points_round1 ?? 0), // ✅ В течение 1-го круга сбрасываем, но сохраняем после
+                points_round2: roundCounter === 2 ? 0 : (previousStanding.points_round2 ?? 0)  // ✅ То же самое для 2-го круга
+            };
+        });
+    
+        console.log('standings перед добавлением очков', standings);
+        const processedPairs = new Set();
+        let tempPoints = {}; 
+    
+        if (!isFinalCalculation) {
+            for (const [row, cols] of Object.entries(resultsToUse)) {
+                for (const [col, score] of Object.entries(cols)) {
+                    if (col === "sets" || col === "points") continue;
+    
+                    if (typeof score !== "string") {
+                        console.warn(`⚠️ Некорректные данные: results[${row}][${col}] =`, score);
+                        continue;
+                    }
+    
+                    const [p1Score, p2Score] = score.split(":").map(n => parseInt(n.trim()));
+                    const player1 = standings.find(p => p.id == players[row].id);
+                    const player2 = standings.find(p => p.id == players[col].id);
+                    if (!player1 || !player2) continue;
+    
+                    const matchKey = `${Math.min(row, col)}-${Math.max(row, col)}`;
+                    if (processedPairs.has(matchKey)) continue;
+                    processedPairs.add(matchKey);
+    
+                    tempPoints[player1.id] = tempPoints[player1.id] || { wins: 0, losses: 0, points: 0, setsWon: 0, setsLost: 0, points_round1: 0, points_round2: 0 };
+                    tempPoints[player2.id] = tempPoints[player2.id] || { wins: 0, losses: 0, points: 0, setsWon: 0, setsLost: 0, points_round1: 0, points_round2: 0 };
+    
+                    tempPoints[player1.id].setsWon += p1Score;
+                    tempPoints[player1.id].setsLost += p2Score;
+                    tempPoints[player2.id].setsWon += p2Score;
+                    tempPoints[player2.id].setsLost += p1Score;
+    
+                    let p1Points = 0, p2Points = 0;
+    
+                    if (player1.unrated && player2.unrated) {
+                        if (p1Score > p2Score) {
+                            tempPoints[player1.id].wins++;
+                            tempPoints[player1.id].points += 2;
+                            tempPoints[player2.id].points += 1;
+                            tempPoints[player2.id].losses++;
+                            p1Points = 2;
+                            p2Points = 1;
+                        } else {
+                            tempPoints[player2.id].wins++;
+                            tempPoints[player2.id].points += 2;
+                            tempPoints[player1.id].points += 1;
+                            tempPoints[player1.id].losses++;
+                            p1Points = 1;
+                            p2Points = 2;
+                        }
+                    } else if (player1.unrated || player2.unrated) {
+                        if (player1.unrated) {
+                            tempPoints[player1.id].losses++;
+                            tempPoints[player1.id].points += 1;
+                            tempPoints[player2.id].points += 2;
+                            tempPoints[player2.id].wins++;
+                            p1Points = 1;
+                            p2Points = 2;
+                        } else {
+                            tempPoints[player1.id].wins++;
+                            tempPoints[player1.id].points += 2;
+                            tempPoints[player2.id].points += 1;
+                            tempPoints[player2.id].losses++;
+                            p1Points = 2;
+                            p2Points = 1;
+                        }
+                    } else {
+                        if (p1Score > p2Score) {
+                            tempPoints[player1.id].wins++;
+                            tempPoints[player1.id].points += 2;
+                            tempPoints[player2.id].points += 1;
+                            tempPoints[player2.id].losses++;
+                            p1Points = 2;
+                            p2Points = 1;
+                        } else {
+                            tempPoints[player2.id].wins++;
+                            tempPoints[player2.id].points += 2;
+                            tempPoints[player1.id].points += 1;
+                            tempPoints[player1.id].losses++;
+                            p1Points = 1;
+                            p2Points = 2;
+                        }
+                    }
+    
+                    if (roundCounter === 1) {
+                        tempPoints[player1.id].points_round1 += p1Points;
+                        tempPoints[player2.id].points_round1 += p2Points;
+                    } else if (roundCounter === 2) {
+                        tempPoints[player1.id].points_round2 += p1Points;
+                        tempPoints[player2.id].points_round2 += p2Points;
+                    }
+                }
+            }
+    
+            standings.forEach(player => {
+                if (tempPoints[player.id]) {
+                    player.wins = tempPoints[player.id].wins;
+                    player.losses = tempPoints[player.id].losses;
+                    player.totalPoints = tempPoints[player.id].points;
+                    player.setsWon = tempPoints[player.id].setsWon;
+                    player.setsLost = tempPoints[player.id].setsLost;
+                    // player.points_round1 = tempPoints[player.id].points_round1;
+                    // player.points_round2 = tempPoints[player.id].points_round2;
+                    if (roundCounter === 1) {
+                        player.points_round1 = tempPoints[player.id].points_round1;
+                    } else if (roundCounter === 2) {
+                        player.points_round2 = tempPoints[player.id].points_round2;
+                    }
+                }
+            });
+        }
+    
+        // **Обновляем отображение в таблице**
+        standings.forEach(player => {
+            const rowElement1 = document.querySelector(`.displayTournamentFirst tr[data-player-id="${player.id}"]`);
+            if (rowElement1) {
+                rowElement1.querySelector(".points").textContent = player.points_round1 || '';
+                rowElement1.querySelector(".place").textContent = player.place_round1 || '';
+            }
+    
+            const rowElement2 = document.querySelector(`.displayTournamentSecond tr[data-player-id="${player.id}"]`);
+            if (rowElement2) {
+                rowElement2.querySelector(".points").textContent = player.points_round2 || '';
+                rowElement2.querySelector(".place").textContent = player.place_round2 || '';
+            }
+        });
+
+        if (Object.keys(resultsToUse).length > 0) {
+            saveTournamentTwoRound(null, standings);
+        } else {
+            console.log('НЕ Обновляем standings - RESULTS ПУСТОЙ');
+        }
+        console.log('✅ Обновленные standings:', standings);
         standingsGlobal = standings;
     }
     
     
-   
-    function highlightWinnerLoser() {
-        const scoreInputs = document.querySelectorAll(".modalPairBlockDone input");
-        const player1Score = parseInt(scoreInputs[0].value) || 0;
-        const player2Score = parseInt(scoreInputs[1].value) || 0;
     
-        // Получаем блоки игроков
-        const player1Block = document.querySelector(".modalScoreBlock_points_row.firstPlayer");
-        const player2Block = document.querySelector(".modalScoreBlock_points_row.secondPlayer");
+    function restoreSavedResultsTwoRound(savedResults, roundCounter) {
+        const isRound1 = roundCounter === 1;
+        const isRound2 = roundCounter === 2;
     
-        // Получаем все инпуты заработанных очков
-        const player1PointInputs = player1Block.querySelectorAll(".modalScoreBlock_points_right input");
-        const player2PointInputs = player2Block.querySelectorAll(".modalScoreBlock_points_right input");
+        const targetTableSelector = isRound1 ? '.displayTournamentFirst' : '.displayTournamentSecond';
     
-        // Сброс цветов перед новой проверкой
-        [scoreInputs[0], scoreInputs[1], ...player1PointInputs, ...player2PointInputs].forEach(input => {
-            input.style.background = "";
-        });
+        if (isRound1) round1Results = savedResults;
+        if (isRound2) round2Results = savedResults;
     
-        if (player1Score > player2Score) {
-            // Победил первый игрок
-            scoreInputs[0].style.background = "#FA6400";
-            scoreInputs[1].style.background = "#D10000";
+        // Отрисовываем ячейки
+        for (const row in savedResults) {
+            for (const col in savedResults[row]) {
+                if (col === "sets" || col === "points") continue;
     
-            player1PointInputs.forEach(input => {
-                if (input.value.trim() !== "") input.style.background = "#FA6400";
-            });
-            player2PointInputs.forEach(input => {
-                if (input.value.trim() !== "") input.style.background = "#D10000";
-            });
-        } else if (player2Score > player1Score) {
-            // Победил второй игрок
-            scoreInputs[1].style.background = "#FA6400";
-            scoreInputs[0].style.background = "#D10000";
-    
-            player2PointInputs.forEach(input => {
-                if (input.value.trim() !== "") input.style.background = "#FA6400";
-            });
-            player1PointInputs.forEach(input => {
-                if (input.value.trim() !== "") input.style.background = "#D10000";
-            });
-        }
-    }
-
-
-
-    document.getElementById("showResult").addEventListener("click", async () => {
-        document.querySelector('.completed').style.display = 'block';
-        document.querySelector('.results').style.display = 'block';
-        // Устанавливаем флаг "finished" в `state`
-        tournamentData = await fetchTournament(tournamentId);
-        tournamentData.finished = true;
-
-        getTournamentCoefficient(tournamentData.initialRatings);
-        tournamentData.averageRating = averageRating;
-        tournamentData.coefficient = tournamentCoefficient;
-
-        // Блокируем кнопку
-        const btn = document.getElementById("showResult");
-        // console.log("🔍 Перед блокировкой:", btn.disabled); // Проверяем начальное состояние
-        btn.disabled = true;
-        btn.classList.add('disabledButton');
-        
-
-        renderCompletedGames(finishedPairs);
-        renderFinalResults(tournamentData);
-
-       
-        await saveTournament(null, null, tournamentData);
-
-    });
-
-
-    if (tournamentData.finished) {
-        console.log("🎉 Турнир уже завершён. Показываем результаты!");
-        document.querySelector('.completed').style.display = 'block';
-        document.querySelector('.results').style.display = 'block';
-        // Блокируем кнопку
-        const btn = document.getElementById("showResult");
-        // console.log("🔍 Перед блокировкой:", btn.disabled); // Проверяем начальное состояние
-        btn.disabled = true;
-        btn.classList.add('disabledButton');
-
-        tournamentData = await fetchTournament(tournamentId);
-        // Рендерим финальные результаты
-        renderCompletedGames(tournamentData.finishedPairs);
-        renderFinalResults(tournamentData);
-    }
-    
-    function renderCompletedGames(pairs) {
-        const container = document.querySelector(".completedGames-wrapper");
-        if (!container) {
-            console.error("Элемент .completedGames-wrapper не найден!");
-            return;
-        }
-        container.innerHTML = ""; // Очищаем контейнер перед рендерингом
-    
-        if (!pairs || pairs.length === 0) {
-            console.warn("Нет завершённых игр для рендеринга.");
-            return;
-        }
-    
-        const uniquePairs = new Set();
-    
-        pairs.forEach(pair => {
-            if (!pair.player1 || !pair.player2) {
-                console.log("Пропущена пара без игроков:", pair);
-                return;
-            }
-    
-            // Получаем индексы игроков в массиве players
-            const player1Index = [...tournamentData.players, ...tournamentData.unratedPlayers].findIndex(p => p.id === pair.player1.id);
-            const player2Index = [...tournamentData.players, ...tournamentData.unratedPlayers].findIndex(p => p.id === pair.player2.id);
-    
-            if (player1Index === -1 || player2Index === -1) {
-                console.log(`Игроки не найдены в списке players:`, pair);
-                // console.warn(`Игроки не найдены в списке players:`, pair);
-                return;
-            }
-    
-            // Получаем результаты из объекта results
-            const score = results[player1Index]?.[player2Index] || results[player2Index]?.[player1Index];
-    
-            if (!score) {
-                console.log(`⚠️ Счёт не найден для пары ${pair.player1.fullname} vs ${pair.player2.fullname}`);
-                return;
-            }
-    
-            console.log(`✅ Найден счёт: ${score} для ${pair.player1.fullname} vs ${pair.player2.fullname}`);
-    
-            const [score1, score2] = score.split(":").map(Number);
-    
-            // // Определяем победителя и проигравшего
-            // const isPlayer1Winner = score1 > score2;
-            // const winner = isPlayer1Winner ? pair.player1 : pair.player2;
-            // const loser = isPlayer1Winner ? pair.player2 : pair.player1;
-            // const winnerScore = isPlayer1Winner ? score1 : score2;
-            // const loserScore = isPlayer1Winner ? score2 : score1;
-
-            
-            
-            // Проверяем, есть ли нерейтинговый игрок в паре
-            const isPlayer1Unrated = pair.player1.unrated;
-            const isPlayer2Unrated = pair.player2.unrated;
-            console.log('isPlayer1Unrated', isPlayer1Unrated, 'isPlayer2Unrated', isPlayer2Unrated);
-            // let leftPlayer, rightPlayer, leftScore, rightScore;
-            let winner, loser, winnerScore, loserScore;
-
-            if (isPlayer1Unrated && isPlayer2Unrated) {
-                // Оба игрока нерейтинговые → оставляем как есть
-                winner = pair.player1;
-                loser = pair.player2;
-                winnerScore = score1;
-                loserScore = score2;
-            } else if (isPlayer1Unrated || isPlayer2Unrated) {
-                // Если один из игроков нерейтинговый, победителем всегда считается рейтинговый
-                if (isPlayer1Unrated) {
-                    winner = pair.player2; // Рейтинговый игрок
-                    loser = pair.player1; // Нерейтинговый игрок
-                    winnerScore = score2;
-                    loserScore = score1;
-                } else {
-                    winner = pair.player1; // Рейтинговый игрок
-                    loser = pair.player2; // Нерейтинговый игрок
-                    winnerScore = score1;
-                    loserScore = score2;
+                const cell = document.querySelector(`${targetTableSelector} td[data-row="${row}"][data-col="${col}"]`);
+                if (cell) {
+                    cell.textContent = savedResults[row][col];
                 }
-            } else {
-                // Обычная логика: победитель всегда слева
-                if (score1 > score2) {
-                    winner = pair.player1;
-                    loser = pair.player2;
-                    winnerScore = score1;
-                    loserScore = score2;
-                } else {
-                    winner = pair.player2;
-                    loser = pair.player1;
-                    winnerScore = score2;
-                    loserScore = score1;
+            }
+        }
+    
+        addBracketsAndHighlightResults();
+    
+        // 💡 Передаём только нужный раунд
+        // const restoredPlayers = determineTournamentStandingsTwoRounds(
+        //     [...selectedPlayers, ...unratedPlayersList],
+        //     isRound1 ? savedResults : null,
+        //     isRound2 ? savedResults : null
+        // );
+        const standings = [...selectedPlayers, ...unratedPlayersList];
+        standings.forEach(player => {
+            if (isRound1) {
+                const rowElement1 = document.querySelector(`.displayTournamentFirst tr[data-player-id="${player.id}"]`);
+                if (rowElement1) {
+                    rowElement1.querySelector(".points").textContent = player.points_round1 || '';
+                    rowElement1.querySelector(".place").textContent = player.place_round1 || '';
                 }
             }
             
-    
-            const pairDiv = document.createElement("div");
-            pairDiv.classList.add("completedGames-wrapper_pair");
-    
-            pairDiv.innerHTML = `
-                <h4 class="completedGames-wrapper_pair_player1">${winner.name || winner.fullname}</h4>
-                <div class="completedGames-wrapper_pair_player1_score wins">${winnerScore}</div>
-                <h5>:</h5>
-                <div class="completedGames-wrapper_pair_player2_score losers">${loserScore}</div>
-                <h4 class="completedGames-wrapper_pair_player2">${loser.name || loser.fullname}</h4>
-            `;
-    
-            container.appendChild(pairDiv);
-        });
-    
-        console.log("🎉 Завершённые игры рендерены:", uniquePairs);
-    }
-    
-
-    function renderFinalResults(tournament) {
-        const container = document.querySelector(".finalResults_table_content");
-        if (!container) {
-            console.error("❌ Элемент .finalResults_table_content не найден!");
-            return;
-        }
-        container.innerHTML = ""; // Очищаем контейнер перед рендерингом
-    
-        if (!tournament.players || tournament.players.length === 0 || !tournament.results) {
-            console.log("⚠️ Нет данных для рендеринга финальных результатов.");
-            console.warn("⚠️ Нет данных для рендеринга финальных результатов.");
-            return;
-        }
-    
-        let playerStats = [...tournament.players, ...tournament.unratedPlayers].map((player, index) => {
-            // console.log('inex', index);
-            // console.log('player', player.fullname);
-            const playerResults = tournament.results[index] || {}; // Используем индекс для сопоставления
-            const totalGames = Object.keys(playerResults).filter(key => key !== "sets" && key !== "points").length;
-            // const city = player.cityName || "Unknown";
-            let fullPlayerData = allplayers.find(p => p.id === player.id);
-            const city = fullPlayerData ? fullPlayerData.cityName || fullPlayerData.city : "Unknown";
+            if (isRound2) {
+                const rowElement2 = document.querySelector(`.displayTournamentSecond tr[data-player-id="${player.id}"]`);
+                if (rowElement2) {
+                    rowElement2.querySelector(".points").textContent = player.points_round2 || '';
+                    rowElement2.querySelector(".place").textContent = player.place_round2 || '';
+                }
+            }
             
-            // ✅ Получаем рейтинг ДО турнира
-            const ratingBefore = tournament.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
-            // ✅ Рейтинг ПОСЛЕ турнира
-            const ratingAfter = player.rating ?? ratingBefore;
-            // ✅ Изменение рейтинга
-            const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
-            
-            // console.log(`данные игрока ${player.name || player.fullname}`, {place: player.place,
-            //     name: player.name || player.fullname,
-            //     city: city,
-            //     games: `${totalGames}(${player.wins}-${player.losses})`,
-            //     sets: `${player.setsWon + player.setsLost}(${player.setsWon}-${player.setsLost})`,
-            //     ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
-            //     ratingBefore: ratingBefore.toFixed(1),
-            //     ratingAfter: ratingAfter.toFixed(1),
-            //     logo: player.logo}
-            // );
-
-            return {
-                place: player.place,
-                name: player.name || player.fullname,
-                city: (city === "Unknown") ? player.city : city,
-                games: `${totalGames}(${player.wins}-${player.losses})`,
-                sets: `${player.setsWon + player.setsLost}(${player.setsWon}-${player.setsLost})`,
-                ratingChange: ratingChange > 0 ? `+${ratingChange}` : ratingChange,
-                ratingBefore: ratingBefore.toFixed(1),
-                ratingAfter: ratingAfter.toFixed(1),
-                logo: player.logo
-            };
         });
-        console.log('список игроков с результатами:', playerStats);
-        playerStats.sort((a, b) => a.place - b.place); // ✅ Сортируем по `place`
+
+        console.log('restoredPlayersr', standings);
+    
+        // updateTournamentStandingsTwoRound(standings, savedResults, roundCounter);
+    
+        if (waitingPairs.length === 0 && currentPairs.length === 0 && round1Results && round2Results) {
+            document.querySelector('#showResult').style.display = 'block';
+        }
+
+        if (waitingPairs && waitingPairs.length > 0) {
+            renderPairsInWaitingBlock(waitingPairs);
+        }
         
-        console.log("📊 Финальная статистика игроков (отсортирована):", playerStats);
-    
-        // Рендеринг таблицы
-        playerStats.forEach(player => {
-            const playerDiv = document.createElement("div");
-            playerDiv.classList.add("finalResults_table_player");
-    
-            const ratingColor = player.ratingChange > 0 ? "#007026" : player.ratingChange < 0 ? "#F00" : "#666877";
-    
-            playerDiv.innerHTML = `
-                <div class="finalResults_number">${player.place || '0'}</div>
-                <div class="cell finalResults_player">
-                    <div class="playerLogo" style="background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
-                    <span>${player.name}</span>
-                </div>
-                <div class="cell finalResults_city">${player.city}</div>
-                <div class="cell finalResults_games">${player.games}</div>
-                <div class="cell finalResults_sets">${player.sets}</div>
-                <div class="cell finalResults_avarage" style="color: ${ratingColor}; font-weight: bold;">
-                    ${player.ratingChange}
-                </div>
-                <div class="cell finalResults_before">${player.ratingBefore}</div>
-                <div class="cell finalResults_after">${player.ratingAfter}</div>
-            `;
-    
-            container.appendChild(playerDiv);
-        });
+        if (currentPairs && currentPairs.length > 0) {
+            currentPairs.forEach(pair => {
+                movePairToPlaying(pair, true, null);
+            })
+        }
     }
+    
+    
+    // function restoreSavedResultsTwoRound(savedResults, roundCounter) {
+    //     console.log(`♻ Восстанавливаем результаты (Круг ${roundCounter})`);
+    //     console.log('savedResults', savedResults);
+    
+    //     if (!savedResults) {
+    //         console.log(`⚠️ Нет сохраненных данных для Круга ${roundCounter}`);
+    //         return;
+    //     }
+    
+    //     // Определяем, в какую таблицу рендерить данные
+    //     const targetTableSelector = roundCounter === 1 ? '.displayTournamentFirst' : '.displayTournamentSecond';
+    //     console.log(targetTableSelector);
+    //     results = savedResults; // Восстанавливаем сохранённые результаты
+    
+    //     for (const row in results) {
+    //         for (const col in results[row]) {
+    //             if (col === "sets" || col === "points") continue; // Пропускаем дополнительные поля
+    
+    //             const cell = document.querySelector(`${targetTableSelector} td[data-row="${row}"][data-col="${col}"]`);
+    //             if (cell) {
+    //                 cell.textContent = results[row][col];
+    //             }
+    //         }
 
-
-    // ------------------------------------------------------2 КРУГА ------ 2 КРУГА ------2 КРУГА-----------------------------------------
-
-    // Генерация второго круга
-    function generateSecondRoundPairs(players) {
-        const secondRoundPairs = generateRoundRobinPairs(players);
-        renderSecondRoundTable(secondRoundPairs);
-    }
-
-    // Функция для рендеринга таблицы второго круга
-    function renderSecondRoundTable(pairs) {
-        const secondRoundWrapper = document.createElement('div');
-        secondRoundWrapper.classList.add('second-round-wrapper');
-        secondRoundWrapper.innerHTML = "<h3>Second Round Results</h3>";
-        const secondRoundTable = document.createElement('div');
-        secondRoundTable.classList.add('second-round-table');
-
-        pairs.forEach((pair, index) => {
-            const pairDiv = document.createElement('div');
-            pairDiv.classList.add('pair');
-            pairDiv.innerHTML = `
-                <span>Pair ${index + 1}</span>
-                <h4>${pair.player1.name} vs ${pair.player2.name}</h4>
-            `;
-            secondRoundTable.appendChild(pairDiv);
-        });
-
-        secondRoundWrapper.appendChild(secondRoundTable);
-        document.querySelector('.tournament-wrapper').appendChild(secondRoundWrapper);
-    }
+    //         // const pointsCell = document.querySelector(`${targetTableSelector} td[data-row="${row}"][data-col="points"]`);
+    //         // console.log('pointsCell', pointsCell);
+    //         // if (pointsCell) {
+    //         //     pointsCell.textContent = results[row].points;
+    //         // }
+    //     }
+        
+    
+    //     // Добавляем дужки и подсветку результатов
+    //     addBracketsAndHighlightResults();
+    
+    //     // Пересчитываем очки и места для текущего круга
+    //     updateTournamentStandingsTwoRound([...selectedPlayers, ...unratedPlayersList], results, roundCounter);
+    
+    //     // Если оба круга завершены, показываем кнопку для отображения финального результата
+    //     if (waitingPairs.length === 0 && currentPairs.length === 0 && round1Results && round2Results) {
+    //         document.querySelector('#showResult').style = 'display: block';
+    //     }
+    // }
     
 });
 
 
-// зона рендера таблиц и схем
+
+
+
+
+// -------------------------зона рендера таблиц и схем ----------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     const display = document.querySelector('.displayTournament'); // Родительский контейнер
     const content = document.querySelector('.content'); // Контент внутри

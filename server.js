@@ -5,7 +5,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const nodemailer = require('nodemailer');
 const passport = require('./passportConfig'); // Подключаем конфигурацию Passport
-// const browserSync = require('browser-sync');
+const browserSync = require('browser-sync');
 const { ObjectId } = require('mongodb'); // Импортируем ObjectId
 require('dotenv').config();
 const { connectDB, getDB, client } = require('./db'); // Подключаем функцию для получения базы данных
@@ -1188,7 +1188,7 @@ app.post('/saveTournament', async (req, res) => {
           return res.status(400).json({ error: 'Tournament ID is required' });
       }
 
-      const { players, retiredPlayers, unratedPlayers, waitingPairs, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament } = state;
+      const { players, retiredPlayers, unratedPlayers, waitingPairs, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament, roundCounter, round1Results, round2Results } = state;
       // console.log('players from client', players);
       // Обновляем турнирные данные
       const updateData = {};
@@ -1197,11 +1197,15 @@ app.post('/saveTournament', async (req, res) => {
           updateData.players = players.map(player => ({
               id: player.id,
               fullname: player.fullname || player.name,
-              place: player.place || '',
+              place: player.place || 0,
+              place_round1: player.place_round1 || 0,
+              place_round2: player.place_round2 || 0,
               rating: player.rating,
               wins: player.wins,
               logo: player.logo || "/icons/playerslogo/default_avatar.svg",
               losses: player.losses,
+              points_round1: player.points_round1 || 0,
+              points_round2: player.points_round2 || 0,
               totalPoints: player.totalPoints,
               setsWon: player.setsWon,
               setsLost: player.setsLost,
@@ -1224,9 +1228,13 @@ app.post('/saveTournament', async (req, res) => {
               id: player.id,
               fullname: player.fullname || player.name,
               birthYear: player.birthYear,
-              place: player.place || '',
+              place: player.place || 0,
+              place_round1: player.place_round1 || 0,
+              place_round2: player.place_round2 || 0,
               wins: player.wins,
               losses: player.losses,
+              points_round1: player.points_round1 || 0,
+              points_round2: player.points_round2 || 0,
               totalPoints: player.totalPoints,
               setsWon: player.setsWon,
               setsLost: player.setsLost,
@@ -1273,6 +1281,18 @@ app.post('/saveTournament', async (req, res) => {
       if (typeOfTournament) {
         updateData.typeOfTournament = typeOfTournament;
       }
+
+      if (roundCounter) {
+        updateData.roundCounter = roundCounter;
+      }
+
+      if (round1Results) {
+        updateData.round1Results = round1Results;
+      }
+      if (round2Results) {
+        updateData.round2Results = round2Results;
+      }
+      
 
       // Проверяем, есть ли уже `initialRatings`
       const existingTournament = await db.collection('tournaments').findOne(
@@ -2670,18 +2690,18 @@ app.use((err, req, res, next) => {
 
 // Запуск сервера и инициализация базы данных
 connectDB().then(() => {
-  // app.listen(port, () => {
-  //   console.log(`Server is running on http://localhost:${port}`);
-  //   browserSync.init({
-  //     proxy: `http://localhost:${port}`,
-  //     files: ['./views/**/*.ejs', './public/**/*.*'],
-  //     port: 3001
-  //   });
-  // });
-
-  app.listen(8080, function () {
-    console.log(`Server is running on port ${8080}`);
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+    browserSync.init({
+      proxy: `http://localhost:${port}`,
+      files: ['./views/**/*.ejs', './public/**/*.*'],
+      port: 3001
+    });
   });
+
+  // app.listen(8080, function () {
+  //   console.log(`Server is running on port ${8080}`);
+  // });
 }).catch(err => {
   console.error('Failed to connect to database:', err);
 });

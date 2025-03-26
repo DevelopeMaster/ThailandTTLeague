@@ -930,7 +930,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                         // Добавляем пару в блок текущих игр
                         playingBlockContainer.appendChild(playingDiv);
 
-                        saveTournament();
+                        if (selectedType === 'roundRobin') {
+                            saveTournament();
+                        }
+                        if (selectedType === 'twoRound') {
+                            saveTournamentTwoRound(null, standingsGlobal);
+                        }
+                        
                     }
                 })
                 .catch((error) => {
@@ -972,7 +978,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Добавляем пару в блок текущих игр
             playingBlockContainer.appendChild(playingDiv);
 
-            saveTournament();
+            if (selectedType === 'roundRobin') {
+                saveTournament();
+            }
+            if (selectedType === 'twoRound') {
+                saveTournamentTwoRound(null, standingsGlobal);
+            }
         }
     }
 
@@ -1271,7 +1282,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     // Отображаем пары в блоке ожидания
                     renderPairsInWaitingBlock(secondRoundPairs);
                     waitingPairs = secondRoundPairs;
-                    saveTournamentTwoRound(null, standingsGlobal);
+                    await saveTournamentTwoRound(null, standingsGlobal);
                     return;
                 } else if (selectedType === 'twoRound' && roundCounter === 2) {
                     document.querySelector('#showResult').style = 'display: block';
@@ -1778,8 +1789,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         };
     
-        compareResults(round1Results);
-        compareResults(round2Results);
+        if (round1Results) {
+            compareResults(round1Results);
+        }
+        if (round2Results) {
+            compareResults(round2Results);
+        }
+        
     
         return scoreB - scoreA;
     }
@@ -3388,7 +3404,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             const updatedUnratedPlayers = [];
         
             standings.forEach(player => {
-                const updatedPlayer = state.players.find(p => p.id === player.id);
+                // const updatedPlayer = state.players.find(p => p.id === player.id);
+                const updatedPlayer =
+                    state.players.find(p => p.id === player.id) ||
+                    state.unratedPlayers.find(p => p.id === player.id);
                 const mergedPlayer = updatedPlayer ? { ...updatedPlayer, ...player } : player;
         
                 if (mergedPlayer.unrated) {
@@ -3675,6 +3694,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     if (roundCounter === 1) {
                         player.points_round1 = tempPoints[player.id].points_round1;
                     } else if (roundCounter === 2) {
+                        player.points_round1 = player.points_round1 ?? previousStanding.points_round1 ?? 0;
                         player.points_round2 = tempPoints[player.id].points_round2;
                     }
                 }
@@ -3696,11 +3716,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         });
 
-        if (Object.keys(resultsToUse).length > 0) {
-            saveTournamentTwoRound(null, standings);
-        } else {
-            console.log('НЕ Обновляем standings - RESULTS ПУСТОЙ');
-        }
+        // if (Object.keys(resultsToUse).length > 0) {
+        //     saveTournamentTwoRound(null, standings);
+        // } else {
+        //     console.log('НЕ Обновляем standings - RESULTS ПУСТОЙ');
+        // }
         console.log('✅ Обновленные standings:', standings);
         standingsGlobal = standings;
     }
@@ -3708,13 +3728,23 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     
     function restoreSavedResultsTwoRound(savedResults, roundCounter) {
+        // standingsGlobal = tournamentData.players;
+        console.log('standingsGlobal', standingsGlobal)
         const isRound1 = roundCounter === 1;
         const isRound2 = roundCounter === 2;
+        
     
         const targetTableSelector = isRound1 ? '.displayTournamentFirst' : '.displayTournamentSecond';
     
-        if (isRound1) round1Results = savedResults;
-        if (isRound2) round2Results = savedResults;
+        // if (isRound1) round1Results = savedResults;
+        // if (isRound2) round2Results = savedResults;
+
+        if (isRound1 && savedResults && Object.keys(savedResults).length > 0) {
+            round1Results = savedResults;
+        }
+        if (isRound2 && savedResults && Object.keys(savedResults).length > 0) {
+            round2Results = savedResults;
+        }
     
         // Отрисовываем ячейки
         for (const row in savedResults) {
@@ -3757,7 +3787,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
 
         console.log('restoredPlayersr', standings);
-    
+        standingsGlobal = standings;
         // updateTournamentStandingsTwoRound(standings, savedResults, roundCounter);
     
         if (waitingPairs.length === 0 && currentPairs.length === 0 && round1Results && round2Results) {

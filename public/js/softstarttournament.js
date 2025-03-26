@@ -446,6 +446,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('date').value = '';
         document.getElementById('loginRegInput').value = '';
         document.getElementById('city').value = '';
+        allParticipants = [...selectedPlayers, ...unratedPlayersList].sort((a, b) => (b.rating || 0) - (a.rating || 0))
+        saveTournament();
     });
 
     

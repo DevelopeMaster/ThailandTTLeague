@@ -302,7 +302,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         } else {
             showErrorModal('Player not found.');
         }
-        saveTournament(null, allParticipants);
+        // saveTournament(null, allParticipants);
+        if (selectedType === 'roundRobin') {
+            saveTournament(null);
+        }
+        if (selectedType === 'twoRound') {
+            saveTournamentTwoRound(null, [...selectedPlayers, ...unratedPlayersList]);
+        }
     });
 
     // Функция для рендеринга списка активных и выбывших игроков
@@ -458,7 +464,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             saveTournament(null);
         }
         if (selectedType === 'twoRound') {
-            saveTournamentTwoRound(null, allParticipants);
+            saveTournamentTwoRound(null, [...selectedPlayers, ...unratedPlayersList]);
         }
     });
 
@@ -531,11 +537,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                     // Генерируем пары игроков
                     const pairs = generateRoundRobinPairs([...selectedPlayers, ...unratedPlayersList]);
                     saveInitialRatings([...selectedPlayers, ...unratedPlayersList]);
-                    
+                    allParticipants = [...selectedPlayers, ...unratedPlayersList].sort((a, b) => (b.rating || 0) - (a.rating || 0));
                     // startTournamentDisplay([...selectedPlayers, ...unratedPlayersList], '.displayTournamentFirst');
                     startTournamentDisplay(allParticipants, '.displayTournamentFirst');
                     // Отображаем пары в блоке ожидания
                     renderPairsInWaitingBlock(pairs);
+                    console.log('allParticipants перед стартом', allParticipants)
                     waitingPairs = pairs;
                     startTournament.disabled = true; // Отключаем кнопку
                     startTournament.classList.add('disabledButton'); // Обновляем стиль кнопки
@@ -1236,9 +1243,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             if ( selectedType === 'roundRobin') {
                 updateTournamentStandings([...selectedPlayers, ...unratedPlayersList], results);
             } 
-            // else if ( selectedType === 'twoRound') {
-            //     updateTournamentStandingsTwoRound([...selectedPlayers, ...unratedPlayersList], results, roundCounter);
-            // }
+            else if ( selectedType === 'twoRound') {
+                updateTournamentStandingsTwoRound([...selectedPlayers, ...unratedPlayersList], results, roundCounter);
+            }
             
             // **Сохраняем изменения в БД**
             await saveUpdatedRatings(winner, loser);
@@ -1292,17 +1299,16 @@ document.addEventListener('DOMContentLoaded', async function() {
                     console.log('тут стэндингс при завершении последнего матча:', final2RoundStandings);
                     updateTournamentStandingsTwoRound(final2RoundStandings, round2Results, 2);
 
-                    // Создаём копию `allParticipants`, чтобы избежать потери данных
                     const finalStandings = determineTournamentStandingsTwoRounds(standingsGlobal, round1Results, round2Results);
                     console.log('finalStandings сформированы', finalStandings)
-                    // const finalStandings = determineTournamentStandingsTwoRounds(standingsGlobal, round1Results, round2Results);
-                    // updateTournamentStandingsTwoRound(finalStandings, results, "final");
+                    
                     saveTournamentTwoRound(null, finalStandings);
-                } else {
+                } 
+                // else {
                     // setTimeout(() => {
                     //     window.location.reload();
                     // }, 500);
-                }
+                // }
             }
             renderPairsInWaitingBlock(waitingPairs);
         };
@@ -1486,6 +1492,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             standings = standings.map((player, index) => {
                 const playerIndex = allPlayers.findIndex(p => p.id === player.id);
                 let wins = 0, losses = 0, setsWon = 0, setsLost = 0;
+                const p1 = player.points_round1 || 0;
+                const p2 = player.points_round2 || 0;
     
                 const combinedResults = [round1Results, round2Results];
                 for (const round of combinedResults) {
@@ -1525,7 +1533,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     wins,
                     losses,
                     setsWon,
-                    setsLost
+                    setsLost,
+                    totalPoints: p1 + p2
                 };
             });
         }

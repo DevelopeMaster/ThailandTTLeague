@@ -6963,9 +6963,25 @@ textarea:-webkit-autofill:focus {
   .softHeader .header_account_avatar {
     border-radius: 10px;
     border: 1px solid #FFF; }
+  .softHeader .header_buttons {
+    position: relative; }
   .softHeader .header_account_content {
     margin-top: 0;
-    right: 50px; }
+    top: 0;
+    right: 0px;
+    margin-top: 60px;
+    display: none;
+    flex-direction: column;
+    gap: 30px;
+    position: absolute;
+    width: 218px;
+    padding: 30px;
+    border-radius: 0 0 14px 14px;
+    background: #262630;
+    box-sizing: border-box;
+    z-index: 1; }
+    .softHeader .header_account_content_openMenu {
+      display: flex; }
 
 .chooseTournament {
   padding-top: 76px;
@@ -7979,6 +7995,8 @@ textarea:-webkit-autofill:focus {
             height: 27px; }
           .results .finalResults_table_player .finalResults_player span {
             align-content: center; }
+        .results .finalResults_table_player .finalResults_sets {
+          width: max-content; }
         .results .finalResults_table_player .finalResults_city {
           color: #ADADAD;
           white-space: nowrap;
@@ -7988,11 +8006,20 @@ textarea:-webkit-autofill:focus {
           color: #007026;
           text-align: left; }
         .results .finalResults_table_player:nth-child(1) .finalResults_number {
-          color: #E0A100; }
+          color: #FFF;
+          background-color: #E0A100;
+          width: 20px;
+          text-align: center; }
         .results .finalResults_table_player:nth-child(2) .finalResults_number {
-          color: #ADADAD; }
+          color: #FFF;
+          background-color: #ADADAD;
+          width: 20px;
+          text-align: center; }
         .results .finalResults_table_player:nth-child(3) .finalResults_number {
-          color: #966C00; }
+          color: #FFF;
+          background-color: #966C00;
+          width: 20px;
+          text-align: center; }
     .results .finalResults .cell {
       font-size: 16px;
       font-weight: 400;

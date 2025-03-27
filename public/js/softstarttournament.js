@@ -533,7 +533,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 } else 
                 if (selectedType === 'twoRound') {
                     console.log(`start two-round tournament (roundCounter: ${roundCounter})`);
-                    console.log('allParticipants', allParticipants);
+                    // console.log('allParticipants', allParticipants);
                     // Генерируем пары игроков
                     const pairs = generateRoundRobinPairs([...selectedPlayers, ...unratedPlayersList]);
                     saveInitialRatings([...selectedPlayers, ...unratedPlayersList]);
@@ -542,7 +542,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     startTournamentDisplay(allParticipants, '.displayTournamentFirst');
                     // Отображаем пары в блоке ожидания
                     renderPairsInWaitingBlock(pairs);
-                    console.log('allParticipants перед стартом', allParticipants)
+                    // console.log('allParticipants перед стартом', allParticipants)
                     waitingPairs = pairs;
                     startTournament.disabled = true; // Отключаем кнопку
                     startTournament.classList.add('disabledButton'); // Обновляем стиль кнопки

@@ -256,6 +256,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     //     return `${day}.${month}.${year} (${age} years)`;
     // }
 
+    function formatDate(dateString) {
+        if (!dateString) return "—";
+        
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Месяцы начинаются с 0
+        const year = date.getFullYear();
+    
+        return `${day}.${month}.${year}`;
+    }
+    
     function formatDateAndAge(dateString, language) {
         const date = new Date(dateString);
     
@@ -331,6 +342,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const currentRating = player.rating;
         const sundayRating = player.sundaysRating;
         const ratingChange = currentRating - sundayRating;
+        const firstTournamentDate = formatDate(player.firstTournamentDate);
         let changeRatingColor;
         let changeRatingSymbol;
 
@@ -394,7 +406,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 </div>
                 <div class="player_statistics_info_descr_path statisticsSeparateLine">
                     <p>${getTranslation('Rank')}: <span>${Math.round(player.rating) || ' - '}</span></p>
-                    <p>${getTranslation('First tournament')}: <span>${player.firstTournamentDate || ' - '}</span></p>
+                    <p>${getTranslation('First tournament')}: <span>${firstTournamentDate || ' - '}</span></p>
                     <p>${getTranslation('Most often in')}: <span>${playedMostOften ? playedMostOften: ' - '} (${mostActiveClub?.count || ' - '})</span></p>
                     
                 </div>

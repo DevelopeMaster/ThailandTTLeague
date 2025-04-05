@@ -189,6 +189,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    function formatDate(dateString) {
+        if (!dateString) return "—";
+        
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Месяцы начинаются с 0
+        const year = date.getFullYear();
+    
+        return `${day}.${month}.${year}`;
+    }
+
     function formatDateAndAge(dateString, language) {
         const date = new Date(dateString);
     
@@ -249,6 +260,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const currentRating = player.rating;
         const sundayRating = player.sundaysRating;
         const ratingChange = currentRating - sundayRating;
+        const firstTournamentDate = formatDate(player.firstTournamentDate);
         let changeRatingColor;
         let changeRatingSymbol;
 
@@ -306,19 +318,157 @@ document.addEventListener('DOMContentLoaded', async function() {
         playerStatistics.innerHTML = `
             <div class="player_statistics_info_descr">
                 <div class="player_statistics_info_descr_path">
-                    <p>${getTranslation('Tournaments played')}: <span>${player.tournaments || ' - '}</span></p>
-                    <p>${getTranslation('Games')}: <span>323 (258 / 65)</span></p>
-                    <div class="raitingWrapp"><span>${getTranslation('Maximum rating')}:</span> <span class="coaches_content_coach_info_rating">${Math.round(player.rating)}</span></div>
+                    <p>${getTranslation('Tournaments played')}: <span>${player.tournamentsPlayed || 0 }</span></p>
+                    <p>${getTranslation('Games')}: <span>${(player.totalWins + player.totalLosses) || 0} (${player.totalWins || 0} / ${player.totalLosses || 0})</span></p>
+                    <div class="raitingWrapp"><span>${getTranslation('Maximum rating')}:</span> <span class="coaches_content_coach_info_rating">${Math.round(player.rating) || ' - '}</span></div>
                 </div>
                 <div class="player_statistics_info_descr_path statisticsSeparateLine">
-                    <p>${getTranslation('Rank')}: <span>${player.rank || ' - '}</span></p>
-                    <p>${getTranslation('First tournament')}: <span>29.01.2018</span></p>
-                    <p>${getTranslation('Most often in')}: <span>${player.clubtournaments || ' - '} (${getTranslation('tournaments')}: ${player.tournaments || ' - '})</span></p>
+                    <p>${getTranslation('Rank')}: <span>${Math.round(player.rating) || ' - '}</span></p>
+                    <p>${getTranslation('First tournament')}: <span>${firstTournamentDate || ' - '}</span></p>
+                    <p>${getTranslation('Most often in')}: <span>${playedMostOften ? playedMostOften: ' - '} (${mostActiveClub?.count || ' - '})</span></p>
                     
                 </div>
             </div>
             
         `;
+
+        renderBestVictories(player);
+        renderPlayerAwards(player);
+
+
+        function renderBestVictories(player) {
+            const container = document.querySelector(".bestVictories_table_content");
+            if (!container || !Array.isArray(player.bestVictories)) return;
+          
+            container.innerHTML = ""; // Очистим блок
+          
+            const victories = [...player.bestVictories].sort(
+              (a, b) => b.opponentRating - a.opponentRating
+            );
+          
+            const MAX_VISIBLE = 3;
+          
+            victories.forEach((victory, index) => {
+              const date = new Date(victory.date).toLocaleDateString("ru-RU");
+              const opponentRating = Math.round(victory.opponentRating);
+              const playerRating = Math.round(victory.playerRating);
+              const clubName = victory.club?.name || "Unknown club";
+              const clubLogo = victory.club?.logo || "/icons/clubslogo/default.png";
+              const opponentName = victory.opponentName || "Unknown opponent";
+              const score = victory.score || "-";
+          
+              const ratingLimit = victory.ratingLimit
+                ? `<div class="restrictionStatus bestVictories_before" style="background: rgb(173, 173, 173);">
+                    <div class="restriction">${victory.ratingLimit}</div>
+                  </div>`
+                : "";
+          
+              const victoryDiv = document.createElement("div");
+              victoryDiv.classList.add("bestVictories_table_victory");
+              if (index >= MAX_VISIBLE) {
+                victoryDiv.classList.add("hidden-victory"); // Скрываем лишние
+                victoryDiv.style.display = "none";
+              }
+          
+              victoryDiv.innerHTML = `
+                <div class="bestVictories_table_victory_left">
+                  <div class="bestVictories_number">${date}</div>
+                  <div class="cell bestVictories_club">
+                    <div class="clubLogo" style="background-image: url('${clubLogo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                    <span class="shortcut" title="${clubName}">${clubName}</span>
+                  </div>
+                  ${ratingLimit}
+                  <div class="cell bestVictories_after">${playerRating}</div>
+                  <div class="cell bestVictories_player shortcut" title="${opponentName}">${opponentName}</div>
+                </div>
+          
+                <div class="bestVictories_table_victory_right">
+                  <div class="cell bestVictories_oponentsraiting">${opponentRating}</div>
+                  <div class="cell bestVictories_score">${score}</div>
+                  <div class="cell bestVictories_avarage">
+                    <img src="/icons/greenChevronUp.gif" style="width: 16px" alt="green Chevron">
+                  </div>
+                </div>
+              `;
+          
+              container.appendChild(victoryDiv);
+            });
+          
+            if (victories.length > MAX_VISIBLE) {
+              const seeMoreBtn = document.createElement("a");
+              seeMoreBtn.className = "bestVictories_table_btn";
+              seeMoreBtn.href = "#";
+              seeMoreBtn.textContent = "See more";
+          
+              seeMoreBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                const hidden = container.querySelectorAll(".hidden-victory");
+                hidden.forEach(el => el.style.display = "flex");
+                seeMoreBtn.remove();
+              });
+          
+              container.appendChild(seeMoreBtn);
+            }
+        }
+          
+    
+        function renderPlayerAwards(player) {
+            const container = document.querySelector(".awardsTable");
+            if (!container || !player.awards) return;
+          
+            container.innerHTML = ""; // Очистим предыдущие награды
+    
+            let totalGold = 0;
+            let totalSilver = 0;
+            let totalBronze = 0;
+          
+            Object.entries(player.awards).forEach(([clubId, award]) => {
+              const gold = award.gold || 0;
+              const silver = award.silver || 0;
+              const bronze = award.bronze || 0;
+          
+              // Пропустим, если у игрока нет ни одной медали в клубе
+              if (gold === 0 && silver === 0 && bronze === 0) return;
+    
+              totalGold += gold;
+              totalSilver += silver;
+              totalBronze += bronze;
+          
+              const div = document.createElement("div");
+              div.classList.add("awardsTable_item");
+          
+              div.innerHTML = `
+                <div class="cell bestVictories_club">
+                  <div class="clubLogo" style="background-image: url('${award.clubLogo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                  <span class="shortcut" title="${award.clubName}">${award.clubName}</span>
+                </div>
+                <div class="awardsTable_item_medalBlock">
+                  <img src="/icons/1st-medal.svg" alt="gold medal">
+                  <span>(${gold})</span>
+                  <span>Gold</span>
+                </div>
+                <div class="awardsTable_item_medalBlock">
+                  <img src="/icons/2st-medal.svg" alt="silver medal">
+                  <span>(${silver})</span>
+                  <span>Silver</span>
+                </div>
+                <div class="awardsTable_item_medalBlock">
+                  <img src="/icons/3st-medal.svg" alt="bronze medal">
+                  <span>(${bronze})</span>
+                  <span>Bronze</span>
+                </div>
+              `;
+          
+              container.appendChild(div);
+            });
+    
+            // Добавим блок с общей суммой наград
+            const totalCount = totalGold + totalSilver + totalBronze;
+            const totalDiv = document.createElement("div");
+            totalDiv.classList.add("awardsTable_total");
+            totalDiv.textContent = `Total awards: ${totalCount}`;
+            container.appendChild(totalDiv);
+        }
 
 
         function openShareModal() {

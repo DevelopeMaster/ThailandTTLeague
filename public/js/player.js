@@ -121,11 +121,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             player = await response.json();
             console.log(player);
-            // mostActiveClub = getClubWithMostTournaments(player.tournaments);
             playerCity = await getCityName(player.city);
             // console.log(mostActiveClub.clubId);
             if (player.tournaments.length > 0) {
                 mostActiveClub = getClubWithMostTournaments(player.tournaments);
+                console.log(mostActiveClub.clubId);
                 await fetchClubData(mostActiveClub.clubId);
             }
             renderPlayerData();
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 </div>
                 <div class="player_statistics_info_descr_path statisticsSeparateLine">
                     <p>${getTranslation('Rank')}: <span>${Math.round(player.rating) || ' - '}</span></p>
-                    <p>${getTranslation('First tournament')}: <span>${player.firstTournamentDate || ' - '}</span></p>
+                    <p>${getTranslation('First tournament')}: <span>${firstTournamentDate || ' - '}</span></p>
                     <p>${getTranslation('Most often in')}: <span>${playedMostOften ? playedMostOften: ' - '} (${mostActiveClub?.count || ' - '})</span></p>
                     
                 </div>

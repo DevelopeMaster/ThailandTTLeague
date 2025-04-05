@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 throw new Error('Club not found');
             }
             tournaments = await response.json();
-            console.log(tournaments);
+            // console.log(tournaments);
 
             renderTournaments(tournaments);
 

@@ -155,72 +155,53 @@ function renderPastTournamentResults(tournamentData) {
         console.error("❌ Элемент .pastTournament_table_content не найден!");
         return;
     }
-    container.innerHTML = ""; // Очищаем контейнер перед рендерингом
+    container.innerHTML = "";
 
-    if (!tournamentData || !tournamentData.players || tournamentData.players.length === 0) {
+    const ratedPlayers = tournamentData.players || [];
+    const unratedPlayers = tournamentData.unratedPlayers || [];
+
+    const allPlayers = [...ratedPlayers, ...unratedPlayers];
+
+    if (allPlayers.length === 0) {
         console.warn("⚠️ Нет данных для рендеринга завершенного турнира.");
         return;
     }
 
-    // 🛠 **Создаём структуру данных для игроков**
-    let playerStats = tournamentData.players.map(player => {
-        // 🏙 **Получаем город игрока**
+    const playerStats = allPlayers.map(player => {
         const city = player.city || player.cityName || "Unknown";
-
-        // 📊 **Получаем рейтинг ДО и ПОСЛЕ турнира**
-        const ratingBefore = tournamentData.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
+        const ratingBefore = tournamentData.initialRatings?.find(p => p.id === player.id)?.rating ?? 0;
         const ratingAfter = player.rating ?? ratingBefore;
         const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
         const ratingColor = ratingChange > 0 ? "#007026" : ratingChange < 0 ? "#F00" : "#666877";
 
-        // ✅ **Подсчет игр, побед, поражений, сетов**
-        let totalGames = 0, wins = 0, losses = 0, totalSets = 0, wonSets = 0, lostSets = 0;
-
-        // ⚡ **Поиск результатов игрока в results**
-        Object.entries(tournamentData.results).forEach(([playerIndex, matches]) => {
-            if (player.id !== tournamentData.players[playerIndex]?.id) return;
-
-            Object.entries(matches).forEach(([opponentIndex, score]) => {
-                if (opponentIndex === "sets" || opponentIndex === "points") return;
-                
-                const [score1, score2] = score.split(":").map(Number);
-                if (isNaN(score1) || isNaN(score2)) return;
-
-                totalGames++;  // Увеличиваем количество матчей
-                wonSets += score1;  // Выигранные сеты
-                lostSets += score2; // Проигранные сеты
-                totalSets += score1 + score2; // Общий счёт сетов
-
-                if (score1 > score2) wins++;  // Победа
-                else losses++;  // Поражение
-            });
-        });
-
-        console.log(`✅ Игрок ${player.fullname} | Матчи: ${totalGames} | Победы: ${wins} | Поражения: ${losses} | Сеты: ${totalSets} (${wonSets}-${lostSets})`);
+        const wins = player.wins || 0;
+        const losses = player.losses || 0;
+        const setsWon = player.setsWon || 0;
+        const setsLost = player.setsLost || 0;
+        const totalGames = wins + losses;
+        const totalSets = setsWon + setsLost;
 
         return {
             id: player.id,
-            place: player.place,
+            place: player.place || 0,
             name: player.name || player.fullname,
             city,
             totalGames,
             wins,
             losses,
             totalSets,
-            wonSets,
-            lostSets,
+            wonSets: setsWon,
+            lostSets: setsLost,
             ratingChange,
             ratingBefore: ratingBefore.toFixed(1),
             ratingAfter: ratingAfter.toFixed(1),
             ratingColor,
-            logo: `${player.logo}`
+            logo: player.logo
         };
     });
 
-    // 🔽 **Теперь сортируем игроков по `place`**
-    playerStats = playerStats.filter(Boolean).sort((a, b) => a.place - b.place);
+    playerStats.sort((a, b) => a.place - b.place);
 
-    // 🎨 **Рендерим таблицу**
     playerStats.forEach(player => {
         const playerDiv = document.createElement("div");
         playerDiv.classList.add("pastTournament_table_player");
@@ -232,9 +213,11 @@ function renderPastTournamentResults(tournamentData) {
                 <span>${player.name}</span>
             </div>
             <div class="cell pastTournament_city">${player.city}</div>
-            <div class="cell pastTournament_games">${player.totalGames}(${player.wins}-${player.losses})</div>
-            <div class="cell pastTournament_sets">${player.totalSets}(${player.wonSets}-${player.lostSets})</div>
-            <div class="cell pastTournament_avarage" style="color: ${player.ratingColor}">${player.ratingChange > 0 ? `+${player.ratingChange}` : player.ratingChange}</div>
+            <div class="cell pastTournament_games">${player.totalGames} (${player.wins}-${player.losses})</div>
+            <div class="cell pastTournament_sets">${player.totalSets} (${player.wonSets}-${player.lostSets})</div>
+            <div class="cell pastTournament_avarage" style="color: ${player.ratingColor}; font-weight: bold;">
+                ${player.ratingChange > 0 ? `+${player.ratingChange}` : player.ratingChange}
+            </div>
             <div class="cell pastTournament_before">${player.ratingBefore}</div>
             <div class="cell pastTournament_after">${player.ratingAfter}</div>
         `;
@@ -244,6 +227,103 @@ function renderPastTournamentResults(tournamentData) {
 
     console.log("📊 Завершенный турнир успешно отрендерен!");
 }
+
+
+// function renderPastTournamentResults(tournamentData) {
+//     const container = document.querySelector(".pastTournament_table_content");
+//     if (!container) {
+//         console.error("❌ Элемент .pastTournament_table_content не найден!");
+//         return;
+//     }
+//     container.innerHTML = ""; // Очищаем контейнер перед рендерингом
+
+//     if (!tournamentData || !tournamentData.players || tournamentData.players.length === 0) {
+//         console.warn("⚠️ Нет данных для рендеринга завершенного турнира.");
+//         return;
+//     }
+
+//     // 🛠 **Создаём структуру данных для игроков**
+//     let playerStats = tournamentData.players.map(player => {
+//         // 🏙 **Получаем город игрока**
+//         const city = player.city || player.cityName || "Unknown";
+
+//         // 📊 **Получаем рейтинг ДО и ПОСЛЕ турнира**
+//         const ratingBefore = tournamentData.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
+//         const ratingAfter = player.rating ?? ratingBefore;
+//         const ratingChange = (ratingAfter - ratingBefore).toFixed(1);
+//         const ratingColor = ratingChange > 0 ? "#007026" : ratingChange < 0 ? "#F00" : "#666877";
+
+//         // ✅ **Подсчет игр, побед, поражений, сетов**
+//         let totalGames = 0, wins = 0, losses = 0, totalSets = 0, wonSets = 0, lostSets = 0;
+
+//         // ⚡ **Поиск результатов игрока в results**
+//         Object.entries(tournamentData.results).forEach(([playerIndex, matches]) => {
+//             if (player.id !== tournamentData.players[playerIndex]?.id) return;
+
+//             Object.entries(matches).forEach(([opponentIndex, score]) => {
+//                 if (opponentIndex === "sets" || opponentIndex === "points") return;
+                
+//                 const [score1, score2] = score.split(":").map(Number);
+//                 if (isNaN(score1) || isNaN(score2)) return;
+
+//                 totalGames++;  // Увеличиваем количество матчей
+//                 wonSets += score1;  // Выигранные сеты
+//                 lostSets += score2; // Проигранные сеты
+//                 totalSets += score1 + score2; // Общий счёт сетов
+
+//                 if (score1 > score2) wins++;  // Победа
+//                 else losses++;  // Поражение
+//             });
+//         });
+
+//         console.log(`✅ Игрок ${player.fullname} | Матчи: ${totalGames} | Победы: ${wins} | Поражения: ${losses} | Сеты: ${totalSets} (${wonSets}-${lostSets})`);
+
+//         return {
+//             id: player.id,
+//             place: player.place,
+//             name: player.name || player.fullname,
+//             city,
+//             totalGames,
+//             wins,
+//             losses,
+//             totalSets,
+//             wonSets,
+//             lostSets,
+//             ratingChange,
+//             ratingBefore: ratingBefore.toFixed(1),
+//             ratingAfter: ratingAfter.toFixed(1),
+//             ratingColor,
+//             logo: `${player.logo}`
+//         };
+//     });
+
+//     // 🔽 **Теперь сортируем игроков по `place`**
+//     playerStats = playerStats.filter(Boolean).sort((a, b) => a.place - b.place);
+
+//     // 🎨 **Рендерим таблицу**
+//     playerStats.forEach(player => {
+//         const playerDiv = document.createElement("div");
+//         playerDiv.classList.add("pastTournament_table_player");
+
+//         playerDiv.innerHTML = `
+//             <div class="pastTournament_number">${player.place}</div>
+//             <div class="cell pastTournament_player">
+//                 <div class="playerLogo" style="background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+//                 <span>${player.name}</span>
+//             </div>
+//             <div class="cell pastTournament_city">${player.city}</div>
+//             <div class="cell pastTournament_games">${player.totalGames}(${player.wins}-${player.losses})</div>
+//             <div class="cell pastTournament_sets">${player.totalSets}(${player.wonSets}-${player.lostSets})</div>
+//             <div class="cell pastTournament_avarage" style="color: ${player.ratingColor}">${player.ratingChange > 0 ? `+${player.ratingChange}` : player.ratingChange}</div>
+//             <div class="cell pastTournament_before">${player.ratingBefore}</div>
+//             <div class="cell pastTournament_after">${player.ratingAfter}</div>
+//         `;
+
+//         container.appendChild(playerDiv);
+//     });
+
+//     console.log("📊 Завершенный турнир успешно отрендерен!");
+// }
 
 
 // function renderPastTournamentResults(tournamentData) {

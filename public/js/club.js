@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Gym': 'Gym',
             'Extra charge': 'Extra charge',
             'Free': 'Free',
-            'daysOfWeek': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            'daysOfWeek': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             'event': 'Event',
             'start': 'Start',
             'end': 'End',
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Gym': 'Тренажерный зал',
             'Extra charge': 'Платные',
             'Free': 'Бесплатные',
-            'daysOfWeek': ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+            'daysOfWeek': ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
             'event': 'Событие',
             'start': 'Начало',
             'end': 'Конец',
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Gym': 'ยิม',
             'Extra charge': 'มีค่าใช้จ่ายเพิ่มเติม',
             'Free': 'ฟรี',
-            'daysOfWeek': ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+            'daysOfWeek': ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'],
             'event': 'กิจกรรม',
             'start': 'เริ่ม',
             'end': 'จบ',
@@ -161,8 +161,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             club = await response.json();
             clubCity = await getCityName(club.city);
             renderClubData();
-            // console.log(club);
-            renderTableBasedOnScreenSize(club);
+            console.log(club);
+            
         } catch (error) {
             console.error('Error fetching club data:', error);
         }
@@ -273,7 +273,19 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
         `;
         
-        renderMap();
+        if (club.scheduleData) {
+            renderTableBasedOnScreenSize(club);
+        } else {
+            console.log('рассписание еще не внесено!!!');
+        }
+        
+
+        if (club.location && club.location[0] && club.location[1]) {
+            renderMap();
+        } else {
+            console.log('локация еще не добавлена!!!');
+        }
+        
         renderPhotos();
     }
 
@@ -301,7 +313,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function renderScheduleTable(clubData) {
         const daysOfWeek = getTranslation('daysOfWeek'); // Переведенные названия дней
-        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const dayKeys = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
         const maxSessions = 6; // Постоянное значение для количества сессий
       
         const tableBody = document.querySelector('.schedule-form');
@@ -371,7 +383,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function renderMobileScheduleTable(clubData) {
         const daysOfWeek = getTranslation('daysOfWeek'); // Переведенные названия дней
-        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const dayKeys = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
         
         const tableBody = document.querySelector('.schedule-form');
         tableBody.innerHTML = ""; // Очищаем таблицу перед заполнением

@@ -130,6 +130,7 @@
                 background: #3F3F4C
             .pastTournament_number
                 align-content: center
+                text-align: center
                 font-size: 20px
                 color: #ADADAD
             .pastTournament_player
@@ -154,13 +155,19 @@
                 color: #007026
             &:nth-child(1)
                 .pastTournament_number
-                    color: #E0A100
+                    // color: #E0A100
+                    color: #fff
+                    background-color: #E0A100
             &:nth-child(2)
                 .pastTournament_number
-                    color: #ADADAD
+                    // color: #ADADAD
+                    color: #fff
+                    background-color: #ADADAD
             &:nth-child(3)
                 .pastTournament_number
-                    color: #966C00
+                    // color: #966C00
+                    color: #fff
+                    background-color: #966C00
                 
         &_btn
             display: block
@@ -192,9 +199,11 @@
             align-content: center
     // &_city
     //     grid-column: 5 / 7
-    // &_games
+    &_games
+        width: max-content
     //     grid-column: 7 / 8
     &_sets
+        width: max-content
         padding-left: 15px
         // text-align: center
     // &_avarage

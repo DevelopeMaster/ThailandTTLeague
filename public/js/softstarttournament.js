@@ -472,10 +472,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     const waitingBlockContainer = document.querySelector('.startTournament_panelWrapp_tournament_games_watingBlock_pairs');
     const playingBlockContainer = document.querySelector('.startTournament_panelWrapp_tournament_games_playingBlock_pairs');
     const startTournament = document.querySelector('#startTournamentBtn');
+    const saveTournamentBtn = document.querySelector('#saveTournamentData');
 
     if (waitingPairs && waitingPairs.length > 0 || currentPairs && currentPairs.length > 0 || finishedPairs && finishedPairs.length > 0) {
         startTournament.disabled = true; // Отключаем кнопку
         startTournament.classList.add('disabledButton'); // Обновляем текст кнопки (по желанию)
+        saveTournamentBtn.disabled = true;
+        // saveTournamentBtn.classList.add('disabledButton');
         addPlayertoTournament.disabled = true;
         addPlayertoTournament.classList.add('disabledButton');
 
@@ -529,6 +532,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     renderPairsInWaitingBlock(pairs);
                     startTournament.disabled = true; // Отключаем кнопку
                     startTournament.classList.add('disabledButton'); // Обновляем стиль кнопки
+                    saveTournamentBtn.disabled = true;
+                    // saveTournamentBtn.classList.add('disabledButton');
                     saveTournament();
                 } else 
                 if (selectedType === 'twoRound') {
@@ -546,6 +551,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     waitingPairs = pairs;
                     startTournament.disabled = true; // Отключаем кнопку
                     startTournament.classList.add('disabledButton'); // Обновляем стиль кнопки
+                    saveTournamentBtn.disabled = true;
+                    // saveTournamentBtn.classList.add('disabledButton');
                     saveTournamentTwoRound(null, allParticipants);
                 }
             } else {
@@ -1269,6 +1276,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const finalStandings = determineTournamentStandings(sortedStandings, results);
                     console.log('finalStandings', finalStandings)
                     updateTournamentStandings(finalStandings, results);
+                   
                     // setTimeout(() => {
                     //     window.location.reload();
                     // }, 500);
@@ -1303,6 +1311,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     console.log('finalStandings сформированы', finalStandings)
                     
                     saveTournamentTwoRound(null, finalStandings);
+                    
                 } 
                 // else {
                     // setTimeout(() => {
@@ -1988,6 +1997,25 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.error("Ошибка при сохранении рейтинга:", error);
         }
     }
+
+    async function incrementTournamentsForPlayers(players) {
+        console.log('доавляем турнир игрокам', players)
+        const club = tournamentData.club;
+        try {
+            const response = await fetch("/updateTournamentCounterForPlayers", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ players, club }),
+            });
+        
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Ошибка при обновлении");
+        
+            console.log("📈 Турниры обновлены:", data);
+          } catch (err) {
+            console.error("❌ Ошибка обновления турниров:", err);
+          }
+    }
    
     function calculateAverageRating(players) {
         const ratedPlayers = players.filter(player => player.rating > 0); // Исключаем нулевые рейтинги
@@ -2118,6 +2146,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (selectedType === 'roundRobin') {
             renderCompletedGames(finishedPairs);
             renderFinalResults(tournamentData);
+            incrementTournamentsForPlayers([...tournamentData.players]);
         }
 
         if (selectedType === 'twoRound') {
@@ -2125,15 +2154,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             renderCompletedGamesTwoRound(finishedPairs);
             console.log("Игроки:", tournamentData.players);
             renderFinalResultsTwoRound(tournamentData);
+            incrementTournamentsForPlayers([...tournamentData.players]);
         }
         
         if (selectedType === 'roundRobin') {
             await saveTournament(null, null, tournamentData);
         } else if (selectedType === 'twoRound') {
             console.log('тут сохраняю FINISHED');
-            saveTournamentTwoRound(tournamentData, null, { finished: true });
+            await saveTournamentTwoRound(tournamentData, null, { finished: true });
         }
-       
+        updateTopVictoriesForPlayers(tournamentData);
         
 
     });
@@ -3814,6 +3844,118 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
     
+    // console.log('tournamentData', tournamentData);
+    // updateTopVictoriesForPlayers(tournamentData)
+
+    async function updateTopVictoriesForPlayers(tournamentData) {
+        console.log(tournamentData);
+        const type = tournamentData.typeOfTournament;
+        const allPlayers = tournamentData.players;
+        const initialRatingsMap = {};
+        const victoriesMap = {};
+
+        tournamentData.initialRatings.forEach(p => {
+            initialRatingsMap[p.id] = p.rating;
+        });
+        
+
+        if (type === 'roundRobin') {
+            mapingVictories(tournamentData.results);
+        } else if (type === 'twoRound') {
+            console.log('resultsToCheck in two round 1', tournamentData.round1Results);
+            console.log('resultsToCheck in two round 2', tournamentData.round2Results);
+            // mapingVictories([tournamentData.round1Results, tournamentData.round2Results]);
+            mapingVictories(tournamentData.round1Results);
+            mapingVictories(tournamentData.round2Results);
+        }
+
+        function mapingVictories(resultsToCheck) {
+            
+            for (const [rowIndex, matches] of Object.entries(resultsToCheck)) {
+                // const player = allPlayers[rowIndex];
+                const player = allPlayers[Number(rowIndex)];
+                console.log('player', player);
+
+                if (!player || player.unrated) continue;
+            
+                for (const [colIndex, score] of Object.entries(matches)) {
+                    if (colIndex === "sets" || colIndex === "points") continue;
+            
+                    const opponent = allPlayers[Number(colIndex)];
+                    if (!opponent || opponent.unrated) continue;
+            
+                    const [score1, score2] = score.split(":").map(Number);
+                    if (isNaN(score1) || isNaN(score2)) continue;
+
+                    const opponentInitialRating = initialRatingsMap[opponent.id] ?? opponent.rating;
+                    const playerInitialRating = initialRatingsMap[player.id] ?? player.rating;
+            
+                    if (score1 > score2 && playerInitialRating < opponentInitialRating) {
+                        console.log('score1', score1)
+                        console.log('score2', score2)
+                        console.log('playerInitialRating', playerInitialRating)
+                        console.log('opponentInitialRating', opponentInitialRating)
+                        
+                        if (!victoriesMap[player.id]) victoriesMap[player.id] = new Map();
+
+                        const existing = victoriesMap[player.id].get(opponent.id);
+                        const newVictory = {
+                            opponentId: opponent.id,
+                            opponentName: opponent.fullname || opponent.name,
+                            opponentRating: opponentInitialRating,
+                            playerRating: playerInitialRating,
+                            club: tournamentData.club,
+                            date: tournamentData.datetime,
+                            tournamentId: tournamentData._id?.toString?.() || "",
+                            ratingLimit: tournamentData.restrictions || tournamentData.restrictions,
+                            score: `${score1}:${score2}`
+                        };
+
+                        // Если нет победы над этим соперником, добавляем
+                        if (!existing) {
+                            victoriesMap[player.id].set(opponent.id, newVictory);
+                        } else {
+                            // Сравниваем: более высокий счёт — лучшая победа
+                            const [exScore1, exScore2] = existing.score.split(":").map(Number);
+                            const currentDiff = score1 - score2;
+                            const existingDiff = exScore1 - exScore2;
+
+                            if (currentDiff > existingDiff) {
+                                victoriesMap[player.id].set(opponent.id, newVictory);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        const bestVictoriesPayload = [];
+        
+        for (const [playerId, victoriesMapByOpponent] of Object.entries(victoriesMap)) {
+            const victories = Array.from(victoriesMapByOpponent.values());
+            victories.sort((a, b) => b.opponentRating - a.opponentRating);
+            const topVictories = victories.slice(0, 10);
+            bestVictoriesPayload.push({ playerId, victories: topVictories });
+        }
+        console.log('bestVictoriesPayload', bestVictoriesPayload);
+        if (bestVictoriesPayload.length > 0) {
+            try {
+            const response = await fetch("/updateBestVictories", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ data: bestVictoriesPayload })
+            });
+        
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || "Ошибка при обновлении");
+            console.log("🏆 Лучшие победы успешно обновлены:", result);
+            } catch (error) {
+            console.error("❌ Ошибка при отправке лучших побед:", error);
+            }
+        }
+    }
+
+
+
     
     // function restoreSavedResultsTwoRound(savedResults, roundCounter) {
     //     console.log(`♻ Восстанавливаем результаты (Круг ${roundCounter})`);
@@ -3987,6 +4129,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+
+
+
+
+  
+  
+  
 
 // document.addEventListener('DOMContentLoaded', () => {
 //     const display = document.querySelector('.displayTournament'); // Родительский контейнер

@@ -77,6 +77,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     const userId = document.querySelector('.player') ? document.querySelector('.player').dataset.userid : document.querySelector('.account').dataset.userid;
     let player;
     let playerCity;
+    let mostActiveClub;
+    let playedMostOften;
 
     const translations = {
         'en': {
@@ -160,11 +162,35 @@ document.addEventListener('DOMContentLoaded', async function() {
             player = await response.json();
             // console.log(player);
             playerCity = await getCityName(player.city);
+            if (player.tournaments.length > 0) {
+                mostActiveClub = getClubWithMostTournaments(player.tournaments);
+                await fetchClubData(mostActiveClub.clubId);
+            }
+            
             // console.log(playerCity);
+            // if (mostActiveClub) {
+                
+            // }
             renderPlayerData();
         } catch (error) {
             console.log('Error fetching player data:', error);
         }
+    }
+
+    function getClubWithMostTournaments(tournaments) {
+        if (!tournaments || typeof tournaments !== 'object') return null;
+      
+        let maxClubId = null;
+        let maxCount = -1;
+      
+        for (const [clubId, count] of Object.entries(tournaments)) {
+          if (count > maxCount) {
+            maxCount = count;
+            maxClubId = clubId;
+          }
+        }
+      
+        return { clubId: maxClubId, count: maxCount };
     }
 
     // async function fetchCoachData() {
@@ -183,63 +209,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     //     }
     // }
 
-    // async function fetchPlayerData() {
-    //     try {
-    //         let response = await fetch(`/get-data-player?lang=${lang}&userId=${userId}`);
-    //         if (!response.ok) {
-    //             console.warn('Player not found, trying to fetch coach data...');
-    //             response = await fetch(`/get-data-coach?lang=${lang}&userId=${userId}`);
-    //             if (!response.ok) {
-    //                 throw new Error('Coach not found');
-    //             }
-    //         }
-    
-    //         const playerOrCoach = await response.json();
-    //         if (!playerOrCoach) {
-    //             throw new Error('No data returned for player or coach');
-    //         }
-    
-    //         player = playerOrCoach;
-    //         console.log(player);
-    //         playerCity = await getCityName(player.city);
-    //         // renderPlayerData();
-    //     } catch (error) {
-    //         console.error('Error fetching player or coach data:', error);
-    //     }
-    // }
-    
-
-    // async function fetchPlayerData() {
-    //     try {
-    //         let response = await fetch(`/get-data-player?lang=${lang}&userId=${userId}`);
-    //         console.log('Response status:', response.status);
-    //         if (!response.ok) {
-    //             if (response.status === 404) {
-    //                 console.warn('Player not found, trying to fetch coach data...');
-    //                 response = await fetch(`/get-data-coach?lang=${lang}&userId=${userId}`);
-    //                 if (!response.ok) {
-    //                     throw new Error('Coach not found');
-    //                 }
-    //             } else {
-    //                 throw new Error(`Error fetching player data: ${response.statusText}`);
-    //             }
-    //         }
-    
-    //         const playerOrCoach = await response.json();
-    //         console.log('тренер', playerOrCoach);
-    //         if (!playerOrCoach) {
-    //             throw new Error('No data returned for player or coach');
-    //         }
-    
-    //         player = playerOrCoach;
-    //         playerCity = await getCityName(player.city);
-    //         console.log('Resolved city name:', playerCity); 
-    //         console.log('тренер', player);
-    //         renderPlayerData();
-    //     } catch (error) {
-    //         console.error('Error fetching player or coach data:', error);
-    //     }
-    // }
 
     async function getCityName(cityId) {
         try {
@@ -341,6 +310,21 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
     
+    async function fetchClubData(clubId) {
+        // console.log(clubId)
+        try {
+            const response = await fetch(`/get-data-club?clubId=${clubId}`);
+            if (!response.ok) {
+                throw new Error('Club not found');
+            }
+            const club = await response.json();
+            // console.log('club', club)
+            playedMostOften = club.name;
+            
+        } catch (error) {
+            console.error('Error fetching club data:', error);
+        }
+    }
 
     function renderPlayerData() {
         const formattedDate = formatDateAndAge(player.birthdayDate, lang);
@@ -404,20 +388,157 @@ document.addEventListener('DOMContentLoaded', async function() {
         playerStatistics.innerHTML = `
             <div class="player_statistics_info_descr">
                 <div class="player_statistics_info_descr_path">
-                    <p>${getTranslation('Tournaments played')}: <span>${player.tournaments || ' - '}</span></p>
-                    <p>${getTranslation('Games')}: <span>323 (258 / 65)</span></p>
-                    <div class="raitingWrapp"><span>${getTranslation('Maximum rating')}:</span> <span class="coaches_content_coach_info_rating">${Math.round(player.rating)}</span></div>
+                    <p>${getTranslation('Tournaments played')}: <span>${player.tournamentsPlayed || 0 }</span></p>
+                    <p>${getTranslation('Games')}: <span>${(player.totalWins + player.totalLosses) || 0} (${player.totalWins || 0} / ${player.totalLosses || 0})</span></p>
+                    <div class="raitingWrapp"><span>${getTranslation('Maximum rating')}:</span> <span class="coaches_content_coach_info_rating">${Math.round(player.rating) || ' - '}</span></div>
                 </div>
                 <div class="player_statistics_info_descr_path statisticsSeparateLine">
-                    <p>${getTranslation('Rank')}: <span>${player.rank || ' - '}</span></p>
-                    <p>${getTranslation('First tournament')}: <span>29.01.2018</span></p>
-                    <p>${getTranslation('Most often in')}: <span>${player.club || ' - '} (${getTranslation('tournaments')}: ${player.tournaments || ' - '})</span></p>
+                    <p>${getTranslation('Rank')}: <span>${Math.round(player.rating) || ' - '}</span></p>
+                    <p>${getTranslation('First tournament')}: <span>${player.firstTournamentDate || ' - '}</span></p>
+                    <p>${getTranslation('Most often in')}: <span>${playedMostOften ? playedMostOften: ' - '} (${mostActiveClub?.count || ' - '})</span></p>
                     
                 </div>
             </div>
             
         `;
 
+        renderBestVictories(player);
+        renderPlayerAwards(player);
+
+
+        function renderBestVictories(player) {
+            const container = document.querySelector(".bestVictories_table_content");
+            if (!container || !Array.isArray(player.bestVictories)) return;
+          
+            container.innerHTML = ""; // Очистим блок
+          
+            const victories = [...player.bestVictories].sort(
+              (a, b) => b.opponentRating - a.opponentRating
+            );
+          
+            const MAX_VISIBLE = 3;
+          
+            victories.forEach((victory, index) => {
+              const date = new Date(victory.date).toLocaleDateString("ru-RU");
+              const opponentRating = Math.round(victory.opponentRating);
+              const playerRating = Math.round(victory.playerRating);
+              const clubName = victory.club?.name || "Unknown club";
+              const clubLogo = victory.club?.logo || "/icons/clubslogo/default.png";
+              const opponentName = victory.opponentName || "Unknown opponent";
+              const score = victory.score || "-";
+          
+              const ratingLimit = victory.ratingLimit
+                ? `<div class="restrictionStatus bestVictories_before" style="background: rgb(173, 173, 173);">
+                    <div class="restriction">${victory.ratingLimit}</div>
+                  </div>`
+                : "";
+          
+              const victoryDiv = document.createElement("div");
+              victoryDiv.classList.add("bestVictories_table_victory");
+              if (index >= MAX_VISIBLE) {
+                victoryDiv.classList.add("hidden-victory"); // Скрываем лишние
+                victoryDiv.style.display = "none";
+              }
+          
+              victoryDiv.innerHTML = `
+                <div class="bestVictories_table_victory_left">
+                  <div class="bestVictories_number">${date}</div>
+                  <div class="cell bestVictories_club">
+                    <div class="clubLogo" style="background-image: url('${clubLogo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                    <span class="shortcut" title="${clubName}">${clubName}</span>
+                  </div>
+                  ${ratingLimit}
+                  <div class="cell bestVictories_after">${playerRating}</div>
+                  <div class="cell bestVictories_player shortcut" title="${opponentName}">${opponentName}</div>
+                </div>
+          
+                <div class="bestVictories_table_victory_right">
+                  <div class="cell bestVictories_oponentsraiting">${opponentRating}</div>
+                  <div class="cell bestVictories_score">${score}</div>
+                  <div class="cell bestVictories_avarage">
+                    <img src="/icons/greenChevronUp.gif" style="width: 16px" alt="green Chevron">
+                  </div>
+                </div>
+              `;
+          
+              container.appendChild(victoryDiv);
+            });
+          
+            if (victories.length > MAX_VISIBLE) {
+              const seeMoreBtn = document.createElement("a");
+              seeMoreBtn.className = "bestVictories_table_btn";
+              seeMoreBtn.href = "#";
+              seeMoreBtn.textContent = "See more";
+          
+              seeMoreBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                const hidden = container.querySelectorAll(".hidden-victory");
+                hidden.forEach(el => el.style.display = "flex");
+                seeMoreBtn.remove();
+              });
+          
+              container.appendChild(seeMoreBtn);
+            }
+        }
+          
+    
+        function renderPlayerAwards(player) {
+            const container = document.querySelector(".awardsTable");
+            if (!container || !player.awards) return;
+          
+            container.innerHTML = ""; // Очистим предыдущие награды
+    
+            let totalGold = 0;
+            let totalSilver = 0;
+            let totalBronze = 0;
+          
+            Object.entries(player.awards).forEach(([clubId, award]) => {
+              const gold = award.gold || 0;
+              const silver = award.silver || 0;
+              const bronze = award.bronze || 0;
+          
+              // Пропустим, если у игрока нет ни одной медали в клубе
+              if (gold === 0 && silver === 0 && bronze === 0) return;
+    
+              totalGold += gold;
+              totalSilver += silver;
+              totalBronze += bronze;
+          
+              const div = document.createElement("div");
+              div.classList.add("awardsTable_item");
+          
+              div.innerHTML = `
+                <div class="cell bestVictories_club">
+                  <div class="clubLogo" style="background-image: url('${award.clubLogo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                  <span class="shortcut" title="${award.clubName}">${award.clubName}</span>
+                </div>
+                <div class="awardsTable_item_medalBlock">
+                  <img src="/icons/1st-medal.svg" alt="gold medal">
+                  <span>(${gold})</span>
+                  <span>Gold</span>
+                </div>
+                <div class="awardsTable_item_medalBlock">
+                  <img src="/icons/2st-medal.svg" alt="silver medal">
+                  <span>(${silver})</span>
+                  <span>Silver</span>
+                </div>
+                <div class="awardsTable_item_medalBlock">
+                  <img src="/icons/3st-medal.svg" alt="bronze medal">
+                  <span>(${bronze})</span>
+                  <span>Bronze</span>
+                </div>
+              `;
+          
+              container.appendChild(div);
+            });
+    
+            // Добавим блок с общей суммой наград
+            const totalCount = totalGold + totalSilver + totalBronze;
+            const totalDiv = document.createElement("div");
+            totalDiv.classList.add("awardsTable_total");
+            totalDiv.textContent = `Total awards: ${totalCount}`;
+            container.appendChild(totalDiv);
+        }
 
         function openShareModal() {
             const modal = document.getElementById('shareModal');
@@ -460,53 +581,130 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
 
         //генерация изображения результатов
+        // function updateTemplate(player) {
+        //     // Устанавливаем логотип игрока
+        //     const playerLogo = document.getElementById('playerLogo');
+        //     playerLogo.src = player.logo;
+        //     const playerName = document.getElementById('playerName');
+        //     playerName.innerText = player.name || player.fullname;
+
+        //     const scoreBackground = document.getElementById('scoreBackground');
+        //     const scoreBackgroundPath = document.querySelector('#scoreBackground path');
+        //     const scoreArrow = document.getElementById('scoreArrow');
+        //     const playerScore = document.getElementById('playerScore');
+
+        //     const ratingChanges = player.rating - player.sundaysRating;
+        //     if (ratingChanges > 0) {
+        //         // scoreBackground.setAttribute('fill', '#007026');
+        //         // scoreBackgroundPath.setAttribute('fill', '#007026');
+        //         scoreBackground.style.fill = '#007026';
+        //         scoreArrow.setAttribute('fill', '#007026');
+        //         scoreArrow.style.transform = 'rotate(0deg)';
+        //         playerScore.style.color = '#007026';
+        //     } else if (ratingChanges < 0) {
+        //         // scoreBackground.setAttribute('fill', '#D10000');
+        //         // scoreBackgroundPath.setAttribute('fill', '#D10000');
+        //         scoreBackground.style.fill = '#D10000';
+        //         scoreArrow.setAttribute('fill', '#D10000');
+        //         scoreArrow.style.transform = 'rotate(180deg)';
+        //         playerScore.style.color = '#D10000';
+        //     } else {
+        //         // scoreBackground.setAttribute('fill', '#666877');
+        //         // scoreBackgroundPath.setAttribute('fill', '#666877');
+        //         scoreBackground.style.fill = '#666877';
+        //         scoreArrow.setAttribute('fill', '#666877');
+        //         scoreArrow.style.transform = 'rotate(0deg)';
+        //         playerScore.style.color = '#666877';
+        //     }
+        //     // Устанавливаем очки игрока
+        //     playerScore.textContent = `${ratingChanges}`;
+        // }
+
         function updateTemplate(player) {
-            // Устанавливаем логотип игрока
             const playerLogo = document.getElementById('playerLogo');
+        
+            // Обязательно ставим crossOrigin ДО установки src
+            playerLogo.crossOrigin = "anonymous";
             playerLogo.src = player.logo;
+        
             const playerName = document.getElementById('playerName');
             playerName.innerText = player.name || player.fullname;
-
+        
             const scoreBackground = document.getElementById('scoreBackground');
-            const scoreBackgroundPath = document.querySelector('#scoreBackground path');
             const scoreArrow = document.getElementById('scoreArrow');
             const playerScore = document.getElementById('playerScore');
-
+        
             const ratingChanges = player.rating - player.sundaysRating;
-            if (ratingChanges > 0) {
-                // scoreBackground.setAttribute('fill', '#007026');
-                // scoreBackgroundPath.setAttribute('fill', '#007026');
-                scoreBackground.style.fill = '#007026';
-                scoreArrow.setAttribute('fill', '#007026');
-                scoreArrow.style.transform = 'rotate(0deg)';
-                playerScore.style.color = '#007026';
-            } else if (ratingChanges < 0) {
-                // scoreBackground.setAttribute('fill', '#D10000');
-                // scoreBackgroundPath.setAttribute('fill', '#D10000');
-                scoreBackground.style.fill = '#D10000';
-                scoreArrow.setAttribute('fill', '#D10000');
-                scoreArrow.style.transform = 'rotate(180deg)';
-                playerScore.style.color = '#D10000';
-            } else {
-                // scoreBackground.setAttribute('fill', '#666877');
-                // scoreBackgroundPath.setAttribute('fill', '#666877');
-                scoreBackground.style.fill = '#666877';
-                scoreArrow.setAttribute('fill', '#666877');
-                scoreArrow.style.transform = 'rotate(0deg)';
-                playerScore.style.color = '#666877';
-            }
-            // Устанавливаем очки игрока
+        
+            const color = ratingChanges > 0 ? '#007026' :
+                          ratingChanges < 0 ? '#D10000' : '#666877';
+        
+            scoreBackground.style.fill = color;
+            scoreArrow.setAttribute('fill', color);
+            scoreArrow.style.transform = ratingChanges < 0 ? 'rotate(180deg)' : 'rotate(0deg)';
+            playerScore.style.color = color;
             playerScore.textContent = `${ratingChanges}`;
         }
+        
 
         
 
+        // async function generateImage() {
+        //     const template = document.querySelector('#imageTemplate > div'); // Основной элемент
+        //     return html2canvas(template, { useCORS: true, scale: 2 }).then((canvas) => {
+        //         return canvas.toDataURL('image/png'); // Получаем Base64 изображение
+        //     });
+        // }
+
         async function generateImage() {
-            const template = document.querySelector('#imageTemplate > div'); // Основной элемент
-            return html2canvas(template, { useCORS: true }).then((canvas) => {
-                return canvas.toDataURL('image/png'); // Получаем Base64 изображение
-            });
+            const template = document.querySelector('#imageTemplate > div');
+            return html2canvas(template, {
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: null, // чтобы не заливало белым
+                scale: 2 // опционально — для более чёткого изображения
+            }).then(canvas => canvas.toDataURL('image/png'));
         }
+
+        document.getElementById('shareFacebook').addEventListener('click', async () => {
+            console.log('еще не разработана функция share');
+            return;
+            try {
+              // 1. Генерируем изображение
+              updateTemplate(player); // Обновим шаблон с данными игрока
+              const imageData = await generateImage(); // html2canvas → base64
+          
+              // 2. Отправим на сервер
+              const response = await fetch('/uploadResultImage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ base64Image: imageData }),
+              });
+          
+              const data = await response.json();
+              if (!response.ok || !data.imageUrl) throw new Error("Ошибка загрузки изображения");
+          
+              const imageUrl = data.imageUrl;
+          
+              // 3. Формируем ссылку на шаринг
+              const userLanguage = lang || 'en';
+              const playerName = encodeURIComponent(player.fullname || player.name);
+              const ratingChange = encodeURIComponent(player.rating - player.sundaysRating);
+              const profileLink = `https://asianttleague.com/${userLanguage}/allplayers/${player._id}`;
+          
+              const dynamicSharePage = `https://asiantttleague.com/${userLanguage}/share/result?name=${playerName}&image=${encodeURIComponent(imageUrl)}&ratingChange=${ratingChange}&userPageLink=${encodeURIComponent(profileLink)}`;
+              console.log('dynamicSharePage', dynamicSharePage);
+              const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(dynamicSharePage)}`;
+              console.log('facebookShareUrl', facebookShareUrl);
+              // 4. Открываем новое окно Facebook
+              window.open(facebookShareUrl, '_blank');
+          
+            } catch (error) {
+              console.error('❌ Ошибка при шаринге в Facebook:', error);
+              alert('Не удалось поделиться результатом 😔');
+            }
+        });
+          
 
         
 
@@ -536,45 +734,47 @@ document.addEventListener('DOMContentLoaded', async function() {
         //     window.open(shareUrl, '_blank');
         // });
 
-        document.getElementById('shareFacebook').addEventListener('click', async () => {
-            // 1. Генерация изображения с результатами
-            updateTemplate(player);
-            const imageData = await generateImage();
+        // document.getElementById('shareFacebook').addEventListener('click', async () => {
+        //     // 1. Генерация изображения с результатами
+        //     updateTemplate(player);
+        //     const imageData = await generateImage();
         
-            // 2. Загрузка изображения на ImgBB
-            const formData = new FormData();
-            formData.append('image', imageData.split(',')[1]); // Убираем "data:image/png;base64,"
+        //     // 2. Загрузка изображения на ImgBB
+        //     const formData = new FormData();
+        //     formData.append('image', imageData.split(',')[1]); // Убираем "data:image/png;base64,"
         
-            const response = await fetch('https://api.imgbb.com/1/upload?key=d9be0bd58fd2d169c9882686e4609e56', {
-                method: 'POST',
-                body: formData,
-            });
+        //     const response = await fetch('https://api.imgbb.com/1/upload?key=d9be0bd58fd2d169c9882686e4609e56', {
+        //         method: 'POST',
+        //         body: formData,
+        //     });
         
-            const data = await response.json();
-            console.log(data.data.url);
-            const publicImageUrl = data.data.url;
+        //     const data = await response.json();
+        //     console.log(data.data.url);
+        //     const publicImageUrl = data.data.url;
         
-            // 3. Определение языка пользователя
-            const userLanguage = lang; // Можно определить на основе пользовательского профиля
-            const name = encodeURIComponent(player.name || player.fullname);
-            const ratingChange = encodeURIComponent(player.rating - player.sundaysRating);
-            const image = encodeURIComponent(publicImageUrl);
-            const userPageLink = encodeURIComponent(`https://asianttleague.com/en/allplayers/${player._id}`);
-            // const image = publicImageUrl;
+        //     // 3. Определение языка пользователя
+        //     const userLanguage = lang; // Можно определить на основе пользовательского профиля
+        //     const name = encodeURIComponent(player.name || player.fullname);
+        //     const ratingChange = encodeURIComponent(player.rating - player.sundaysRating);
+        //     const image = encodeURIComponent(publicImageUrl);
+        //     const userPageLink = encodeURIComponent(`https://asianttleague.com/en/allplayers/${player._id}`);
+        //     // const image = publicImageUrl;
         
-            const pageUrl = `https://asiantttleague.com/${userLanguage}/share/result?name=${name}&image=${encodeURIComponent(publicImageUrl)}&ratingChange=${ratingChange}&userPageLink=${userPageLink}`;
-            // 4. Формирование URL динамической страницы
-            // const pageUrl = `https://asianttleague.com/${userLanguage}/share/result?name=${name}&image=${image}&ratingChange=${ratingChange}&userPageLink=${userPageLink}`;
-            // const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
-            const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
-            console.log(pageUrl);
-            console.log(shareUrl);
-            // 5. Открытие Facebook Share Dialog
-            window.open(shareUrl, '_blank');
-        });
+        //     const pageUrl = `https://asiantttleague.com/${userLanguage}/share/result?name=${name}&image=${encodeURIComponent(publicImageUrl)}&ratingChange=${ratingChange}&userPageLink=${userPageLink}`;
+        //     // 4. Формирование URL динамической страницы
+        //     // const pageUrl = `https://asianttleague.com/${userLanguage}/share/result?name=${name}&image=${image}&ratingChange=${ratingChange}&userPageLink=${userPageLink}`;
+        //     // const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+        //     const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+        //     console.log(pageUrl);
+        //     console.log(shareUrl);
+        //     // 5. Открытие Facebook Share Dialog
+        //     window.open(shareUrl, '_blank');
+        // });
         
 
     }
+
+    
 
 
     

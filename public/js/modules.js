@@ -4817,6 +4817,8 @@ function redirectToPersonalAccount() {
 }
 
 export function breadCrumb() {
+    //временно выключил 
+    return;
     const breadcrumbContainer = document.getElementById('breadcrumb');
     const currentUrl = window.location.pathname;
     const pathArray = currentUrl.split('/').filter(el => el);

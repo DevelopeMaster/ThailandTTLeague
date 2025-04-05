@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     let club;
     let clubCity;
+    let clubsPlayers;
     
 
     const translations = {
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Gym': 'Gym',
             'Extra charge': 'Extra charge',
             'Free': 'Free',
-            'daysOfWeek': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            'daysOfWeek': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             'event': 'Event',
             'start': 'Start',
             'end': 'End',
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Gym': 'Тренажерный зал',
             'Extra charge': 'Платные',
             'Free': 'Бесплатные',
-            'daysOfWeek': ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+            'daysOfWeek': ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
             'event': 'Событие',
             'start': 'Начало',
             'end': 'Конец',
@@ -136,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Gym': 'ยิม',
             'Extra charge': 'มีค่าใช้จ่ายเพิ่มเติม',
             'Free': 'ฟรี',
-            'daysOfWeek': ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+            'daysOfWeek': ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'],
             'event': 'กิจกรรม',
             'start': 'เริ่ม',
             'end': 'จบ',
@@ -304,7 +305,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderPhotos();  //  жду дизайн
 
         document.addEventListener('click', (event) => {
-            console.log(event.target);
+            // console.log(event.target);
             
             if (event.target.closest('#createTournament')) {
                 event.preventDefault();
@@ -355,7 +356,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function renderScheduleTable(clubData) {
         const daysOfWeek = getTranslation('daysOfWeek'); // Переведенные названия дней
-        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const dayKeys = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
         const maxSessions = 6; // Постоянное значение для количества сессий
       
         const tableBody = document.querySelector('.schedule-form');
@@ -426,7 +427,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function renderMobileScheduleTable(clubData) {
         const daysOfWeek = getTranslation('daysOfWeek'); // Переведенные названия дней
-        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const dayKeys = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
         
         const tableBody = document.querySelector('.schedule-form');
         tableBody.innerHTML = ""; // Очищаем таблицу перед заполнением
@@ -503,9 +504,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // const upcomingBlock = document.querySelector('.upcommingTable_content');
     // displayFutureTournaments(clubName, upcomingBlock);
-    fetchClubData();
+    await fetchClubData();
     
-    
+    console.log('club', club);
+    // loadClubWinners(club._id);
+    loadClubPlayers(club._id);
 
     async function displayFutureTournaments(clubName, clubLogo, container) {
         try {
@@ -525,10 +528,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Запрос к базе данных для получения будущих турниров текущего клуба
             const response = await fetch(`/api/clubtournaments?clubName=${encodeURIComponent(clubName)}&clubLogo=${encodeURIComponent(clubLogo)}&upcoming=true`);
     
-            const tournaments = await response.json();
+            const gettournaments = await response.json();
             // console.log(tournaments);
             // Сортировка турниров по дате
-            tournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+            // tournaments.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+            const tournaments = gettournaments.filter(t => !t.finished).sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+
     
             // Рендеринг каждого турнира
             for (const tournament of tournaments) {
@@ -636,6 +641,342 @@ document.addEventListener('DOMContentLoaded', async function() {
     //         window.location.href = `/${languageMap[localStorage.clientLang]}/soft`;
     //     }
     // })
+
+    
+
+    // async function fetchClubPlayersDetails(club) {
+    //     try {
+    //         const response = await fetch('/getClubPlayers', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ playerIds: club.players })
+    //         });
+    
+    //         const data = await response.json();
+    //         if (!response.ok) throw new Error(data.error || "Ошибка загрузки игроков");
+    //         return data.players;
+    //     } catch (err) {
+    //         console.error('Ошибка загрузки игроков клуба:', err);
+    //         return [];
+    //     }
+    // }
+
+    // async function loadClubWinners(clubId) {
+    //     const players = await fetchClubWinners(clubId);
+    //     renderClubWinners(players, clubId);
+    //     renderClubParticipants(players, clubId);
+    // }
+
+    // async function fetchClubWinners(clubId) {
+    //     try {
+    //       const response = await fetch('/getClubWinners', {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({ clubId })
+    //       });
+      
+    //       const data = await response.json();
+    //       if (!response.ok) throw new Error(data.error || 'Ошибка загрузки победителей');
+      
+    //       return data.players || [];
+    //     } catch (error) {
+    //       console.error('❌ Ошибка при получении призёров клуба:', error);
+    //       return [];
+    //     }
+    // }
+
+    async function loadClubPlayers(clubId) {
+        const response = await fetch('/getClubPlayersFull', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clubId }),
+        });
+      
+        const { players, prizePlayerIds } = await response.json();
+        console.log('players', players);
+        console.log('prizePlayerIds', prizePlayerIds);
+
+        // Отображаем призёров
+        const winners = players.filter(p => prizePlayerIds.includes(p._id));
+        renderClubWinners(winners, clubId);
+        renderClubVictories(winners, clubId)
+      
+        // Отображаем всех участников
+        renderClubParticipants(players, clubId);
+      }
+
+    
+
+    // function renderClubParticipants(players, clubId) {
+    //     const table = document.getElementById('tournamentsTable');
+    //     const seeMoreBtn = document.querySelector('.tournamentsTable_btn');
+      
+    //     if (!table || !players || !Array.isArray(players)) return;
+      
+    //     table.innerHTML = '';
+    //     seeMoreBtn.style.display = 'none';
+      
+    //     // Сортировка по количеству турниров в клубе
+    //     const sorted = [...players].sort((a, b) => {
+    //       const tourA = a.tournaments?.[clubId] || 0;
+    //       const tourB = b.tournaments?.[clubId] || 0;
+    //       return tourB - tourA;
+    //     });
+      
+    //     const maxVisible = 5;
+    //     sorted.forEach((player, index) => {
+    //       const tournaments = player.tournaments?.[clubId] || 1;
+    //       const rating = Math.round(player.rating) || 0;
+      
+    //       const div = document.createElement('div');
+    //       div.classList.add('tournamentsTable_row');
+    //       if (index >= maxVisible) div.classList.add('hidden'); // скрываем лишние
+      
+    //       div.innerHTML = `
+    //         <span class="player_number">${index + 1}</span>
+    //         <span class="player_player">${player.name || player.fullname || player.nickname}</span>
+    //         <span class="player_tournaments">${tournaments}</span>
+    //         <span class="player_rating">${rating}</span>
+    //       `;
+      
+    //       table.appendChild(div);
+    //     });
+      
+    //     // Показываем кнопку "See more", если игроков больше 5
+    //     if (sorted.length > maxVisible) {
+    //       seeMoreBtn.style.display = 'inline-block';
+    //       seeMoreBtn.addEventListener('click', (e) => {
+    //         e.preventDefault();
+    //         table.querySelectorAll('.hidden').forEach(row => row.classList.remove('hidden'));
+    //         seeMoreBtn.style.display = 'none';
+    //       });
+    //     }
+    // }
+
+    function renderClubParticipants(players, clubId) {
+        const table = document.getElementById('tournamentsTable');
+        const btn = document.querySelector('.tournamentsTable_btn');
+        if (!table || !players || !Array.isArray(players)) return;
+    
+        table.innerHTML = '';
+        btn.style.display = 'none';
+    
+        const sorted = [...players].sort((a, b) => {
+            const tourA = a.tournaments?.[clubId] || 0;
+            const tourB = b.tournaments?.[clubId] || 0;
+            return tourB - tourA;
+        });
+    
+        const maxVisible = 5;
+        let showingAll = false;
+    
+        const renderList = (list) => {
+            table.innerHTML = '';
+            list.forEach((player, index) => {
+                const tournaments = player.tournaments?.[clubId] || 1;
+                const rating = Math.round(player.rating) || 0;
+    
+                const div = document.createElement('div');
+                div.classList.add('tournamentsTable_row');
+                div.innerHTML = `
+                    <span class="player_number">${index + 1}</span>
+                    <span class="player_player">${player.name || player.fullname || player.nickname}</span>
+                    <span class="player_tournaments">${tournaments}</span>
+                    <span class="player_rating">${rating}</span>
+                `;
+                table.appendChild(div);
+            });
+        };
+    
+        const visibleList = sorted.slice(0, maxVisible);
+        renderList(visibleList);
+    
+        if (sorted.length > maxVisible) {
+            btn.style.display = 'inline-block';
+            btn.textContent = 'See more';
+    
+            btn.onclick = (e) => {
+                e.preventDefault();
+                if (showingAll) {
+                    renderList(visibleList);
+                    btn.textContent = 'See more';
+                    showingAll = false;
+                } else {
+                    renderList(sorted);
+                    btn.textContent = 'See less';
+                    showingAll = true;
+                }
+            };
+        }
+    }
+    
+      
+    function renderClubVictories(players, clubId) {
+        const table = document.getElementById('victoriesTable');
+        const btn = document.querySelector('.victoriesTable_btn');
+        if (!table || !players || !Array.isArray(players)) return;
+    
+        table.innerHTML = '';
+    
+        const enriched = players.map(p => {
+            const aw = p.awards?.[clubId] || {};
+            return {
+                ...p,
+                victories: (aw.gold || 0) + (aw.silver || 0) + (aw.bronze || 0),
+            };
+        });
+    
+        const filtered = enriched.filter(p => p.victories > 0);
+        const sorted = filtered.sort((a, b) => b.victories - a.victories);
+    
+        let showingAll = false;
+    
+        const renderList = (list) => {
+            table.innerHTML = '';
+            list.forEach((player, index) => {
+                const rating = Math.round(player.rating || 0);
+                const div = document.createElement('div');
+                div.classList.add('victoriesTable_row');
+                div.innerHTML = `
+                    <span class="player_number">${index + 1}</span>
+                    <span class="player_player">${player.fullname || player.nickname}</span>
+                    <span class="player_tournaments">${player.victories}</span>
+                    <span class="player_rating">${rating}</span>
+                `;
+                table.appendChild(div);
+            });
+        };
+    
+        // Первичная отрисовка (только топ-5)
+        const visibleList = sorted.slice(0, 5);
+        renderList(visibleList);
+    
+        if (sorted.length > 5) {
+            btn.style.display = 'block';
+            btn.onclick = (e) => {
+                e.preventDefault();
+                if (showingAll) {
+                    renderList(visibleList);
+                    btn.textContent = 'See more';
+                    showingAll = false;
+                } else {
+                    renderList(sorted);
+                    btn.textContent = 'See less';
+                    showingAll = true;
+                }
+            };
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+    
+    
+
+    function renderClubWinners(players, clubId) {
+        const table = document.getElementById('winnersTable');
+        const seeMoreBtn = document.querySelector('.winnersTable_btn');
+        if (!table || !players || !Array.isArray(players)) return;
+    
+        table.innerHTML = '';
+        seeMoreBtn.style.display = 'none'; // Скрываем кнопку по умолчанию
+
+        const filtered = players.filter(p => {
+            const aw = p.awards?.[clubId];
+            return aw?.gold || aw?.silver || aw?.bronze;
+        });
+    
+        const sorted = [...filtered].sort((a, b) => {
+            const awA = a.awards?.[clubId] || {};
+            const awB = b.awards?.[clubId] || {};
+    
+            if ((awB.gold || 0) !== (awA.gold || 0)) return (awB.gold || 0) - (awA.gold || 0);
+            if ((awB.silver || 0) !== (awA.silver || 0)) return (awB.silver || 0) - (awA.silver || 0);
+            return (awB.bronze || 0) - (awA.bronze || 0);
+        });
+    
+        const initialCount = 5;
+    
+        // Вложенная функция для создания строки
+        const createRow = (player, index) => {
+            const award = player.awards?.[clubId] || {};
+            const rating = Math.round(player.rating) || 0;
+            const tournaments = player.tournaments?.[clubId] || 1;
+    
+            const div = document.createElement('div');
+            div.classList.add('winnersTable_row');
+            div.innerHTML = `
+                <span class="player_number">${index + 1}</span>
+                <span class="player_player">${player.name || player.fullname || player.nickname}</span>
+                <span class="player_places">
+                    <span>${award.gold || 0}</span>
+                    <span>${award.silver || 0}</span>
+                    <span>${award.bronze || 0}</span>
+                </span>
+                <span class="player_tournaments">${tournaments}</span>
+                <span class="player_rating">${rating}</span>
+            `;
+            return div;
+        };
+    
+        // Отображаем только первые 5
+        sorted.slice(0, initialCount).forEach((player, index) => {
+            const row = createRow(player, index);
+            table.appendChild(row);
+        });
+    
+        // Если больше 5 — показываем кнопку и добавляем обработчик
+        if (sorted.length > initialCount) {
+            seeMoreBtn.style.display = 'inline-block';
+            seeMoreBtn.onclick = (e) => {
+                e.preventDefault();
+                table.innerHTML = ''; // Очищаем и перерисовываем все
+                sorted.forEach((player, index) => {
+                    const row = createRow(player, index);
+                    table.appendChild(row);
+                });
+                seeMoreBtn.style.display = 'none'; // Скрываем кнопку после раскрытия
+            };
+        }
+    }
+    
+    // function renderClubWinners(players, clubId) {
+    //     const table = document.getElementById('winnersTable');
+    //     if (!table || !players || !Array.isArray(players)) return;
+    
+    //     table.innerHTML = '';
+    
+    //     const sorted = [...players].sort((a, b) => {
+    //         const awA = a.awards?.[clubId] || {};
+    //         const awB = b.awards?.[clubId] || {};
+    
+    //         if ((awB.gold || 0) !== (awA.gold || 0)) return (awB.gold || 0) - (awA.gold || 0);
+    //         if ((awB.silver || 0) !== (awA.silver || 0)) return (awB.silver || 0) - (awA.silver || 0);
+    //         return (awB.bronze || 0) - (awA.bronze || 0);
+    //     });
+    
+    //     sorted.forEach((player, index) => {
+    //         const award = player.awards?.[clubId] || {};
+    //         const rating = Math.round(player.rating, 0) || 0;
+    //         const tournaments = player.tournaments?.[clubId] || 0;
+    
+    //         const div = document.createElement('div');
+    //         div.classList.add('winnersTable_row');
+    
+    //         div.innerHTML = `
+    //             <span class="player_number">${index + 1}</span>
+    //             <span class="player_player">${player.fullname || player.nickname}</span>
+    //             <span class="player_places">
+    //                 ${award.gold || 0}
+    //                 ${award.silver || 0}
+    //                 ${award.bronze || 0}
+    //             </span>
+    //             <span class="player_tournaments">${tournaments}</span>
+    //             <span class="player_rating">${rating}</span>
+    //         `;
+    
+    //         table.appendChild(div);
+    //     });
+    // }
     
 
 

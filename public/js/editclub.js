@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Free': 'Free',
             'File too large': 'The file is too large. Maximum size: 1 MB',
             'Not image': 'Please select a valid image file.',
-            'daysOfWeek': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            'daysOfWeek': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             'session': 'Session',
             'event': 'Event',
             'start': 'Start',
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Free': 'Бесплатные',
             'File too large': 'Файл слишком большой. Максимальный размер: 1 MB',
             'Not image': 'Пожалуйста, выберите корректный файл изображения.',
-            'daysOfWeek': ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+            'daysOfWeek': ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
             'session': 'Сессия',
             'event': 'Событие',
             'start': 'Начало',
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Free': 'ฟรี',
             'File too large': 'ไฟล์มีขนาดใหญ่เกินไป ขนาดสูงสุด: 1 MB',
             'Not image': 'กรุณาเลือกไฟล์รูปภาพที่ถูกต้อง',
-            'daysOfWeek': ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'],
+            'daysOfWeek': ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'],
             'session': 'ช่วง',
             'event': 'กิจกรรม',
             'start': 'เริ่ม',
@@ -656,7 +656,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     function renderScheduleTable(clubData) {
         const daysOfWeek = getTranslation('daysOfWeek'); // Переведенные названия дней
-        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const dayKeys = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
         const maxSessions = 6; // Постоянное значение для количества сессий
       
         const tableBody = document.querySelector('.schedule-form');
@@ -956,7 +956,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     async function saveScheduleData() {
         const tableBody = document.querySelector('.schedule-form');
-        const dayKeys = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+        const dayKeys = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
         const scheduleData = {}; 
         
         console.log(tableBody);
@@ -1008,7 +1008,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                 // };
                 
                 // Добавляем событие в расписание дня
-                scheduleData[dayKey].push(event);
+                // scheduleData[dayKey].push(event);
+                scheduleData[dayKey][sessionIndex] = event;
+
             });
         });
     

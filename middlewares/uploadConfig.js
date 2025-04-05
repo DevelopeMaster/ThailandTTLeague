@@ -26,10 +26,11 @@ function ensureAuthenticated(req, res, next) {
     // Проверяем, куда перенаправить пользователя
     if (userType) {
         // Если в URL есть указание типа (club, coach, player), перенаправляем на общедоступную страницу
-        return res.redirect(`/${req.lang || 'en'}/${userType}/${urlParts[urlParts.length - 1]}`);
+        // return res.redirect(`/${req.lang || 'en'}/${userType}/${urlParts[urlParts.length - 1]}`);
+        return res.redirect(`/${req.lang || 'en'}}`);
     } else {
         // Если тип пользователя не определен, редирект на страницу ошибки
-        return res.redirect(`/${req.lang || 'en'}/404`);
+        return res.redirect(`404`);
     }
 }
 

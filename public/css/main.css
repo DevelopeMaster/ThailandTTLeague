@@ -1664,9 +1664,9 @@ h2 {
     background: #666877; }
 
 .navigate {
-  padding-top: 200px; }
+  padding-top: 170px; }
   .navigate_breadcrumb {
-    display: flex;
+    display: none;
     flex-wrap: wrap;
     align-items: center;
     padding: 0;
@@ -2960,6 +2960,7 @@ h2 {
         background: #3F3F4C; }
       .pastTournament_table_player .pastTournament_number {
         align-content: center;
+        text-align: center;
         font-size: 20px;
         color: #ADADAD; }
       .pastTournament_table_player .pastTournament_player {
@@ -2983,11 +2984,14 @@ h2 {
       .pastTournament_table_player .pastTournament_avarage {
         color: #007026; }
       .pastTournament_table_player:nth-child(1) .pastTournament_number {
-        color: #E0A100; }
+        color: #fff;
+        background-color: #E0A100; }
       .pastTournament_table_player:nth-child(2) .pastTournament_number {
-        color: #ADADAD; }
+        color: #fff;
+        background-color: #ADADAD; }
       .pastTournament_table_player:nth-child(3) .pastTournament_number {
-        color: #966C00; }
+        color: #fff;
+        background-color: #966C00; }
     .pastTournament_table_btn {
       display: block;
       margin-top: 20px;
@@ -3012,7 +3016,10 @@ h2 {
       height: 27px; }
     .pastTournament_player span {
       align-content: center; }
+  .pastTournament_games {
+    width: max-content; }
   .pastTournament_sets {
+    width: max-content;
     padding-left: 15px; }
   .pastTournament_before {
     text-align: center; }
@@ -4107,6 +4114,11 @@ h2 {
     .awards .awardsTable_item_medalBlock {
       display: flex;
       gap: 10px; }
+  .awards .awardsTable_total {
+    margin-top: 28px;
+    color: #FFF;
+    font-family: Inter;
+    font-size: 16px; }
   .awards .awardsTable_btn {
     display: block;
     margin-top: 20px;
@@ -5855,6 +5867,17 @@ textarea:-webkit-autofill:focus {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis; }
+  .clubStatistics .tournamentsTable_row, .clubStatistics .victoriesTable_row {
+    border-radius: 8px;
+    padding: 15px 0px;
+    display: grid;
+    grid-template-columns: 50px repeat(6, 1fr);
+    gap: 30px;
+    border-bottom: 1px solid #3F3F4C; }
+    .clubStatistics .tournamentsTable_row span, .clubStatistics .victoriesTable_row span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
   .clubStatistics .tournamentsTable .player_number, .clubStatistics .victoriesTable .player_number {
     color: #fff;
     font-size: 16px;
@@ -5988,6 +6011,17 @@ textarea:-webkit-autofill:focus {
     grid-template-columns: 50px repeat(6, 1fr);
     gap: 30px; }
     .clubWinners .winnersTable_header span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+  .clubWinners .winnersTable_row {
+    border-radius: 8px;
+    padding: 15px 0px;
+    display: grid;
+    grid-template-columns: 50px repeat(6, 1fr);
+    gap: 30px;
+    border-bottom: 1px solid #3F3F4C; }
+    .clubWinners .winnersTable_row span {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis; }
@@ -6153,10 +6187,10 @@ textarea:-webkit-autofill:focus {
       font-size: 14px; }
       .clubStatistics .tournamentsTable_header, .clubStatistics .victoriesTable_header {
         display: none; }
-      .clubStatistics .tournamentsTable_player, .clubStatistics .victoriesTable_player {
+      .clubStatistics .tournamentsTable_player, .clubStatistics .tournamentsTable_row, .clubStatistics .victoriesTable_player, .clubStatistics .victoriesTable_row {
         grid-template-columns: 20px repeat(5, 1fr);
         gap: 6px;
-        padding-top: 0; }
+        padding-top: 15px; }
       .clubStatistics .tournamentsTable .cell, .clubStatistics .victoriesTable .cell {
         gap: 8px; }
       .clubStatistics .tournamentsTable .player, .clubStatistics .victoriesTable .player {
@@ -6164,7 +6198,8 @@ textarea:-webkit-autofill:focus {
         .clubStatistics .tournamentsTable .player_number, .clubStatistics .victoriesTable .player_number {
           font-size: 14px;
           padding-left: 0;
-          margin-left: 0; }
+          margin-left: 0;
+          width: 10px; }
         .clubStatistics .tournamentsTable .player_player, .clubStatistics .victoriesTable .player_player {
           width: auto;
           font-size: 14px;
@@ -6183,7 +6218,28 @@ textarea:-webkit-autofill:focus {
           justify-content: flex-end;
           padding-left: 0px;
           padding-right: 0px;
-          margin-right: 0px; } }
+          margin-right: 0px; }
+  .clubWinners {
+    margin-top: 40px; }
+    .clubWinners .winnersTable {
+      padding: 16px 8px;
+      font-size: 14px; }
+      .clubWinners .winnersTable_header {
+        display: none; }
+      .clubWinners .winnersTable_row {
+        display: grid;
+        grid-template-columns: 20px repeat(5, 1fr);
+        gap: 6px; }
+        .clubWinners .winnersTable_row .player_number {
+          margin-left: 8px; }
+      .clubWinners .winnersTable_row .player_places {
+        justify-items: center; }
+        .clubWinners .winnersTable_row .player_places span:nth-child(1) {
+          color: #E0A100; }
+        .clubWinners .winnersTable_row .player_places span:nth-child(2) {
+          color: #ADADAD; }
+        .clubWinners .winnersTable_row .player_places span:nth-child(3) {
+          color: #966C00; } }
 
 .restorePassword {
   width: 100%;

@@ -200,6 +200,29 @@ app.use('/icons', (req, res, next) => {
   });
 });
 
+app.post('/uploadResultImage', ensureAuthenticated, async (req, res) => {
+  try {
+      const { base64Image } = req.body;
+
+      if (!base64Image) {
+          return res.status(400).json({ error: 'Нет изображения для загрузки' });
+      }
+      if (!base64Image.startsWith('data:image/')) {
+        return res.status(400).json({ error: 'Некорректный формат изображения' });
+    }
+
+      const result = await cloudinary.uploader.upload(base64Image, {
+          folder: 'results/share',
+          resource_type: 'image',
+      });
+
+      res.json({ imageUrl: result.secure_url });
+  } catch (error) {
+      console.error('❌ Ошибка загрузки изображения в Cloudinary:', error);
+      res.status(500).json({ error: 'Ошибка сервера при загрузке изображения' });
+  }
+});
+
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -212,7 +235,7 @@ const store = MongoStore.create({
   stringify: false,
   autoRemove: 'native',
   // cookie: { secure: true, httpOnly: true },
-  ttl: 7 * 24 * 60 * 60 // Время жизни сессии в секундах (14 дней)
+  ttl: 14 * 24 * 60 * 60 // Время жизни сессии в секундах (14 дней)
 });
 
 
@@ -232,7 +255,7 @@ store.on('destroy', (sid) => {
 app.use(session({
   secret: sessionSecret,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   store: store,
   cookie: {
       secure: process.env.NODE_ENV === 'production', // Используйте secure куки в продакшн
@@ -319,6 +342,19 @@ app.get('/ru/dashboard/admin/edit/:playerId', ensureAuthenticated, ensureAdmin, 
     console.error('Error rendering template:', error.message);
     res.status(500).send('Server error');
   }
+});
+
+app.get('/:lang/share/result', (req, res) => {
+  const { name, image, ratingChange, userPageLink } = req.query;
+  const lang = req.params.lang || 'en';
+
+  res.render('result-share', {
+      name: decodeURIComponent(name),
+      image: decodeURIComponent(image),
+      ratingChange: decodeURIComponent(ratingChange),
+      userPageLink: decodeURIComponent(userPageLink),
+      lang
+  });
 });
 
 app.get('/allcities', ensureAdmin, async (req, res) => {
@@ -744,6 +780,7 @@ app.post('/addtournament', ensureAuthenticated,  async (req, res) => {
       const club = await db.collection('clubs').findOne({ _id: new ObjectId(userid) });
 
       if (!club) {
+          // return res.status(404).render('404');
           return res.status(404).json({ message: 'Club not found.' });
       }
 
@@ -1349,6 +1386,240 @@ app.post('/saveTournament', async (req, res) => {
   }
 });
 
+app.post("/updateTournamentCounterForPlayers", async (req, res) => {
+  try {
+    const players = req.body.players;
+    const club = req.body.club;
+    const clubId = club._id;
+    const db = getDB();
+    console.log('club', club);
+    if (!Array.isArray(players)) {
+      return res.status(400).json({ error: "Неверный формат запроса" });
+    }
+
+    const updateTournamentField = async (collection, player) => {
+      if (!ObjectId.isValid(player.id)) return null;
+
+      // Пропускаем внерейтинговых игроков
+      if (player.unrated) return null;
+
+      const existingPlayer = await db.collection(collection).findOne({ _id: new ObjectId(player.id) });
+      if (!existingPlayer) return null;
+
+      const clubKey = `tournaments.${clubId}`;
+      const wins = Number(player.wins) || 0;
+      const losses = Number(player.losses) || 0;
+      
+
+      const updateQuery = {
+        $inc: {
+          tournamentsPlayed: 1,
+          [clubKey]: 1,
+          totalWins: wins,
+          totalLosses: losses
+        }
+      };
+      
+       // 🏅 Добавим награды по местам
+      const place = Number(player.place);
+      if (place >= 1 && place <= 3) {
+        const medalType = place === 1 ? "gold" : place === 2 ? "silver" : "bronze";
+        const medalKey = `awards.${clubId}.${medalType}`;
+        updateQuery.$inc[medalKey] = 1;
+      }
+
+      // 🏷 Название и логотип клуба (если ещё нет)
+      if  (
+        !existingPlayer.awards || 
+        !existingPlayer.awards[clubId] || 
+        !existingPlayer.awards[clubId].clubName
+      ) {
+        updateQuery.$set = {
+          ...updateQuery.$set,
+          [`awards.${clubId}.clubName`]: club.name,
+          [`awards.${clubId}.clubLogo`]: club.logo
+        };
+      }
+
+
+      // Если это первый турнир — добавим поле firstTournament
+      if (!existingPlayer.firstTournamentDate) {
+        updateQuery.$set = {
+          firstTournamentDate: new Date()
+        };
+      }
+
+      
+    
+      const result = await db.collection(collection).findOneAndUpdate(
+        { _id: new ObjectId(player.id) },
+        updateQuery,
+        { returnDocument: "after" }
+      );
+
+      return result; // возвращаем сразу объект игрока (result без .value)
+    };
+
+    let updatedCount = 0;
+
+    for (const player of players) {
+      const updated =
+        (await updateTournamentField("users", player)) ||
+        (await updateTournamentField("coaches", player));
+
+      if (updated) updatedCount++;
+    }
+
+    if (updatedCount > 0) {
+      return res.json({ message: `Обновлено ${updatedCount} игроков` });
+    } else {
+      return res.status(404).json({ error: "Игроки не найдены или все были нерейтинговыми" });
+    }
+
+  } catch (error) {
+    console.error("❌ Ошибка при обновлении турниров:", error);
+    res.status(500).json({ error: "Ошибка сервера" });
+  }
+});
+
+// app.post("/updateBestVictories", async (req, res) => {
+//   try {
+//     const { data } = req.body;
+//     const db = getDB();
+//     console.log('лучшие победы', data);
+//     if (!Array.isArray(data)) {
+//       return res.status(400).json({ error: "Некорректный формат данных" });
+//     }
+
+//     let updatedCount = 0;
+
+//     for (const entry of data) {
+//       const { playerId, victories } = entry;
+
+//       if (!ObjectId.isValid(playerId)) continue;
+//       if (!Array.isArray(victories) || victories.length === 0) continue;
+
+//       // Ищем игрока
+//       const existingPlayer =
+//         (await db.collection("users").findOne({ _id: new ObjectId(playerId) })) ||
+//         (await db.collection("coaches").findOne({ _id: new ObjectId(playerId) }));
+
+//       if (!existingPlayer) {
+//         console.warn(`⚠️ Игрок с ID ${playerId} не найден`);
+//         continue;
+//       }
+
+//       const existingVictories = Array.isArray(existingPlayer.bestVictories)
+//         ? existingPlayer.bestVictories
+//         : [];
+
+//       // Объединяем победы и убираем дубликаты по opponentId
+//       const merged = [...existingVictories, ...victories];
+
+//       const uniqueVictoriesMap = new Map();
+//       merged.forEach(v => {
+//         if (!uniqueVictoriesMap.has(v.opponentId)) {
+//           uniqueVictoriesMap.set(v.opponentId, v);
+//         } else {
+//           const existing = uniqueVictoriesMap.get(v.opponentId);
+//           if (v.opponentRating > existing.opponentRating) {
+//             uniqueVictoriesMap.set(v.opponentId, v); // Оставляем победу над более сильным рейтингом
+//           }
+//         }
+//       });
+
+//       // Отсортируем по рейтингу побеждённого и оставим топ-10
+//       const topVictories = Array.from(uniqueVictoriesMap.values())
+//         .sort((a, b) => b.opponentRating - a.opponentRating)
+//         .slice(0, 10);
+
+//       // Обновим игрока
+//       const result = await db.collection(existingPlayer.type || "users").updateOne(
+//         { _id: new ObjectId(playerId) },
+//         { $set: { bestVictories: topVictories } }
+//       );
+
+//       updatedCount++;
+//       console.log(`✅ Игрок ${existingPlayer.fullname || existingPlayer.nickname}: сохранено побед — ${topVictories.length}`);
+//     }
+
+//     res.json({ message: `Обновлены данные для ${updatedCount} игроков` });
+
+//   } catch (error) {
+//     console.error("❌ Ошибка при обновлении лучших побед:", error);
+//     res.status(500).json({ error: "Ошибка сервера" });
+//   }
+// });
+
+app.post("/updateBestVictories", async (req, res) => {
+  try {
+    const { data } = req.body;
+    const db = getDB();
+    console.log('полученные данные data', data);
+    if (!Array.isArray(data)) {
+      return res.status(400).json({ error: "Некорректный формат данных" });
+    }
+
+    let updatedCount = 0;
+
+    for (const entry of data) {
+      const { playerId, victories } = entry;
+
+      if (!ObjectId.isValid(playerId)) continue;
+      if (!Array.isArray(victories) || victories.length === 0) continue;
+
+      const objectId = new ObjectId(playerId);
+
+      // Пытаемся найти игрока сначала в users, потом в coaches
+      const [collectionName, existingPlayer] =
+        (await db.collection("users").findOne({ _id: objectId }).then(p => p ? ["users", p] : [])) ||
+        (await db.collection("coaches").findOne({ _id: objectId }).then(p => p ? ["coaches", p] : []));
+
+      if (!existingPlayer || !collectionName) {
+        console.warn(`⚠️ Игрок с ID ${playerId} не найден`);
+        continue;
+      }
+
+      const existingVictories = Array.isArray(existingPlayer.bestVictories)
+        ? existingPlayer.bestVictories
+        : [];
+
+      // Объединяем и убираем дубликаты по opponentId
+      const merged = [...existingVictories, ...victories];
+
+      const uniqueVictoriesMap = new Map();
+
+      for (const victory of merged) {
+        const existing = uniqueVictoriesMap.get(victory.opponentId);
+        if (!existing || victory.opponentRating > existing.opponentRating) {
+          uniqueVictoriesMap.set(victory.opponentId, victory);
+        }
+      }
+
+      const topVictories = Array.from(uniqueVictoriesMap.values())
+        .sort((a, b) => b.opponentRating - a.opponentRating)
+        .slice(0, 10);
+
+      await db.collection(collectionName).updateOne(
+        { _id: objectId },
+        { $set: { bestVictories: topVictories } }
+      );
+
+      updatedCount++;
+      console.log(`✅ Игрок ${existingPlayer.fullname || existingPlayer.nickname}: сохранено побед — ${topVictories.length}`);
+    }
+
+    res.json({ message: `Обновлены данные для ${updatedCount} игроков` });
+  } catch (error) {
+    console.error("❌ Ошибка при обновлении лучших побед:", error);
+    res.status(500).json({ error: "Ошибка сервера" });
+  }
+});
+
+
+
+
+
 app.post("/updatePlayerRatings", async (req, res) => {
     try {
       const { players } = req.body;
@@ -1399,12 +1670,29 @@ app.post("/updatePlayerRatings", async (req, res) => {
         if (!existingPlayer) return null; // Если игрока нет в коллекции, возвращаем null
   
         console.log("Игрок найден:", existingPlayer);
+        
+        const newRating = Number(player.rating) || 0;
+        const currentMax = existingPlayer.maxRating ?? 0;
+
+        const updateQuery = {
+          $set: { rating: newRating },
+        };
   
+        if (newRating > currentMax) {
+          updateQuery.$set.maxRating = newRating;
+        }
+
         const result = await db.collection(collection).findOneAndUpdate(
           { _id: new ObjectId(player.id) },
-          { $set: { rating: Number(player.rating) || 0 } }, // Приводим рейтинг к числу
-          { returnDocument: "after", upsert: true } // Обновляем или создаем
+          updateQuery,
+          { returnDocument: "after", upsert: true }
         );
+
+        // const result = await db.collection(collection).findOneAndUpdate(
+        //   { _id: new ObjectId(player.id) },
+        //   { $set: { rating: Number(player.rating) || 0 } }, // Приводим рейтинг к числу
+        //   { returnDocument: "after", upsert: true } // Обновляем или создаем
+        // );
         // console.log('result', result);
         // console.log('result value', result.value);
         return result || null; // Возвращаем обновленного игрока
@@ -2182,6 +2470,135 @@ app.get('/get-players-coaches', async (req, res) => {
       res.status(500).json({ error: 'An error occurred while retrieving players' });
     }
 });
+
+// app.post('/getClubPlayers', async (req, res) => {
+//   try {
+//     const { playerIds } = req.body;
+
+//     if (!Array.isArray(playerIds) || playerIds.length === 0) {
+//       return res.status(400).json({ error: 'Некорректный список ID игроков' });
+//     }
+
+//     const db = getDB();
+//     const objectIds = playerIds.map(id => new ObjectId(id));
+
+//     // Загружаем из обеих коллекций
+//     const [users, coaches] = await Promise.all([
+//       db.collection("users").find({ _id: { $in: objectIds }, role: { $ne: 'admin' } }).toArray(),
+//       db.collection("coaches").find({ _id: { $in: objectIds }, role: { $ne: 'admin' } }).toArray()
+//     ]);
+
+//     // Объединяем и удаляем дубли по _id
+//     const allPlayersMap = new Map();
+
+//     [...users, ...coaches].forEach(player => {
+//       allPlayersMap.set(String(player._id), player);
+//     });
+
+//     const allPlayers = Array.from(allPlayersMap.values());
+
+//     return res.json({ players: allPlayers });
+//   } catch (error) {
+//     console.error("❌ Ошибка при получении игроков клуба:", error);
+//     res.status(500).json({ error: "Ошибка сервера" });
+//   }
+// });
+
+// app.post('/getClubWinners', async (req, res) => {
+//   try {
+//     const { clubId } = req.body;
+//     if (!clubId) return res.status(400).json({ error: 'clubId обязателен' });
+
+//     const db = getDB();
+
+//     // 1. Получаем все турниры клуба
+//     const tournaments = await db.collection('tournaments').find({ 'club._id': clubId }).toArray();
+
+//     if (!tournaments.length) {
+//       return res.json({ players: [] });
+//     }
+
+//     // 2. Собираем призёров (place: 1, 2, 3)
+//     const winnerIdsSet = new Set();
+
+//     tournaments.forEach(tournament => {
+//       (tournament.players || []).forEach(player => {
+//         if (player.place && player.place >= 1 && player.place <= 3) {
+//           winnerIdsSet.add(player.id);
+//         }
+//       });
+//     });
+
+//     const winnerIds = Array.from(winnerIdsSet).map(id => new ObjectId(id));
+
+//     if (!winnerIds.length) return res.json({ players: [] });
+
+//     // 3. Получаем пользователей из users и coaches
+//     const users = await db.collection('users').find({ _id: { $in: winnerIds } }).toArray();
+//     const coaches = await db.collection('coaches').find({ _id: { $in: winnerIds } }).toArray();
+//     const allWinners = [...users, ...coaches];
+
+//     res.json({ players: allWinners });
+//   } catch (err) {
+//     console.error("❌ Ошибка при получении призёров клуба:", err);
+//     res.status(500).json({ error: "Ошибка сервера" });
+//   }
+// });
+
+app.post('/getClubPlayersFull', async (req, res) => {
+  try {
+    const { clubId } = req.body;
+    if (!clubId) {
+      return res.status(400).json({ error: "Не передан clubId" });
+    }
+
+    const db = getDB();
+    const tournaments = await db.collection("tournaments").find({ "club._id": clubId, finished: true }).toArray();
+
+    const allPlayerIds = new Set();
+    const prizePlayerIds = new Set();
+
+    tournaments.forEach(t => {
+      const players = t.players || [];
+      players.forEach(p => allPlayerIds.add(p));
+      
+      // Призёры
+      
+      (t.players || []).forEach(player => {
+        if (player.place && player.place >= 1 && player.place <= 3) {
+          prizePlayerIds.add(player.id);
+        }
+      });
+      
+      // const finalResults = t.finalResults || [];
+      // finalResults.forEach(p => {
+      //   if (p.place && p.place >= 1 && p.place <= 3) {
+      //     prizePlayerIds.add(p.id);
+      //   }
+      // });
+
+    });
+
+    const allIds = Array.from(allPlayerIds).map(id => new ObjectId(id));
+    const prizeIds = Array.from(prizePlayerIds);
+
+    const users = await db.collection("users").find({ _id: { $in: allIds } }).toArray();
+    const coaches = await db.collection("coaches").find({ _id: { $in: allIds } }).toArray();
+    const allPlayers = [...users, ...coaches];
+
+    res.json({
+      players: allPlayers,
+      prizePlayerIds: prizeIds, // 👈 используем на клиенте для фильтрации победителей
+    });
+
+  } catch (error) {
+    console.error("❌ Ошибка при получении игроков клуба:", error);
+    res.status(500).json({ error: "Ошибка сервера" });
+  }
+});
+
+
+
 
 app.get('/get-players-with-city/', async (req, res) => {
   const lang = req.query.lang || 'english';

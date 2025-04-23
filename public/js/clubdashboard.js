@@ -362,6 +362,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const tableBody = document.querySelector('.schedule-form');
         tableBody.innerHTML = ""; // Очищаем таблицу перед заполнением
     
+        const schedule = clubData?.scheduleData || {};
         // Создаем строку заголовков таблицы
         const headerRow = document.createElement("tr");
     
@@ -396,7 +397,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const cell = document.createElement("td");
                 cell.style = "height: 109px; align-items: center";
                 
-                const eventData = clubData.scheduleData[dayKey]?.[sessionIndex] || { event: "", start: "", end: "" };
+                const eventData = schedule[dayKey]?.[sessionIndex] || { event: "", start: "", end: "" };
     
                 const eventInput = document.createElement("div");
                 eventInput.innerText = getTranslation(eventData.event) || '';

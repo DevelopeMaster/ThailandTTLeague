@@ -1225,7 +1225,7 @@ app.post('/saveTournament', async (req, res) => {
           return res.status(400).json({ error: 'Tournament ID is required' });
       }
 
-      const { players, retiredPlayers, unratedPlayers, waitingPairs, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament, roundCounter, round1Results, round2Results } = state;
+      const { players, retiredPlayers, unratedPlayers, bonusesApplied, waitingPairs, olympicRounds, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament, roundCounter, round1Results, round2Results } = state;
       // console.log('players from client', players);
       // Обновляем турнирные данные
       const updateData = {};
@@ -1241,6 +1241,7 @@ app.post('/saveTournament', async (req, res) => {
               wins: player.wins,
               logo: player.logo || "/icons/playerslogo/default_avatar.svg",
               losses: player.losses,
+              bonus: player.bonus || 0,
               points_round1: player.points_round1 || 0,
               points_round2: player.points_round2 || 0,
               totalPoints: player.totalPoints,
@@ -1299,6 +1300,10 @@ app.post('/saveTournament', async (req, res) => {
         updateData.finishedPairs = finishedPairs.map(pair => ({
             player1: pair.player1,
             player2: pair.player2,
+            score1: pair.score1 ?? null,
+            score2: pair.score2 ?? null,
+            sets: pair.sets || null,
+            round: pair.round ?? null,
         }));
       }
 
@@ -1329,7 +1334,13 @@ app.post('/saveTournament', async (req, res) => {
       if (round2Results) {
         updateData.round2Results = round2Results;
       }
-      
+      if (olympicRounds) {
+        updateData.olympicRounds = olympicRounds;
+      }
+
+      if (bonusesApplied) {
+        updateData.bonusesApplied = bonusesApplied;
+      }
 
       // Проверяем, есть ли уже `initialRatings`
       const existingTournament = await db.collection('tournaments').findOne(
@@ -1449,7 +1460,8 @@ app.post("/updateTournamentCounterForPlayers", async (req, res) => {
         };
       }
 
-      
+      // console.log("⛏ Финальный updateQuery", updateQuery);
+
     
       const result = await db.collection(collection).findOneAndUpdate(
         { _id: new ObjectId(player.id) },
@@ -1571,10 +1583,20 @@ app.post("/updateBestVictories", async (req, res) => {
       const objectId = new ObjectId(playerId);
 
       // Пытаемся найти игрока сначала в users, потом в coaches
-      const [collectionName, existingPlayer] =
-        (await db.collection("users").findOne({ _id: objectId }).then(p => p ? ["users", p] : [])) ||
-        (await db.collection("coaches").findOne({ _id: objectId }).then(p => p ? ["coaches", p] : []));
+      let collectionName = null;
+      let existingPlayer = null;
 
+      const user = await db.collection("users").findOne({ _id: objectId });
+      if (user) {
+        collectionName = "users";
+        existingPlayer = user;
+      } else {
+        const coach = await db.collection("coaches").findOne({ _id: objectId });
+        if (coach) {
+          collectionName = "coaches";
+          existingPlayer = coach;
+        }
+      }
       if (!existingPlayer || !collectionName) {
         console.warn(`⚠️ Игрок с ID ${playerId} не найден`);
         continue;
@@ -1645,11 +1667,6 @@ app.post("/updatePlayerRatings", async (req, res) => {
         return res.status(400).json({ error: "Отсутствует ID у одного из игроков" });
       }
 
-      // // Проверяем, что ID валидные
-      // if (!ObjectId.isValid(player1.id) || !ObjectId.isValid(player2.id)) {
-      //   console.log("Некорректный ID игрока");
-      //   return res.status(400).json({ error: "Некорректный ID игрока" });
-      // }
   
       // Функция поиска игрока в коллекции и обновления рейтинга
       const updatePlayerRating = async (collection, player) => {
@@ -1688,13 +1705,6 @@ app.post("/updatePlayerRatings", async (req, res) => {
           { returnDocument: "after", upsert: true }
         );
 
-        // const result = await db.collection(collection).findOneAndUpdate(
-        //   { _id: new ObjectId(player.id) },
-        //   { $set: { rating: Number(player.rating) || 0 } }, // Приводим рейтинг к числу
-        //   { returnDocument: "after", upsert: true } // Обновляем или создаем
-        // );
-        // console.log('result', result);
-        // console.log('result value', result.value);
         return result || null; // Возвращаем обновленного игрока
       };
   
@@ -1721,6 +1731,73 @@ app.post("/updatePlayerRatings", async (req, res) => {
       res.status(500).json({ error: "Ошибка сервера при обновлении рейтинга" });
     }
 });
+
+app.post("/updateRatingsAfterBonuses", async (req, res) => {
+  try {
+      const { players } = req.body;
+      const db = getDB();
+
+      if (!Array.isArray(players) || players.length === 0) {
+          return res.status(400).json({ error: "Передан пустой список игроков" });
+      }
+
+      const updatedPlayers = [];
+
+      const updatePlayerRating = async (collection, player) => {
+          if (player.unrated) return null; // Пропускаем внерейтинговых
+
+          if (!ObjectId.isValid(player.id)) {
+              console.warn(`Некорректный ID игрока: ${player.id}`);
+              return null;
+          }
+
+          const existingPlayer = await db.collection(collection).findOne({ _id: new ObjectId(player.id) });
+          if (!existingPlayer) return null;
+
+          const newRating = Number(player.rating) || Number(existingPlayer.rating) || 0;
+          const currentMax = existingPlayer.maxRating ?? 0;
+          // console.log("Игрок найден:", existingPlayer, "Новый рейтинг:", newRating, "Текущий максимум:", currentMax); 
+          const updateQuery = {
+              $set: { rating: newRating }
+          };
+
+          if (newRating > currentMax) {
+              updateQuery.$set.maxRating = newRating;
+          }
+
+          const result = await db.collection(collection).findOneAndUpdate(
+              { _id: new ObjectId(player.id) },
+              updateQuery,
+              { returnDocument: "after" }
+          );
+
+          return result?.value || null;
+      };
+
+      for (const player of players) {
+          const updated =
+              (await updatePlayerRating("users", player)) ||
+              (await updatePlayerRating("coaches", player));
+          if (updated) {
+              updatedPlayers.push(updated);
+          }
+      }
+
+      // if (updatedPlayers.length === 0) {
+      //     return res.status(404).json({ error: "Ни один игрок не был обновлён" });
+      // }
+
+      res.json({
+          message: `Обновлено рейтингов у ${updatedPlayers.length} игроков`,
+          updatedPlayers
+      });
+
+  } catch (error) {
+      console.error("Ошибка при обновлении рейтингов:", error);
+      res.status(500).json({ error: "Ошибка сервера при обновлении рейтингов" });
+  }
+});
+
 
 app.get('/:lang/dashboard/:userType/:userId', ensureAuthenticated, (req, res) => {
   const { lang, userType, userId } = req.params;
@@ -1771,8 +1848,10 @@ app.use((err, req, res, next) => {
 
 // Маршрут для запроса восстановления пароля
 app.post('/api/restore-password', async (req, res) => {
-  const { email, clientLang } = req.body;
+  const { clientLang } = req.body;
+  let { email } = req.body;
   
+  email = email.trim().toLowerCase();
   try {
       const db = getDB();
       let collection;
@@ -1789,9 +1868,19 @@ app.post('/api/restore-password', async (req, res) => {
           if (user) {
               collection = 'coaches';
           } else {
-              return res.status(404).json({ message: 'User with this email not found' });
-          }
-      }
+            // Если не найдено, поиск в коллекции тренеров
+            user = await db.collection('clubs').findOne({ email });
+    
+            if (user) {
+                collection = 'clubs';
+            } else {
+                return res.status(404).json({ message: 'User with this email not found' });
+            }
+        }
+          // } else {
+          //     return res.status(404).json({ message: 'User with this email not found' });
+          // }
+      } 
 
       // Генерация токена для восстановления пароля
       const token = crypto.randomBytes(20).toString('hex');
@@ -1912,7 +2001,14 @@ app.post('/reset-password/:token', async (req, res) => {
           });
           collection = 'coaches';
           if (!user) {
-              return res.status(400).json({ message: 'Password reset token is invalid or has expired.' });
+              user = await db.collection('clubs').findOne({
+                  resetPasswordToken: token,
+                  resetPasswordExpires: { $gt: Date.now() }
+              });
+              collection = 'clubs';
+              if (!user) {
+                  return res.status(400).json({ message: 'Password reset token is invalid or has expired.' });
+              }
           }
       }
 
@@ -2836,6 +2932,8 @@ app.post('/register', [
     return;
   }
 
+  
+
   const parts = date.split(".");
   const birthdayDate = new Date(`${parts[1]}/${parts[0]}/${parts[2]}`);
 
@@ -2843,6 +2941,13 @@ app.post('/register', [
     // Check if the city already exists
     let cityId;
     const db = getDB();
+
+    const existingClub = await db.collection('clubs').findOne({ email });
+    const existingPlayer = await db.collection('users').findOne({ email });
+    const existingCoach = await db.collection('coaches').findOne({ email });
+    if (existingClub || existingPlayer || existingCoach) {
+        return res.status(400).json({ status: 'error', message: 'A club or user with this email already exists!' });
+    }
     const cityExists = await db.collection('cities').findOne({ [clientLang]: city });
     if (cityExists) {
       cityId = cityExists._id;
@@ -2880,7 +2985,7 @@ app.post('/register', [
 
     const mailOptionsForOwner = {
       from: notificateEmail,
-      to: 'ogarsanya@gmail.com',
+      to: 'asianttleague@gmail.com',
       subject: 'New User Application',
       text: `
         A new user has registered
@@ -2900,7 +3005,7 @@ app.post('/register', [
       to: email,
       subject: 'Congratulations!',
       text: `
-        You have successfully registered at https://thailandttleague.com
+        You have successfully registered at https://asianttleague.com
         E-mail: ${email}
       `
     };
@@ -3059,33 +3164,39 @@ app.post('/logout', (req, res) => {
 });
 
 const cronTask = async () => {
-  console.log('Запуск задачи обновления sundaysRating');
-  
-  try {
-      const db =  await getDB();
-      const players = await db.collection('users').find().toArray(); // Получаем всех игроков
+  console.log('⏰ Запуск задачи обновления sundaysRating');
 
-      // Создание операций для bulkWrite
+  try {
+    const db = await getDB();
+
+    const updateCollection = async (collectionName) => {
+      const players = await db.collection(collectionName).find().toArray();
+
       const bulkOps = players.map(player => ({
-          updateOne: {
-              filter: { _id: player._id },
-              update: { 
-                  $set: { sundaysRating: player.rating } 
-              }
+        updateOne: {
+          filter: { _id: player._id },
+          update: {
+            $set: { sundaysRating: player.rating }
           }
+        }
       }));
 
-      // Выполняем массовое обновление
       if (bulkOps.length > 0) {
-          await db.collection('users').bulkWrite(bulkOps);
-          console.log('Обновление sundaysRating завершено');
+        await db.collection(collectionName).bulkWrite(bulkOps);
+        console.log(`✅ Обновление sundaysRating завершено для ${collectionName} (${bulkOps.length})`);
       } else {
-          console.log('Нет игроков для обновления');
+        console.log(`⚠️ Нет игроков для обновления в ${collectionName}`);
       }
+    };
+
+    await updateCollection('users');
+    await updateCollection('coaches');
+
   } catch (error) {
-      console.error('Ошибка при обновлении sundaysRating:', error);
+    console.error('❌ Ошибка при обновлении sundaysRating:', error);
   }
 };
+
 
 // Расписание задачи
 cron.schedule('1 0 * * 0', cronTask);

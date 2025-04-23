@@ -103,12 +103,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('location').value = clubdata.location.join(', ');
             } 
         }
+        document.getElementById('password').value = clubdata.password || '';
+        document.getElementById('mail').value = clubdata.mail || '';
         document.getElementById('workingHours').value = clubdata.workingHours || '';
         document.getElementById('numberOfTables').value = clubdata.qtytable || '';
         document.getElementById('representative').value = clubdata.name || '';
         document.getElementById('phoneNumber').value = clubdata.phone || '';
         document.getElementById('website').value = clubdata.website || '';
-        document.getElementById('description').value = `${clubdata.info}\n\n${clubdata.infotournament}` || '';
+        document.getElementById('description').value = `${clubdata.info}\n\n${clubdata.infotournament || ''}` || '';
         document.getElementById('descriptionEng').value = (clubdata.info && clubdata.info['en']) || '';
         document.getElementById('descriptionThai').value = (clubdata.info && clubdata.info['th']) || '';
         document.getElementById('clubLogo').src = clubdata.logo || '/icons/playerslogo/default_avatar.svg';
@@ -120,8 +122,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const file = event.target.files[0];
         
             if (file && file.type.startsWith('image/')) {
-                if (file.size > 1 * 1024 * 1024) {
-                    showErrorModal(`Файл слишком большой. Максимальный размер: 1 MB`);
+                if (file.size > 2 * 1024 * 1024) {
+                    showErrorModal(`Файл слишком большой. Максимальный размер: 2 MB`);
                     logoInput.value = ''; 
                     return;
                 }
@@ -307,6 +309,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             formData.append('tables', document.getElementById('numberOfTables').value);
             formData.append('representative', document.getElementById('representative').value);
             formData.append('phoneNumber', document.getElementById('phoneNumber').value);
+            formData.append('email', document.getElementById('mail').value);
+            formData.append('password', document.getElementById('password').value);
             formData.append('website', document.getElementById('website').value);
             formData.append('info', document.getElementById('description').value);
             formData.append('infoeng', document.getElementById('descriptionEng').value);
@@ -349,9 +353,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: formData
             });
     
+            // if (!response.ok) {
+            //     const errorData = await response.json();
+            //     throw new Error(errorData.error || 'Failed to save club data');
+            // }
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to save club data');
+                let errorMessage = 'Failed to save club data';
+                try {
+                    const errorData = await response.json();
+                    if (errorData?.error) {
+                        errorMessage = errorData.error;
+                    }
+                } catch (parseErr) {
+                    console.warn("Не удалось разобрать ошибку JSON:", parseErr);
+                }
+            
+                showErrorModal(errorMessage);
             }
 
             if (response.url) {

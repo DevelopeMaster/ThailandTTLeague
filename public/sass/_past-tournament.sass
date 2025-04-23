@@ -134,18 +134,20 @@
                 font-size: 20px
                 color: #ADADAD
             .pastTournament_player
-                white-space: nowrap
-                overflow: hidden
-                text-overflow: ellipsis
                 display: flex
                 justify-content: flex-start
                 align-content: center
                 gap: 8px
                 .playerLogo
+                    aspect-ratio: 1/1
                     width: 27px
-                    height: 27px
+                    height: auto
+                    border-radius: 50%
                 span
                     align-content: center
+                    white-space: nowrap
+                    overflow: hidden
+                    text-overflow: ellipsis
             .pastTournament_city
                 color: #ADADAD
                 white-space: nowrap

@@ -60,12 +60,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     avrRatingBlock.textContent = `${tournamentData.averageRating}`;
     coefficientBlock.textContent = `${tournamentData.coefficient}`;
 
-
-    const mostPopular = findMostPopularScore(tournamentData.results);   
+    
+    let mostPopular = findMostPopularScore(tournamentData.results) || calculatePopularScoreTwoRounds(tournamentData.round1Results, tournamentData.round2Results) || calculatePopularScoreOlympic(tournamentData.finishedPairs) || ' - ';
     popularScoreBlock.textContent =`${mostPopular}`;
 
-    const curCity = await getCityName(tournamentData.city._id);
-    console.log(curCity);
+    const curCity = await getCityName(tournamentData.city._id || tournamentData.city);
+    // console.log(curCity);
     cityBlock.textContent = `${curCity}`;
 });
 
@@ -86,9 +86,72 @@ async function getCityName(cityId) {
     }
 }
 
+function calculatePopularScoreOlympic(finishedPairs) {
+    const scoreMap = {};
+    console.log('finishedPairs', finishedPairs);
+    finishedPairs.forEach(pair => {
+        const s1 = pair.score1 ?? 0;
+        const s2 = pair.score2 ?? 0;
+
+        const score = s1 > s2 ? `${s1}:${s2}` : `${s2}:${s1}`; // Победный счёт
+        scoreMap[score] = (scoreMap[score] || 0) + 1;
+    });
+
+    // Найдём самый популярный счёт
+    let mostPopular = null;
+    let maxCount = 0;
+    for (const [score, count] of Object.entries(scoreMap)) {
+        if (count > maxCount) {
+            mostPopular = score;
+            maxCount = count;
+        }
+    }
+    return mostPopular || null;
+}
+
+function calculatePopularScoreTwoRounds(round1Results, round2Results) {
+    if (!round1Results || !round2Results) {
+        // console.log("⚠️ Нет данных о результатах матчей.");
+        return null;
+    }
+    const allScores = {};
+
+    const processRound = (round) => {
+        for (const [rowIndex, row] of Object.entries(round)) {
+            if (rowIndex === 'sets') continue;
+
+            for (const [colIndex, score] of Object.entries(row)) {
+                if (colIndex === 'sets' || colIndex === 'points') continue;
+                if (typeof score !== 'string' || !score.includes(':')) continue;
+
+                const [s1, s2] = score.split(':').map(Number);
+                if (isNaN(s1) || isNaN(s2)) continue;
+
+                const normalized = s1 >= s2 ? `${s1}:${s2}` : `${s2}:${s1}`;
+                allScores[normalized] = (allScores[normalized] || 0) + 1;
+            }
+        }
+    };
+
+    processRound(round1Results);
+    processRound(round2Results);
+
+    let mostPopular = null;
+    let maxCount = 0;
+
+    for (const [score, count] of Object.entries(allScores)) {
+        if (count > maxCount) {
+            mostPopular = score;
+            maxCount = count;
+        }
+    }
+
+    return mostPopular || null;
+}
+
 function findMostPopularScore(results) {
     if (!results || Object.keys(results).length === 0) {
-        console.warn("⚠️ Нет данных о результатах матчей.");
+        // console.log("⚠️ Нет данных о результатах матчей.");
         return null;
     }
 
@@ -120,7 +183,7 @@ function findMostPopularScore(results) {
         }
     });
 
-    return mostPopularScore; // Возвращаем только счет
+    return mostPopularScore || null; // Возвращаем только счет
 }
 
 

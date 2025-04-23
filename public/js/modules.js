@@ -4768,21 +4768,26 @@ export function registrationForm() {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         })
-        .then(response => {
+        .then(async response => {
+            const resData = await response.json();
             if (!response.ok) {
-                throw new Error(translation.serverError);
+                let errorMessage = 'Failed to create account';
+                if (resData.status === 'error') {
+                    console.log('ошибка', resData);
+                    if (resData?.message) {
+                        errorMessage = resData.message;
+                    }
+                    showErrorModal(errorMessage);
+                } else if (resData.status === 'success') {
+                    document.querySelector('form').reset();
+                    redirectToPersonalAccount();
+                } else {
+                    // На всякий случай, если статус не "success", но и не ошибка
+                    showErrorModal(translation.serverError);
+                }
+             
             }
-            return response.json();
-        })
-        .then(data => {
-            if (data.status === 'error') {
-                data.errors.forEach(error => {
-                    showErrorModal(error.msg);
-                });
-            } else {
-                document.querySelector('form').reset();
-                redirectToPersonalAccount();
-            }
+            
         })
         .catch(error => {
             showErrorModal(translation.serverError);

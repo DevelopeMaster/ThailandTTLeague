@@ -875,8 +875,276 @@
                             .points, .place
                                 background: #FFF
                                 color: #000
+
+                .olympic-rounds
+                    display: flex
+                    justify-content: flex-start
+                    align-items: flex-start
+                    gap: 45px
+                    box-sizing: border-box
+                    .olympic-line-left
+                        position: absolute
+                        left: -22px
+                        top: 50%
+                        width: 22.5px
+                        height: 1px
+                        background-color: #774A35
+                        transform: translateY(-50%)
+                        z-index: 1
+                        box-sizing: border-box
+                        &:before
+                            content: ""
+                            position: absolute
+                            width: 1.5px
+                            height: 114px
+                            background-color: #774A35
+                            left: 0
+                        &:before
+                            top: -57px
+
+                        
+                    .olympic-round
+                        width: 284px
+                        position: relative
+                        box-sizing: border-box
+                        
+                        &_title
+                            display: none
+                        &_match
+                            position: relative
+                            box-sizing: border-box
+                            &:after
+                                content: ""
+                                position: absolute
+                                top: calc(50% - 0.5px)
+                                left: 100%
+                                width: 23px
+                                height: 1.5px
+                                background-color: #774A35
+                                box-sizing: border-box
+
+                            &_pair
+                                position: relative
+                                margin-bottom: 30px
+                                box-sizing: border-box
+                                &_player
+                                    display: flex
+                                    height: 42px
+                                    padding: 8px 10px
+                                    align-items: center
+                                    justify-content: space-between
+                                    gap: 10px
+                                    align-self: stretch
+                                    box-sizing: border-box
+                                    background: #3F3F4C
+                                    transition: background 0.2s ease
+                                    box-sizing: border-box
+                                    &:hover
+                                        background: #FA6400
+                                        .olympic-round_match_pair_player_score
+                                            color: #FFF
+                                    &:nth-child(1)
+                                        border-radius: 10px 10px 0px 0px
+                                        // border: 1px solid #774A35
+                                        border: 1px solid #774A35
+                                        // border-bottom: 2px solid #774A35
+                                        
+                                    &:nth-child(2)
+                                        border-radius: 0px 0px 10px 10px
+                                        // border: 1px solid #774A35
+                                        border: 1px solid #774A35
+                                        // border-top: 2px solid #774A35
+                                        // border-bottom: 1px solid #774A35
+                                        // border-left: 1px solid #774A35
+                                        // background: #3F3F4C
+                                    &_logo
+                                        // width: 26px
+                                        // height: 26px
+                                        // border-radius: 83px
+                                        border: 1px solid #FFF
+                                        background-position: 50% center
+                                        background-size: cover
+                                        background-repeat: no-repeat
+                                        position: relative
+                                        aspect-ratio: 1/1
+                                        width: auto
+                                        height: 26px
+                                        border-radius: 50%
+                                        box-sizing: border-box
+                                    &_wrapper
+                                        display: flex
+                                        align-items: center
+                                        gap: 8px
+                                        box-sizing: border-box
+                                        span
+                                            color: #FFF
+                                            font-family: Inter
+                                            font-size: 16px
+                                            font-style: normal
+                                            font-weight: 400
+                                            line-height: normal
+                                            box-sizing: border-box
+                                    &_score
+                                        color: #666877
+                                        font-family: Inter
+                                        font-size: 16px
+                                        font-style: normal
+                                        font-weight: 400
+                                        line-height: normal
+                                        box-sizing: border-box
+                                        .score-winner
+                                            color: #FA6400 !important
+                                            font-weight: 600
+                                        
+                                    &_winner
+                                        border-radius: 10px 10px 10px 10px !important
+                                        border: 1px solid #774A35
+                                        // background: #FA6400
+                                        box-sizing: border-box
+                                        position: relative
+                                        margin-left: -23px
+                                        z-index: 10
+                                        // &:hover
+                                        //     border: 1px solid #ffffff
+                                        .trophy-icon
+                                            display: inline-block
+                                            animation: flyInTrophy 0.8s ease-out forwards
+                                            font-size: 24px
+                                            // transform: translateY(-50px)
+                                            // opacity: 1
+                                        
+                                    // .winner 
+                                    //     border-radius: 10px 0px 10px 10px !important
+                                    //     position: relative
+                                    //     margin-left: -23px
+                                    //     z-index: 10
+                                    
+                        &:nth-child(2)
+                            margin-top: 57px
+                            .olympic-round_match   
+                                &_pair   
+                                    margin-bottom: 144px
+
+                        &:nth-child(3)
+                            margin-top: 171px
+                            .olympic-round_match_pair   
+                                margin-bottom: 372px
+                            .olympic-line-left:before
+                                height: 228px
+                                top: -114px
+                        &:nth-child(4)
+                            // margin-top: 126px
+                            margin-top: 399px
+                            .olympic-round_match_pair   
+                                margin-bottom: 828px
+                            .olympic-line-left:before
+                                height: 456px
+                                top: -228px
+                        &:nth-child(5)
+                            margin-top: 855px
+                            .olympic-round_match_pair
+                                margin-bottom: 1741px
+                            .olympic-line-left:before
+                                height: 912px
+                                top: -456px
+
+                        &:nth-child(6)
+                            margin-top: 1768px
+                            .olympic-round_match_pair
+                                margin-bottom: 3566px
+                            .olympic-line-left:before
+                                height: 1824px
+                                top: -912px
+
+                        &:nth-child(7)
+                            margin-top: 3594px
+                            // .olympic-round_match_pair
+                            //     margin-bottom: 3566px
+                            .olympic-line-left:before
+                                height: 3648px
+                                top: -1824px
+
+                        &:nth-child(8)
+                            margin-top: 3825px
+                            .olympic-line-left:before
+                                height: 7296px
+                                top: -3648px
+                        // &:nth-child(5)
+                        //     margin-top: 168px
+                        //     .olympic-round_match_pair   
+                        //         margin-bottom: 154px
+                        // &:nth-child(6)
+                        //     margin-top: 210px
+                        // &:nth-child(7)
+                        //     margin-top: 252px
+                        // &:nth-child(8)
+                        //     margin-top: 294px
+                        &:nth-last-child(1)
+                            .olympic-round_match
+                                &:after
+                                    content: ""
+                                    display: none
+                                &_pair_player
+                                    border-radius: 10px
+
+                        &:nth-last-child(2)
+                            .olympic-round_match
+                                // &:after
+                                //     content: ""
+                                //     display: none
+
+                                &:before
+                                    content: ""
+                                    display: none
+                        &:last-child
+                            // 21.5px
+                            .olympic-line-left:before
+                                display: none
+                    .olympic-round_match_pair_player_score.score-winner
+                        color: #FA6400
+
+                    // .olympic-round:not(:last-child) 
+                    //     .olympic-round_match::before
+                    //         content: ""
+                    //         position: absolute
+                    //         top: 42px
+                    //         left: auto
+                    //         right: -15px
+                    //         width: 1px
+                    //         height: 114px
+                    //         background-color: rgba(250, 100, 0, 0.30)
+                    //         transform: translateX(15px)     
+                    // .highlighted-player
+                    //     background: #FA6400 !important
+
+                    //     .olympic-round_match_pair_player_score
+                    //         color: #FFF !important
+     
+                                                
     #showResult
         display: none
+
+
+.highlighted-player
+    background: #FA6400 !important
+    .olympic-round_match_pair_player_score
+        color: #FFF !important
+
+// @keyframes flyInTrophy {
+//     0% {
+//         transform: translateY(-50px) scale(0.8);
+//         opacity: 0;
+//     }
+//     60% {
+//         transform: translateY(5px) scale(1.1);
+//         opacity: 1;
+//     }
+//     100% {
+//         transform: translateY(0) scale(1);
+//         opacity: 1;
+//     }
+// }
+
 .displayTournamentSecond
     display: none
     margin-top: 20px
@@ -1017,6 +1285,7 @@
                     align-content: center
                     font-size: 20px
                     color: #ADADAD
+                    border-radius: 2px
                 .finalResults_player
                     white-space: nowrap
                     overflow: hidden

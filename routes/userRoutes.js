@@ -5,6 +5,7 @@ require('dotenv').config();
 const { ObjectId } = require('mongodb');
 const { body, validationResult } = require('express-validator');
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
 const { getDB } = require('../db');
 const path = require('path');
 const { ensureAuthenticated, deleteFile, ensureAuthenticatedOrAdmin, ensureAdmin, upload } = require('../middlewares/uploadConfig');
@@ -768,9 +769,16 @@ router.post('/createClub', ensureAuthenticated, upload.fields([
         const newClub = {};
 
         // Сохранение логотипа, если он был загружен
+        // if (req.files['logo']) {
+        //     const logoPath = `/icons/clubslogo/${req.files['logo'][0].filename}`;
+        //     newClub.logo = logoPath;
+        // }
+
         if (req.files['logo']) {
-            const logoPath = `/icons/clubslogo/${req.files['logo'][0].filename}`;
+            const logoPath = req.files['logo'][0].path; // Используем путь Cloudinary
             newClub.logo = logoPath;
+        } else {
+            newClub.logo = 'https://res.cloudinary.com/dth8nfmhk/image/upload/v1737006491/icons/clubslogo/1736971457829-c43675875c6e59d8';
         }
 
         // Сохранение фотографий, если они были загружены
@@ -787,10 +795,23 @@ router.post('/createClub', ensureAuthenticated, upload.fields([
             newClub.location = location;
         }
 
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
         newClub.workingHours = req.body.workingHours || '';
         newClub.tables = Number(req.body.tables) || 0;
         newClub.phoneNumber = req.body.phoneNumber || '';
+        newClub.email = req.body.email.toLowerCase() || '';
+        newClub.password = hashedPassword || '';
         newClub.website = req.body.website || '';
+
+        const existingClub = await db.collection('clubs').findOne({ email: newClub.email });
+        const existingPlayer = await db.collection('users').findOne({ email: newClub.email });
+        const existingCoach = await db.collection('coaches').findOne({ email: newClub.email });
+        if (existingClub || existingPlayer || existingCoach) {
+            return res.status(400).json({ status: 'error', message: 'Клуб или пользователь с таким email уже существует!' });
+        }
+
+       
 
         if (req.body.city) {
             const city = await db.collection('cities').findOne({
@@ -804,7 +825,15 @@ router.post('/createClub', ensureAuthenticated, upload.fields([
             if (city) {
                 newClub.city = new ObjectId(city._id);
             } else {
-                return res.status(400).send('City not found');
+                const newCity = { 'english': city };
+                const result = await db.collection('cities').insertOne(newCity);
+                if (result.insertedId) {
+                    newClub.city = new ObjectId(result.insertedId);
+                } else {
+                    newClub.city = '';
+                    console.error('Ошибка при создании нового города:', error);
+                    // return res.status(500).send('Error creating new city');
+                }
             }
         }
 
@@ -826,6 +855,15 @@ router.post('/createClub', ensureAuthenticated, upload.fields([
         newClub.supplements = {
             free: req.body.freeServices ? req.body.freeServices.split(',').map(item => item.trim()) : [],
             paid: req.body.paidServices ? req.body.paidServices.split(',').map(item => item.trim()) : []
+        };
+        newClubscheduleData = {
+            monday: [],
+            tuesday: [],
+            wednesday: [],
+            thursday: [],
+            friday: [],
+            saturday: [],
+            sunday: []
         };
 
         // Сохранение нового клуба в базу данных
@@ -1093,6 +1131,8 @@ router.post('/addApplicationClub', [
   // Валидация данных
     body('name').notEmpty().withMessage('Name is required'),
     body('phone').notEmpty().withMessage('Phone number is required'),
+    body('mail').notEmpty().withMessage('E-mail is required'),
+    body('password').notEmpty().withMessage('Password is required'),
     body('city').notEmpty().withMessage('City is required'),
     body('address').notEmpty().withMessage('Address is required'),
     body('clubname').notEmpty().withMessage('clubname is required'),
@@ -1103,8 +1143,8 @@ router.post('/addApplicationClub', [
     if (!errors.isEmpty()) {
       return res.status(400).json({ status: 'error', errors: errors.array() });
     }
-    const { name, phone, requestDate, city, address, clubname, qtytable, infotournaments, info, policy } = req.body;
-    if (!name || !phone || !requestDate || !policy || !city || !address || !clubname || !qtytable ) {
+    const { name, phone, requestDate, city, address, mail, password, clubname, qtytable, infotournaments, info, policy } = req.body;
+    if (!name || !phone || !requestDate || !policy || !mail || !password || !city || !address || !clubname || !qtytable ) {
       console.log('данные не дошли до сервера');
       res.status(400).json({ error: 'Something wrong. Please renew page and try again' });
       return;
@@ -1113,7 +1153,7 @@ router.post('/addApplicationClub', [
     try {
       const db = getDB();
       await db.collection('requestfromclub')
-        .insertOne({ name, phone, requestDate, city, address, clubname, qtytable, infotournaments, info, policy });
+        .insertOne({ name, phone, requestDate, city, address, mail, password, clubname, qtytable, infotournaments, info, policy });
       console.log("Заявка успешно отправлена");
 
       // Отправка email
@@ -1127,12 +1167,13 @@ router.post('/addApplicationClub', [
 
       const mailOptions = {
         from: notificateEmail,
-        to: 'ogarsanya@gmail.com', // получатель ------------------------- ЗАМЕНИТЬ
+        to: 'asianttleague@gmail.com', // получатель ------------------------- ЗАМЕНИТЬ
         subject: 'New Club Application',
         text: `
           A new club application has been received:
           Name: ${name}
           Phone: ${phone}
+          E-mail: ${mail}
           Date: ${new Date(requestDate).toLocaleString()}
             city, address, clubname, qtytable, infotournaments, info,
           City: ${city}

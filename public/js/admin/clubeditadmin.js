@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById(`photoInput${index}`).value = '';
     }
 
-    const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 МБ
+    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 1 МБ
     const DEFAULT_CLUB_PHOTO = '/icons/defaultClubPicture.svg';
     const DEFAULT_PLAYER_LOGO = '/icons/clubslogo/default_avatar.svg';
 
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return false;
         }
         if (file.size > MAX_FILE_SIZE) {
-            showErrorModal('Размер файла превышает 1 МБ');
+            showErrorModal('Размер файла превышает 2 МБ');
             return false;
         }
         return true;

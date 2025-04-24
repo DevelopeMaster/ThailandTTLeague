@@ -1464,18 +1464,18 @@ router.delete('/deleteClub/:id', async (req, res) => {
         }
 
         // Удаляем логотип, если он существует
-        if (club.logo) {
-            const logoPath = path.join(__dirname, '../public', club.logo);
-            deleteFile(logoPath);
-        }
+        // if (club.logo) {
+        //     const logoPath = path.join(__dirname, '../public', club.logo);
+        //     deleteFile(logoPath);
+        // }
 
         // Удаляем все фотографии клуба
-        if (club.photos && club.photos.length > 0) {
-            club.photos.forEach(photo => {
-                const photoPath = path.join(__dirname, '../public', photo);
-                deleteFile(photoPath);
-            });
-        }
+        // if (club.photos && club.photos.length > 0) {
+        //     club.photos.forEach(photo => {
+        //         const photoPath = path.join(__dirname, '../public', photo);
+        //         deleteFile(photoPath);
+        //     });
+        // }
 
         const result = await db.collection('clubs').deleteOne({ _id: new ObjectId(clubId) });
 

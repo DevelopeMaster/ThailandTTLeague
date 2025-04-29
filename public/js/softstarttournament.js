@@ -936,7 +936,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             //     ? +(ratingSum / initialRatingsArray.length).toFixed(1)
             //     : 0;
             averageRating = 0;
-            if (tournamentData.initialRatings.length > 0) {
+            if (tournamentData.initialRatings?.length > 0) {
                 const avgRating = calculateAverageRating(tournamentData.initialRatings);
                 averageRating = avgRating.toFixed(0);
             }

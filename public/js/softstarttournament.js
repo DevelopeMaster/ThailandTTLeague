@@ -1,5 +1,6 @@
 import { checkSession, getUserData, createSoftHeader, createHeader, createFooter, getAllClubs, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
 import  { generateOlympicPairs, getOlympicPlayerStats, calculateOlympicStandings, renderOlympicGrid, generateOlympicRounds, generateOlympicPairsAndWaiting} from './olympicTournament.js';
+import  { distributePlayersIntoGroups } from './groupOlympic.js';
 //----------- important -----------//
 window.onload = function() {
     if (!localStorage.getItem('clientLang')) {
@@ -319,6 +320,21 @@ document.addEventListener('DOMContentLoaded', async function() {
             // saveTournamentOlympic(null, [...selectedPlayers, ...unratedPlayersList]);
             saveOlympicTournamentState();
         }
+        if (selectedType === 'groupOlympicFinal') {
+            saveGroupOlympicFinalTournament();
+        }
+        if (selectedType === 'singleElimination') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'doubleElimination') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'groupFinal') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'groupTwoFinals') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
     });
 
     // Функция для рендеринга списка активных и выбывших игроков
@@ -480,6 +496,22 @@ document.addEventListener('DOMContentLoaded', async function() {
             // saveTournamentOlympic(null, [...selectedPlayers, ...unratedPlayersList]);
             saveOlympicTournamentState();
         }
+        if (selectedType === 'groupOlympicFinal') {
+            console.log('нужно сохранять турнир - - - - - - 499 строка')
+            saveGroupOlympicFinalTournament();
+        }
+        if (selectedType === 'singleElimination') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'doubleElimination') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'groupFinal') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'groupTwoFinals') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
     });
 
 
@@ -533,6 +565,22 @@ document.addEventListener('DOMContentLoaded', async function() {
                 restoreOlympicTournamentState(tournamentData); // Перерисовываем таблицу с данными
                 activateOlympicHoverHighlighting();
             }
+        }
+
+        if (selectedType === 'groupOlympicFinal') {
+            console.log('нужно восстанавливать турнир - - - - - - 569 строка')
+        }
+        if (selectedType === 'singleElimination') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'doubleElimination') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'groupFinal') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'groupTwoFinals') {
+            alert('Sorry! Selected type of tournamnet in development!')
         }
 
         // if (selectedType === 'olympic') {
@@ -597,6 +645,24 @@ document.addEventListener('DOMContentLoaded', async function() {
                     console.log('start olympic tournament');
                     startOlympicTournament(selectedPlayers, unratedPlayersList);
                     
+                }
+                if (selectedType === 'groupOlympicFinal') {
+                    console.log('нужно начинать турнир ( вызов модалки) - - - - - - 648строка')
+                    
+                    settingsTournamentModal([...selectedPlayers, ...unratedPlayersList]);
+                
+                }
+                if (selectedType === 'singleElimination') {
+                    alert('Sorry! Selected type of tournamnet in development!')
+                }
+                if (selectedType === 'doubleElimination') {
+                    alert('Sorry! Selected type of tournamnet in development!')
+                }
+                if (selectedType === 'groupFinal') {
+                    alert('Sorry! Selected type of tournamnet in development!')
+                }
+                if (selectedType === 'groupTwoFinals') {
+                    alert('Sorry! Selected type of tournamnet in development!')
                 }
             } else if ((allParticipants && allParticipants.length > 128) || ([...selectedPlayers, ...unratedPlayersList] && [...selectedPlayers, ...unratedPlayersList].length > 128)) {
                 showErrorModal('Cannot start the tournament with more than 128 players.', 'OPS!');
@@ -869,8 +935,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             // const averageRating = initialRatingsArray.length > 0
             //     ? +(ratingSum / initialRatingsArray.length).toFixed(1)
             //     : 0;
-            const avgRating = calculateAverageRating(tournamentData.initialRatings);
-            averageRating = avgRating.toFixed(0);
+            averageRating = 0;
+            if (tournamentData.initialRatings.length > 0) {
+                const avgRating = calculateAverageRating(tournamentData.initialRatings);
+                averageRating = avgRating.toFixed(0);
+            }
+            // const avgRating = calculateAverageRating(tournamentData.initialRatings);
+            // averageRating = avgRating.toFixed(0);
 
             // // 2. Получаем коэффициент
             const coefficient = getTournamentCoefficient([...selectedPlayers, ...unratedPlayersList]);
@@ -1873,6 +1944,22 @@ document.addEventListener('DOMContentLoaded', async function() {
                 finishOlympicMatch(roundIndex, matchIndex, player1Score, player2Score);
                 
             }
+
+            if (selectedType === 'groupOlympicFinal') {
+                console.log('нужно сохранять результат игры- - - - - - 1939 строка')
+            }
+            if (selectedType === 'singleElimination') {
+                alert('Sorry! Selected type of tournamnet in development!')
+            }
+            if (selectedType === 'doubleElimination') {
+                alert('Sorry! Selected type of tournamnet in development!')
+            }
+            if (selectedType === 'groupFinal') {
+                alert('Sorry! Selected type of tournamnet in development!')
+            }
+            if (selectedType === 'groupTwoFinals') {
+                alert('Sorry! Selected type of tournamnet in development!')
+            }
             
             // **Расчёт рейтинга**
             const isWinnerNewbie = winner.tournamentsPlayed < 5;
@@ -1969,6 +2056,22 @@ document.addEventListener('DOMContentLoaded', async function() {
                     // saveOlympicTournamentState();
                     // roundCounter += 1;
                 }
+                if (selectedType === 'groupOlympicFinal') {
+                    console.log('список ожидания пуст - - - - - - 2050 строка')
+                }
+                if (selectedType === 'singleElimination') {
+                    alert('Sorry! Selected type of tournamnet in development!')
+                }
+                if (selectedType === 'doubleElimination') {
+                    alert('Sorry! Selected type of tournamnet in development!')
+                }
+                if (selectedType === 'groupFinal') {
+                    alert('Sorry! Selected type of tournamnet in development!')
+                }
+                if (selectedType === 'groupTwoFinals') {
+                    alert('Sorry! Selected type of tournamnet in development!')
+                }
+                
                 // else {
                     // setTimeout(() => {
                     //     window.location.reload();
@@ -3006,6 +3109,22 @@ document.addEventListener('DOMContentLoaded', async function() {
             incrementTournamentsForPlayers([...tournamentData.players]);
         }
 
+        if (selectedType === 'groupOlympicFinal') {
+            console.log('нужно отобразить результаты турнира - - - - - - 3103 строка')
+        }
+        if (selectedType === 'singleElimination') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'doubleElimination') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'groupFinal') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'groupTwoFinals') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+
         
         if (selectedType === 'roundRobin') {
             await saveTournament(null, null, tournamentData);
@@ -3046,6 +3165,22 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         if (selectedType === 'olympic') {
             renderOlympicFinalResults();
+        }
+
+        if (selectedType === 'groupOlympicFinal') {
+            console.log('турнир завершен, рендерим резкльтаты - - - - - - 3161 строка')
+        }
+        if (selectedType === 'singleElimination') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'doubleElimination') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'groupFinal') {
+            alert('Sorry! Selected type of tournamnet in development!')
+        }
+        if (selectedType === 'groupTwoFinals') {
+            alert('Sorry! Selected type of tournamnet in development!')
         }
     }
     
@@ -3867,6 +4002,155 @@ document.addEventListener('DOMContentLoaded', async function() {
             showErrorModal(error.message || 'Failed to save tournament');
         }
     }
+
+    function settingsTournamentModal(allPlayers) {
+        const modal = document.querySelector('#myModal');
+        const modalWrapper = modal.querySelector('.modal-content');
+    
+        modalWrapper.innerHTML = `
+            <h2>Setup tournament</h2>
+            <div class="form_flex">
+                <div class="form_wrapper">
+                    <label>Number of groups:</label>
+                    <input type="number" id="numberOfGroupsInput" min="1" step="1">
+                </div>
+                <div class="form_wrapper">
+                    <label>Total players to final:</label>
+                    <input type="number" id="totalPlayersToFinalInput" min="1" step="1">
+                </div>
+            </div>
+            <div id="modalError" style="color: red; margin-top: 10px;"></div>
+            <div class="modal-actions">
+                <button id="confirmGroupFinalSettings" class="header_btn-sign btn-confirm">Confirm</button>
+                <button id="cancelGroupFinalSettings" class="header_btn-log btn-cancel">Cancel</button>
+            </div>`;
+    
+        modal.style = 'display: block';
+    
+        const numberOfGroupsInput = document.getElementById('numberOfGroupsInput');
+        const totalPlayersToFinalInput = document.getElementById('totalPlayersToFinalInput');
+        const errorBlock = document.getElementById('modalError');
+        numberOfGroupsInput.max = allPlayers.length / 2;
+    
+        // === Автоматическая настройка шага и минимума при вводе количества групп
+        numberOfGroupsInput.addEventListener('input', () => {
+            const numberOfGroups = parseInt(numberOfGroupsInput.value);
+    
+            if (numberOfGroups) {
+                totalPlayersToFinalInput.step = numberOfGroups;
+                totalPlayersToFinalInput.min = numberOfGroups;
+                totalPlayersToFinalInput.max = allPlayers.length - numberOfGroups;
+                console.log(allPlayers.length);
+                if (!totalPlayersToFinalInput.value || parseInt(totalPlayersToFinalInput.value) < numberOfGroups) {
+                    totalPlayersToFinalInput.value = numberOfGroups;
+                }
+            }
+        });
+    
+        // === Исправление totalPlayers сразу при вводе
+        totalPlayersToFinalInput.addEventListener('input', () => {
+            const numberOfGroups = parseInt(numberOfGroupsInput.value);
+            let totalPlayers = parseInt(totalPlayersToFinalInput.value);
+    
+            if (numberOfGroups && totalPlayers) {
+                if (totalPlayers % numberOfGroups !== 0) {
+                    // Округляем ВВЕРХ до ближайшего кратного количеству групп
+                    totalPlayers = Math.ceil(totalPlayers / numberOfGroups) * numberOfGroups;
+                    totalPlayersToFinalInput.value = totalPlayers;
+                }
+                errorBlock.textContent = '';
+            }
+        });
+    
+        // === Подтверждение настроек
+        document.getElementById('confirmGroupFinalSettings').addEventListener('click', () => {
+            const numberOfGroups = parseInt(numberOfGroupsInput.value);
+            const totalPlayersToFinal = parseInt(totalPlayersToFinalInput.value);
+    
+            if (!numberOfGroups || !totalPlayersToFinal) {
+                errorBlock.textContent = 'Please fill all fields.';
+                return;
+            }
+    
+            // Всё ок, сохраняем настройки
+            window.groupFinalSettings = {
+                numberOfGroups,
+                totalPlayersToFinal,
+                playersPerGroupToFinal: totalPlayersToFinal / numberOfGroups
+            };
+    
+            modal.style.display = 'none';
+    
+            saveGroupOlympicFinalTournament();
+            distributePlayersIntoGroups(allPlayers)
+            // Запуск турнира
+            console.log('запуск турнира 48 строка в groupOl');
+            // startGroupFinalTournament();
+        });
+    
+        // === Отмена
+        document.getElementById('cancelGroupFinalSettings').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+
+    async function saveGroupOlympicFinalTournament() {
+        const tournamentId = document.querySelector('.startTournament').dataset.tournamentid;
+    
+        const state = {
+            players: selectedPlayers.map(player => {
+                const fullPlayerData = allplayers.find(p => p.id === player.id);
+                return {
+                    id: player.id,
+                    birthYear: player.birthYear,
+                    fullname: player.fullname || player.name,
+                    place: player.place,
+                    rating: player.rating,
+                    city: fullPlayerData ? fullPlayerData.city || fullPlayerData.cityName : "Unknown"
+                };
+            }),
+            retiredPlayers: retiredPlayers.map(player => ({
+                id: player.id,
+                birthYear: player.birthYear,
+                fullname: player.fullname || player.name,
+                rating: player.rating,
+                retired: true
+            })),
+            unratedPlayers: unratedPlayersList.map(player => ({
+                id: player.id,
+                name: player.name || player.fullname,
+                birthYear: player.birthYear,
+                city: player.city,
+                nickname: player.nickname,
+                unrated: true
+            })),               // зарегистрированные игроки
+            waitingPairs,
+            currentPairs,
+            typeOfTournament: selectedType || 'groupFinal',                        // тип турнира
+            // groupFinalSettings: groupFnalSettings || {}, // настройки групп и финала
+            groups: [],                                          // пока пусто
+            groupStageResults: [],                               // пока пусто
+            finalStageBracket: []                              
+        };
+    
+        try {
+            const response = await fetch('/saveTournament', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json',},
+                body: JSON.stringify({ tournamentId, state }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to save tournament');
+            }
+    
+            console.log('Group + Final tournament saved successfully');
+        } catch (error) {
+            console.error('Error saving Group + Final tournament:', error);
+        }
+    }
+    
     
     // async function saveTournament(state = null, standings = null, final) {
     //     // console.log(standings);

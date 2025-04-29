@@ -1225,11 +1225,11 @@ app.post('/saveTournament', async (req, res) => {
           return res.status(400).json({ error: 'Tournament ID is required' });
       }
 
-      const { players, retiredPlayers, unratedPlayers, bonusesApplied, waitingPairs, olympicRounds, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament, roundCounter, round1Results, round2Results } = state;
+      const { players, retiredPlayers, unratedPlayers, bonusesApplied, groups, groupStageResults, finalStageBracket, waitingPairs, olympicRounds, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament, roundCounter, round1Results, round2Results } = state;
       // console.log('players from client', players);
       // Обновляем турнирные данные
       const updateData = {};
-
+      console.log('players', players);
       if (Array.isArray(players)) {
           updateData.players = players.map(player => ({
               id: player.id,
@@ -1342,6 +1342,17 @@ app.post('/saveTournament', async (req, res) => {
         updateData.bonusesApplied = bonusesApplied;
       }
 
+      if (groups) {
+        updateData.groups = groups;
+      }
+
+      if (groupStageResults) {
+        updateData.groupStageResults = groupStageResults;
+      }
+
+      if (finalStageBracket) {
+        updateData.finalStageBracket = finalStageBracket;
+      }
       // Проверяем, есть ли уже `initialRatings`
       const existingTournament = await db.collection('tournaments').findOne(
           { _id: tournamentObjectId },

@@ -1196,6 +1196,12 @@ h2 {
       text-align: left;
       margin-top: 11px;
       cursor: pointer; }
+    .modal .modal-content .form_flex {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px; }
+      .modal .modal-content .form_flex div {
+        width: 100%; }
 
 .dropdownForm {
   position: relative;
@@ -7159,7 +7165,8 @@ textarea:-webkit-autofill:focus {
         .startTournament_panelWrapp_tournament_menu_tournamentTypeBlock {
           padding: 14px;
           width: 100%;
-          height: 94px; }
+          height: 94px;
+          cursor: pointer; }
         .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock {
           padding: 14px;
           width: 100%;

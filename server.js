@@ -7,6 +7,7 @@ const nodemailer = require('nodemailer');
 const passport = require('./passportConfig'); // Подключаем конфигурацию Passport
 // const browserSync = require('browser-sync');
 const { ObjectId } = require('mongodb'); // Импортируем ObjectId
+const { Types } = require('mongoose');
 require('dotenv').config();
 const { connectDB, getDB, client } = require('./db'); // Подключаем функцию для получения базы данных
 const flash = require('connect-flash');
@@ -295,8 +296,6 @@ app.get('/ru', (req, res) => {
 
 
 
-
-
 app.get('/becomeacoach', userAuthenticated, (req, res) => {
   // const { lang } = req.params;
   res.sendStatus(200);
@@ -424,14 +423,30 @@ app.get('/error', (req, res) => {
 app.use('/api', userRoutes);
 
 // Маршруты для страниц с языковыми параметрами
-app.get('/:lang(en|ru|th)/allclubs/:clubId', (req, res) => {
-  try {
-    const { lang } = req.params;
-    res.render(`${lang}/allclubs/club`);
-  } catch (error) {
-    res.status(404).render('404');
-  }
+// app.get('/:lang(en|ru|th)/allclubs/:clubId', (req, res) => {
+//   try {
+//     const { lang } = req.params;
+//     res.render(`${lang}/allclubs/club`);
+//   } catch (error) {
+//     res.status(404).render('404');
+//   }
   
+// });
+
+app.get('/:lang(en|ru|th)/allclubs/:clubId', (req, res) => {
+  const { lang, clubId } = req.params;
+
+  // Проверка: корректный ли ObjectId
+  if (!Types.ObjectId.isValid(clubId)) {
+    console.warn(`⛔ Невалидный clubId: ${clubId}`);
+    return res.status(404).render('404');
+  }
+
+  // Можно дополнительно проверить наличие клуба в базе, если нужно
+  // const club = await Club.findById(clubId);
+  // if (!club) return res.status(404).render('404');
+
+  res.render(`${lang}/allclubs/club`);
 });
 
 
@@ -872,7 +887,7 @@ app.post('/edittournament', ensureAuthenticated, async (req, res) => {
       }
 
       // Логи изменений
-      console.log('Changes:', tournamentData);
+      // console.log('Changes:', tournamentData);
 
       // Обновление данных, если есть изменения
       if (Object.keys(tournamentData).length > 0) {
@@ -1108,7 +1123,7 @@ app.post('/saveTournament', async (req, res) => {
       // console.log('players from client', players);
       // Обновляем турнирные данные
       const updateData = {};
-      console.log('players', players);
+      // console.log('players', players);
       if (Array.isArray(players)) {
           updateData.players = players.map(player => ({
               id: player.id,
@@ -1350,7 +1365,7 @@ app.post("/updateTournamentCounterForPlayers", async (req, res) => {
     const club = req.body.club;
     const clubId = club._id;
     const db = getDB();
-    console.log('club', club);
+    // console.log('club', club);
     if (!Array.isArray(players)) {
       return res.status(400).json({ error: "Неверный формат запроса" });
     }
@@ -1514,7 +1529,7 @@ app.post("/updateBestVictories", async (req, res) => {
   try {
     const { data } = req.body;
     const db = getDB();
-    console.log('полученные данные data', data);
+    // console.log('полученные данные data', data);
     if (!Array.isArray(data)) {
       return res.status(400).json({ error: "Некорректный формат данных" });
     }
@@ -1592,11 +1607,11 @@ app.post("/updateBestVictories", async (req, res) => {
 app.post("/updatePlayerRatings", async (req, res) => {
     try {
       const { players } = req.body;
-      console.log('players', players);
+      // console.log('players', players);
       const db = getDB();
   
       if (!players || players.length !== 2) {
-        console.log("Нужно передать двух игроков");
+        console.log("Ошибка обновления рейтинга! Нужно передать двух игроков!");
         return res.status(400).json({ error: "Нужно передать двух игроков" });
       }
   
@@ -1604,20 +1619,20 @@ app.post("/updatePlayerRatings", async (req, res) => {
   
       // Проверяем, что объекты игроков не пустые
       if (!player1 || !player2) {
-        console.log("Игроки не переданы");
+        console.log("Ошибка обновления рейтинга! Игроки не переданы!");
         return res.status(400).json({ error: "Игроки не переданы" });
       }
 
       // Проверяем, что у игроков есть ID
       if (!player1.id || !player2.id) {
-        console.log("Отсутствует ID у одного из игроков");
+        console.log("Ошибка обновления рейтинга! Отсутствует ID у одного из игроков");
         return res.status(400).json({ error: "Отсутствует ID у одного из игроков" });
       }
 
   
       // Функция поиска игрока в коллекции и обновления рейтинга
       const updatePlayerRating = async (collection, player) => {
-        console.log("обьект игрока", player);
+        // console.log("обьект игрока", player);
         if (player.unrated) {
           console.log(`Игрок ${player.name} внерейтинговый (unrated), обновление пропущено.`);
           return player; // Просто возвращаем игрока, ничего не меняя
@@ -1633,7 +1648,7 @@ app.post("/updatePlayerRatings", async (req, res) => {
   
         if (!existingPlayer) return null; // Если игрока нет в коллекции, возвращаем null
   
-        console.log("Игрок найден:", existingPlayer);
+        // console.log("Игрок найден:", existingPlayer);
         
         const newRating = Number(player.rating) || 0;
         const currentMax = existingPlayer.maxRating ?? 0;
@@ -1966,7 +1981,7 @@ app.post('/reset-password/:token', async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // const collection = user.collection === 'users' ? 'users' : 'coaches';
-      console.log(collection);
+      // console.log(collection);
       // await db.collection(collection).updateOne(
       //     { resetPasswordToken: token },
       //     {
@@ -2000,13 +2015,30 @@ app.post('/reset-password/:token', async (req, res) => {
 
 
 
+// app.get('/:lang(en|ru|th)/:page', (req, res) => {
+//   const { lang, page } = req.params;
+//   if (!lang) {
+//     return res.status(404).render('404');
+//   }
+//   res.render(`${lang}/${page}`);
+// });
+
 app.get('/:lang(en|ru|th)/:page', (req, res) => {
   const { lang, page } = req.params;
+
   if (!lang) {
     return res.status(404).render('404');
   }
-  res.render(`${lang}/${page}`);
+
+  res.render(`${lang}/${page}`, (err, html) => {
+    if (err) {
+      console.warn(`Страница не существует - 404 /${lang}/${page}`);
+      return res.status(404).render('404');
+    }
+    res.send(html);
+  });
 });
+
 
 // Проверка данных
 app.get('/check-email', async (req, res) => {
@@ -2047,7 +2079,7 @@ app.get('/check-login', async (req, res) => {
 // API маршруты
 app.get('/cities/:cityId', async (req, res) => {
   const cityId = req.params.cityId;
-  console.log(cityId);
+  // console.log(cityId);
   if (cityId === 'english' || cityId === 'russian' || cityId === 'thai') {
     return next();
   }
@@ -2118,7 +2150,7 @@ app.get('/userForHeader/:userId/:userType', async (req, res) => {
     if (!user) {
         return res.status(404).json({ error: 'User not found' });
     }
-    console.log(user.fullname);
+    // console.log(user.fullname);
     res.json(user);
   } catch (err) {
     console.error('Error fetching user:', err);
@@ -2191,10 +2223,10 @@ app.get('/coachesrequest', ensureAdmin, async function(req, res) {
 app.get('/ru/dashboard/admin/editadv/:advId', ensureAdmin, (req, res) => {
   const { advId } = req.params;
   const userType = req.session.userType; // Получаем тип пользователя из сессии
-  console.log(advId, userType);
+  // console.log(advId, userType);
   if (userType) { 
       const link = `ru/dashboard/admin/editadv/editadv`;
-      console.log(link);
+      // console.log(link);
       return res.render(link, {
         advId: advId,
       });
@@ -2210,7 +2242,7 @@ app.get('/ru/dashboard/admin/edittournament/:tournamentId', ensureAdmin, (req, r
   // console.log(tournamentId, userType, 'есть контакт');
   if (userType === "admin") { 
       const link = `ru/dashboard/admin/edittournament/tournament`;
-      console.log(link);
+      // console.log(link);
       return res.render(link, {
         tournamentId: tournamentId,
       });
@@ -2324,14 +2356,14 @@ app.get('/get-data-adv', async (req, res) => {
 app.get('/get-data-tournament', async (req, res) => {
   
   const { tournamentId } = req.query;
-  console.log("🔍 Получен запрос с ID:", tournamentId);
+  // console.log("🔍 Получен запрос с ID:", tournamentId);
   try {
     const db = getDB();
     const dataTournament = await db.collection('tournaments').findOne({ _id: new ObjectId(tournamentId) });
     if (!dataTournament) {
       return res.status(404).send('Tournament not found');
     }
-    console.log('турнир получен');
+    // console.log('турнир получен');
     res.json(dataTournament);
   } catch (error) {
     console.error('Error fetching tournament data:', error);
@@ -2376,7 +2408,7 @@ app.get('/tournaments-by-club/:clubId', async (req, res) => {
 
 app.get('/get-data-player', async (req, res) => {
   const { userId } = req.query;
-  console.log(userId);
+  // console.log(userId);
   try {
     const db = getDB();
     const dataPlayer = await db.collection('users').findOne({ _id: new ObjectId(userId) });
@@ -2408,27 +2440,6 @@ app.get('/get-data-coach', async (req, res) => {
   }
 });
 
-// app.get('/get-past-tournaments', async (req, res) => {
-//   try {
-//     const db = getDB();
-//     const tournaments = await db.collection('tournaments').find().toArray();
-//     const pastTournaments = tournaments.filter(tournament => new Date(tournament.datetime) <= new Date());
-
-//     await Promise.all(pastTournaments.map(async (tournament) => {
-//       tournament.players = await Promise.all(tournament.players.map(async (player) => {
-//         const user = await db.collection('users').findOne({ _id: new ObjectId(player.id) });
-//         player.name = user ? user.fullname : 'Unknown User';
-//         return player;
-//       }));
-//       return tournament;
-//     }));
-
-//     res.status(200).json(pastTournaments);
-//   } catch (err) {
-//     console.error(`Failed to retrieve tournaments: ${err}`);
-//     res.status(500).json({ error: 'An error occurred while retrieving tournaments' });
-//   }
-// });
 
 app.get('/get-past-tournaments', async (req, res) => {
   try {
@@ -2514,79 +2525,6 @@ app.get('/get-players-coaches', async (req, res) => {
     }
 });
 
-// app.post('/getClubPlayers', async (req, res) => {
-//   try {
-//     const { playerIds } = req.body;
-
-//     if (!Array.isArray(playerIds) || playerIds.length === 0) {
-//       return res.status(400).json({ error: 'Некорректный список ID игроков' });
-//     }
-
-//     const db = getDB();
-//     const objectIds = playerIds.map(id => new ObjectId(id));
-
-//     // Загружаем из обеих коллекций
-//     const [users, coaches] = await Promise.all([
-//       db.collection("users").find({ _id: { $in: objectIds }, role: { $ne: 'admin' } }).toArray(),
-//       db.collection("coaches").find({ _id: { $in: objectIds }, role: { $ne: 'admin' } }).toArray()
-//     ]);
-
-//     // Объединяем и удаляем дубли по _id
-//     const allPlayersMap = new Map();
-
-//     [...users, ...coaches].forEach(player => {
-//       allPlayersMap.set(String(player._id), player);
-//     });
-
-//     const allPlayers = Array.from(allPlayersMap.values());
-
-//     return res.json({ players: allPlayers });
-//   } catch (error) {
-//     console.error("❌ Ошибка при получении игроков клуба:", error);
-//     res.status(500).json({ error: "Ошибка сервера" });
-//   }
-// });
-
-// app.post('/getClubWinners', async (req, res) => {
-//   try {
-//     const { clubId } = req.body;
-//     if (!clubId) return res.status(400).json({ error: 'clubId обязателен' });
-
-//     const db = getDB();
-
-//     // 1. Получаем все турниры клуба
-//     const tournaments = await db.collection('tournaments').find({ 'club._id': clubId }).toArray();
-
-//     if (!tournaments.length) {
-//       return res.json({ players: [] });
-//     }
-
-//     // 2. Собираем призёров (place: 1, 2, 3)
-//     const winnerIdsSet = new Set();
-
-//     tournaments.forEach(tournament => {
-//       (tournament.players || []).forEach(player => {
-//         if (player.place && player.place >= 1 && player.place <= 3) {
-//           winnerIdsSet.add(player.id);
-//         }
-//       });
-//     });
-
-//     const winnerIds = Array.from(winnerIdsSet).map(id => new ObjectId(id));
-
-//     if (!winnerIds.length) return res.json({ players: [] });
-
-//     // 3. Получаем пользователей из users и coaches
-//     const users = await db.collection('users').find({ _id: { $in: winnerIds } }).toArray();
-//     const coaches = await db.collection('coaches').find({ _id: { $in: winnerIds } }).toArray();
-//     const allWinners = [...users, ...coaches];
-
-//     res.json({ players: allWinners });
-//   } catch (err) {
-//     console.error("❌ Ошибка при получении призёров клуба:", err);
-//     res.status(500).json({ error: "Ошибка сервера" });
-//   }
-// });
 
 app.post('/getClubPlayersFull', async (req, res) => {
   try {
@@ -2704,7 +2642,7 @@ app.get('/get-players-with-city/', async (req, res) => {
 app.post('/createTournament', async (req, res) => {
   try {
       const db = getDB();
-      console.log(req.body);
+      // console.log(req.body);
       // Получаем данные из тела запроса
       const { tournamentname, infotournaments, tournamentprice, phone, datetime, date, ratinglimit, language, clubId } = req.body;
 
@@ -2720,7 +2658,7 @@ app.post('/createTournament', async (req, res) => {
 
       // Находим клуб по clubId
       const club = await db.collection('clubs').findOne({ _id: new ObjectId(clubId) });
-      console.log('найдет клуб', club);
+      // console.log('найдет клуб', club);
       if (!club) {
           return res.status(404).json({ error: 'Club not found.' });
       }
@@ -2754,7 +2692,7 @@ app.post('/createTournament', async (req, res) => {
           }
       };
 
-      console.log('отправляемый обьект', newTournament);
+      // console.log('отправляемый обьект', newTournament);
       // Сохраняем турнир в базе данных
       const result = await db.collection('tournaments').insertOne(newTournament);
 
@@ -2769,78 +2707,12 @@ app.post('/createTournament', async (req, res) => {
   }
 });
 
-// app.post('/addUnratedPlayer', async (req, res) => {
-//   try {
-//       const { tournamentid } = req.query;
-//       const { fullname, date, nickname, city, unrated } = req.body;
-
-//       if (!fullname || !date || !city) {
-//           return res.status(400).json({ error: 'Fullname, date, and city are required.' });
-//       }
-
-//       const db = getDB();
-
-//       // Создаем объект игрока
-//       const newPlayer = {
-//           id: new ObjectId(),
-//           name: fullname,
-//           birthYear: date.split('.')[2], // Извлекаем год из даты
-//           nickname: nickname || null,
-//           cityName: city,
-//           rating: null, // У unrated игроков рейтинг отсутствует
-//           unrated: unrated === 'true',
-//       };
-
-//       if (tournamentid === 'new') {
-//           // Создаем новый турнир
-//           const newTournament = {
-//               name: 'New Tournament',
-//               createdAt: new Date(),
-//               unratedPlayers: [newPlayer],
-//           };
-
-//           const result = await db.collection('tournaments').insertOne(newTournament);
-
-//           return res.status(201).json({
-//               message: 'New tournament created, and player added.',
-//               tournamentId: result.insertedId,
-//               player: newPlayer,
-//           });
-//       } else {
-//           // Проверяем корректность ID турнира
-//           if (!ObjectId.isValid(tournamentid)) {
-//               return res.status(400).json({ error: 'Invalid tournament ID.' });
-//           }
-
-//           const tournamentId = new ObjectId(tournamentid);
-
-//           // Добавляем игрока в существующий турнир
-//           const updateResult = await db.collection('tournaments').updateOne(
-//               { _id: tournamentId },
-//               { $push: { unratedPlayers: newPlayer } },
-//               { upsert: true } // Создает поле unratedPlayers, если оно отсутствует
-//           );
-
-//           if (updateResult.matchedCount === 0) {
-//               return res.status(404).json({ error: 'Tournament not found.' });
-//           }
-
-//           return res.status(200).json({
-//               message: 'Player added to existing tournament.',
-//               player: newPlayer,
-//           });
-//       }
-//   } catch (error) {
-//       console.error('Error adding player:', error);
-//       res.status(500).json({ error: 'Internal server error.' });
-//   }
-// });
 
 
 app.get('/get-playerData', async (req, res) => {
   // const userId = req.params.userId;
   const { playerId, lang } = req.query;
-  console.log(playerId);
+  // console.log(playerId);
   try {
     const db = getDB();
     const player = await db.collection('users').findOne({ _id: new ObjectId(playerId) });
@@ -3110,6 +2982,7 @@ app.post('/logout', (req, res) => {
   });
 });
 
+
 const cronTask = async () => {
   console.log('⏰ Запуск задачи обновления sundaysRating');
 
@@ -3153,15 +3026,25 @@ cron.schedule('1 0 * * 0', cronTask);
 //   setTimeout(cronTask, 10000)
 // })();
 
+
+
 app.use((req, res, next) => {
+  console.log('Страница не существует - 404', req.originalUrl);
   res.status(404).render('404');
+  // res.redirect('/404');
+});
+
+// 🟥 Глобальный обработчик ошибок (если что-то упадёт)
+app.use((err, req, res, next) => {
+  console.error('💥 Error occurred:', err);
+  res.status(500).send('Internal Server Error'); // или res.send('Internal Server Error')
 });
 
 // Обработка ошибок сервера
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Internal Server Error'); // Выводит сообщение об ошибке на случай непредвиденных сбоев
-});
+// app.use((err, req, res, next) => {
+//   console.error(err.stack);
+//   res.status(500).send('Internal Server Error'); // Выводит сообщение об ошибке на случай непредвиденных сбоев
+// });
 
 // Запуск сервера и инициализация базы данных
 connectDB().then(() => {

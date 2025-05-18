@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             if (response.ok) {
                 const userData = await response.json();
-                // console.log(userData);
+                console.log(userData);
                 currentUserId = userData.userId;
                 updateButtonVisibility();
             } else {
@@ -112,15 +112,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         const players = Array.isArray(tournament.players) ? tournament.players : [];
         const retiredPlayers = Array.isArray(tournament.retiredPlayers) ? tournament.retiredPlayers : [];
     
-        const isRegistered = players.some(player => player._id === currentUserId);
-        const isRetired = retiredPlayers.some(player => player._id === currentUserId);
+        const isRegistered = players.some(player => player.id === currentUserId);
+        const isRetired = retiredPlayers.some(player => player.id === currentUserId);
     
-        // Проверка: если текущий пользователь — клуб
-        if (!isRegistered && !isRetired) {
-            singUpToTournamentBtn.style.display = 'none';
-            cancelRegistrationBtn.style.display = 'none';
-            return; // Завершаем выполнение функции
-        }
+        
+        // if (!isRegistered && !isRetired) {
+        //     singUpToTournamentBtn.style.display = 'none';
+        //     cancelRegistrationBtn.style.display = 'none';
+        //     return; // Завершаем выполнение функции
+        // }
     
         if (isRetired) {
             singUpToTournamentBtn.style.display = 'none'; // Не показываем кнопку для выбывших игроков
@@ -140,8 +140,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Обработчик для кнопки "Зарегистрироваться"
     singUpToTournamentBtn.addEventListener('click', async () => {
         try {
-            if (currentUserId && !tournament.players.some(player => player._id === currentUserId)) {
-                tournament.players.push({ _id: currentUserId });
+            if (currentUserId && !tournament.players.some(player => player.id === currentUserId)) {
+                tournament.players.push({ id: currentUserId });
 
                 await fetch(`/api/tournaments/${tournament._id}/register-player`, {
                     method: 'POST',
@@ -154,6 +154,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 showErrorModal(`${translations[lang].successfulRegistrationNotif}`, '!!!');
                 // alert('Вы успешно зарегистрировались на турнир!');
                 updateButtonVisibility(); // Обновляем видимость кнопок
+                renderListsOfPlayers();
             }
         } catch (error) {
             console.error('Ошибка при регистрации на турнир:', error);
@@ -164,8 +165,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Обработчик для кнопки "Отказаться"
     cancelRegistrationBtn.addEventListener('click', async () => {
         try {
-            if (currentUserId && tournament.players.some(player => player._id === currentUserId)) {
-                tournament.players = tournament.players.filter(player => player._id !== currentUserId);
+            if (currentUserId && tournament.players.some(player => player.id === currentUserId)) {
+                tournament.players = tournament.players.filter(player => player.id !== currentUserId);
 
                 await fetch(`/api/tournaments/${tournament._id}/unregister-player`, {
                     method: 'POST',
@@ -178,10 +179,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                 showErrorModal(`${translations[lang].cancelRegistrationNotif}`, '!!!');
                 // alert('Вы отказались от участия в турнире.');
                 updateButtonVisibility(); // Обновляем видимость кнопок
+                renderListsOfPlayers(currentUserId);
+
             }
         } catch (error) {
             console.error('Ошибка при отказе от участия:', error);
-            alert('Произошла ошибка, попробуйте снова позже.');
+            alert('Error. Please try again later.');
         }
     });
 
@@ -262,7 +265,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             prizesTable.appendChild(prizeElement);
         // });
 
+        renderListsOfPlayers();
 
+        
+        
+
+    }
+
+    function renderListsOfPlayers(addedRetiredPlayer) {
         const registeredPlayersList = document.getElementById('registeredPlayersList');
         registeredPlayersList.innerHTML = '';
         if (!tournament.players || tournament.players.length === 0) {
@@ -272,8 +282,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             // registeredPlayersList.appendChild(noPlayersMessage);
             console.log('нет зарегистрированных игроков');
         } else {
+            console.log(tournament.players);
+            console.log(allPlayers);
             tournament.players.forEach((playerObj, index) => {
-                const player = allPlayers.find(p => p._id === playerObj._id);
+                const player = allPlayers.find(p => p._id === playerObj.id);
+                console.log('player', player);
                 if (player) { // Проверяем, найден ли игрок
                     const playerElement = document.createElement('div');
                     playerElement.className = 'upcomingTournament_table_player';
@@ -289,30 +302,18 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             });
         }
-        // tournament.players.forEach((playerObj, index) => {
-        //     const player = allPlayers.find(p => p._id === playerObj._id);
-        //     if (player) { // Проверяем, найден ли игрок
-        //         const playerElement = document.createElement('div');
-        //         playerElement.className = 'upcomingTournament_table_player';
-        //         playerElement.innerHTML = `
-        //             <div class="upcomingTournament_number">${index + 1}</div>
-        //             <div class="cell upcomingTournament_player">
-        //                 <div class="playerLogo" style="border-radius: 50%; background-image: url('${player.logo}'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
-        //                 <span>${player.name || player.fullname}</span>
-        //             </div>
-        //             <div class="cell upcomingTournament_rating">${player.rating || '-'}</div>
-        //         `;
-        //         registeredPlayersList.appendChild(playerElement);
-        //     }
-        // });
 
         const retiredPlayersList = document.getElementById('retiredPlayersList');
         retiredPlayersList.innerHTML = '';
 
+        if (addedRetiredPlayer) {
+            tournament.retiredPlayers.push({ id: addedRetiredPlayer });
+            singUpToTournamentBtn.style.display = 'none';
+        }
         // Проверяем, определён ли массив и есть ли в нём элементы
         if (Array.isArray(tournament.retiredPlayers) && tournament.retiredPlayers.length > 0) {
             tournament.retiredPlayers.forEach((playerObj, index) => {
-                const player = allPlayers.find(p => p._id === playerObj._id);
+                const player = allPlayers.find(p => p._id === playerObj.id);
                 if (player) { // Проверяем, найден ли игрок
                     const playerElement = document.createElement('div');
                     playerElement.className = 'upcomingTournament_table_player';
@@ -328,32 +329,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             });
         } else {
-            // Если список пуст, отображаем сообщение
-            // const noPlayersMessage = document.createElement('div');
-            // noPlayersMessage.className = 'noPlayersMessage';
-            // noPlayersMessage.textContent = 'No retired players found.';
-            // retiredPlayersList.appendChild(noPlayersMessage);
             console.log('No retired players found');
         }
-
-        // const retiredPlayersList = document.getElementById('retiredPlayersList');
-        // retiredPlayersList.innerHTML = '';
-        // tournament.retiredPlayers.forEach((playerObj, index) => {
-        //     const player = allPlayers.find(p => p._id === playerObj._id);
-        //     if (player) { // Проверяем, найден ли игрок
-        //         const playerElement = document.createElement('div');
-        //         playerElement.className = 'upcomingTournament_table_player';
-        //         playerElement.innerHTML = `
-        //             <div class="upcomingTournament_number">${index + 1}</div>
-        //             <div class="cell upcomingTournament_player">
-        //                 <div class="playerLogo" style="background-image: url('${player.logo}'); border-radius: 50%; background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
-        //                 <span>${player.name || player.fullname}</span>
-        //             </div>
-        //             <div class="cell upcomingTournament_rating">${player.rating || '-'}</div>
-        //         `;
-        //         retiredPlayersList.appendChild(playerElement);
-        //     }
-        // });
     }
 
     function renderMap() {

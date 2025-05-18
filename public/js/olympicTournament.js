@@ -378,11 +378,11 @@ export function calculateOlympicStandings(finishedPairs, totalRounds) {
     const finalMatch = finishedPairs.find(p => p.round === totalRounds - 1);
     const winner = finalMatch.score1 > finalMatch.score2 ? finalMatch.player1 : finalMatch.player2;
     const second = finalMatch.score1 > finalMatch.score2 ? finalMatch.player2 : finalMatch.player1;
-
+    
     const playersWithPlaces = [];
     playersWithPlaces.push({ player: winner, place: 1 });
     playersWithPlaces.push({ player: second, place: 2 });
-
+    console.log('playersWithPlaces', playersWithPlaces);
     // Группируем проигравших по раунду вылета
     const grouped = {};
     for (let [id, data] of eliminatedPlayers.entries()) {

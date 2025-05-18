@@ -106,7 +106,7 @@ router.post('/tournaments/:tournamentId/register-player', ensureAuthenticated, a
         // Обновляем массив игроков в турнире
         await db.collection('tournaments').updateOne(
             { _id: new ObjectId(tournamentId) },
-            { $addToSet: { players: { _id: playerId } } } // Добавляем игрока, если его ещё нет в списке
+            { $addToSet: { players: { id: playerId } } } // Добавляем игрока, если его ещё нет в списке
         );
 
         res.status(200).send('Player registered successfully');
@@ -126,8 +126,8 @@ router.post('/tournaments/:tournamentId/unregister-player', ensureAuthenticated,
         await db.collection('tournaments').updateOne(
             { _id: new ObjectId(tournamentId) },
             {
-                $pull: { players: { _id: playerId } },
-                $addToSet: { retiredPlayers: { _id: playerId } } // Добавляем игрока в выбывшие, если его там ещё нет
+                $pull: { players: { id: playerId } },
+                $addToSet: { retiredPlayers: { id: playerId } } // Добавляем игрока в выбывшие, если его там ещё нет
             }
         );
 
@@ -1279,25 +1279,25 @@ router.post('/save-tournament', ensureAuthenticated, async (req, res) => {
         }
 
         if (Array.isArray(updatedData.registeredPlayers)) {
-            const registeredPlayersWithId = updatedData.registeredPlayers.map(id => ({ _id: id }));
+            const registeredPlayersWithId = updatedData.registeredPlayers.map(id => ({ id }));
             const currentRegisteredPlayersWithId = Array.isArray(currentData.players)
-                ? currentData.players.map(player => ({ _id: player.toString() }))
+                ? currentData.players.map(player => ({ id: player.toString() }))
                 : [];
         
-            if (JSON.stringify(registeredPlayersWithId.sort((a, b) => a._id.localeCompare(b._id))) !==
-                JSON.stringify(currentRegisteredPlayersWithId.sort((a, b) => a._id.localeCompare(b._id)))) {
+            if (JSON.stringify(registeredPlayersWithId.sort((a, b) => a.id.localeCompare(b.id))) !==
+                JSON.stringify(currentRegisteredPlayersWithId.sort((a, b) => a.id.localeCompare(b.id)))) {
                 changesToUpdate.players = registeredPlayersWithId;
             }
         }
         
         if (Array.isArray(updatedData.retiredPlayers)) {
-            const retiredPlayersWithId = updatedData.retiredPlayers.map(id => ({ _id: id }));
+            const retiredPlayersWithId = updatedData.retiredPlayers.map(id => ({ id }));
             const currentRetiredPlayersWithId = Array.isArray(currentData.retiredPlayers)
-                ? currentData.retiredPlayers.map(player => ({ _id: player.toString() }))
+                ? currentData.retiredPlayers.map(player => ({ id: player.toString() }))
                 : [];
         
-            if (JSON.stringify(retiredPlayersWithId.sort((a, b) => a._id.localeCompare(b._id))) !==
-                JSON.stringify(currentRetiredPlayersWithId.sort((a, b) => a._id.localeCompare(b._id)))) {
+            if (JSON.stringify(retiredPlayersWithId.sort((a, b) => a.id.localeCompare(b.id))) !==
+                JSON.stringify(currentRetiredPlayersWithId.sort((a, b) => a.id.localeCompare(b.id)))) {
                 changesToUpdate.retiredPlayers = retiredPlayersWithId;
             }
         }

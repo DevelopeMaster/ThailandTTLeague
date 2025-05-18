@@ -1197,6 +1197,7 @@ h2 {
       margin-top: 11px;
       cursor: pointer; }
     .modal .modal-content .form_flex {
+      margin-top: 20px;
       display: flex;
       justify-content: space-between;
       gap: 20px; }
@@ -7729,7 +7730,7 @@ textarea:-webkit-autofill:focus {
   margin-top: 30px;
   display: flex;
   justify-content: center;
-  gap: 10px; }
+  gap: 20px; }
   .modal-actions .btn-confirm, .modal-actions .btn-cancel {
     width: 143px; }
     .modal-actions .btn-confirm:focus-visible, .modal-actions .btn-confirm:focus, .modal-actions .btn-cancel:focus-visible, .modal-actions .btn-cancel:focus {
@@ -7756,6 +7757,14 @@ textarea:-webkit-autofill:focus {
       font-style: normal;
       font-weight: 600;
       line-height: normal; }
+    .display_header_groupNumber, .completed_header_groupNumber, .results_header_groupNumber {
+      display: flex;
+      padding: 5px 6px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border-radius: 8px;
+      background: #FA6400; }
   .display .displayTournament, .display .completedGames, .display .finalResults, .completed .displayTournament, .completed .completedGames, .completed .finalResults, .results .displayTournament, .results .completedGames, .results .finalResults {
     height: 525px;
     width: 100%;
@@ -7789,6 +7798,10 @@ textarea:-webkit-autofill:focus {
           font-style: normal;
           font-weight: 500;
           line-height: normal; }
+        .display .displayTournament .content .tournament-wrapper .groups-wrapper, .display .completedGames .content .tournament-wrapper .groups-wrapper, .display .finalResults .content .tournament-wrapper .groups-wrapper, .completed .displayTournament .content .tournament-wrapper .groups-wrapper, .completed .completedGames .content .tournament-wrapper .groups-wrapper, .completed .finalResults .content .tournament-wrapper .groups-wrapper, .results .displayTournament .content .tournament-wrapper .groups-wrapper, .results .completedGames .content .tournament-wrapper .groups-wrapper, .results .finalResults .content .tournament-wrapper .groups-wrapper {
+          display: flex;
+          flex-direction: column;
+          gap: 40px; }
         .display .displayTournament .content .tournament-wrapper .players-list, .display .completedGames .content .tournament-wrapper .players-list, .display .finalResults .content .tournament-wrapper .players-list, .completed .displayTournament .content .tournament-wrapper .players-list, .completed .completedGames .content .tournament-wrapper .players-list, .completed .finalResults .content .tournament-wrapper .players-list, .results .displayTournament .content .tournament-wrapper .players-list, .results .completedGames .content .tournament-wrapper .players-list, .results .finalResults .content .tournament-wrapper .players-list {
           display: flex;
           flex-direction: column;

@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 div.textContent = player.name || player.fullname || player.nickname;
                 div.dataset.id = player._id; // Присваиваем ID игрока для удобства
                 div.addEventListener('click', () => {
+                    // console.log('div.dataset.id', div.dataset.id)
                     inputElement.value = div.textContent;
                     inputElement.dataset.selectedId = div.dataset.id; // Сохраняем ID выбранного игрока в input
                     dropdown.style.display = 'none';
@@ -212,8 +213,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         
             const selectedPlayer = allPlayers.find(player => player._id === playerId);
             if (selectedPlayer) {
+                const playerWithId = {
+                    ...selectedPlayer,
+                    id: selectedPlayer._id,
+                };
+            
+                delete playerWithId._id;
                 // Обновляем DOM и массив игроков
-                tournamentData.players.push(selectedPlayer); // Добавляем в массив зарегистрированных
+                tournamentData.players.push(playerWithId); // Добавляем в массив зарегистрированных
+                console.log(tournamentData.players);
                 displayPlayers(tournamentData.players, containerRegistered, true); // Обновляем DOM
         
                 // Очистка значений
@@ -246,7 +254,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Сбор данных из DOM для выбывших игроков
             const retiredPlayers = Array.from(document.querySelector('.containerforRetired').children)
                 .map(div => div.querySelector('.player_cross').dataset.playerId);
-        
+            console.log('registeredPlayers', registeredPlayers, 'retiredPlayers', retiredPlayers)
             // Собираем остальные данные формы
             const tournamentDataToSave = {
                 ratingLimit: document.getElementById('ratinglimit').value,
@@ -260,6 +268,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 registeredPlayers,
                 retiredPlayers
             };
+            console.log('сохраняю', tournamentDataToSave);
             try {
                 const response = await fetch('/api/save-tournament', {
                     method: 'POST',
@@ -311,7 +320,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 container.innerHTML = '';
         
                 playerIds.forEach((playerObj, index) => {
-                    const playerId = playerObj._id;
+                    const playerId = playerObj.id;
+                    console.log('playerId', playerId)
                     const player = allPlayers.find(p => p._id === playerId);
 
                     if (!player) {
@@ -356,14 +366,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     let crossDiv = document.createElement('div');
                         crossDiv.className = 'cell player_cross';
                         crossDiv.style = "background-image: url('/icons/cross.svg'); background-repeat: no-repeat;";
-                        crossDiv.setAttribute('data-player-id', player._id); // Уникальный атрибут для идентификации игрока
+                        crossDiv.setAttribute('data-player-id', playerId); // Уникальный атрибут для идентификации игрока
 
                     // Кнопка удаления (крестик)
                     if (isRegistered) {
                         
                         crossDiv.addEventListener('click', () => {
                             const playerId = crossDiv.getAttribute('data-player-id');
-                            const indexToRemove = tournamentData.players.findIndex(p => p._id === playerId);
+                            const indexToRemove = tournamentData.players.findIndex(p => p.id === playerId);
         
                             if (indexToRemove > -1) {
                                 // Перемещение игрока из списка зарегистрированных в список выбывших
@@ -379,7 +389,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         // Обработчик для удаления игрока из списка выбывших
                         crossDiv.addEventListener('click', () => {
                             const playerId = crossDiv.getAttribute('data-player-id');
-                            const indexToRemove = tournamentData.retiredPlayers.findIndex(p => p._id === playerId);
+                            const indexToRemove = tournamentData.retiredPlayers.findIndex(p => p.id === playerId);
 
                             if (indexToRemove > -1) {
                                 tournamentData.retiredPlayers.splice(indexToRemove, 1);

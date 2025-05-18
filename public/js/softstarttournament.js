@@ -1,6 +1,6 @@
 import { checkSession, getUserData, createSoftHeader, createHeader, createFooter, getAllClubs, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
 import  { generateOlympicPairs, getOlympicPlayerStats, calculateOlympicStandings, renderOlympicGrid, generateOlympicRounds, generateOlympicPairsAndWaiting} from './olympicTournament.js';
-import  { distributePlayersIntoGroups } from './groupOlympic.js';
+import  { distributePlayersIntoGroups, renderGroups, areAllGroupMatchesFinished, getTopPlayersFromGroups, generateGroupPairs, renderGroupResults, saveGroupBasedMatchResult } from './groupOlympic.js';
 //----------- important -----------//
 window.onload = function() {
     if (!localStorage.getItem('clientLang')) {
@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     let ratingLimit;
     let currentRoundPairs;
     let olympicRounds;
+    let rounds;
+    window.olympicFinalStarted = false;
+
 
     console.log('user:', userId, 'tournament:', tournamentId );
 
@@ -100,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     let finishedPairs = tournamentData.finishedPairs || [];
     let roundCounter = tournamentData.roundCounter || 1;
     const numberOfTabels = document.querySelector('#numberOfTables');
-    numberOfTabels.value = `${clubData.tables}`;
+    numberOfTabels.value = `${tournamentData.tables || clubData.tables}`;
     const ratingLimitInput = document.querySelector('#ratingLimit');
     ratingLimitInput.value = `${ratingLimit}`;
     
@@ -438,6 +441,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.querySelector('.addUnratedPlayer_btn').addEventListener('click', async function (event) {
         event.preventDefault();
     
+        if (waitingPairs && waitingPairs.length > 0 || currentPairs && currentPairs.length > 0 || finishedPairs && finishedPairs.length > 0) {
+            return;
+        }
         const fullname = document.getElementById('fullname').value.trim();
         const birthday = document.getElementById('date').value.trim();
         const nickname = document.getElementById('loginRegInput').value.trim();
@@ -519,7 +525,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const playingBlockContainer = document.querySelector('.startTournament_panelWrapp_tournament_games_playingBlock_pairs');
     const startTournament = document.querySelector('#startTournamentBtn');
     const saveTournamentBtn = document.querySelector('#saveTournamentData');
-
+    
     if (waitingPairs && waitingPairs.length > 0 || currentPairs && currentPairs.length > 0 || finishedPairs && finishedPairs.length > 0) {
         startTournament.disabled = true; // Отключаем кнопку
         startTournament.classList.add('disabledButton'); // Обновляем текст кнопки (по желанию)
@@ -527,6 +533,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         // saveTournamentBtn.classList.add('disabledButton');
         addPlayertoTournament.disabled = true;
         addPlayertoTournament.classList.add('disabledButton');
+        document.querySelector("#numberOfTables").disabled = true;
+        document.querySelector("#addPlayertoTournament").disabled = true;
+        
 
         if (selectedType === 'roundRobin') {
             startTournamentDisplay(allParticipants, '.displayTournamentFirst');
@@ -569,6 +578,21 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         if (selectedType === 'groupOlympicFinal') {
             console.log('нужно восстанавливать турнир - - - - - - 569 строка')
+            document.querySelector('.displayTournamentFirst').style.height = 'auto';
+            window.groupFinalSettings = tournamentData.groupFinalSettings;
+            console.log('groupFinalSettings', window.groupFinalSettings);
+            // finalists = tournamentData.finalists;
+            window.finalists = tournamentData.finalists;
+            olympicRounds = tournamentData.olympicRounds;
+            // olympicFinalStarted = tournamentData.olympicFinalStarted;
+            window.olympicFinalStarted = tournamentData.olympicFinalStarted;
+            restoreGroupFinalState(tournamentData);
+            console.log('window.finalists', window.finalists, 'window.olympicFinalStarted', window.olympicFinalStarted);
+            if (window.olympicFinalStarted) {
+                restoreOlympicTournamentState(tournamentData); // Перерисовываем таблицу с данными
+                activateOlympicHoverHighlighting();
+            }
+           
         }
         if (selectedType === 'singleElimination') {
             alert('Sorry! Selected type of tournamnet in development!')
@@ -597,12 +621,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         startTournament.classList.remove('disabledButton');
 
         startTournament.addEventListener('click', () => {
-            // console.log('selectedPlayers', [...selectedPlayers, ...unratedPlayersList]);
-            // const fakePlayers = generateFakePlayers(68);
-            // console.log('fakePlayers', fakePlayers);
-            // selectedPlayers = fakePlayers; // или combinedPlayers
-            // unratedPlayersList = []; // если не нужны внерейтинговые
-
+           
 
             if ((allParticipants && allParticipants.length > 2) || ([...selectedPlayers, ...unratedPlayersList] && [...selectedPlayers, ...unratedPlayersList].length > 2)) {
                 if (selectedType === 'roundRobin') {
@@ -619,6 +638,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     startTournament.disabled = true; // Отключаем кнопку
                     startTournament.classList.add('disabledButton'); // Обновляем стиль кнопки
                     saveTournamentBtn.disabled = true;
+                    document.querySelector("#numberOfTables").disabled = true;
+                    document.querySelector("#addPlayertoTournament").disabled = true;
                     // saveTournamentBtn.classList.add('disabledButton');
                     saveTournament();
                 } else 
@@ -638,6 +659,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     startTournament.disabled = true; // Отключаем кнопку
                     startTournament.classList.add('disabledButton'); // Обновляем стиль кнопки
                     saveTournamentBtn.disabled = true;
+                    document.querySelector("#numberOfTables").disabled = true;
+                    document.querySelector("#addPlayertoTournament").disabled = true;
+                    
                     // saveTournamentBtn.classList.add('disabledButton');
                     saveTournamentTwoRound(null, allParticipants);
                 } else 
@@ -650,6 +674,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     console.log('нужно начинать турнир ( вызов модалки) - - - - - - 648строка')
                     
                     settingsTournamentModal([...selectedPlayers, ...unratedPlayersList]);
+                    saveInitialRatings([...selectedPlayers, ...unratedPlayersList]);
+                    document.querySelector('.displayTournamentFirst').style.height = 'auto';
                 
                 }
                 if (selectedType === 'singleElimination') {
@@ -709,8 +735,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Добавим пару в waitingPairs если оба игрока уже назначены и матч не сыгран
         const nextPair = nextRound.pairs[nextPairIndex];
         if (
-            nextPair.player1 &&
-            nextPair.player2 &&
+            nextPair.player1?.id &&
+            nextPair.player2?.id &&
             nextPair.score1 == null &&
             nextPair.score2 == null
         ) {
@@ -726,17 +752,28 @@ document.addEventListener('DOMContentLoaded', async function() {
         currentPairs = currentPairs.filter(
             p => !(p.player1.id === match.player1.id && p.player2.id === match.player2.id)
         );
+
+        if ( selectedType === 'groupOlympicFinal' && !window.olympicFinalStarted) {
+            console.log('не финал - пары в завершенные не записываем');
+        } else {
+            finishedPairs.push({
+                player1: match.player1,
+                player2: match.player2,
+                score1,
+                score2,
+                round: roundIndex + 1
+            });
+        }
     
-        // finishedPairs.push({
-        //     player1: match.player1,
-        //     player2: match.player2,
-        //     score1,
-        //     score2,
-        //     round: roundIndex + 1
-        // });
+        
     
         // Обновим DOM
-        renderOlympicGrid(olympicRounds, '.displayTournamentFirst', allParticipants.length);
+        if (selectedType = 'groupOlympicFinal') {
+            renderOlympicGrid(olympicRounds, '.displayTournamentSecond', window.finalists.length);
+        } else {
+            renderOlympicGrid(olympicRounds, '.displayTournamentFirst', allParticipants.length);
+        }
+        
         activateOlympicHoverHighlighting();
         // setupOlympicMatchClickHandlers();
     
@@ -765,19 +802,29 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
 
             // Обновим сетку
-            renderOlympicGrid(olympicRounds, '.displayTournamentFirst', allParticipants.length);
+            if (selectedType = 'groupOlympicFinal') {
+                renderOlympicGrid(olympicRounds, '.displayTournamentSecond', window.finalists.length);
+            } else {
+                renderOlympicGrid(olympicRounds, '.displayTournamentFirst', allParticipants.length);
+            }
+            // renderOlympicGrid(olympicRounds, '.displayTournamentFirst', allParticipants.length);
             activateOlympicHoverHighlighting();
             // setupOlympicMatchClickHandlers();
 
             // Показываем кнопку
             const showResultBtn = document.querySelector('#showResult');
-            console.log('showResultBtn', showResultBtn);
+            // console.log('showResultBtn', showResultBtn);
             if (showResultBtn) {
                 showResultBtn.style.display = 'block';
             }
 
             // Опционально — сохранить результат
-            saveOlympicTournamentState();
+            if (selectedType = 'groupOlympicFinal') {
+                saveGroupOlympicFinalTournament();
+            } else {
+                saveOlympicTournamentState();
+            }
+            
         }
     }
     
@@ -788,7 +835,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             (a, b) => (b.rating || 0) - (a.rating || 0)
         );
     
-        saveInitialRatings(allParticipants);
+        if (selectedType !== 'groupOlympicFinal') {
+            saveInitialRatings(allParticipants);
+        }
+        
     
         // Генерация всех раундов с автопобедами от BYE
         const rounds = generateOlympicRounds(allParticipants);
@@ -813,8 +863,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         currentRoundPairs = firstRoundPairs;
     
         // Рендерим всю сетку
-        document.querySelector('.displayTournament').style.height = 'auto';
-        renderOlympicGrid(rounds, '.displayTournamentFirst', allParticipants.length);
+
+        if (selectedType === 'groupOlympicFinal') {
+            renderOlympicGrid(rounds, '.displayTournamentSecond', allParticipants.length);
+        } else {
+            document.querySelector('.displayTournament').style.height = 'auto';
+            renderOlympicGrid(rounds, '.displayTournamentFirst', allParticipants.length);
+        }
+        
         activateOlympicHoverHighlighting();
         // setupOlympicMatchClickHandlers();
         // Рендерим ТОЛЬКО реальные пары в блок ожидания
@@ -845,6 +901,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         startTournament.disabled = true;
         startTournament.classList.add('disabledButton');
         saveTournamentBtn.disabled = true;
+        document.querySelector("#numberOfTables").disabled = true;
+        document.querySelector("#addPlayertoTournament").disabled = true;
         saveOlympicTournamentState();
     }
 
@@ -894,13 +952,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (!pair || typeof pair !== 'object') return;
     
                 const { player1, player2, score1, score2 } = pair;
-    
+                console.log('player1', player1, 'player2', player2);
                 const bothPlayersReady =
                     player1 && player1.id &&
                     player2 && player2.id;
     
                 const notPlayedYet = score1 == null && score2 == null;
-
+                
                 const hasBye = player1?.isBye || player2?.isBye || player1?.fullname === "BYE" || player2?.fullname === "BYE";
     
                 if (bothPlayersReady && notPlayedYet && !hasBye) {
@@ -923,11 +981,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         }));
     
         console.log('renderable', renderable);
-        renderPairsInWaitingBlock(renderable);
+        // renderPairsInWaitingBlock(renderable);
+        renderPairsInWaitingBlock(waitingPairs);
     }
     
 
     async function saveOlympicTournamentState(finish = false) {
+        if (selectedType = 'groupOlympicFinal') {
+            return;
+        }
         try {
             // 1. Считаем средний рейтинг
             // const initialRatingsArray = tournamentData.initialRatings || [];
@@ -996,6 +1058,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 averageRating, 
                 coefficient 
             };
+
+            const currentAmountOfTable = parseInt(document.getElementById('numberOfTables').value, 10);
+            if (tournamentData.tables !== currentAmountOfTable) {
+                state.tables = currentAmountOfTable;
+            }
     
             const response = await fetch('/saveTournament', {
                 method: 'POST',
@@ -1039,7 +1106,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     
         // Рендерим сетку
         document.querySelector('.displayTournament').style.height = 'auto';
-        renderOlympicGrid(olympicRounds, '.displayTournamentFirst', allParticipants.length);
+
+        if ( selectedType === 'groupOlympicFinal') {
+            document.querySelector('.displayTournamentSecond').style.display = 'block';
+            document.querySelector('.displayTournamentSecond .display_header h3').textContent = 'Olympic final'
+            renderOlympicGrid(olympicRounds, '.displayTournamentSecond', window.finalists.length);
+        } else {
+            renderOlympicGrid(olympicRounds, '.displayTournamentFirst', allParticipants.length);
+        }
+        
+        
     
         // Восстанавливаем pairs из waitingPairs — по ID найдём игроков
         const waitingRenderPairs = waitingPairs.map(pair => ({
@@ -1110,18 +1186,38 @@ document.addEventListener('DOMContentLoaded', async function() {
         // 2. Расчёт итоговых мест
         const totalRounds = olympicRounds.length;
         let finalStandings = calculateOlympicStandings(finishedPairs, totalRounds);
-    
+        console.log('finalStandings', finalStandings);
         // finalStandings.sort((a, b) => a.place - b.place);
         // const stats = getOlympicPlayerStats(finishedPairs);
         // 3. Отрисовка итогов
         const stats = getOlympicPlayerStats(finishedPairs);
         const initialRatings = tournamentData?.initialRatings || {};
 
-        let updatedPlayers = updateOlympicPlayerObjects(
-            [...selectedPlayers, ...unratedPlayersList],
-            finishedPairs,
-            finalStandings
-          );
+        let updatedPlayers;
+        if (selectedType === 'groupOlympicFinal') {
+            updatedPlayers = updateOlympicPlayerObjects(
+                [...window.finalists],
+                finishedPairs,
+                finalStandings
+            );
+            console.log('updatedPlayers до', updatedPlayers);
+
+            const updatedMap = Object.fromEntries(
+                updatedPlayers.map(p => [p.id, p])
+            );
+
+            updatedPlayers = tournamentData.players.map(player =>
+                updatedMap[player.id] ? { ...updatedMap[player.id] } : player
+            );
+            console.log('updatedPlayers после', updatedPlayers);
+        } else {
+            updatedPlayers = updateOlympicPlayerObjects(
+                [...selectedPlayers, ...unratedPlayersList],
+                finishedPairs,
+                finalStandings
+            );
+        }
+        
         // console.log('selectedPlayers до', selectedPlayers);
         // console.log('updatedPlayers', updatedPlayers);
         if (!tournamentData.bonusesApplied) {
@@ -1141,7 +1237,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         unratedPlayersList = updatedPlayers.filter(p => p.unrated);
         // console.log('selectedPlayers после', selectedPlayers);
         
-        saveOlympicTournamentState(true);
+        if (selectedType === 'groupOlympicFinal') {
+            saveGroupOlympicFinalTournament();
+        } else {
+            saveOlympicTournamentState(true);
+        }
+        
         // 1. Получаем финальных игроков с местами
         // const finalStandings = calculateOlympicStandings(finishedPairs, olympicRounds.length);
         // finalStandings = updatedPlayers;
@@ -1219,13 +1320,18 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     function updateOlympicPlayerObjects(playersArray, finishedPairs, finalStandings) {
         const stats = getOlympicPlayerStats(finishedPairs);
-    
+        console.log('playersArray', playersArray);
+        console.log('finalStandings', finalStandings);
+        console.log('finishedPairs', finishedPairs);
+        console.log('stats', stats);
+
         // Сопоставим места по ID
         const placesMap = {};
+        
         finalStandings.forEach(({ player, place }) => {
             placesMap[player.id] = place;
         });
-    
+        
         return playersArray.map(player => {
             const updated = { ...player };
             const stat = stats[player.id] || {
@@ -1243,6 +1349,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
             return updated;
         });
+        
     }
     
 
@@ -1498,7 +1605,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
 
-    function renderPairsInWaitingBlock(pairs) {
+    function renderPairsInWaitingBlock(pairs, options = {}) {
         waitingPairs = pairs;
         waitingBlockContainer.innerHTML = ''; // Очищаем блок ожидания
     
@@ -1517,6 +1624,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             pairDiv.classList.add('startTournament_panelWrapp_tournament_games_watingBlock_pairs_item');
             pairDiv.setAttribute('data-player1-id', pair.player1.id);
             pairDiv.setAttribute('data-player2-id', pair.player2.id);
+
+            if (typeof pair.groupIndex === 'number') {
+                pairDiv.setAttribute('data-group-index', pair.groupIndex);
+            }
             
             // Если хотя бы один игрок уже играет, блокируем клик
             if (!isBlocked) {
@@ -1526,10 +1637,17 @@ document.addEventListener('DOMContentLoaded', async function() {
             } else {
                 pairDiv.style.pointerEvents = 'none'; // Запрещаем клики на заблокированные пары
             }
+
+            let group = `<span>Gr.-</span>`;
+
+            if (typeof pair.groupIndex === 'number') {
+                // console.log('options', options);
+                group = `<span>Gr.${pair.groupIndex + 1}</span>`;
+            }
     
             pairDiv.innerHTML = `
                 <div class="group">
-                    <span>Gr.1</span>
+                    ${group}
                 </div>
                 <div class="pair">
                     <h6>${pair.player1.name || pair.player1.fullname}</h6>
@@ -1537,6 +1655,17 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <h6>${pair.player2.name || pair.player2.fullname}</h6>
                 </div>
             `;
+    
+            // pairDiv.innerHTML = `
+            //     <div class="group">
+            //         <span>Gr.1</span>
+            //     </div>
+            //     <div class="pair">
+            //         <h6>${pair.player1.name || pair.player1.fullname}</h6>
+            //         <h6>:</h6>
+            //         <h6>${pair.player2.name || pair.player2.fullname}</h6>
+            //     </div>
+            // `;
     
             waitingBlockContainer.appendChild(pairDiv);
             // Задаем цвет текста в зависимости от статуса игроков
@@ -1547,11 +1676,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
     
-    function movePairToPlaying(pair, playerAction = false, pairDiv = null) {
+    function movePairToPlaying(pair, playerAction = false, pairDiv = null, options = {}) {
         if (!pairDiv) {
             pairDiv = document.createElement('div');
             pairDiv.setAttribute('data-player1-id', pair.player1.id);
             pairDiv.setAttribute('data-player2-id', pair.player2.id);
+            if (typeof pair.groupIndex === 'number') {
+                pairDiv.setAttribute('data-group-index', pair.groupIndex);
+            }
         }
         const playingPairs = Array.from(playingBlockContainer.children);
     
@@ -1578,16 +1710,83 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     
         // Проверяем количество занятых столов
-        const totalTables = parseInt(clubData.tables, 10); // Количество столов
-        if (playingPairs.length >= totalTables) {
+        const totalTables = parseInt((tournamentData.tables || clubData.tables), 10); // Количество столов
+        if (playingPairs.length === totalTables) {
             showErrorModal(`All tables are currently occupied. Please wait for a table to become available.`);
             return;
         }
     
         if (!playerAction) {
+
+            if (selectedType === 'groupOlympicFinal' && !window.olympicFinalStarted && typeof pair.groupIndex === 'number') {
+                const numberOfGroups = window.groupFinalSettings?.numberOfGroups || 1;
+                const totalTables = tournamentData.tables || clubData.tables || 1;
+                // const tablesPerGroup = Math.floor(totalTables / numberOfGroups) || 1;
+            
+                // // Расчёт диапазона
+                // const minTable = pair.groupIndex * tablesPerGroup + 1;
+                // const maxTable = minTable + tablesPerGroup - 1;
+            
+                // // Найти доступный стол в этом диапазоне
+                // const usedTables = currentPairs.map(p => p.table).filter(Boolean);
+                // let assignedTable = null;
+                // for (let t = minTable; t <= maxTable; t++) {
+                //     if (!usedTables.includes(t)) {
+                //         assignedTable = t;
+                //         break;
+                //     }
+                // }
+                const usedTables = currentPairs.map(p => p.table).filter(Boolean);
+                let assignedTable;
+
+                if (totalTables >= numberOfGroups) {
+                    const tablesPerGroup = Math.floor(totalTables / numberOfGroups);
+                    const minTable = pair.groupIndex * tablesPerGroup + 1;
+                    const maxTable = minTable + tablesPerGroup - 1;
+                
+                    for (let t = minTable; t <= maxTable; t++) {
+                        if (!usedTables.includes(t)) {
+                            assignedTable = t;
+                            break;
+                        }
+                    }
+                
+                    // если не нашли свободный — даём первый из диапазона (временно)
+                    assignedTable = assignedTable || minTable;
+                } else {
+                    // циклическое назначение
+                    const preferredTable = (pair.groupIndex % totalTables) + 1;
+                
+                    if (!usedTables.includes(preferredTable)) {
+                        assignedTable = preferredTable;
+                    } else {
+                        // ❗ ищем ЛЮБОЙ свободный стол
+                        for (let t = 1; t <= totalTables; t++) {
+                            if (!usedTables.includes(t)) {
+                                assignedTable = t;
+                                break;
+                            }
+                        }
+                
+                        // если все столы заняты — не назначаем (можно вернуть null или показать сообщение)
+                        assignedTable = assignedTable || null;
+                    }
+                }
+                pair.table = assignedTable;
+                // pair.table = assignedTable || minTable; // если вдруг все заняты — первый из диапазона
+            } else {
+                pair.table = playingPairs.length + 1; // как обычно
+            }
+            // pair.table = playingPairs.length + 1;
+            console.log('pair', pair);
             // Отображаем модальное окно для подтверждения
             showConfirmationModal(pair, playingPairs.length + 1)
                 .then((confirmed) => {
+                    // if (pair.table === null) {
+                    //     showErrorModal('No available tables.');
+                    
+                    //     return;
+                    // }
                     if (confirmed) {
                         // Удаляем пару из блока ожидания
                         pairDiv.remove();
@@ -1601,19 +1800,29 @@ document.addEventListener('DOMContentLoaded', async function() {
                         );
                         
                         currentPairs.push(pair);
-                        renderPairsInWaitingBlock(waitingPairs);
-        
+                        renderPairsInWaitingBlock(waitingPairs, options);
+                        console.log('pair', pair);
                         // Добавляем пару в блок текущих игр
                         const playingDiv = document.createElement('div');
                         playingDiv.classList.add('startTournament_panelWrapp_tournament_games_playingBlock_pairs_item');
                         playingDiv.setAttribute('data-player1-id', pair.player1.id);
                         playingDiv.setAttribute('data-player2-id', pair.player2.id);
-        
+                        
+                        if (typeof pair.groupIndex === 'number') {
+                            playingDiv.setAttribute('data-group-index', pair.groupIndex);
+                        }
+
+                        let group = `<span>Gr.-</span>`;
+
+                        if (typeof pair.groupIndex === 'number') {
+                            group = `<span>Gr.${pair.groupIndex + 1}</span>`;
+                        }
+                
                         // Создаем структуру для играющей пары
                         playingDiv.innerHTML = `
                             <h3>${playingBlockContainer.children.length + 1}</h3> <!-- Номер пары -->
                             <div class="group">
-                                <span>Gr.1</span>
+                                ${group}
                             </div>
                             <div class="pair">
                                 <h6>${pair.player1.name || pair.player1.fullname}</h6>
@@ -1635,6 +1844,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                         if (selectedType === 'twoRound') {
                             saveTournamentTwoRound(null, standingsGlobal);
                         }
+                        if (selectedType === 'groupOlympicFinal') {
+                            saveGroupOlympicFinalTournament();
+                        }
                         
                     }
                 })
@@ -1649,19 +1861,34 @@ document.addEventListener('DOMContentLoaded', async function() {
                         waitingPair.player2.id === pair.player2.id
                     )
             );
-            
-            renderPairsInWaitingBlock(waitingPairs);
+            // console.log('options', options);
+            renderPairsInWaitingBlock(waitingPairs, options);
             // Добавляем пару в блок текущих игр
             const playingDiv = document.createElement('div');
             playingDiv.classList.add('startTournament_panelWrapp_tournament_games_playingBlock_pairs_item');
             playingDiv.setAttribute('data-player1-id', pair.player1.id);
             playingDiv.setAttribute('data-player2-id', pair.player2.id);
 
+            console.log('pair 1690', pair);
+            if (typeof pair.groupIndex === 'number') {
+                playingDiv.setAttribute('data-group-index', pair.groupIndex);
+            }
+            
+            let group = `<span>Gr.-</span>`;
+
+            // if (options.showGroup && typeof pair.groupIndex === 'number') {
+            //     group = `<span>Gr.${pair.groupIndex + 1}</span>`;
+            // }
+
+            if (typeof pair.groupIndex === 'number') {
+                group = `<span>Gr.${pair.groupIndex + 1}</span>`;
+            }
+
             // Создаем структуру для играющей пары
             playingDiv.innerHTML = `
                 <h3>${playingBlockContainer.children.length + 1}</h3> <!-- Номер пары -->
                 <div class="group">
-                    <span>Gr.1</span>
+                    ${group}
                 </div>
                 <div class="pair">
                     <h6>${pair.player1.name || pair.player1.fullname}</h6>
@@ -1683,6 +1910,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (selectedType === 'twoRound') {
                 saveTournamentTwoRound(null, standingsGlobal);
             }
+            if (selectedType === 'groupOlympicFinal') {
+                saveGroupOlympicFinalTournament();
+            }
         }
     }
 
@@ -1694,7 +1924,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             modalContent.innerHTML = ``;
             modalContent.innerHTML = `
                     <h2>editing a meeting</h2>
-                    <p>Table Number: ${tableNumber}</p>
+                    <p>Table Number: ${pair.table}</p>
                     <div class="modalPairBlock">
                         <div>
                             <h4 class="modalPairBlock_firstPlayer">${pair.player1.name || pair.player1.fullname}</h4>
@@ -1785,7 +2015,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.querySelector(".modalPairBlockDone_secondPlayer").textContent = pair.player2.name || pair.player2.fullname;
         document.querySelector(".modalScoreBlock_points_row.firstPlayer .modalScoreBlock_points_left h3").textContent = pair.player1.name || pair.player1.fullname;
         document.querySelector(".modalScoreBlock_points_row.secondPlayer .modalScoreBlock_points_left h3").textContent = pair.player2.name || pair.player2.fullname;
-
+        document.querySelector('.modalNumberOfTable').textContent = `Table Number: ${pair.table || '-'}`;
         // Очищаем ввод счета
         const scoreInputs = document.querySelectorAll(".modalPairBlockDone input");
         scoreInputs.forEach(input => input.value = "");
@@ -1910,11 +2140,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             // Добавляем пару в список завершённых игр (если нужно)
             
-            console.log(pair);
+            console.log('пара завершившая матч', pair);
             
 
-            // **Удаляем пару из списка текущих игр**
-            playingDiv.remove();
+            
 
             // **Обновляем таблицу результатов**
             if (selectedType === 'roundRobin') {
@@ -1946,7 +2175,42 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
 
             if (selectedType === 'groupOlympicFinal') {
-                console.log('нужно сохранять результат игры- - - - - - 1939 строка')
+                if (!window.olympicFinalStarted) {
+                    window.selectedPlayers = selectedPlayers;
+                    saveGroupBasedMatchResult(pair, player1Score, player2Score, playingDiv, selectedPlayers);
+                    selectedPlayers = window.selectedPlayers;
+                }
+                if (window.olympicFinalStarted) {
+                    const { roundIndex, matchIndex } = findOlympicMatchIndex(pair.player1.id, pair.player2.id);
+                    // finishedPairs.push({
+                    //     player1: winner * 10,
+                    //     player2: loser,
+                    //     score1: winnerScore,
+                    //     score2: loserScore,
+                    //     sets: setsSummary,
+                    //     round: roundIndex + 1
+                    // });
+                    roundIndexCurPair = roundIndex;
+                    console.log('вызываем функцию завершения олимпийского матча');
+                    finishOlympicMatch(roundIndex, matchIndex, player1Score, player2Score);
+                }
+                console.log('selectedPlayers', selectedPlayers);
+                if (areAllGroupMatchesFinished(window.groupFinalResults) && !window.olympicFinalStarted) {
+                    const playersPerGroup = window.groupFinalSettings.playersPerGroupToFinal;
+                    const finalists = getTopPlayersFromGroups(window.groupFinalResults, playersPerGroup, selectedPlayers);
+                    if (finalists.length === groupFinalSettings.totalPlayersToFinal) {
+                        console.log('Финалисты:', finalists);
+                        window.olympicFinalStarted = true;
+
+                        document.querySelector('.displayTournamentSecond').style.display = 'block';
+                        document.querySelector('.displayTournamentSecond .display_header h3').textContent = 'Olympic final';
+
+                        startOlympicTournament(finalists, []);
+                    }
+                    console.log('будут в финальной игре:', finalists);
+                    window.finalists = finalists;
+                }
+                
             }
             if (selectedType === 'singleElimination') {
                 alert('Sorry! Selected type of tournamnet in development!')
@@ -1964,7 +2228,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             // **Расчёт рейтинга**
             const isWinnerNewbie = winner.tournamentsPlayed < 5;
             const isLoserNewbie = loser.tournamentsPlayed < 5;
-            
+            console.log('передаем на обновление рейтинга:', winner, loser, scoreDiff, isWinnerNewbie, isLoserNewbie);
             updatePlayerRating(winner, loser, scoreDiff, isWinnerNewbie, isLoserNewbie);
          
             // **Закрываем модальное окно**
@@ -1978,15 +2242,25 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             else if ( selectedType === 'olympic') {
                
-                console.log('обновляем пары ожидания для олимпийского');
+                // console.log('обновляем пары ожидания для олимпийского');
                 updateWaitingPairsForOlympic();
                 saveOlympicTournamentState();
+
+            } else if (selectedType = "groupOlympicFinal") {
+                if (window.olympicFinalStarted) {
+                    updateWaitingPairsForOlympic();
+                }
+                saveGroupOlympicFinalTournament();
             }
+
             
             // **Сохраняем изменения в БД**
             await saveUpdatedRatings(winner, loser);
             // saveTournament();
             addBracketsAndHighlightResults();
+
+            // **Удаляем пару из списка текущих игр**
+            playingDiv.remove();
 
             if (currentPairs.length === 0 && waitingPairs.length === 0) {
                 // console.log('standingsGlobal перед финальным расчетом:', standingsGlobal);
@@ -2078,7 +2352,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                     // }, 500);
                 // }
             }
-            renderPairsInWaitingBlock(waitingPairs);
+            if (!window.olympicFinalStarted) {
+                renderPairsInWaitingBlock(waitingPairs);
+            }
+
+            
         };
     
         // Обработчик для кнопки Cancel
@@ -2108,7 +2386,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Возвращаем пару в список ожидания
             const pairToRestore = {
                 player1,
-                player2
+                player2,
+                groupIndex: pair.groupIndex ?? null
             };
             waitingPairs.push(pairToRestore);
         
@@ -3110,7 +3389,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         if (selectedType === 'groupOlympicFinal') {
-            console.log('нужно отобразить результаты турнира - - - - - - 3103 строка')
+            console.log('нужно отобразить результаты турнира - - - - - - 3103 строка');
+            console.log('обьект турнира:', tournamentData);
+            renderOlympicFinalResults();
+            incrementTournamentsForPlayers([...tournamentData.players]);
         }
         if (selectedType === 'singleElimination') {
             alert('Sorry! Selected type of tournamnet in development!')
@@ -3169,6 +3451,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         if (selectedType === 'groupOlympicFinal') {
             console.log('турнир завершен, рендерим резкльтаты - - - - - - 3161 строка')
+            renderOlympicFinalResults();
         }
         if (selectedType === 'singleElimination') {
             alert('Sorry! Selected type of tournamnet in development!')
@@ -3973,6 +4256,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (final) {
             state = { ...state, ...final };
         }
+
+        const currentAmountOfTable = parseInt(document.getElementById('numberOfTables').value, 10);
+        if (tournamentData.tables !== currentAmountOfTable) {
+            state.tables = currentAmountOfTable;
+        }
     
         // 4️⃣ Обновляем флаг завершения
         state.finished = tournamentData.finished || false;
@@ -4031,6 +4319,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         const totalPlayersToFinalInput = document.getElementById('totalPlayersToFinalInput');
         const errorBlock = document.getElementById('modalError');
         numberOfGroupsInput.max = allPlayers.length / 2;
+        numberOfGroupsInput.placeholder = 2;
+        totalPlayersToFinalInput.placeholder = 4;
     
         // === Автоматическая настройка шага и минимума при вводе количества групп
         numberOfGroupsInput.addEventListener('input', () => {
@@ -4081,8 +4371,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     
             modal.style.display = 'none';
     
+            console.log('allPlayers', allPlayers);
+            distributePlayersIntoGroups(allPlayers);
+            renderGroups(window.groups);
+            waitingPairs = generateGroupPairs(window.groups);
+            renderPairsInWaitingBlock(waitingPairs, { showGroup: true });
+            startTournament.disabled = true; // Отключаем кнопку
+            startTournament.classList.add('disabledButton'); // Обновляем стиль кнопки
+            saveTournamentBtn.disabled = true;
+            document.querySelector("#numberOfTables").disabled = true;
+            document.querySelector("#addPlayertoTournament").disabled = true;
             saveGroupOlympicFinalTournament();
-            distributePlayersIntoGroups(allPlayers)
             // Запуск турнира
             console.log('запуск турнира 48 строка в groupOl');
             // startGroupFinalTournament();
@@ -4095,9 +4394,73 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
 
+    // async function saveGroupOlympicFinalTournament() {
+    //     const tournamentId = document.querySelector('.startTournament').dataset.tournamentid;
+    
+    //     const state = {
+    //         players: selectedPlayers.map(player => {
+    //             const fullPlayerData = allplayers.find(p => p.id === player.id);
+    //             return {
+    //                 id: player.id,
+    //                 birthYear: player.birthYear,
+    //                 fullname: player.fullname || player.name,
+    //                 place: player.place,
+    //                 rating: player.rating,
+    //                 city: fullPlayerData ? fullPlayerData.city || fullPlayerData.cityName : "Unknown"
+    //             };
+    //         }),
+    //         retiredPlayers: retiredPlayers.map(player => ({
+    //             id: player.id,
+    //             birthYear: player.birthYear,
+    //             fullname: player.fullname || player.name,
+    //             rating: player.rating,
+    //             retired: true
+    //         })),
+    //         unratedPlayers: unratedPlayersList.map(player => ({
+    //             id: player.id,
+    //             name: player.name || player.fullname,
+    //             birthYear: player.birthYear,
+    //             city: player.city,
+    //             nickname: player.nickname,
+    //             unrated: true
+    //         })),               // зарегистрированные игроки
+    //         waitingPairs,
+    //         currentPairs,
+    //         typeOfTournament: selectedType || 'groupFinal',                        // тип турнира
+    //         // groupFinalSettings: groupFnalSettings || {}, // настройки групп и финала
+    //         groups: [],                                          // пока пусто
+    //         groupStageResults: [],                               // пока пусто
+    //         finalStageBracket: []                              
+    //     };
+    
+    //     try {
+    //         const response = await fetch('/saveTournament', {
+    //             method: 'POST',
+    //             headers: {'Content-Type': 'application/json',},
+    //             body: JSON.stringify({ tournamentId, state }),
+    //         });
+    
+    //         if (!response.ok) {
+    //             throw new Error('Failed to save tournament');
+    //         }
+    
+    //         console.log('Group + Final tournament saved successfully');
+    //     } catch (error) {
+    //         console.error('Error saving Group + Final tournament:', error);
+    //     }
+    // }
+    
+    
     async function saveGroupOlympicFinalTournament() {
         const tournamentId = document.querySelector('.startTournament').dataset.tournamentid;
     
+        averageRating = 0;
+        if (tournamentData.initialRatings?.length > 0) {
+            const avgRating = calculateAverageRating(tournamentData.initialRatings);
+            averageRating = avgRating.toFixed(0);
+        }
+        const coefficient = getTournamentCoefficient([...selectedPlayers, ...unratedPlayersList]);
+
         const state = {
             players: selectedPlayers.map(player => {
                 const fullPlayerData = allplayers.find(p => p.id === player.id);
@@ -4106,8 +4469,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                     birthYear: player.birthYear,
                     fullname: player.fullname || player.name,
                     place: player.place,
+                    losses: player.losses,
+                    wins: player.wins,
+                    totalPoints: player.totalPoints,
+                    setsWon: player.setsWon,
+                    setsLost: player.setsLost,
                     rating: player.rating,
-                    city: fullPlayerData ? fullPlayerData.city || fullPlayerData.cityName : "Unknown"
+                    city: fullPlayerData ? fullPlayerData.city || fullPlayerData.cityName : "Unknown",
+                    groupPoints : player.groupPoints,
+                    groupPlace : player.groupPlace,
+                    groupWins : player.groupWins,
+                    groupLosses : player.groupLosses,
+                    groupSetsWon : player.groupSetsWon,
+                    groupSetsLost : player.groupSetsLost
                 };
             }),
             retiredPlayers: retiredPlayers.map(player => ({
@@ -4124,20 +4498,35 @@ document.addEventListener('DOMContentLoaded', async function() {
                 city: player.city,
                 nickname: player.nickname,
                 unrated: true
-            })),               // зарегистрированные игроки
+            })),
             waitingPairs,
             currentPairs,
-            typeOfTournament: selectedType || 'groupFinal',                        // тип турнира
-            // groupFinalSettings: groupFnalSettings || {}, // настройки групп и финала
-            groups: [],                                          // пока пусто
-            groupStageResults: [],                               // пока пусто
-            finalStageBracket: []                              
+            finishedPairs: finishedPairs || [],
+            typeOfTournament: selectedType || 'groupFinal',
+            initialRatings: tournamentData.initialRatings,
+            groupFinalSettings: window.groupFinalSettings || {},   // ⬅️ добавили настройки групп
+            groupFinalResults: window.groupFinalResults || [],     // ⬅️ добавили результаты по группам
+            groups: window.groups || [],                                            
+            groupStageResults: window.groupStageResults || [],                                 
+            finalStageBracket: window.finalStageBracket || [],
+            olympicFinalStarted: window.olympicFinalStarted || false,
+            finalists: window.finalists || [],
+            olympicRounds: olympicRounds || [],
+            finished: tournamentData.finished || false,
+            bonusesApplied: tournamentData.bonusesApplied || false,
+            averageRating, 
+            coefficient                                
         };
-    
+        
+        const currentAmountOfTable = parseInt(document.getElementById('numberOfTables').value, 10);
+        if (tournamentData.tables !== currentAmountOfTable) {
+            state.tables = currentAmountOfTable;
+        }
+        
         try {
             const response = await fetch('/saveTournament', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json',},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ tournamentId, state }),
             });
     
@@ -4150,113 +4539,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.error('Error saving Group + Final tournament:', error);
         }
     }
-    
-    
-    // async function saveTournament(state = null, standings = null, final) {
-    //     // console.log(standings);
-
-    //     if (!state) {
-    //         state = {
-    //             players: selectedPlayers.map(player => {
-    //                 const fullPlayerData = allplayers.find(p => p.id === player.id);
-    //                 return {
-    //                     id: player.id,
-    //                     birthYear: player.birthYear,
-    //                     fullname: player.fullname || player.name,
-    //                     place: player.place,
-    //                     rating: player.rating,
-    //                     city: fullPlayerData ? fullPlayerData.city  || fullPlayerData.cityName : "Unknown"
-    //                 };
-    //             }),
-    //             retiredPlayers: retiredPlayers.map(player => ({
-    //                 id: player.id,
-    //                 birthYear: player.birthYear,
-    //                 fullname: player.fullname || player.name,
-    //                 rating: player.rating,
-    //                 retired: true // Флаг выбывшего игрока
-    //             })),
-    //             unratedPlayers: unratedPlayersList.map(player => ({
-    //                 id: player.id,
-    //                 name: player.name || player.fullname,
-    //                 birthYear: player.birthYear,
-    //                 city: player.city,
-    //                 nickname: player.nickname,
-    //                 unrated: true // Флаг внерейтингового игрока
-    //             })),
-    //             waitingPairs,
-    //             currentPairs,
-    //             finishedPairs,
-    //             roundCounter,
-    //             results,
-    //             initialRatings: tournamentData.initialRatings,
-    //             typeOfTournament:  selectedType !== tournamentData.typeOfTournament ? selectedType : tournamentData.typeOfTournament || 'roundRobin'
-    //         };
-    //     }
-    //     // console.log('state', state);
-    //     // console.log('standings', standings);
-        
-    //     if (Array.isArray(standings) && standings.length > 0) {
-    //         const updatedPlayers = [];
-    //         const updatedUnratedPlayers = [];
-        
-    //         standings.forEach(player => {
-    //             const updatedPlayer = state.players.find(p => p.id === player.id);
-    //             const mergedPlayer = updatedPlayer ? { ...updatedPlayer, ...player } : player;
-        
-    //             if (mergedPlayer.unrated) {
-    //                 updatedUnratedPlayers.push(mergedPlayer); // Нерейтинговые игроки
-    //             } else {
-    //                 updatedPlayers.push(mergedPlayer); // Рейтинговые игроки
-    //             }
-    //         });
-        
-    //         state.players = updatedPlayers;
-    //         state.unratedPlayers = updatedUnratedPlayers;
-    //     }
-
-       
-
-    //     if (
-    //         (!standings || standings.length === 0) &&
-    //         (!state || Object.keys(state).length === 0 || waitingPairs.length > 0 || currentPairs.length > 0 || finishedPairs.length > 0)
-    //     ) {
-    //         if (!tournamentData.finished) {
-    //             console.log("`standings` отсутствует, но пары есть. Ждем обновления...");
-    //             return;
-    //         } 
-            
-    //     }
-        
-    //     if (final) {
-    //         state = { ...state, ...final }; // Объединяем данные без потери информации
-    //     }
-
-    //     state.finished = tournamentData.finished || false;
-
-    //     try {
-    //         const response = await fetch('/saveTournament', {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({ tournamentId, state }),
-    //         });
-
-    //         if (!response.ok) {
-    //             const error = await response.json();
-    //             throw new Error(error.message || 'Failed to save tournament');
-    //         }
-
-    //         const responseData = await response.json();
-    //         console.log("✅ Tournament saved:", responseData);
-            
-    //         if (byUser) {
-    //             showErrorModal('Tournament saved successfully!', 'Congratulation');
-    //             byUser = false;
-    //         }
-    //     } catch (error) {
-    //         console.error('Error saving tournament:', error);
-    //         showErrorModal(error.message || 'Failed to save tournament');
-    //     }
-    // }
 
 
     function updateTournamentStandings(players, results) {
@@ -4598,7 +4880,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             state.unratedPlayers = updatedUnratedPlayers;
         }
 
-       
+        const currentAmountOfTable = parseInt(document.getElementById('numberOfTables').value, 10);
+        if (tournamentData.tables !== currentAmountOfTable) {
+            state.tables = currentAmountOfTable;
+        }
 
         if (
             (!standings || standings.length === 0) &&
@@ -4903,6 +5188,57 @@ document.addEventListener('DOMContentLoaded', async function() {
         // }
         console.log('✅ Обновленные standings:', standings);
         standingsGlobal = standings;
+    }
+
+   function restoreGroupFinalState(tournamentData) {
+        if (!tournamentData || !tournamentData.groupFinalResults) {
+            console.warn('No groupFinalResults found in tournamentData');
+            return;
+        }
+    
+        // Восстанавливаем глобальную переменную
+        window.groupFinalResults = tournamentData.groupFinalResults;
+        window.groups = tournamentData.groups;
+        
+        waitingPairs = tournamentData.waitingPairs;
+        renderPairsInWaitingBlock(waitingPairs, { showGroup: true });
+        // Отрисовываем таблицы и результаты
+        renderGroups(window.groups);
+        renderGroupResults(window.groupFinalResults);
+        addBracketsAndHighlightResults();
+        currentPairs.forEach((pair, index) => {
+            const playingDiv = document.createElement('div');
+            playingDiv.classList.add('startTournament_panelWrapp_tournament_games_playingBlock_pairs_item');
+            playingDiv.setAttribute('data-player1-id', pair.player1.id);
+            playingDiv.setAttribute('data-player2-id', pair.player2.id);
+        
+            if (typeof pair.groupIndex === 'number') {
+                playingDiv.setAttribute('data-group-index', pair.groupIndex);
+            }
+        
+            let groupHtml = '';
+            if (typeof pair.groupIndex === 'number') {
+                groupHtml = `<span>Gr.${pair.groupIndex + 1}</span>`;
+            }
+        
+            playingDiv.innerHTML = `
+                <h3>${index + 1}</h3>
+                <div class="group">${groupHtml}</div>
+                <div class="pair">
+                    <h6>${pair.player1.name || pair.player1.fullname}</h6>
+                    <h6>:</h6>
+                    <h6>${pair.player2.name || pair.player2.fullname}</h6>
+                </div>
+            `;
+        
+            playingDiv.addEventListener('click', () => {
+                openGameModal(pair, playingDiv);
+            });
+        
+            playingBlockContainer.appendChild(playingDiv);
+        });
+    
+        console.log('Group final state restored from saved data');
     }
     
     
@@ -5327,6 +5663,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+
 
 
 

@@ -1950,6 +1950,8 @@ export async function createSoftHeader(language) {
 
     // Запрос к серверу для получения информации о сессии
     const sessionStatus = await checkSession();
+    const searchInput = document.getElementById('playerSearchInput');
+    const searchDropdown = document.getElementById('headerPlayerDropdown');
     
     // console.log(sessionStatus.loggedIn);
     // console.log(language);
@@ -2437,9 +2439,50 @@ export async function createSoftHeader(language) {
                 e.stopPropagation();
                 window.location.href = `/${langMap[language]}/soft/${userId}`;
             });
+
+            document.addEventListener('click', function(event) {
+                if (event.target.closest('.logOut')) {
+                    event.preventDefault();
+                    logout();
+                }
+        
+                if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
+                    searchDropdown.style.display = 'none';
+                }
+                
+                // if (event.target.closest('.header_account')) {
+                //     if (document.querySelector('.profileMenu').classList.contains('header_account_content_openMenu')) {
+                //         chevronRotate(document.querySelector('.header_account img'), false);
+                //     } else {
+                //         chevronRotate(document.querySelector('.header_account img'), true);
+                //     }
+                //     document.querySelector('.profileMenu').classList.toggle('header_account_content_openMenu');
+                // }
+                if (event.target.closest('.myProfile')) {
+                    event.preventDefault();
+                    const userType = localStorage.getItem('userType');
+                    if (userType === 'user') {
+                        redirectToDashboard(userType);
+                        // window.location.href = `/${languageMap[localStorage.clientLang]}/user_dashboard`;
+                    } else if (userType === 'coach') {
+                        redirectToDashboard(userType);
+                        // window.location.href = `/${languageMap[localStorage.clientLang]}/coach_dashboard`;
+                    } else if (userType === 'club') {
+                        redirectToDashboard(userType);
+                        // window.location.href = `/${languageMap[localStorage.clientLang]}/club_dashboard`;
+                    } else if (userType === 'admin') {
+                        redirectToDashboard(userType);
+                        // window.location.href = `/${languageMap[localStorage.clientLang]}/admin_dashboard`;
+                    }
+                    
+                }
+            })
+            languageControl();
             
         }
     }
+
+    
 
 }
 

@@ -1087,127 +1087,6 @@ app.get('/:lang/soft/tournament/:userId/:tournamentId', ensureAuthenticated, (re
   });
 });
 
-// app.post('/saveTournament', async (req, res) => {
-//   try {
-//       const db = getDB();
-//       const { tournamentId, players, unratedPlayers } = req.body;
-
-//       // Проверяем, что передан корректный ID турнира
-//       if (!tournamentId || !ObjectId.isValid(tournamentId)) {
-//           return res.status(400).json({ error: 'Invalid tournament ID' });
-//       }
-
-//       // Обновляем турнир в базе данных
-//       const updates = {};
-
-//       if (Array.isArray(players)) {
-//           updates.players = players.map(player => ({
-//               id: player.id,
-//               fullname: player.fullname,
-//               place: player.place,
-//               rating: player.rating
-//           }));
-//       }
-
-//       if (Array.isArray(unratedPlayers)) {
-//           updates.unratedPlayers = unratedPlayers.map(player => ({
-//               name: player.name,
-//               birthYear: player.birthYear,
-//               city: player.city,
-//               nickname: player.nickname
-//           }));
-//       }
-
-//       const result = await db.collection('tournaments').updateOne(
-//           { _id: new ObjectId(tournamentId) },
-//           { $set: updates }
-//       );
-
-//       if (result.modifiedCount > 0) {
-//           res.status(200).json({ message: 'Tournament updated successfully' });
-//       } else {
-//           res.status(400).json({ error: 'No changes made to the tournament' });
-//       }
-//   } catch (error) {
-//       console.error('Error saving tournament:', error);
-//       res.status(500).json({ error: 'An error occurred while saving the tournament' });
-//   }
-// });
-
-// app.post('/saveTournament', async (req, res) => {
-//   try {
-//       const db = getDB();
-//       const { tournamentId, players, unratedPlayers, retiredPlayers } = req.body;
-
-//       // Проверяем корректность tournamentId
-//       let tournamentObjectId = null;
-//       if (tournamentId) {
-//         console.log(tournamentId);
-//         // console.log(new ObjectId(tournamentId));
-//           if (ObjectId.isValid(tournamentId)) {
-//               tournamentObjectId = new ObjectId(tournamentId);
-//           } else {
-//               return res.status(400).json({ error: 'Invalid tournament ID' });
-//           }
-//       }
-
-//       const updateData = {};
-
-//       if (Array.isArray(players)) {
-//         updateData.players = players.map(player => ({
-//               id: player.id,
-//               fullname: player.fullname || player.name,
-//               place: player.place || '',
-//               rating: player.rating
-//           })) || [];
-//       }
-
-//       if (Array.isArray(retiredPlayers)) {
-//         updateData.retiredPlayers = retiredPlayers.map(player => ({
-//               id: player.id || '',
-//               fullname: player.fullname || player.name,
-//               place: player.place || '',
-//               rating: player.rating
-//           })) || [];
-//       }
-
-//       if (Array.isArray(unratedPlayers)) {
-//         updateData.unratedPlayers = unratedPlayers.map(player => ({
-//               id: player.id,
-//               fullname: player.fullname || player.name,
-//               birthYear: player.birthYear,
-//               city: player.city,
-//               nickname: player.nickname,
-//               unrated: true
-//           })) || [];
-//       }
-
-//       if (tournamentObjectId) {
-//           // Обновляем существующий турнир
-//           const result = await db.collection('tournaments').updateOne(
-//               { _id: tournamentObjectId },
-//               { $set: updateData }
-//           );
-
-//           if (result.modifiedCount === 0) {
-//               return res.status(404).json({ error: 'Tournament not found or no changes applied' });
-//           }
-
-//           res.status(200).json({ message: 'Tournament updated successfully' });
-//       } else {
-//           // Создаем новый турнир
-//           const result = await db.collection('tournaments').insertOne(updateData);
-//           res.status(201).json({
-//               message: 'Tournament created successfully',
-//               tournamentId: result.insertedId,
-//           });
-//       }
-//   } catch (error) {
-//       console.error('Error saving tournament:', error);
-//       res.status(500).json({ error: 'An error occurred while saving the tournament' });
-//   }
-// });
-
 app.post('/saveTournament', async (req, res) => {
   try {
       const db = getDB();
@@ -1225,7 +1104,7 @@ app.post('/saveTournament', async (req, res) => {
           return res.status(400).json({ error: 'Tournament ID is required' });
       }
 
-      const { players, retiredPlayers, unratedPlayers, bonusesApplied, groups, groupStageResults, finalStageBracket, waitingPairs, olympicRounds, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament, roundCounter, round1Results, round2Results } = state;
+      const { players, retiredPlayers, tables, unratedPlayers, olympicFinalStarted, finalists, groupFinalSettings, groupFinalResults, bonusesApplied, groups, groupStageResults, finalStageBracket, waitingPairs, olympicRounds, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament, roundCounter, round1Results, round2Results } = state;
       // console.log('players from client', players);
       // Обновляем турнирные данные
       const updateData = {};
@@ -1247,8 +1126,15 @@ app.post('/saveTournament', async (req, res) => {
               totalPoints: player.totalPoints,
               setsWon: player.setsWon,
               setsLost: player.setsLost,
+              groupPoints : player.groupPoints,
+              groupPlace : player.groupPlace,
+              groupWins : player.groupWins,
+              groupLosses : player.groupLosses,
+              groupSetsWon : player.groupSetsWon,
+              groupSetsLost : player.groupSetsLost,
               city: player.city
           }));
+          // updateData.players = cleanPlayerData(updateData.players);
       }
 
       if (Array.isArray(retiredPlayers)) {
@@ -1287,6 +1173,7 @@ app.post('/saveTournament', async (req, res) => {
           updateData.waitingPairs = waitingPairs.map(pair => ({
               player1: pair.player1,
               player2: pair.player2,
+              groupIndex: pair?.groupIndex ?? null
           }));
       }
 
@@ -1294,6 +1181,8 @@ app.post('/saveTournament', async (req, res) => {
           updateData.currentPairs = currentPairs.map(pair => ({
               player1: pair.player1,
               player2: pair.player2,
+              groupIndex: pair?.groupIndex ?? null,
+              table: pair?.table ?? null
           }));
       }
       if (Array.isArray(finishedPairs)) {
@@ -1304,6 +1193,7 @@ app.post('/saveTournament', async (req, res) => {
             score2: pair.score2 ?? null,
             sets: pair.sets || null,
             round: pair.round ?? null,
+            groupIndex: pair?.groupIndex ?? null
         }));
       }
 
@@ -1350,8 +1240,25 @@ app.post('/saveTournament', async (req, res) => {
         updateData.groupStageResults = groupStageResults;
       }
 
+      if (groupFinalSettings) {
+        updateData.groupFinalSettings = groupFinalSettings;
+      }
+      if (groupFinalResults) {
+        updateData.groupFinalResults = groupFinalResults;
+      }
+
       if (finalStageBracket) {
         updateData.finalStageBracket = finalStageBracket;
+      }
+      if (olympicFinalStarted) {
+        updateData.olympicFinalStarted = olympicFinalStarted;
+      }
+      if (finalists) {
+        updateData.finalists = finalists;
+      }
+
+      if (tables) {
+        updateData.tables = tables;
       }
       // Проверяем, есть ли уже `initialRatings`
       const existingTournament = await db.collection('tournaments').findOne(
@@ -1407,6 +1314,35 @@ app.post('/saveTournament', async (req, res) => {
       res.status(500).json({ error: 'An error occurred while saving the tournament' });
   }
 });
+
+function cleanPlayerData(player) {
+  const result = {
+      id: player.id,
+      fullname: player.fullname || player.name,
+      rating: player.rating,
+      city: player.city,
+      logo: player.logo || "/icons/playerslogo/default_avatar.svg",
+  };
+
+  const optionalFields = [
+      'place', 'place_round1', 'place_round2',
+      'wins', 'losses', 'bonus',
+      'points_round1', 'points_round2',
+      'totalPoints', 'setsWon', 'setsLost',
+      'groupPoints', 'groupPlace',
+      'groupWins', 'groupLosses',
+      'groupSetsWon', 'groupSetsLost'
+  ];
+
+  optionalFields.forEach(field => {
+      if (player[field] !== undefined && player[field] !== null) {
+          result[field] = player[field];
+      }
+  });
+
+  return result;
+}
+
 
 app.post("/updateTournamentCounterForPlayers", async (req, res) => {
   try {

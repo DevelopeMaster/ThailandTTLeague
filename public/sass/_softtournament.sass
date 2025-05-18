@@ -653,7 +653,7 @@
     margin-top: 30px
     display: flex
     justify-content: center
-    gap: 10px
+    gap: 20px
     .btn-confirm, .btn-cancel
         width: 143px
         &:focus-visible, &:focus
@@ -682,7 +682,15 @@
             font-size: 24px
             font-style: normal
             font-weight: 600
-            line-height: normal        
+            line-height: normal
+        &_groupNumber
+            display: flex
+            padding: 5px 6px
+            justify-content: center
+            align-items: center
+            gap: 10px
+            border-radius: 8px
+            background: #FA6400
     .displayTournament, .completedGames, .finalResults
         height: 525px
         width: 100%
@@ -717,6 +725,11 @@
                     font-style: normal
                     font-weight: 500
                     line-height: normal
+
+                .groups-wrapper
+                    display: flex
+                    flex-direction: column
+                    gap: 40px
 
                 .players-list
                     display: flex

@@ -1907,37 +1907,37 @@ app.post('/api/restore-password', async (req, res) => {
 });
 
 // Маршрут для рендеринга формы сброса пароля
-app.get('/reset-password/:token', async (req, res) => {
-  const { token } = req.params;
+// app.get('/reset-password/:token', async (req, res) => {
+//   const { token } = req.params;
 
-  try {
-      const db = getDB();
+//   try {
+//       const db = getDB();
 
-      // Поиск в коллекции пользователей
-      let user = await db.collection('users').findOne({
-          resetPasswordToken: token,
-          resetPasswordExpires: { $gt: Date.now() }
-      });
+//       // Поиск в коллекции пользователей
+//       let user = await db.collection('users').findOne({
+//           resetPasswordToken: token,
+//           resetPasswordExpires: { $gt: Date.now() }
+//       });
 
-      if (!user) {
-          // Если не найдено, поиск в коллекции тренеров
-          user = await db.collection('coaches').findOne({
-              resetPasswordToken: token,
-              resetPasswordExpires: { $gt: Date.now() }
-          });
+//       if (!user) {
+//           // Если не найдено, поиск в коллекции тренеров
+//           user = await db.collection('coaches').findOne({
+//               resetPasswordToken: token,
+//               resetPasswordExpires: { $gt: Date.now() }
+//           });
 
-          if (!user) {
-              return res.status(400).json({ message: 'Password reset token is invalid or has expired.' });
-          }
-      }
+//           if (!user) {
+//               return res.status(400).json({ message: 'Password reset token is invalid or has expired.' });
+//           }
+//       }
 
-      // Рендеринг формы сброса пароля
-      res.render('reset-password', { token });
-  } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ message: 'Internal server error' });
-  }
-});
+//       // Рендеринг формы сброса пароля
+//       res.render('reset-password', { token });
+//   } catch (error) {
+//       console.error('Error:', error);
+//       res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
 
 // Маршрут для сброса пароля
 app.post('/reset-password/:token', async (req, res) => {

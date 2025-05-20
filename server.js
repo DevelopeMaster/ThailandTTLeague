@@ -230,20 +230,20 @@ app.post('/uploadResultImage', ensureAuthenticated, async (req, res) => {
 
 // app.use(helmet());
 
-// app.use(helmet({
-//   contentSecurityPolicy: {
-//     directives: {
-//       defaultSrc: ["'self'"],
-//       scriptSrc: ["'self'", "'unsafe-inline'"],
-//       styleSrc: ["'self'", "'unsafe-inline'"],
-//       imgSrc: ["'self'", "data:"],
-//       fontSrc: ["'self'", "data:"],
-//       connectSrc: ["'self'"],
-//       objectSrc: ["'none'"],
-//       upgradeInsecureRequests: []
-//     }
-//   }
-// }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:"],
+      fontSrc: ["'self'", "data:"],
+      connectSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: []
+    }
+  }
+}));
 
 app.disable('x-powered-by');
 

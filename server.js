@@ -238,16 +238,18 @@ app.use(helmet({
       scriptSrc: [
         "'self'",
         "'unsafe-inline'",
-        "https://cdn.jsdelivr.net" // ✅ html2canvas
+        "https://cdn.jsdelivr.net",
+        "https://unpkg.com" // ✅ Leaflet.js
       ],
       styleSrc: [
         "'self'",
         "'unsafe-inline'",
-        "https://fonts.googleapis.com" // ✅ Google Fonts
+        "https://fonts.googleapis.com",
+        "https://unpkg.com" // ✅ Leaflet.css
       ],
       fontSrc: [
         "'self'",
-        "https://fonts.gstatic.com", // ✅ Google Fonts
+        "https://fonts.gstatic.com",
         "data:"
       ],
       imgSrc: [

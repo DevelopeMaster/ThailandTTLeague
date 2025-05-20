@@ -27,7 +27,7 @@ function ensureAuthenticated(req, res, next) {
     if (userType) {
         // Если в URL есть указание типа (club, coach, player), перенаправляем на общедоступную страницу
         // return res.redirect(`/${req.lang || 'en'}/${userType}/${urlParts[urlParts.length - 1]}`);
-        return res.redirect(`/${req.lang || 'en'}}`);
+        return res.redirect(`/${req.lang || 'en'}`);
     } else {
         // Если тип пользователя не определен, редирект на страницу ошибки
         return res.redirect(`404`);
@@ -49,6 +49,37 @@ function ensureAuthenticatedOrAdmin(req, res, next) {
     }
     res.status(403).send('Forbidden');
 }
+
+function ensureClub(req, res, next) {
+    if (
+      req.isAuthenticated() &&
+      req.user &&
+      req.user.workingHours &&
+      req.user.supplements
+    ) {
+      return next(); // это точно клуб
+    }
+  
+    // иначе — редирект или запрет
+    return res.redirect('404'); // или res.status(403).send('Access denied');
+}
+
+function ensureClubOrAdmin(req, res, next) {
+    if (
+      req.isAuthenticated() &&
+      req.user &&
+      (
+        (req.user.workingHours && req.user.supplements) || // клуб
+        req.user.role === 'admin'                          // админ
+      )
+    ) {
+      return next();
+    }
+  
+    return res.redirect('404'); // или res.status(403).send('Access denied');
+  }
+  
+  
 
 // Настройка хранения файлов с указанием пути
 // const storage = multer.diskStorage({
@@ -131,5 +162,7 @@ module.exports = {
     upload,
     ensureAdmin,
     ensureAuthenticatedOrAdmin,
+    ensureClubOrAdmin,
+    ensureClub
     // deleteFile
 };

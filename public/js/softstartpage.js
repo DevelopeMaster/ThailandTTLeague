@@ -53,15 +53,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         try {
             const response = await fetch(`/tournaments-by-club/${clubId}`);
             if (!response.ok) {
-                throw new Error('Club not found');
+                throw new Error('Tournaments is not found');
             }
             tournaments = await response.json();
             // console.log(tournaments);
-
-            renderTournaments(tournaments);
+            if (tournaments) {
+                renderTournaments(tournaments);
+            }
+            // renderTournaments(tournaments);
 
         } catch (error) {
-            console.error('Error fetching club data:', error);
+            console.log('Error fetching tournaments:', error);
         }
     }
 

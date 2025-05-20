@@ -17,8 +17,10 @@ const crypto = require('crypto');
 // const router = express.Router();
 const cron = require('node-cron');
 const { v4: uuidv4 } = require('uuid');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
-const { ensureAuthenticated, upload, ensureAdmin } = require('./middlewares/uploadConfig');
+const { ensureAuthenticated, upload, ensureClub, ensureClubOrAdmin, ensureAdmin } = require('./middlewares/uploadConfig');
 const userRoutes = require('./routes/userRoutes');
 const fs = require('fs');
 const { router } = require('./routes/userRoutes');
@@ -142,9 +144,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.set('trust proxy', 1);
 
-app.use(express.static('public', {
-  maxAge: '30d'
-}));
+
 
 // app.get('/images', (req, res) => {
 //   // const { fileName } = req.params;
@@ -223,10 +223,62 @@ app.post('/uploadResultImage', ensureAuthenticated, async (req, res) => {
       res.status(500).json({ error: 'Ошибка сервера при загрузке изображения' });
   }
 });
+// app.use(express.static('public', {
+//   maxAge: '30d'
+// }));
+// app.use(express.static('public'));
 
-app.use(express.static('public'));
+// app.use(helmet());
+
+// app.use(helmet({
+//   contentSecurityPolicy: {
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       scriptSrc: ["'self'", "'unsafe-inline'"],
+//       styleSrc: ["'self'", "'unsafe-inline'"],
+//       imgSrc: ["'self'", "data:"],
+//       fontSrc: ["'self'", "data:"],
+//       connectSrc: ["'self'"],
+//       objectSrc: ["'none'"],
+//       upgradeInsecureRequests: []
+//     }
+//   }
+// }));
+
+app.disable('x-powered-by');
+
+app.use('/api/', rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 минут
+  max: 100, // 100 запросов на IP
+  standardHeaders: true,
+  legacyHeaders: false
+}));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, 'public'), {
+  extensions: ['html'], // не отдаёт .php, .conf и пр.
+  dotfiles: 'ignore',
+  maxAge: '30d'
+}));
+
+
+
+
+// middleware для запрета подозрительных путей
+app.use((req, res, next) => {
+  const blockedPaths = [
+    '/wp-login', '/wp-admin', '/wordpress', '/wp-login.php', '/setup-config.php', '/wordpress', '/config', '/.env', '/.git', '/.htaccess', '/install.php'
+  ];
+
+  if (blockedPaths.some(path => req.originalUrl.toLowerCase().includes(path))) {
+    console.warn('❌ Блокировка подозрительного запроса:', req.originalUrl);
+    return res.status(404).render('404');
+  }
+
+  next();
+});
 
 const store = MongoStore.create({
   mongoUrl: uri,
@@ -279,6 +331,29 @@ app.use((req, res, next) => {
   next();
 });
 
+function logAction(req, action, extra = {}) {
+  const log = {
+    time: new Date().toISOString(),
+    ip: req.headers['x-forwarded-for'] || req.ip,
+    url: req.originalUrl,
+    method: req.method,
+    user: req.user?.id || req.user?._id || 'guest',
+    role: req.user?.role || 'unknown',
+    action,
+    ...extra
+  };
+  console.log('[LOG]', JSON.stringify(log));
+}
+
+
+// function requireLogin(req, res, next) {
+//   if (req.session && req.session.userId) {
+//     return next(); // всё ок
+//   }
+
+//   console.warn('🔒 Попытка доступа без сессии:', req.originalUrl);
+//   return res.redirect('/'); // или '/login' — в зависимости от логики
+// }
 
 
 // Основные маршруты
@@ -328,7 +403,7 @@ app.get('/ru/dashboard/admin/:page', ensureAdmin, (req, res) => {
 
 
 
-app.get('/ru/dashboard/admin/edit/:playerId', ensureAuthenticated, ensureAdmin, (req, res) => {
+app.get('/ru/dashboard/admin/edit/:playerId', userAuthenticated, ensureAdmin, (req, res) => {
   const { playerId } = req.params;
   const link = `ru/dashboard/admin/edit/player`;
 
@@ -368,7 +443,7 @@ app.get('/allcities', ensureAdmin, async (req, res) => {
 });
 
 
-app.get('/ru/dashboard/admin/editcoach/:playerId', ensureAuthenticated, ensureAdmin, (req, res) => {
+app.get('/ru/dashboard/admin/editcoach/:playerId', userAuthenticated, ensureAdmin, (req, res) => {
   const { playerId } = req.params;
   const link = `ru/dashboard/admin/editcoach/coach`;
 
@@ -383,7 +458,7 @@ app.get('/ru/dashboard/admin/editcoach/:playerId', ensureAuthenticated, ensureAd
   }
 });
 
-app.get('/ru/dashboard/admin/editclub/:clubId', ensureAuthenticated, ensureAdmin, (req, res) => {
+app.get('/ru/dashboard/admin/editclub/:clubId', userAuthenticated, ensureAdmin, (req, res) => {
   const { clubId } = req.params;
   const link = `ru/dashboard/admin/editclub/club`;
 
@@ -397,7 +472,7 @@ app.get('/ru/dashboard/admin/editclub/:clubId', ensureAuthenticated, ensureAdmin
   }
 });
 
-app.get('/ru/dashboard/admin/createclub/:clubId', ensureAuthenticated, ensureAdmin, (req, res) => {
+app.get('/ru/dashboard/admin/createclub/:clubId', userAuthenticated, ensureAdmin, (req, res) => {
   const { clubId } = req.params;
   const link = `ru/dashboard/admin/createclub/createclub`;
 
@@ -551,7 +626,7 @@ app.get('/:lang(en|ru|th)/tournaments/:tournamentId', async (req, res) => {
 //   }
 // });
 
-app.get('/:lang(en|ru|th)/dashboard/edittournament/:tournamentId/:userId', async (req, res) => {
+app.get('/:lang(en|ru|th)/dashboard/edittournament/:tournamentId/:userId', userAuthenticated, async (req, res) => {
   try {
     const { lang, tournamentId, userId } = req.params;
     // console.log('есть');
@@ -641,7 +716,7 @@ app.get('/:lang(en|ru|th)/alltrainings', (req, res) => {
   res.render(`${lang}/alltrainings`);
 });
 
-app.get('/:lang(en|ru|th)/createtournament/:id', (req, res) => {
+app.get('/:lang(en|ru|th)/createtournament/:id', userAuthenticated, ensureClubOrAdmin, (req, res) => {
   const { lang, id } = req.params;
   if (!lang) {
     return res.status(404).render('404');
@@ -654,12 +729,13 @@ app.get('/:lang(en|ru|th)/createtournament/:id', (req, res) => {
   });
 });
 
-app.get('/:lang(en|ru|th)/soft/:id', (req, res) => {
+app.get('/:lang(en|ru|th)/soft/:id', userAuthenticated, ensureClub, (req, res) => {
   const { lang, id } = req.params;
   if (!lang) {
     return res.status(404).render('404');
   }
   let link = `${lang}/soft`;
+  logAction(req, 'SOFT_ACCESS');
 
   return res.render(link, {
     userId: id,
@@ -767,7 +843,7 @@ app.post('/get-playerIds', async (req, res) => {
   }
 });
 
-app.post('/addtournament', ensureAuthenticated,  async (req, res) => {
+app.post('/addtournament', ensureAuthenticated, ensureClubOrAdmin, async (req, res) => {
   const {
       date,
       datetime,
@@ -837,7 +913,7 @@ app.post('/addtournament', ensureAuthenticated,  async (req, res) => {
   }
 });
 
-app.post('/edittournament', ensureAuthenticated, async (req, res) => {
+app.post('/edittournament', ensureAuthenticated, ensureClubOrAdmin, async (req, res) => {
   const {
       date,
       datetime,
@@ -1002,7 +1078,7 @@ app.get('/:lang/share/result', (req, res) => {
   `);
 });
 
-app.get('/:lang/dashboard/editclub/:userId', ensureAuthenticated, (req, res) => {
+app.get('/:lang/dashboard/editclub/:userId', ensureAuthenticated, ensureClub, (req, res) => {
   const { lang, userId } = req.params;
   const { userId: sessionUserId, userType } = req.session;
 
@@ -1061,7 +1137,7 @@ app.get('/:lang/dashboard/edituser/:userId', ensureAuthenticated, (req, res) => 
   });
 });
 
-app.get('/:lang/soft/tournament/:userId/:tournamentId', ensureAuthenticated, (req, res) => {
+app.get('/:lang/soft/tournament/:userId/:tournamentId', ensureAuthenticated, ensureClubOrAdmin, (req, res) => {
   const { lang, userId, tournamentId } = req.params;
   const { userId: sessionUserId, userType } = req.session;
 
@@ -1093,7 +1169,9 @@ app.get('/:lang/soft/tournament/:userId/:tournamentId', ensureAuthenticated, (re
   // Если все проверки пройдены, рендерим страницу редактирования
   // const link = `${lang}/soft/tournament`;
 
-  console.log(`Rendering: ${link} for userId: ${userId}`);
+  // console.log(`Rendering: ${link} for userId: ${userId}`);
+  logAction(req, 'SOFT_TOURNAMENT_ACCESS', { tournamentId });
+
 
   return res.render(link, {
       userId: userId,
@@ -1102,7 +1180,7 @@ app.get('/:lang/soft/tournament/:userId/:tournamentId', ensureAuthenticated, (re
   });
 });
 
-app.post('/saveTournament', async (req, res) => {
+app.post('/saveTournament', ensureClubOrAdmin, async (req, res) => {
   try {
       const db = getDB();
       const { tournamentId, state } = req.body;
@@ -1322,6 +1400,7 @@ app.post('/saveTournament', async (req, res) => {
       // if (result.modifiedCount === 0) {
       //     return res.status(404).json({ error: 'Tournament not found or no changes applied' });
       // }
+      logAction(req, 'TOURNAMENT_UPDATED', { tournamentId });
 
       res.status(200).json({ message: 'Tournament updated successfully' });
   } catch (error) {
@@ -1359,7 +1438,7 @@ function cleanPlayerData(player) {
 }
 
 
-app.post("/updateTournamentCounterForPlayers", async (req, res) => {
+app.post("/updateTournamentCounterForPlayers", ensureClubOrAdmin, async (req, res) => {
   try {
     const players = req.body.players;
     const club = req.body.club;
@@ -1445,6 +1524,8 @@ app.post("/updateTournamentCounterForPlayers", async (req, res) => {
     }
 
     if (updatedCount > 0) {
+      logAction(req, 'PLAYERS_DATA_UPDATED', { clubId });
+
       return res.json({ message: `Обновлено ${updatedCount} игроков` });
     } else {
       return res.status(404).json({ error: "Игроки не найдены или все были нерейтинговыми" });
@@ -1525,7 +1606,7 @@ app.post("/updateTournamentCounterForPlayers", async (req, res) => {
 //   }
 // });
 
-app.post("/updateBestVictories", async (req, res) => {
+app.post("/updateBestVictories", ensureClubOrAdmin, async (req, res) => {
   try {
     const { data } = req.body;
     const db = getDB();
@@ -1604,7 +1685,7 @@ app.post("/updateBestVictories", async (req, res) => {
 
 
 
-app.post("/updatePlayerRatings", async (req, res) => {
+app.post("/updatePlayerRatings", ensureClubOrAdmin, async (req, res) => {
     try {
       const { players } = req.body;
       // console.log('players', players);
@@ -1685,6 +1766,7 @@ app.post("/updatePlayerRatings", async (req, res) => {
       }
   
       console.log("Рейтинг обновлен:", updatedPlayer1, updatedPlayer2);
+      logAction(req, 'PLAYERS_RATING_UPDATED', { clubId });
   
       res.json({ message: "Рейтинг игроков успешно обновлён", players: [updatedPlayer1, updatedPlayer2] });
   
@@ -1694,7 +1776,7 @@ app.post("/updatePlayerRatings", async (req, res) => {
     }
 });
 
-app.post("/updateRatingsAfterBonuses", async (req, res) => {
+app.post("/updateRatingsAfterBonuses", ensureClubOrAdmin, async (req, res) => {
   try {
       const { players } = req.body;
       const db = getDB();
@@ -1791,7 +1873,8 @@ app.get('/:lang/dashboard/:userType/:userId', ensureAuthenticated, (req, res) =>
 
 
   link = `${lang}/dashboard/${userType}`;
-  console.log(`Доступ к профилю пользователя ${userId}`);
+  // console.log(`Доступ к профилю пользователя ${userId}`);
+  logAction(req, 'PLAYER_PROFILE_ACCESS', { userId });
 
   return res.render(link, {
     userId: userId,
@@ -1898,6 +1981,7 @@ app.post('/api/restore-password', async (req, res) => {
       } catch (error) {
           console.error('Error sending email:', error);
       }
+      logAction(req, 'PASSWORD_RESET_REQUEST', { email, user });
 
       res.status(200).json({ message: 'Password reset link sent to your email' });
   } catch (error) {
@@ -2008,6 +2092,7 @@ app.post('/reset-password/:token', async (req, res) => {
       );
 
       if (updateResult.modifiedCount === 1) {
+          logAction(req, 'PASSWORD_SUCCESSFULLY_RESET');
           res.status(200).json({ message: 'Password has been successfully reset.' });
       } else {
           res.status(500).json({ message: 'Failed to update the password. Please try again.' });
@@ -2377,7 +2462,7 @@ app.get('/get-data-tournament', async (req, res) => {
   }
 });
 
-app.get('/tournaments-by-club/:clubId', async (req, res) => {
+app.get('/tournaments-by-club/:clubId',  ensureClubOrAdmin, async (req, res) => {
   const { clubId } = req.params;
 
   try {
@@ -2645,7 +2730,7 @@ app.get('/get-players-with-city/', async (req, res) => {
   }
 });
 
-app.post('/createTournament', async (req, res) => {
+app.post('/createTournament', ensureClubOrAdmin, async (req, res) => {
   try {
       const db = getDB();
       // console.log(req.body);
@@ -2701,8 +2786,9 @@ app.post('/createTournament', async (req, res) => {
       // console.log('отправляемый обьект', newTournament);
       // Сохраняем турнир в базе данных
       const result = await db.collection('tournaments').insertOne(newTournament);
-
       // Возвращаем ответ с данными о созданном турнире
+      logAction(req, 'TOURNAMENT_CREATED', { clubId });
+
       res.status(201).json({
           message: 'Tournament created successfully!',
           tournamentId: result.insertedId,
@@ -2798,7 +2884,7 @@ app.post('/register', [
       policy
     });
 
-    console.log("User data inserted successfully");
+    // console.log("User data inserted successfully");
 
     // const transporter = nodemailer.createTransport({
     //   service: 'gmail',
@@ -2850,6 +2936,7 @@ app.post('/register', [
         console.log('Email sent:', info.response);
       }
     });
+    logAction(req, 'REGISTRATION_SUCCESSFULL');
 
     res.status(200).json({ status: 'success', message: 'Registration successful!' });
   } catch (err) {
@@ -2935,7 +3022,7 @@ app.post('/login', (req, res, next) => {
       // Сохраняем информацию в сессии
       req.session.userId = userObj.user._id;
       req.session.userType = userObj.userType;
-
+      logAction(req, 'LOGIN_SUCCESS');
       res.status(200).json({
         userId: userObj.user._id,
         name: userObj.user.fullname || userObj.user.name,

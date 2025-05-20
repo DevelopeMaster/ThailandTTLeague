@@ -856,7 +856,7 @@ router.post('/createClub', ensureAuthenticated, upload.fields([
             free: req.body.freeServices ? req.body.freeServices.split(',').map(item => item.trim()) : [],
             paid: req.body.paidServices ? req.body.paidServices.split(',').map(item => item.trim()) : []
         };
-        newClubscheduleData = {
+        newClub.scheduleData = {
             monday: [],
             tuesday: [],
             wednesday: [],

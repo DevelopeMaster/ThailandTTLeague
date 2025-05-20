@@ -4314,7 +4314,7 @@ export function loginForm() {
     // });
 
     async function login(data) {
-        console.log('Sending login request with data:', data);
+        // console.log('Sending login request with data:', data);
 
         try {
             const response = await fetch('/login', {
@@ -4372,7 +4372,7 @@ export function loginForm() {
             language: languageMap[clientLang] // Передаем выбранный язык
         };
 
-        console.log('Form data:', data);
+        // console.log('Form data:', data);
         login(data);
     });
 }

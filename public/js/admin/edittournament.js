@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error('Tournament not found');
             }
             tournamentData = await response.json();
-            city = await getCityName(tournamentData.city._id) || await getCityName(tournamentData.city);
+            const cityId = tournamentData.city?._id || tournamentData.city;
+            city = await getCityName(cityId);
             
         } catch (error) {
             console.error('Error fetching tournament data:', error);
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('clubAddress').value = tournamentData.address.ru || '';
         document.getElementById('phoneNumber').value = tournamentData.contacts || '';
         document.getElementById('deposit').value = `${tournamentData.contribution}฿`;
-        document.getElementById('registeredPlayers').value = tournamentData.players.length || 0;
+        document.getElementById('registeredPlayers').value = tournamentData.players?.length || 0;
 
         // Заполнение текстовых полей с призами
         document.getElementById('description').value = tournamentData.prizes?.ru || '';

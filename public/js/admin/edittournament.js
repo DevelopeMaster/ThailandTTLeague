@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error('Tournament not found');
             }
             tournamentData = await response.json();
-            city = await getCityName(tournamentData.city._id) || await getCityName(tournamentData.city.id);
+            city = await getCityName(tournamentData.city._id) || await getCityName(tournamentData.city);
             
         } catch (error) {
             console.error('Error fetching tournament data:', error);

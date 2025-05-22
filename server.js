@@ -223,46 +223,42 @@ app.post('/uploadResultImage', ensureAuthenticated, async (req, res) => {
       res.status(500).json({ error: 'Ошибка сервера при загрузке изображения' });
   }
 });
-// app.use(express.static('public', {
-//   maxAge: '30d'
-// }));
-// app.use(express.static('public'));
 
 // app.use(helmet());
 
-app.use(helmet({
-  contentSecurityPolicy: {
-    useDefaults: true,
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        "https://cdn.jsdelivr.net",
-        "https://unpkg.com" // ✅ Leaflet.js
-      ],
-      styleSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        "https://fonts.googleapis.com",
-        "https://unpkg.com" // ✅ Leaflet.css
-      ],
-      fontSrc: [
-        "'self'",
-        "https://fonts.gstatic.com",
-        "data:"
-      ],
-      imgSrc: [
-        "'self'",
-        "data:",
-        "https://res.cloudinary.com"
-      ],
-      connectSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      upgradeInsecureRequests: []
-    }
-  }
-}));
+// app.use(helmet({
+//   contentSecurityPolicy: {
+//     useDefaults: true,
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       scriptSrc: [
+//         "'self'",
+//         "'unsafe-inline'",
+//         "https://cdn.jsdelivr.net",
+//         "https://unpkg.com" // ✅ Leaflet.js
+//       ],
+//       styleSrc: [
+//         "'self'",
+//         "'unsafe-inline'",
+//         "https://fonts.googleapis.com",
+//         "https://unpkg.com" // ✅ Leaflet.css
+//       ],
+//       fontSrc: [
+//         "'self'",
+//         "https://fonts.gstatic.com",
+//         "data:"
+//       ],
+//       imgSrc: [
+//         "'self'",
+//         "data:",
+//         "https://res.cloudinary.com"
+//       ],
+//       connectSrc: ["'self'"],
+//       objectSrc: ["'none'"],
+//       upgradeInsecureRequests: []
+//     }
+//   }
+// }));
 
 app.disable('x-powered-by');
 

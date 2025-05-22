@@ -62,9 +62,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('registeredPlayers').value = tournamentData.players.length;
 
         // Заполнение текстовых полей с призами
-        document.getElementById('description').value = tournamentData.prizes.ru;
-        document.getElementById('descriptionEng').value = tournamentData.prizes.en;
-        document.getElementById('descriptionThai').value = tournamentData.prizes.th;
+        document.getElementById('description').value = tournamentData.prizes?.ru || '';
+        document.getElementById('descriptionEng').value = tournamentData.prizes?.en || '';
+        document.getElementById('descriptionThai').value = tournamentData.prizes?.th || '';
 
         // Заявленные игроки
         const containerRegistered = document.querySelector('.containerforRegistered');

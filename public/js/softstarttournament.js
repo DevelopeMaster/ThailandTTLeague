@@ -4329,7 +4329,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (numberOfGroups) {
                 totalPlayersToFinalInput.step = numberOfGroups;
                 totalPlayersToFinalInput.min = numberOfGroups;
-                totalPlayersToFinalInput.max = allPlayers.length - numberOfGroups;
+                totalPlayersToFinalInput.max = allPlayers.length;
                 console.log(allPlayers.length);
                 if (!totalPlayersToFinalInput.value || parseInt(totalPlayersToFinalInput.value) < numberOfGroups) {
                     totalPlayersToFinalInput.value = numberOfGroups;

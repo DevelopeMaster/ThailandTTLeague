@@ -531,12 +531,116 @@ export function areAllGroupMatchesFinished(groupFinalResults) {
 //     return true; // все группы и все пары сыграны
 // }
 
+export function generateGroupOlympicRounds(finalists, numberOfGroups) {
+    const playersPerGroup = finalists.length / numberOfGroups;
+
+    // 1. Группируем по groupIndex и сортируем по groupPlace
+    const groups = Array.from({ length: numberOfGroups }, (_, i) => {
+        return finalists
+            .filter(p => p.groupIndex === i)
+            .sort((a, b) => a.groupPlace - b.groupPlace);
+    });
+
+    // 2. Строим пары перекрестно
+    const pairs = [];
+    for (let i = 0; i < playersPerGroup; i++) {
+        for (let g = 0; g < numberOfGroups / 2; g++) {
+            const groupA = groups[g];
+            const groupB = groups[numberOfGroups - 1 - g];
+
+            const player1 = groupA[i];
+            const player2 = groupB[playersPerGroup - 1 - i];
+
+            if (player1 && player2) {
+                pairs.push({ player1, player2 });
+            }
+        }
+    }
+
+    // 3. Дополняем до степени двойки
+    const paddedCount = Math.pow(2, Math.ceil(Math.log2(pairs.length * 2)));
+    const totalRounds = Math.log2(paddedCount);
+    const rounds = [];
+
+    const firstRoundPairs = [...pairs];
+    const byeNeeded = paddedCount / 2 - pairs.length;
+
+    for (let i = 0; i < byeNeeded; i++) {
+        firstRoundPairs.push({
+            player1: {
+                id: `bye_${i}`,
+                fullname: 'BYE',
+                logo: '/icons/playerslogo/default_avatar.svg',
+                isBye: true
+            },
+            player2: {
+                id: `bye_${i}_b`,
+                fullname: 'BYE',
+                logo: '/icons/playerslogo/default_avatar.svg',
+                isBye: true
+            }
+        });
+    }
+
+    rounds.push({ pairs: firstRoundPairs });
+
+    // --- Автогенерация следующих раундов
+    for (let roundIndex = 1; roundIndex <= totalRounds; roundIndex++) {
+        const prevRound = rounds[roundIndex - 1];
+        const nextRoundPairs = [];
+
+        for (let i = 0; i < prevRound.pairs.length; i += 2) {
+            const pair1 = prevRound.pairs[i];
+            const pair2 = prevRound.pairs[i + 1];
+
+            // Победитель из пары 1
+            const winner1 = getAutoWinner(pair1);
+            const winner2 = getAutoWinner(pair2);
+
+            nextRoundPairs.push({
+                player1: winner1,
+                player2: winner2
+            });
+        }
+
+        rounds.push({ pairs: nextRoundPairs });
+    }
+
+    // 4. Генерация последующих раундов
+    // for (let r = 1; r < totalRounds; r++) {
+    //     const prev = rounds[r - 1];
+    //     const nextPairs = [];
+
+    //     for (let i = 0; i < prev.pairs.length; i += 2) {
+    //         const winner1 = getAutoWinner(prev.pairs[i]);
+    //         const winner2 = getAutoWinner(prev.pairs[i + 1]);
+
+    //         nextPairs.push({ player1: winner1, player2: winner2 });
+    //     }
+
+    //     rounds.push({ pairs: nextPairs });
+    // }
+    console.log('rounds', rounds);
+    return rounds;
+}
+
+
+function getAutoWinner(pair) {
+    if (!pair) return {};
+    const { player1, player2 } = pair;
+
+    if (player1?.isBye && !player2?.isBye) return player2;
+    if (player2?.isBye && !player1?.isBye) return player1;
+    return {}; // оба реальные — результат будет после игры
+}
+
 
 
 
 
 export function getTopPlayersFromGroups(groupFinalResults, playersPerGroupToFinal, allPlayers) {
     const finalists = [];
+    const groupMap = {};
     console.log('входящие значения:', groupFinalResults, playersPerGroupToFinal, allPlayers );
     groupFinalResults.forEach(group => {
         const top = group.stats
@@ -548,6 +652,18 @@ export function getTopPlayersFromGroups(groupFinalResults, playersPerGroupToFina
             if (full) finalists.push(full);
         });
     });
+
+    groupFinalResults?.forEach(group => {
+        group.stats?.forEach(playerStat => {
+          groupMap[playerStat.playerId] = group.groupIndex;
+        });
+    });
+
+    finalists?.forEach(player => {
+        if (groupMap[player.id] !== undefined) {
+          player.groupIndex = groupMap[player.id];
+        }
+      });
 
     return finalists;
 }

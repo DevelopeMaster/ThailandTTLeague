@@ -28,46 +28,6 @@ export function generateOlympicPairs(players) {
 
 
 
-
-
-
-
-
-
-
-// куча BYE игроков добавится 
-// export function generateOlympicPairs(players) {
-//     const sorted = [...players].sort((a, b) => b.rating - a.rating);
-
-//     // 1. Расширяем до степени двойки
-//     const paddedCount = Math.pow(2, Math.ceil(Math.log2(sorted.length)));
-
-//     // 2. Добавляем BYE игроков (если не хватает)
-//     const playersWithByes = [...sorted];
-//     const byeCount = paddedCount - sorted.length;
-
-//     for (let i = 0; i < byeCount; i++) {
-//         playersWithByes.push({
-//             id: `bye_${i}`,
-//             fullname: 'BYE',
-//             city: ' - ',
-//             logo: '/icons/playerslogo/default_avatar.svg',
-//             isBye: true,
-//             rating: 0,
-//         });
-//     }
-
-//     // 3. Формируем пары
-//     const pairs = [];
-//     for (let i = 0; i < paddedCount / 2; i++) {
-//         const p1 = playersWithByes[i];
-//         const p2 = playersWithByes[paddedCount - 1 - i];
-//         pairs.push({ player1: p1, player2: p2 });
-//     }
-
-//     return pairs;
-// } 
-
 export function generateOlympicRounds(players) {
     const sorted = [...players].sort((a, b) => b.rating - a.rating);
     const paddedCount = Math.pow(2, Math.ceil(Math.log2(sorted.length)));
@@ -130,6 +90,9 @@ function getAutoWinner(pair) {
     if (player2?.isBye && !player1?.isBye) return player1;
     return {}; // оба реальные — результат будет после игры
 }
+
+
+
 
 
 

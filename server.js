@@ -1240,6 +1240,7 @@ app.post('/saveTournament', ensureClubOrAdmin, async (req, res) => {
               groupLosses : player.groupLosses,
               groupSetsWon : player.groupSetsWon,
               groupSetsLost : player.groupSetsLost,
+              groupIndex: player.groupIndex || '',
               city: player.city
           }));
           // updateData.players = cleanPlayerData(updateData.players);
@@ -1781,7 +1782,7 @@ app.post("/updatePlayerRatings", ensureClubOrAdmin, async (req, res) => {
       }
   
       console.log("Рейтинг обновлен:", updatedPlayer1, updatedPlayer2);
-      logAction(req, 'PLAYERS_RATING_UPDATED', { clubId });
+      logAction(req, 'PLAYERS_RATING_UPDATED', { updatedPlayer1, updatedPlayer2 });
   
       res.json({ message: "Рейтинг игроков успешно обновлён", players: [updatedPlayer1, updatedPlayer2] });
   

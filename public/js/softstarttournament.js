@@ -1,6 +1,6 @@
 import { checkSession, getUserData, createSoftHeader, createHeader, createFooter, getAllClubs, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
 import  { generateOlympicPairs, getOlympicPlayerStats, calculateOlympicStandings, renderOlympicGrid, generateOlympicRounds, generateOlympicPairsAndWaiting} from './olympicTournament.js';
-import  { distributePlayersIntoGroups, renderGroups, areAllGroupMatchesFinished, getTopPlayersFromGroups, generateGroupPairs, renderGroupResults, saveGroupBasedMatchResult } from './groupOlympic.js';
+import  { distributePlayersIntoGroups, renderGroups, areAllGroupMatchesFinished, getTopPlayersFromGroups, generateGroupPairs, renderGroupResults, saveGroupBasedMatchResult, generateGroupOlympicRounds } from './groupOlympic.js';
 //----------- important -----------//
 window.onload = function() {
     if (!localStorage.getItem('clientLang')) {
@@ -839,9 +839,19 @@ document.addEventListener('DOMContentLoaded', async function() {
             saveInitialRatings(allParticipants);
         }
         
-    
-        // Генерация всех раундов с автопобедами от BYE
-        const rounds = generateOlympicRounds(allParticipants);
+        let rounds;
+
+        if (selectedType === 'groupOlympicFinal') {
+             // Генерация всех раундов с автопобедами от BYE
+            rounds = generateGroupOlympicRounds(allParticipants, window.groupFinalSettings?.numberOfGroups);
+        } else {
+             // Генерация всех раундов с автопобедами от BYE
+            rounds = generateOlympicRounds(allParticipants);
+        }
+       
+
+
+
         olympicRounds = rounds;
     
         // Только первый раунд
@@ -2178,6 +2188,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (!window.olympicFinalStarted) {
                     window.selectedPlayers = selectedPlayers;
                     saveGroupBasedMatchResult(pair, player1Score, player2Score, playingDiv, selectedPlayers);
+                    // assignGroupIndexToPlayers(tournamentData);
                     selectedPlayers = window.selectedPlayers;
                 }
                 if (window.olympicFinalStarted) {
@@ -2204,11 +2215,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                         document.querySelector('.displayTournamentSecond').style.display = 'block';
                         document.querySelector('.displayTournamentSecond .display_header h3').textContent = 'Olympic final';
-
+                        assignGroupIndexToPlayers(tournamentData);
                         startOlympicTournament(finalists, []);
                     }
                     console.log('будут в финальной игре:', finalists);
                     window.finalists = finalists;
+                    
                 }
                 
             }
@@ -2400,6 +2412,31 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Отображаем модальное окно
         modal.style.display = "block";
     }
+
+    function assignGroupIndexToPlayers(tournament) {
+        const groupMap = {}; // { playerId: groupIndex }
+      
+        tournament.groupFinalResults?.forEach(group => {
+          group.stats?.forEach(playerStat => {
+            groupMap[playerStat.playerId] = group.groupIndex;
+          });
+        });
+      
+        // Добавляем в finalists
+        // window.finalists?.forEach(player => {
+        //   if (groupMap[player.id] !== undefined) {
+        //     player.groupIndex = groupMap[player.id];
+        //   }
+        // });
+      
+        // (Необязательно) Добавляем в players (если пригодится позже)
+        window.selectedPlayers?.forEach(player => {
+          if (groupMap[player.id] !== undefined) {
+            player.groupIndex = groupMap[player.id];
+          }
+        });
+      }
+      
 
 
     function determineTournamentStandings(standings, results) {
@@ -4481,7 +4518,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     groupWins : player.groupWins,
                     groupLosses : player.groupLosses,
                     groupSetsWon : player.groupSetsWon,
-                    groupSetsLost : player.groupSetsLost
+                    groupSetsLost : player.groupSetsLost,
+                    groupIndex: player.groupIndex || ""
                 };
             }),
             retiredPlayers: retiredPlayers.map(player => ({

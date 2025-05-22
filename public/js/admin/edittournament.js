@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error('Tournament not found');
             }
             tournamentData = await response.json();
-            city = await getCityName(tournamentData.city._id);
+            city = await getCityName(tournamentData.city._id) || await getCityName(tournamentData.city.id);
             
         } catch (error) {
             console.error('Error fetching tournament data:', error);
@@ -45,10 +45,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // console.log(tournamentData);
 
     if (tournamentData) {
-        document.getElementById('playerName').value = tournamentData.club.name;
-        document.getElementById('city').value = city;  // замените 'name' на нужный ключ, если требуется
+        document.getElementById('playerName').value = tournamentData.club.name || '';
+        document.getElementById('city').value = city || '';  // замените 'name' на нужный ключ, если требуется
         document.getElementById('ratinglimit').value = tournamentData.ratingLimit;
-        document.getElementById('numberoftables').value = tournamentData.tables;
+        document.getElementById('numberoftables').value = tournamentData.tables || 1;
         // Разделяем строку на дату и время
         const [date, time] = tournamentData.datetime.split('T');
         // Обрезаем время до часов и минут
@@ -56,10 +56,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Устанавливаем значение в формате "YYYY-MM-DD, HH:mm"
         document.getElementById('starttournament').value = `${date}, ${formattedTime}`;
 
-        document.getElementById('clubAddress').value = tournamentData.address.ru;
-        document.getElementById('phoneNumber').value = tournamentData.contacts;
+        document.getElementById('clubAddress').value = tournamentData.address.ru || '';
+        document.getElementById('phoneNumber').value = tournamentData.contacts || '';
         document.getElementById('deposit').value = `${tournamentData.contribution}฿`;
-        document.getElementById('registeredPlayers').value = tournamentData.players.length;
+        document.getElementById('registeredPlayers').value = tournamentData.players.length || 0;
 
         // Заполнение текстовых полей с призами
         document.getElementById('description').value = tournamentData.prizes?.ru || '';

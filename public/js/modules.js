@@ -4823,6 +4823,7 @@ export function registrationForm() {
                     showErrorModal(errorMessage);
                 } else if (resData.status === 'success') {
                     document.querySelector('form').reset();
+                    document.querySelector('#myModal').display = 'none';
                     redirectToPersonalAccount();
                 } else {
                     // На всякий случай, если статус не "success", но и не ошибка
@@ -4831,6 +4832,7 @@ export function registrationForm() {
              
             } else {
                 document.querySelector('form').reset();
+                document.querySelector('#myModal').display = 'none';
                 redirectToPersonalAccount();
             }
             

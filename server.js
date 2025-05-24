@@ -275,12 +275,13 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public'), {
   extensions: ['html'], // не отдаёт .php, .conf и пр.
   dotfiles: 'ignore',
-  // maxAge: 5 * 60 * 1000,
-  maxAge: '30d'
+  maxAge: 5 * 60 * 1000
+  // maxAge: '30d'
 }));
 
-const { execSync } = require('child_process');
-const version = execSync('git rev-parse --short HEAD').toString().trim(); // или просто Date.now()
+// const { execSync } = require('child_process');
+// const version = execSync('git rev-parse --short HEAD').toString().trim(); // или просто Date.now()
+const version = Date.now().toString();
 
 app.use((req, res, next) => {
   const originalSend = res.send;
@@ -294,6 +295,11 @@ app.use((req, res, next) => {
 
   next();
 });
+
+
+
+
+
 
 
 

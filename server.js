@@ -279,6 +279,21 @@ app.use(express.static(path.join(__dirname, 'public'), {
   // maxAge: '30d'
 }));
 
+const { execSync } = require('child_process');
+const version = execSync('git rev-parse --short HEAD').toString().trim(); // или просто Date.now()
+
+app.use((req, res, next) => {
+  const originalSend = res.send;
+
+  res.send = function (body) {
+    if (typeof body === 'string' && body.includes('</html>')) {
+      body = body.replace(/(src="\/[^"]+\.js)(?=")/g, `$1?v=${version}`);
+    }
+    return originalSend.call(this, body);
+  };
+
+  next();
+});
 
 
 

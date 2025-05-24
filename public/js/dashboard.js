@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 throw new Error('Player not found');
             }
             player = await response.json();
-            // console.log(player);
+            console.log(player);
             playerCity = await getCityName(player.city);
             if (player.tournaments.length > 0) {
                 mostActiveClub = getClubWithMostTournaments(player.tournaments);
@@ -339,10 +339,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function renderPlayerData() {
         const formattedDate = formatDateAndAge(player.birthdayDate, lang);
-        const currentRating = player.rating;
-        const sundayRating = player.sundaysRating;
+        const currentRating = player.rating || '-';
+        const sundayRating = player.sundaysRating || null;
         // const ratingChange = currentRating - sundayRating;
-        const ratingChange = +(currentRating - sundayRating).toFixed(1);
+        const ratingChange = +(currentRating - sundayRating).toFixed(1) || 0;
         const firstTournamentDate = formatDate(player.firstTournamentDate);
         let changeRatingColor;
         let changeRatingSymbol;

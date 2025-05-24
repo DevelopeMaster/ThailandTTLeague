@@ -4814,7 +4814,8 @@ export function registrationForm() {
         .then(async response => {
             const resData = await response.json();
             if (!response.ok) {
-                let errorMessage = 'Failed to create account';
+                alert(`${resData?.message}`);
+                let errorMessage = `Failed to create account`;
                 if (resData.status === 'error') {
                     console.log('ошибка', resData);
                     if (resData?.message) {

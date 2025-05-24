@@ -2972,6 +2972,7 @@ app.post('/register', [
 
     res.status(200).json({ status: 'success', message: 'Registration successful!' });
   } catch (err) {
+    console.log('Error inserting into MongoDB:', err);
     console.error('Error inserting into MongoDB:', err);
     logAction(req, 'REGISTRATION_FAILED', {err});
     res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });

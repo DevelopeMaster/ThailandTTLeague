@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             player = await response.json();
             console.log(player);
             playerCity = await getCityName(player.city);
-            if (player.tournaments.length > 0) {
+            if (player.tournaments?.length > 0) {
                 mostActiveClub = getClubWithMostTournaments(player.tournaments);
                 await fetchClubData(mostActiveClub.clubId);
             }

@@ -2919,22 +2919,22 @@ export async function fetchFutureTournaments() {
             let allPlayerIds = [...new Set(
                 futureTournaments.flatMap(tournament =>
                     Array.isArray(tournament.players) 
-                        ? tournament.players.map(player => player._id)
+                        ? tournament.players.map(player => player.id)
                         : [] // Возвращаем пустой массив, если игроков нет
                 )
             )];
             
            
-            // console.log(allPlayerIds);
+            console.log(allPlayerIds);
             fetchPlayerDetails(allPlayerIds).then(allPlayers => {
                 futureTournaments.forEach(tournament => {
                     let players;
                     // console.log(tournament);
                     if (tournament.players && Array.isArray(tournament.players)) {
-                        let tournamentPlayerIds = tournament.players.map(player => player._id); // Массив всех _id игроков турнира
+                        let tournamentPlayerIds = tournament.players.map(player => player.id); // Массив всех _id игроков турнира
 
                         players = allPlayers.filter(player => tournamentPlayerIds.includes(player._id));// Исключаем игроков, которые не найдены
-                    
+                        console.log('players', players);
                         if (players.length > 0) {
 
                             const validPlayers = players.filter(player => 
@@ -5965,7 +5965,7 @@ export async function getAllTournaments(user) {
                 
 
                 const allPlayerIds = tournament.players && tournament.players.length > 0
-                    ? [...new Set(tournament.players.map(player => player._id || player.id))]
+                    ? [...new Set(tournament.players.map(player => player.id || player._id))]
                     : [];
 
                 let allPlayers = [];
@@ -5982,7 +5982,7 @@ export async function getAllTournaments(user) {
 
 
                 const players = (tournament.players || [])
-                    .map(player => playerMap[player._id || player.id])
+                    .map(player => playerMap[player.id || player._id])
                     .filter(Boolean);
 
 

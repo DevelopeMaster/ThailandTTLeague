@@ -115,14 +115,24 @@ document.addEventListener('DOMContentLoaded', async function() {
         const isRegistered = players.some(player => player.id === currentUserId);
         const isRetired = retiredPlayers.some(player => player.id === currentUserId);
     
-        
+        console.log('allPlayers', allPlayers);
+        // Получаем рейтинг текущего игрока
+        const currentPlayer = allPlayers.find(p => p._id === currentUserId);
+        const currentRating = currentPlayer?.rating || 0;
+        console.log('currentRating', currentRating);
+        // Получаем лимит рейтинга из поля input
+        const ratingLimit = tournament.ratingLimit || tournament.restrictions;
+        console.log('ratingLimit', ratingLimit);
+
+        // Проверяем, проходит ли игрок по рейтингу
+        const isRatingAllowed = currentRating <= ratingLimit;
         // if (!isRegistered && !isRetired) {
         //     singUpToTournamentBtn.style.display = 'none';
         //     cancelRegistrationBtn.style.display = 'none';
         //     return; // Завершаем выполнение функции
         // }
     
-        if (isRetired) {
+        if (isRetired || !isRatingAllowed) {
             singUpToTournamentBtn.style.display = 'none'; // Не показываем кнопку для выбывших игроков
         } else if (isRegistered) {
             singUpToTournamentBtn.style.display = 'none';

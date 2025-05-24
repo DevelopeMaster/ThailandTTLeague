@@ -275,7 +275,8 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public'), {
   extensions: ['html'], // не отдаёт .php, .conf и пр.
   dotfiles: 'ignore',
-  maxAge: '30d'
+  maxAge: 5 * 60 * 1000,
+  // maxAge: '30d'
 }));
 
 
@@ -2957,6 +2958,7 @@ app.post('/register', [
     res.status(200).json({ status: 'success', message: 'Registration successful!' });
   } catch (err) {
     console.error('Error inserting into MongoDB:', err);
+    logAction(req, 'REGISTRATION_FAILED', {err});
     res.status(500).json({ status: 'error', error: 'Registration error. Please try again.' });
   }
 });

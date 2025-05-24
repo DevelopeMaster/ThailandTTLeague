@@ -4814,7 +4814,6 @@ export function registrationForm() {
         .then(async response => {
             const resData = await response.json();
             if (!response.ok) {
-                alert(`${resData?.message}`);
                 let errorMessage = `Failed to create account`;
                 if (resData.status === 'error') {
                     console.log('ошибка', resData);
@@ -4830,10 +4829,14 @@ export function registrationForm() {
                     showErrorModal(translation.serverError);
                 }
              
+            } else {
+                document.querySelector('form').reset();
+                redirectToPersonalAccount();
             }
             
         })
         .catch(error => {
+            console.log('error registration', error);
             showErrorModal(translation.serverError);
         });
     });

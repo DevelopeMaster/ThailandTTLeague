@@ -4814,6 +4814,7 @@ export function registrationForm() {
         .then(async response => {
             const resData = await response.json();
             if (!response.ok) {
+                console.log('регистрация не успешна');
                 let errorMessage = `Failed to create account`;
                 if (resData.status === 'error') {
                     console.log('ошибка', resData);
@@ -4824,6 +4825,7 @@ export function registrationForm() {
                 } else if (resData.status === 'success') {
                     document.querySelector('form').reset();
                     document.querySelector('#myModal').style.display = 'none';
+                    document.body.style.overflow = 'auto';
                     redirectToPersonalAccount();
                 } else {
                     // На всякий случай, если статус не "success", но и не ошибка
@@ -4831,8 +4833,10 @@ export function registrationForm() {
                 }
              
             } else {
+                console.log('регистрация успешна');
                 document.querySelector('form').reset();
                 document.querySelector('#myModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
                 redirectToPersonalAccount();
             }
             
@@ -4864,7 +4868,7 @@ export function showErrorModal(message, tittle) {
 };
 
 function redirectToPersonalAccount() {
-    window.location.href = '/';
+    // window.location.href = '/';
     loginForm();
 
     // console.log('регистрация успешна');

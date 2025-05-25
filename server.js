@@ -2234,8 +2234,10 @@ app.get('/cities', async function(req, res) {
      // Извлекаем все города с нужными проекциями
      const allcities = await db.collection('cities').find({}, { projection: { _id: 0, [language]: 1 } }).toArray();
      const citiesObjects = await db.collection('cities').find({}).toArray();
-     const cities = allcities.map(city => city[language]); // Массив с названиями на нужном языке
- 
+    //  const cities = allcities.map(city => city[language]); // Массив с названиями на нужном языке
+    const cities = allcities.map(city =>
+      city[language] || city['english'] || city['russian'] || city['thai']
+    );
      res.json({
         citiesObjects,  // Массив названий городов на нужном языке
         cities          // Оригинальный массив объектов городов

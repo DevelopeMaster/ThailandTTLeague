@@ -1,4 +1,5 @@
-import { createHeader, createFooter, getAllClubs, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
+// import { createHeader, createFooter, getAllClubs, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
+import { createHeader, createFooter, getAllClubs, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from '/js/versioned-modules.js';
 //----------- important -----------//
 window.onload = function() {
     if (!localStorage.getItem('clientLang')) {
@@ -78,7 +79,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 method: 'GET',
                 credentials: 'include'
             });
-
+            if (!response.ok) {
+                console.log('none auth');
+            }
             if (response.ok) {
                 const userData = await response.json();
                 console.log(userData);
@@ -88,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 singUpToTournamentBtn.style.display = 'none';
             }
         } catch (error) {
-            console.error('Ошибка при проверке авторизации:', error);
+            console.log('Ошибка при проверке авторизации:', error);
         }
     }
 

@@ -1,4 +1,4 @@
-import { listenerOfButtons, showErrorModal } from '../modules.js';
+import { listenerOfButtons, showErrorModal } from '../versioned-modules.js';
 import { createHeaderandSidebarForAdmin, getAllAdv } from './adminmodules.js';
 document.addEventListener('DOMContentLoaded', async () => {
     createHeaderandSidebarForAdmin('manageAdvertisement');

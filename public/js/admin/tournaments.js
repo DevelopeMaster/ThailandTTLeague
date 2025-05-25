@@ -1,4 +1,4 @@
-import { listenerOfButtons,  getAllTournaments, showErrorModal } from '../modules.js';
+import { listenerOfButtons,  getAllTournaments, showErrorModal } from '../versioned-modules.js';
 import { createHeaderandSidebarForAdmin } from './adminmodules.js';
 
 document.addEventListener('DOMContentLoaded', async () => {

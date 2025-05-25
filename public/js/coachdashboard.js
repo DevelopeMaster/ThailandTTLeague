@@ -1,4 +1,4 @@
-import { createHeader, createFooter, getAllPlayers, getAllTournaments, getAllClubs, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './modules.js';
+import { createHeader, createFooter, getAllPlayers, getAllTournaments, getAllClubs, showErrorModal, getAllCoaches, listenerOfButtons, btnGoUp, languageControl, controlTextAreaCoach, fetchCities, fetchAdvertisements, breadCrumb } from './versioned-modules.js';
 // const html2canvas = require('html2canvas');
 // import html2canvas from '../node_modules/html2canvas/dist/html2canvas.min.js';
 //----------- important -----------//

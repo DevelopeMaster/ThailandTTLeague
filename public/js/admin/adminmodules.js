@@ -1,4 +1,4 @@
-import { showErrorModal } from '../modules.js';
+import { showErrorModal } from '../versioned-modules.js';
 export function createHeaderandSidebarForAdmin(page) {
     if (document.querySelector('.admin_header')) {
         const adminHaeder = document.querySelector('.admin_header');

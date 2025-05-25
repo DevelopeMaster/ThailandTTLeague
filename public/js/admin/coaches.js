@@ -1,4 +1,4 @@
-import { listenerOfButtons } from '../modules.js';
+import { listenerOfButtons } from '../versioned-modules.js';
 import { createHeaderandSidebarForAdmin, getAllCoaches } from './adminmodules.js';
 document.addEventListener('DOMContentLoaded', () => {
     createHeaderandSidebarForAdmin('manageAllCoaches');

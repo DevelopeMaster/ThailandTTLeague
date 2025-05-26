@@ -112,6 +112,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     const dropdownTypeOfTournament = document.querySelector('#typeOfTournamentDropdown');
     const dropdownItems = dropdownTypeOfTournament.querySelectorAll('div');
     let selectedType = tournamentData.typeOfTournament || 'roundRobin';
+    let selectedNumberOfSets = tournamentData.numberOfSets || 3;
+    const inputNumberOfSets = document.querySelector('#numberOfParties');
+    inputNumberOfSets.value = selectedNumberOfSets;
+    window.numberOfSets = selectedNumberOfSets;
+    console.log('window.numberOfSets', window.numberOfSets);
 
     dropdownItems.forEach(item => {
         if (item.getAttribute('data-type') === selectedType) {
@@ -4264,6 +4269,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 finishedPairs,
                 roundCounter,
                 results,
+                numberOfSets: window.numberOfSets,
                 initialRatings: tournamentData.initialRatings,
                 typeOfTournament: selectedType || 'roundRobin',
             };
@@ -4553,7 +4559,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             finished: tournamentData.finished || false,
             bonusesApplied: tournamentData.bonusesApplied || false,
             averageRating, 
-            coefficient                                
+            coefficient,
+            numberOfSets: window.numberOfSets,                             
         };
         
         const currentAmountOfTable = parseInt(document.getElementById('numberOfTables').value, 10);
@@ -4893,6 +4900,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 typeOfTournament: selectedType !== tournamentData.typeOfTournament ? selectedType : tournamentData.typeOfTournament || 'roundRobin',
                 round1Results, // ✅ Сохранение результатов 1-го круга
                 round2Results, // ✅ Сохранение результатов 2-го круга
+                numberOfSets: window.numberOfSets,
             };
         }
 

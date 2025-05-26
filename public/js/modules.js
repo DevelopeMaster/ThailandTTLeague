@@ -2446,8 +2446,8 @@ export async function createSoftHeader(language) {
                     logout();
                 }
         
-                if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
-                    searchDropdown.style.display = 'none';
+                if (!searchInput?.contains(event.target) && !searchDropdown?.contains(event.target)) {
+                    searchDropdown ? searchDropdown.style.display = 'none' : console.log('noSearchDropdown');
                 }
                 
                 // if (event.target.closest('.header_account')) {

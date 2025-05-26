@@ -1163,7 +1163,7 @@ app.get('/:lang/dashboard/edituser/:userId', ensureAuthenticated, (req, res) => 
   }
 
   // Проверка на тип пользователя
-  if (userType !== 'user') {
+  if (userType !== 'user' && userType !== 'coach') {
     console.log('Ошибка: Несоответствие типа пользователя');
     return res.redirect(`404`); // Редирект на страницу 404 при несоответствии типа пользователя
   }
@@ -1239,7 +1239,7 @@ app.post('/saveTournament', ensureClubOrAdmin, async (req, res) => {
           return res.status(400).json({ error: 'Tournament ID is required' });
       }
 
-      const { players, retiredPlayers, tables, unratedPlayers, olympicFinalStarted, finalists, groupFinalSettings, groupFinalResults, bonusesApplied, groups, groupStageResults, finalStageBracket, waitingPairs, olympicRounds, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament, roundCounter, round1Results, round2Results } = state;
+      const { players, retiredPlayers, numberOfSets, tables, unratedPlayers, olympicFinalStarted, finalists, groupFinalSettings, groupFinalResults, bonusesApplied, groups, groupStageResults, finalStageBracket, waitingPairs, olympicRounds, finishedPairs, currentPairs, results, finished, coefficient, averageRating, typeOfTournament, roundCounter, round1Results, round2Results } = state;
       // console.log('players from client', players);
       // Обновляем турнирные данные
       const updateData = {};
@@ -1395,6 +1395,10 @@ app.post('/saveTournament', ensureClubOrAdmin, async (req, res) => {
 
       if (tables) {
         updateData.tables = tables;
+      }
+
+      if (numberOfSets) {
+        updateData.numberOfSets = numberOfSets;
       }
       // Проверяем, есть ли уже `initialRatings`
       const existingTournament = await db.collection('tournaments').findOne(

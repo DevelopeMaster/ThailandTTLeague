@@ -190,7 +190,19 @@ export async function getAllPlayers() {
 
             const names = [...new Set(players.map(player => player.fullname).filter(Boolean))];
             const nicknames = [...new Set(players.map(player => player.nickname).filter(Boolean))];
-            const cityIds = [...new Set(players.map(player => player.city))];
+            // const cityIds = [...new Set(players.map(player => player.city))];
+            const cityIds = [
+                ...new Set(
+                  players
+                    .map(player => {
+                      const city = player.city;
+                      if (typeof city === 'string') return city;
+                      if (city && typeof city === 'object' && '$oid' in city) return city.$oid;
+                      return null; // если вдруг город не указан
+                    })
+                    .filter(Boolean) // убираем null/undefined
+                )
+              ];
 
             createDropdown(nameDropdown, [...names, ...nicknames], nameInput);
 

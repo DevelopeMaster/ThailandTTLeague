@@ -150,7 +150,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     function getTranslation(key) {
         return translations[lang][key] || translations['en'][key];
     }
-
+    let mostActiveClub;
+    let playedMostOften;
 
     async function fetchCoachData() {
         try {
@@ -159,12 +160,52 @@ document.addEventListener('DOMContentLoaded', async function() {
                 throw new Error('Player not found');
             }
             player = await response.json();
-            // console.log(player);
-            playerCity = await getCityName(player.city);
+            console.log('player', player);
+            playerCity = await getCityName(player.city || player.city['$oid']);
+            console.log(player.tournaments);
+            if (player.tournaments !== null) {
+                mostActiveClub = getClubWithMostTournaments(player.tournaments);
+                console.log('mostActiveClub', mostActiveClub);
+                await fetchClubData(mostActiveClub.clubId);
+            }
             // console.log(playerCity);
             renderPlayerData();
         } catch (error) {
             console.error('Error fetching player data:', error);
+        }
+    }
+
+    function getClubWithMostTournaments(tournaments) {
+        console.log('tournaments', tournaments);
+        if (!tournaments || typeof tournaments !== 'object') return null;
+        console.log('tournaments', tournaments);
+        let maxClubId = null;
+        let maxCount = -1;
+      
+        for (const [clubId, count] of Object.entries(tournaments)) {
+          if (count > maxCount) {
+            maxCount = count;
+            maxClubId = clubId;
+          }
+        }
+      
+        return { clubId: maxClubId, count: maxCount };
+    }
+
+    async function fetchClubData(clubId) {
+        // console.log(clubId)
+        try {
+            const response = await fetch(`/get-data-club?clubId=${clubId}`);
+            if (!response.ok) {
+                throw new Error('Club not found');
+            }
+            const club = await response.json();
+            // console.log('club', club)
+            playedMostOften = club.name;
+            console.log('playedMostOften', playedMostOften);
+            
+        } catch (error) {
+            console.error('Error fetching club data:', error);
         }
     }
 
@@ -175,13 +216,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                 throw new Error('City data not found');
             }
             const city = await response.json();
+            // console.log('city', city);
             const languageKeyMap = {
                 'en': 'english',
                 'ru': 'russian',
                 'th': 'thai'
             };
             const cityKey = languageKeyMap[lang] || 'english';
-            
+            // console.log('cityKey', city[cityKey]);
             return city[cityKey] || city['english'];
         } catch (error) {
             console.error('Ошибка при получении названия города:', error);
@@ -325,7 +367,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 <div class="player_statistics_info_descr_path statisticsSeparateLine">
                     <p>${getTranslation('Rank')}: <span>${Math.round(player.rating) || ' - '}</span></p>
                     <p>${getTranslation('First tournament')}: <span>${firstTournamentDate || ' - '}</span></p>
-                    <p>${getTranslation('Most often in')}: <span>${playedMostOften ? playedMostOften: ' - '} (${mostActiveClub?.count || ' - '})</span></p>
+                    <p>${getTranslation('Most often in')}: <span>${playedMostOften ? playedMostOften : ' - '} (${mostActiveClub?.count || ' - '})</span></p>
                     
                 </div>
             </div>

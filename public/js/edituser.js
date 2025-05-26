@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // const club = JSON.parse(document.getElementById('clubData').textContent);
     const userId = document.querySelector('.player').dataset.userid;
+    const userType = document.querySelector('.player').dataset.usertype;
     let playerData;
     let playerCity;
 
@@ -156,6 +157,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     fetchData('/coaches')
         .then(data => {
+            console.log(data);
             const coachOptions = data.map(coach => coach.name || coach.fullname); // Преобразуем данные в массив имен тренеров
             createDropdown(coachDropdown, coachOptions, coachInput);
             setupDropdown(coachInput, coachDropdown, coachOptions);
@@ -210,29 +212,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         const logoInput = document.getElementById('logoInput');
         const logoPreview = document.getElementById('playerLogo');
 
-        // logoInput.addEventListener('change', function(event) {
-        //     const file = event.target.files[0];
-        
-        //     // Проверяем, выбран ли файл и является ли он изображением
-        //     if (file && file.type.startsWith('image/')) {
-        //         if (file.size > 1 * 1024 * 1024) {
-        //             showErrorModal(`${getTranslation('Not image')}`);
-        //             logoInput.value = ''; 
-        //             return;
-        //         }
-        
-        //         const reader = new FileReader();
-        
-        //         reader.onload = function(e) {
-        //             logoPreview.src = e.target.result;
-        //         };
-        
-        //         reader.readAsDataURL(file);
-        //     } else {
-        //         showErrorModal(`${getTranslation('File too large')}`);
-        //         logoInput.value = '';
-        //     }
-        // });
 
         logoInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -317,10 +296,15 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
             
             playerData = await response.json();
-            playerCity = await getCityName(playerData.city);
+            const cityId =
+                typeof playerData.city === 'string'
+                    ? playerData.city
+                    : playerData.city?.$oid;
+
+            playerCity = await getCityName(cityId);
             // coachData = await getTrainer(training.trainer._id);
             // clubData = await fetchClubData(training.club._id);
-            // console.log(playerData);
+            console.log(playerData);
             // console.log(playerData.city);
             console.log(playerCity);
             // renderPlayerData();
@@ -374,6 +358,16 @@ document.addEventListener("DOMContentLoaded", async function() {
     async function savePlayerData() {
         try {
             const formData = new FormData();
+            let descrLang = 'description';
+            if (userType === 'coach') {
+                if (lang === 'en') {
+                    descrLang = 'descriptioneng';
+                } else if (lang === 'th') {
+                    descrLang = 'descriptionthai';
+                } else if (lang === 'ru') {
+                    descrLang = 'description';
+                }
+            }
             
             formData.append('name', document.getElementById('playerName').value);
             formData.append('city', document.getElementById('city').value);
@@ -385,7 +379,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             formData.append('blade', document.getElementById('blade').value);
             formData.append('forehandRubber', document.getElementById('forehand').value);
             formData.append('backhandRubber', document.getElementById('backhand').value);
-            formData.append('description', document.getElementById('description').value);
+            formData.append(`${descrLang}`, document.getElementById('description').value);
             formData.append('lang', lang); // Отправляем текущий язык на сервер
             formData.append('userId', userId);
 
@@ -397,13 +391,25 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
     
             
-
-    
+            console.log(formData);
+            
             // Отправка данных на сервер
-            const response = await fetch(`/api/savePlayerProfile`, { 
-                method: 'POST',
-                body: formData
-            });
+            let response;
+
+            if (userType === 'user') {
+                response = await fetch(`/api/savePlayerProfile`, { 
+                    method: 'POST',
+                    body: formData
+                });
+            }
+
+            if (userType === 'coach') {
+                response = await fetch(`/api/saveCoachProfile`, { 
+                    method: 'POST',
+                    body: formData
+                });
+            }
+            
     
             if (!response.ok) {
                 // throw new Error('Failed to save club data');
@@ -420,8 +426,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                     if (data.logoUrl) {
                         localStorage.setItem('userLogo', data.logoUrl);
                     }
+                    const link = `/${lang}${data.redirectUrl}/${data.userType}/${data.userId}`
                     // Перенаправляем пользователя на новую страницу
-                    window.location.href = data.redirectUrl;
+                    window.location.href = link;
                 } else {
                     throw new Error(data.error || 'Failed to save player data');
                 }

@@ -133,6 +133,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     function getTranslation(key) {
         return translations[lang][key] || translations['en'][key];
     }
+    let mostActiveClub;
+    let playedMostOften;
 
     async function fetchCoachData() {
         try {
@@ -141,11 +143,16 @@ document.addEventListener('DOMContentLoaded', async function() {
                 throw new Error('Player not found');
             }
             player = await response.json();
-            // console.log(player);
-            playerCity = await getCityName(player.city);
-            console.log(playerCity);
-            clubId = player.club;
-            console.log('id клуба', clubId);
+            console.log(player);
+            playerCity = await getCityName(player.city || player.city['$oid']);
+            // console.log(player.club);
+            clubId = player.club || '-';
+            if (player.tournaments !== null) {
+                mostActiveClub = getClubWithMostTournaments(player.tournaments);
+                console.log('mostActiveClub', mostActiveClub);
+                await fetchClubData(mostActiveClub.clubId);
+            }
+            // console.log('id клуба', clubId);
             await fetchClubData();
             renderPlayerData();
         } catch (error) {
@@ -175,6 +182,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     async function fetchClubData() {
+        if (clubId === '-') {
+            club = '-';
+            return;
+        }
         try {
             const response = await fetch(`/get-data-club?lang=${lang}&clubId=${clubId}`);
             if (!response.ok) {
@@ -182,6 +193,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             club = await response.json();
             // clubCity = await getCityName(club.city);
+            playedMostOften = club.name;
             
             // await renderClubData();
         } catch (error) {
@@ -189,6 +201,33 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    function getClubWithMostTournaments(tournaments) {
+        console.log('tournaments', tournaments);
+        if (!tournaments || typeof tournaments !== 'object') return null;
+        console.log('tournaments', tournaments);
+        let maxClubId = null;
+        let maxCount = -1;
+      
+        for (const [clubId, count] of Object.entries(tournaments)) {
+          if (count > maxCount) {
+            maxCount = count;
+            maxClubId = clubId;
+          }
+        }
+      
+        return { clubId: maxClubId, count: maxCount };
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return "—";
+        
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Месяцы начинаются с 0
+        const year = date.getFullYear();
+    
+        return `${day}.${month}.${year}`;
+    }
 
     fetchCoachData();
 
@@ -199,6 +238,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const ratingChange = currentRating - sundayRating;
         let changeRatingColor;
         let changeRatingSymbol;
+        const firstTournamentDate = formatDate(player.firstTournamentDate) || ' - ';
 
         if (ratingChange > 0) {
             changeRatingColor = '#007026';  // Рейтинг увеличился
@@ -225,7 +265,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     </div>
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Price')}: <span>${player.oneTrainingPrice || '-'}฿</span></p>
-                        <p>${getTranslation('club')}: <a style='color: #fff; text-decoration: none;' href="/${lang}/allClubs/${clubId}">${club.name || '-'}</a></p>
+                        <p>${getTranslation('club')}: <a style='color: #fff; text-decoration: none;' href="/${lang}/allClubs/${clubId || '-'}">${club?.name || '-'}</a></p>
                         <p>${getTranslation('city')}: <span>${playerCity || '-'}</span></p>
                         
                     </div>
@@ -293,18 +333,36 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         renderMap();
 
+        // const playerStatistics = document.querySelector('.player_statistics');
+        // playerStatistics.innerHTML = `
+        //     <div class="player_statistics_info_descr">
+        //         <div class="player_statistics_info_descr_path">
+        //             <p>${getTranslation('Tournaments played')}: <span>${player.tournaments || ' - '}</span></p>
+        //             <p>${getTranslation('Games')}: <span>323 (258 / 65)</span></p>
+        //             <div class="raitingWrapp"><span>${getTranslation('Maximum rating')}:</span> <span class="coaches_content_coach_info_rating">${Math.round(player.rating) || ' - '}</span></div>
+        //         </div>
+        //         <div class="player_statistics_info_descr_path statisticsSeparateLine">
+        //             <p>${getTranslation('Rank')}: <span>${player.rank || ' - '}</span></p>
+        //             <p>${getTranslation('First tournament')}: <span>29.01.2018</span></p>
+        //             <p>${getTranslation('Most often in')}: <span>${player.club || ' - '} (${getTranslation('tournaments')}: ${player.tournaments || ' - '})</span></p>
+                    
+        //         </div>
+        //     </div>
+            
+        // `;
+
         const playerStatistics = document.querySelector('.player_statistics');
         playerStatistics.innerHTML = `
             <div class="player_statistics_info_descr">
                 <div class="player_statistics_info_descr_path">
-                    <p>${getTranslation('Tournaments played')}: <span>${player.tournaments || ' - '}</span></p>
-                    <p>${getTranslation('Games')}: <span>323 (258 / 65)</span></p>
+                    <p>${getTranslation('Tournaments played')}: <span>${player.tournamentsPlayed || 0 }</span></p>
+                    <p>${getTranslation('Games')}: <span>${(player.totalWins + player.totalLosses) || 0} (${player.totalWins || 0} / ${player.totalLosses || 0})</span></p>
                     <div class="raitingWrapp"><span>${getTranslation('Maximum rating')}:</span> <span class="coaches_content_coach_info_rating">${Math.round(player.rating) || ' - '}</span></div>
                 </div>
                 <div class="player_statistics_info_descr_path statisticsSeparateLine">
-                    <p>${getTranslation('Rank')}: <span>${player.rank || ' - '}</span></p>
-                    <p>${getTranslation('First tournament')}: <span>29.01.2018</span></p>
-                    <p>${getTranslation('Most often in')}: <span>${player.club || ' - '} (${getTranslation('tournaments')}: ${player.tournaments || ' - '})</span></p>
+                    <p>${getTranslation('Rank')}: <span>${Math.round(player.rating) || ' - '}</span></p>
+                    <p>${getTranslation('First tournament')}: <span>${firstTournamentDate || ' - '}</span></p>
+                    <p>${getTranslation('Most often in')}: <span>${playedMostOften ? playedMostOften : ' - '} (${mostActiveClub?.count || ' - '})</span></p>
                     
                 </div>
             </div>

@@ -185,11 +185,17 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
         const db = getDB();
         const userId = new ObjectId(req.body.userId);
         // console.log(userId);
-        
         const currentUserData = await db.collection('users').findOne({ _id: userId });
         if (!currentUserData) {
             return res.status(404).send('User not found');
         }
+
+        // if (!currentUserData) {
+        //     currentUserData = await db.collection('coaches').findOne({ _id: userId });
+        //     if (!currentUserData) {
+        //         return res.status(404).send('User not found');
+        //     }
+        // }
         // console.log(currentUserData);
         const updates = {};
   
@@ -502,10 +508,10 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
         if (JSON.stringify(trainingInfo) !== JSON.stringify(currentUserData.trainingInfo)) {
             updates.trainingInfo = trainingInfo;
         }
-
+        console.log('updatesu', updates);
         if (Object.keys(updates).length > 0) {
             await db.collection('coaches').updateOne(
-                { _id: userId },
+                { _id: new ObjectId(userId) },
                 { $set: updates }
             );
             console.log(`Тренер ${userId} успешно обновлен`);
@@ -516,11 +522,16 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
         // if (updates.logo) {
         //     localStorage.setItem('userLogo', updates.logo);
         // }
+
+        
   
         res.json({
-          success: true,
-          logoUrl: updates.logo || '/icons/playerslogo/default_avatar.svg', 
-          redirectUrl: `/en/dashboard/user/${userId}` 
+            success: true,
+            logoUrl: updates.logo || '/icons/playerslogo/default_avatar.svg', 
+            // redirectUrl: `/en/dashboard/user/${userId}`,
+            redirectUrl: `/dashboard`,
+            userId: userId,
+            userType: 'coach'
         });
     } catch (error) {
         console.error('Ошибка при сохранении профиля пользователя:', error);

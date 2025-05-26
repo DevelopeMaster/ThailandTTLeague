@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>TTLeague</title>
+        <link rel="apple-touch-icon" sizes="57x57" href="/icons/favicons/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/icons/favicons/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/icons/favicons/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/icons/favicons/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/icons/favicons/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/icons/favicons/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/favicons/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicons/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="/icons/favicons/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicons/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+        <link rel="manifest" href="/icons/favicons/manifest.json">
+    
+        <!-- Open Graph meta tags -->
+        <meta property="og:title" content="AsianTTLeague">
+        <meta property="og:description" content="Asian TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+        <meta property="og:image" content="https://asianttleague.com/icons/favicons/preview.png">
+        <meta property="og:url" content="https://asianttleague.com/">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Asian TT League">
+    
+        <!-- Twitter Card meta tags -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="AsianTTLeague">
+        <meta name="twitter:description" content="Asian TT League unites clubs, players, and coaches into one big family. Find a club, a coach, or sign up for a tournament.">
+        <meta name="twitter:image" content="https://asianttleague.com/icons/favicons/preview.png">
+        <meta name="twitter:url" content="https://asianttleague.com/">
+    
+        <!-- Favicon and other icons -->
+        <link rel="apple-touch-icon" sizes="76x76" href="/icons/favicons/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicons/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicons/favicon-16x16.png">
+        <link rel="manifest" href="/icons/favicons/site.webmanifest">
+        <link rel="mask-icon" href="/icons/favicons/safari-pinned-tab.svg" color="#5bbad5">
+        <link rel="shortcut icon" href="/icons/favicons/favicon.ico">
+        <meta name="msapplication-TileColor" content="#2b5797">
+        <meta name="msapplication-config" content="/icons/favicons/browserconfig.xml">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/icons/favicons/ms-icon-144x144.png">
+        <meta name="theme-color" content="#262630">
+        <!-- Для iOS установка цвета шторки (status bar) -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="#262630">
+        <!-- Для Android установка цвета шторки -->
+        <meta name="theme-color" content="#000817"> 
+    
+        <link rel="icon" type="image/png" href="/icons/logo.svg">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/css/main.min.css">
+        
+    </head>
+
+<body>
+    <header class="header" id="scroll">
+        <!-- from js -->
+    </header>
+    <div class="navigate">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol id="breadcrumb" class="navigate_breadcrumb">
+                    <!-- from js -->
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <section class="account" data-userid="<%= userId %>">
+        <div class="container">
+            <div class="contentWrapper">
+                <div class="account_mainInfo">
+                    <!-- add from js -->
+                </div>
+                <div class="player_about">
+                    <!-- add from js -->
+                </div>
+                <div class="account_buttonWrapp">
+                    <button id="editProfile" class="header_btn-sign account_buttonWrapp_btn" fdprocessedid="c3chv">Edit profile</button>
+                    <div class="account_buttonWrapp_share" id='shareBtn'>
+                        <p>Share profile</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="playerStatistics">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>General Statistics</h2>
+                <div class="player_statistics">
+                    <!-- add from js -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bestVictories">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>Best victories</h2>
+                <div class="bestVictories_table">
+                    <div class="bestVictories_table_content">
+
+                        <div class="bestVictories_table_victory">
+                            <div class="bestVictories_table_victory_left">
+                                <div class="bestVictories_number">26.08.2023</div>
+                                <div class="cell bestVictories_club">
+                                    <div class="clubLogo" style="background-image: url('/icons/clubslogo/TT_CLUB.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                                    <span class="shortcut" title="Phuket TT Club">Phuket TT Club</span>
+                                </div>
+                                <div class="restrictionStatus bestVictories_before" style="background: rgb(173, 173, 173);">
+                                    <div class="restriction">277</div>
+                                </div>
+                                <div class="cell bestVictories_after">344</div>
+                                <div class="cell bestVictories_player shortcut" title="Logov Nikita">Logov Nikita</div>
+                            </div>
+                            
+
+                            <div class="bestVictories_table_victory_right">
+                                <div class="cell bestVictories_oponentsraiting">988</div>
+                                <div class="cell bestVictories_score">3:2</div>
+                                <div class="cell bestVictories_avarage">+11.1</div>
+                            </div>
+                                
+                                
+                        </div>
+
+                        <a class="bestVictories_table_btn" href="#">
+                            See more
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    <section class="awards">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>Awards</h2>
+                <!-- from js -->
+                <div class="awardsTable">
+                    <div class="awardsTable_item">
+                        <div class="cell bestVictories_club">
+                            <div class="clubLogo" style="background-image: url('/icons/clubslogo/TT_CLUB.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span class="shortcut" title="Phuket TT Club">Phuket TT Club</span>
+                        </div>
+                        <div class="awardsTable_item_medalBlock">
+                            <img src="/icons/1st-medal.svg" alt="gold medal">
+                            <span>(9)</span>
+                            <span>Gold</span>
+                        </div>
+                        <div class="awardsTable_item_medalBlock">
+                            <img src="/icons/2st-medal.svg" alt="silver medal">
+                            <span>(7)</span>
+                            <span>Silver</span>
+                        </div>
+                        <div class="awardsTable_item_medalBlock">
+                            <img src="/icons/3st-medal.svg" alt="bronze medal">
+                            <span>(8)</span>
+                            <span>Bronze</span>
+                        </div> 
+                    </div>
+                    <a class="awardsTable_btn" href="#">See more</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="results">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>Results</h2>
+                <!-- from js -->
+                <div class="resultsTable">
+                    <div class="resultsTable_mainInfo">
+                        <div class="cell bestVictories_club">
+                            <div class="clubLogo" style="background-image: url('/icons/clubslogo/TT_CLUB.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span class="shortcut" title="Phuket TT Club">Phuket TT Club</span>
+                        </div>
+                        <div class="restrictionStatus bestVictories_before" style="background: rgb(173, 173, 173);">
+                            <div class="restriction">277</div>
+                        </div>
+                        <a class="cell tournament_players"><img src="/icons/user.svg" alt="person"><span>2</span></a>
+                        <div class="resultsTable_mainInfo_place">
+                            <img src="/icons/1st-medal.svg" alt="gold medal">
+                            <span>1 place</span>
+                        </div>
+
+                    </div>
+                    <div class="resultsTable_header">
+                        <span class="results_start">Start</span>
+                        <span class="results_stage">Stage</span>
+                        <span class="results_rival">Rival</span>
+                        <span class="results_rating">Rating</span>
+                        <span class="results_score">Score</span>
+                    </div>
+                    <div class="resultsTable_mainInfo_weekday">
+                        <span>06.01.2024 10:00</span>
+                    </div>
+                    <div id="resultsTable" class="resultsTable_content">
+                        <div class="resultsTable_content_steps">
+                            <span class="results_start">15:07</span>
+                            <span class="results_stage">1/4</span>
+                            <span class="results_rival">Chumakov Denis</span>
+                            <span class="results_rating">678</span>
+                            <span class="results_score">2:0</span>
+                        </div>
+                        <div class="resultsTable_content_steps">
+                            <span class="results_start">16:28</span>
+                            <span class="results_stage">1/2</span>
+                            <span class="results_rival">Sychev Andrey</span>
+                            <span class="results_rating">678</span>
+                            <span class="results_score">3:1</span>
+                        </div>
+                        <div class="resultsTable_content_steps">
+                            <span class="results_start">15:07</span>
+                            <span class="results_stage">fin</span>
+                            <span class="results_rival">Smirnov Roma</span>
+                            <span class="results_rating">678</span>
+                            <span class="results_score">2:0</span>
+                        </div>
+                    </div>
+                    <div class="resultsTable_total">
+                        <span class="resultsTable_total_title">Total score:</span>
+                        <span class="resultsTable_total_score">7:1</span>
+
+                    </div>
+                </div>
+                <a class="resultsTable_btn" href="#">See more</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- <section class="account_statistics">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>general Statistics</h2>
+                <div class="player_statistics">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="account_bestVictories">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>best victories</h2>
+                <div class="bestVictories_table">
+                    <div class="bestVictories_table_content">
+
+                        <div class="bestVictories_table_victory">
+                            <div class="bestVictories_table_victory_left">
+                                <div class="bestVictories_number">26.08.2023</div>
+                                <div class="cell bestVictories_club">
+                                    <div class="clubLogo" style="background-image: url('/icons/clubslogo/TT_CLUB.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                                    <span class="shortcut" title="Phuket TT Club">Phuket TT Club</span>
+                                </div>
+                                <div class="restrictionStatus bestVictories_before" style="background: rgb(173, 173, 173);">
+                                    <div class="restriction">277</div>
+                                </div>
+                                <div class="cell bestVictories_after">344</div>
+                                <div class="cell bestVictories_player shortcut" title="Logov Nikita">Logov Nikita</div>
+                            </div>
+                            
+
+                            <div class="bestVictories_table_victory_right">
+                                <div class="cell bestVictories_oponentsraiting">988</div>
+                                <div class="cell bestVictories_score">3:2</div>
+                                <div class="cell bestVictories_avarage">+11.1</div>
+                            </div>
+                                
+                                
+                        </div>
+
+                        <a class="bestVictories_table_btn" href="#">
+                            See more
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="account_bestVictories">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>awards</h2>
+                <div class="awardsTable">
+                    <div class="awardsTable_item">
+                        <div class="cell bestVictories_club">
+                            <div class="clubLogo" style="background-image: url('/icons/clubslogo/TT_CLUB.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span class="shortcut" title="Phuket TT Club">Phuket TT Club</span>
+                        </div>
+                        <div class="awardsTable_item_medalBlock">
+                            <img src="/icons/1st-medal.svg" alt="gold medal">
+                            <span>(9)</span>
+                            <span>Gold</span>
+                        </div>
+                        <div class="awardsTable_item_medalBlock">
+                            <img src="/icons/2st-medal.svg" alt="silver medal">
+                            <span>(7)</span>
+                            <span>Silver</span>
+                        </div>
+                        <div class="awardsTable_item_medalBlock">
+                            <img src="/icons/3st-medal.svg" alt="bronze medal">
+                            <span>(8)</span>
+                            <span>Bronze</span>
+                        </div> 
+                    </div>
+                    <a class="awardsTable_btn" href="#">See more</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="account_bestVictories">
+        <div class="container">
+            <div class="contentWrapper">
+                <h2>results</h2>
+                <div class="resultsTable">
+                    <div class="resultsTable_mainInfo">
+                        <div class="cell bestVictories_club">
+                            <div class="clubLogo" style="background-image: url('/icons/clubslogo/TT_CLUB.png'); background-position: 50%; background-size: cover; background-repeat: no-repeat;"></div>
+                            <span class="shortcut" title="Phuket TT Club">Phuket TT Club</span>
+                        </div>
+                        <div class="restrictionStatus bestVictories_before" style="background: rgb(173, 173, 173);">
+                            <div class="restriction">277</div>
+                        </div>
+                        <a class="cell tournament_players"><img src="/icons/user.svg" alt="person"><span>2</span></a>
+                        <div class="resultsTable_mainInfo_place">
+                            <img src="/icons/1st-medal.svg" alt="gold medal">
+                            <span>1 place</span>
+                        </div>
+
+                    </div>
+                    <div class="resultsTable_header">
+                        <span class="results_start">Start</span>
+                        <span class="results_stage">Stage</span>
+                        <span class="results_rival">Rival</span>
+                        <span class="results_rating">Rating</span>
+                        <span class="results_score">Score</span>
+                    </div>
+                    <div class="resultsTable_mainInfo_weekday">
+                        <span>06.01.2024 10:00</span>
+                    </div>
+                    <div id="resultsTable" class="resultsTable_content">
+                        <div class="resultsTable_content_steps">
+                            <span class="results_start">15:07</span>
+                            <span class="results_stage">1/4</span>
+                            <span class="results_rival">Chumakov Denis</span>
+                            <span class="results_rating">678</span>
+                            <span class="results_score">2:0</span>
+                        </div>
+                        <div class="resultsTable_content_steps">
+                            <span class="results_start">16:28</span>
+                            <span class="results_stage">1/2</span>
+                            <span class="results_rival">Sychev Andrey</span>
+                            <span class="results_rating">678</span>
+                            <span class="results_score">3:1</span>
+                        </div>
+                        <div class="resultsTable_content_steps">
+                            <span class="results_start">15:07</span>
+                            <span class="results_stage">fin</span>
+                            <span class="results_rival">Smirnov Roma</span>
+                            <span class="results_rating">678</span>
+                            <span class="results_score">2:0</span>
+                        </div>
+                    </div>
+                    <div class="resultsTable_total">
+                        <span class="resultsTable_total_title">Total score:</span>
+                        <span class="resultsTable_total_score">7:1</span>
+
+                    </div>
+                </div>
+                <a class="resultsTable_btn" href="#">See more</a>
+            </div>
+        </div>
+    </section> -->
+
+
+
+
+
+
+
+    <footer class="footer">
+        <!-- from js -->
+      </footer>
+      
+      <div class="adv">
+        <!-- add from DB -->
+      </div>
+      
+      <div id="imageTemplate" style="display: block; position: absolute; left: -9999px; top: -9999px; ">
+        <div style="
+            width: 900px; 
+            height: 900px; 
+            background-image: url('/images/post_background.jpg'); 
+            background-size: cover; /* Масштабирует изображение, чтобы заполнить весь блок */
+            background-position: center; /* Центрирует изображение */
+            background-repeat: no-repeat; /* Убирает повторение изображения */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 81px 81px;">
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <h2 style="color: #000;
+                    font-family: Inter;
+                    font-size: 85px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin: 0;
+                    text-transform: uppercase;">🏓</h2>
+                <h1 style="color: #FFF;
+                    font-family: Inter;
+                    font-size: 70px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    letter-spacing: -2.8px;
+                    margin: 0;
+                    text-align: center;
+                    text-transform: uppercase;">Proud of my progress</h1>
+                <h2 style="color: #000;
+                    font-family: Inter;
+                    font-size: 85px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    margin: 0;
+                    text-transform: uppercase;">🏓</h2>
+            </div>
+            <img id="playerLogo" src="" alt="Логотип игрока" style="width: 322px; height: 322px; border-radius: 50%; margin-top: 44px;">
+            <h2 id="playerName" style="color: #FFF;
+                text-align: center;
+                font-family: Inter;
+                font-size: 60px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 120%; /* 72px */
+                text-transform: none;
+                margin: 0;
+                margin-top: 20px;
+                letter-spacing: -1.8px;">Players name</h2>
+            <p style="color: #FFF;
+                text-align: center;
+                font-family: Inter;
+                font-size: 50px;
+                width: 898px;
+                font-style: normal;
+                font-weight: 400;
+                margin-top: 57px;
+                line-height: 120%; /* 60px */
+                letter-spacing: -1.5px;">My rating has increased I want to share my result with the players</p>
+            
+            <div style="width: 295px; height: 159px; margin-top: 27px; position: relative;">
+                <svg id="scoreBackground" xmlns="http://www.w3.org/2000/svg" width="295" height="129" style="position: absolute;margin-top: 30px; z-index: 0; bottom: 0; left: 0;" viewBox="0 0 294 129" fill="none">
+                    <path d="M7.03191 0H286.968L293.326 108.893C293.963 119.803 285.287 129 274.358 129H19.6417C8.71291 129 0.0369985 119.803 0.674013 108.893L7.03191 0Z" fill="#007026"/>
+                </svg>
+                <div style="
+                    position: absolute;
+                    top: 0;
+                    left: 7px;
+                    z-index: 1;
+                    width: 281px;
+                    height: 153px;
+                    display: inline-flex;
+                    padding: 16px 18px;
+                    align-items: center;
+                    gap: 24px;
+                    box-sizing: border-box;
+                    border-radius: 19px;
+                    background: #FFF;">
+                    <svg id="scoreArrow" xmlns="http://www.w3.org/2000/svg" width="37" height="77" style="transform: rotate(0deg);" viewBox="0 0 37 77" fill="none">
+                        <path d="M1.5 29.8462L18.5 1L35.5 29.8462H22.5V76H15.5V29.8462H1.5Z" fill="#007026"/>
+                        <path d="M22.5 29.8462H35.5L18.5 1L1.5 29.8462H15.5M22.5 29.8462V76H15.5V29.8462M22.5 29.8462H15.5" stroke="#007026"/>
+                    </svg>
+                    <h2 id="playerScore" style="color: #007026;
+                        font-family: Inter;
+                        font-size: 100px;
+                        font-style: normal;
+                        font-weight: 700;
+                        margin-bottom: 0;
+                        line-height: normal;">100</h2>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+
+    <div id="shareModal" class="modal">    
+        <div class="modal-content">
+            <button class="modal_close" id="closeModal" onclick="closeModal()">
+                <img src="/icons/x-circle.svg" alt="кнопка закрыть">
+            </button>
+            <h2>Share Your Results</h2>
+            <p>Share your achievements with friends and followers by clicking one of the buttons below!</p>
+            <div class="modal_buttonWrapper">
+                <button id="shareFacebook" class="header_btn-sign modal_buttonWrapper_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.5 0C6.49187 0 0 6.49187 0 14.5C0 22.5081 6.49187 29 14.5 29C22.5081 29 29 22.5081 29 14.5C29 6.49187 22.5081 0 14.5 0ZM15.8947 22.7757V14.8869H18.0723L18.3609 12.1684H15.8947L15.8984 10.8078C15.8984 10.0987 15.9658 9.71882 16.9841 9.71882H18.3455V7H16.1675C13.5515 7 12.6307 8.31877 12.6307 10.5365V12.1687H11V14.8872H12.6307V22.7757H15.8947Z" fill="white"/>
+                    </svg>
+                    Share
+                </button>
+                <button id="shareInstagram" class="header_btn-sign modal_buttonWrapper_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M14.5 0C6.49187 0 0 6.49187 0 14.5C0 22.5081 6.49187 29 14.5 29C22.5081 29 29 22.5081 29 14.5C29 6.49187 22.5081 0 14.5 0ZM11.312 6.81339C12.1369 6.77585 12.4005 6.76667 14.5007 6.76667H14.4983C16.5992 6.76667 16.8618 6.77585 17.6867 6.81339C18.51 6.85109 19.0723 6.98143 19.5653 7.17267C20.0744 7.37003 20.5046 7.63426 20.9348 8.06443C21.3649 8.49428 21.6292 8.92574 21.8273 9.43437C22.0174 9.92609 22.1479 10.488 22.1866 11.3113C22.2237 12.1362 22.2333 12.3998 22.2333 14.5001C22.2333 16.6003 22.2237 16.8633 22.1866 17.6882C22.1479 18.5111 22.0174 19.0733 21.8273 19.5651C21.6292 20.0736 21.3649 20.5051 20.9348 20.9349C20.5051 21.3651 20.0743 21.63 19.5658 21.8275C19.0737 22.0187 18.5111 22.1491 17.6879 22.1868C16.863 22.2243 16.6002 22.2335 14.4998 22.2335C12.3997 22.2335 12.1362 22.2243 11.3113 22.1868C10.4882 22.1491 9.92609 22.0187 9.43405 21.8275C8.92574 21.63 8.49428 21.3651 8.06459 20.9349C7.63458 20.5051 7.37036 20.0736 7.17267 19.565C6.98159 19.0733 6.85125 18.5113 6.81339 17.688C6.77601 16.8631 6.76667 16.6003 6.76667 14.5001C6.76667 12.3998 6.77633 12.1361 6.81323 11.3112C6.85028 10.4882 6.98079 9.92609 7.17251 9.43421C7.37068 8.92574 7.6349 8.49428 8.06507 8.06443C8.49492 7.63442 8.92638 7.37019 9.43502 7.17267C9.92673 6.98143 10.4887 6.85109 11.312 6.81339Z" fill="white"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M13.8101 8.16209C13.9448 8.16188 14.0897 8.16194 14.2461 8.16201L14.5039 8.16209C16.5687 8.16209 16.8134 8.1695 17.6288 8.20656C18.3828 8.24103 18.792 8.36703 19.0646 8.47288C19.4255 8.61304 19.6828 8.7806 19.9533 9.05127C20.224 9.32194 20.3916 9.57972 20.532 9.94061C20.6379 10.2129 20.764 10.6221 20.7984 11.3761C20.8354 12.1914 20.8435 12.4363 20.8435 14.5001C20.8435 16.564 20.8354 16.8089 20.7984 17.6241C20.7639 18.3781 20.6379 18.7873 20.532 19.0596C20.3919 19.4205 20.224 19.6775 19.9533 19.948C19.6827 20.2186 19.4257 20.3862 19.0646 20.5264C18.7924 20.6327 18.3828 20.7584 17.6288 20.7928C16.8136 20.8299 16.5687 20.838 14.5039 20.838C12.4389 20.838 12.1941 20.8299 11.3789 20.7928C10.6249 20.758 10.2157 20.6321 9.94291 20.5262C9.58202 20.386 9.32424 20.2185 9.05357 19.9478C8.7829 19.6771 8.61534 19.42 8.47485 19.059C8.369 18.7867 8.24285 18.3774 8.20853 17.6234C8.17147 16.8082 8.16406 16.5633 8.16406 14.4982C8.16406 12.433 8.17147 12.1894 8.20853 11.3742C8.24301 10.6202 8.369 10.211 8.47485 9.93836C8.61502 9.57747 8.7829 9.31968 9.05357 9.04902C9.32424 8.77835 9.58202 8.61079 9.94291 8.4703C10.2155 8.36396 10.6249 8.2383 11.3789 8.20366C12.0923 8.17143 12.3688 8.16177 13.8101 8.16016V8.16209ZM18.6319 9.44616C18.1195 9.44616 17.7039 9.86135 17.7039 10.3738C17.7039 10.8862 18.1195 11.3019 18.6319 11.3019C19.1442 11.3019 19.5599 10.8862 19.5599 10.3738C19.5599 9.86151 19.1442 9.44584 18.6319 9.44584V9.44616ZM10.5324 14.5019C10.5324 12.3087 12.3105 10.5305 14.5037 10.5304C16.6969 10.5304 18.4746 12.3086 18.4746 14.5019C18.4746 16.6951 16.6971 18.4725 14.5039 18.4725C12.3106 18.4725 10.5324 16.6951 10.5324 14.5019Z" fill="white"/>
+                        <path d="M14.4997 11.9219C15.9233 11.9219 17.0775 13.0759 17.0775 14.4997C17.0775 15.9233 15.9233 17.0775 14.4997 17.0775C13.0759 17.0775 11.9219 15.9233 11.9219 14.4997C11.9219 13.0759 13.0759 11.9219 14.4997 11.9219V11.9219Z" fill="white"/>
+                    </svg>
+                    Share
+                </button>
+                <button id="shareTiktok" class="header_btn-sign modal_buttonWrapper_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29" fill="none">
+                        <path d="M29 14.5C29 22.5081 22.5081 29 14.5 29C6.49187 29 0 22.5081 0 14.5C0 6.49187 6.49187 0 14.5 0C22.5081 0 29 6.49187 29 14.5Z" fill="white"/>
+                        <path d="M19.2431 11.1788C18.619 11.0452 18.0538 10.7158 17.6299 10.2386C17.2061 9.76135 16.9457 9.16119 16.8869 8.52563V8.25H14.7338V16.795C14.7324 17.1733 14.6126 17.5417 14.3911 17.8484C14.1696 18.155 13.8576 18.3846 13.4989 18.5048C13.1402 18.625 12.7529 18.6298 12.3913 18.5185C12.0297 18.4073 11.7121 18.1855 11.4831 17.8844C11.2506 17.5782 11.1215 17.206 11.1148 16.8216C11.108 16.4372 11.2239 16.0606 11.4456 15.7465C11.6673 15.4324 11.9833 15.1971 12.3477 15.0746C12.7122 14.9522 13.1061 14.9491 13.4725 15.0656V12.8781C12.6555 12.7652 11.8237 12.9104 11.0933 13.2935C10.363 13.6767 9.77065 14.2785 9.39917 15.0148C9.0277 15.7511 8.89567 16.5852 9.02155 17.4003C9.14744 18.2153 9.52494 18.9707 10.1013 19.5606C10.6508 20.123 11.3556 20.5088 12.1254 20.6688C12.8953 20.8289 13.6953 20.7559 14.4235 20.4591C15.1517 20.1624 15.775 19.6555 16.2137 19.0029C16.6525 18.3504 16.8868 17.5819 16.8869 16.7956V12.4294C17.757 13.0515 18.8003 13.385 19.87 13.3831V11.2438C19.6593 11.244 19.4492 11.2222 19.2431 11.1788Z" fill="#FA6400"/>
+                    </svg>
+                    Share
+                </button>
+                    
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- Модальное окно -->
+    <div id="myModal" class="modal">    
+        <div class="modal-content">
+        <!-- add from DB -->
+        </div>
+    </div>
+    <script type="module" src="/js/coachdashboard.js"></script> 
+</body>
+</html>

@@ -1161,7 +1161,7 @@ app.get('/:lang/dashboard/edituser/:userId', ensureAuthenticated, (req, res) => 
   if (!sessionUserId.equals(userIdObject)) {
     return res.redirect(`404`); // Редирект на страницу 404 при несовпадении идентификаторов
   }
-
+  
   // Проверка на тип пользователя
   if (userType !== 'user' && userType !== 'coach') {
     console.log('Ошибка: Несоответствие типа пользователя');
@@ -2856,7 +2856,11 @@ app.get('/get-playerData', async (req, res) => {
   // console.log(playerId);
   try {
     const db = getDB();
-    const player = await db.collection('users').findOne({ _id: new ObjectId(playerId) });
+    let player;
+    player = await db.collection('users').findOne({ _id: new ObjectId(playerId) });
+    if (!player) {
+      player = await db.collection('coaches').findOne({ _id: new ObjectId(playerId) });
+    }
     res.json(player);
   } catch (err) {
     console.error('Error fetching player:', err);

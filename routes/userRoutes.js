@@ -478,6 +478,9 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
         if (req.body.oneTrainingPrice && req.body.oneTrainingPrice !== currentUserData.oneTrainingPrice) {
             updates.oneTrainingPrice = req.body.oneTrainingPrice;
         }
+        if (req.body.trainingDuration && req.body.trainingDuration !== currentUserData.trainingDuration) {
+            updates.trainingDuration = req.body.trainingDuration;
+        }
   
         if (req.body.blade && req.body.blade !== currentUserData.blade) {
             updates.blade = req.body.blade;
@@ -493,21 +496,70 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
   
         let trainingInfo = { ...currentUserData.trainingInfo }; // Начинаем с текущих данных
 
-        if (req.body.description && req.body.description !== currentUserData.trainingInfo['ru']) {
-            trainingInfo['ru'] = req.body.description || '';
-        }
+        if (req.body.userType === 'coach') {
+            if (req.body.trainingInfo && req.body.lang === 'ru' && req.body.trainingInfo !== currentUserData.trainingInfo['ru']) {
+                trainingInfo['en'] = req.body.trainingInfo || '';
+                if (currentUserData.trainingInfo['en'] === '') {
+                    trainingInfo['en'] = req.body.trainingInfo || '';
+                }
+                if (currentUserData.trainingInfo['th'] === '') {
+                    trainingInfo['th'] = req.body.trainingInfo || '';
+                }
+            }
+    
+            if (req.body.trainingInfo && req.body.lang === 'en' && req.body.trainingInfo !== currentUserData.trainingInfo['en']) {
+                trainingInfo['en'] = req.body.trainingInfo || '';
+                if (currentUserData.trainingInfo['ru'] === '') {
+                    trainingInfo['ru'] = req.body.trainingInfo || '';
+                }
+                if (currentUserData.trainingInfo['th'] === '') {
+                    trainingInfo['th'] = req.body.trainingInfo || '';
+                }
+            }
+    
+            if (req.body.trainingInfo && req.body.lang === 'th' && req.body.trainingInfo !== currentUserData.trainingInfo['th']) {
+                trainingInfo['th'] = req.body.trainingInfo || '';
+                if (currentUserData.trainingInfo['ru'] === '') {
+                    trainingInfo['ru'] = req.body.trainingInfo || '';
+                }
+                if (currentUserData.trainingInfo['en'] === '') {
+                    trainingInfo['en'] = req.body.trainingInfo || '';
+                }
+            }
 
-        if (req.body.descriptioneng && req.body.descriptioneng !== currentUserData.trainingInfo['en']) {
-            trainingInfo['en'] = req.body.descriptioneng || '';
-        }
+            if (JSON.stringify(trainingInfo) !== JSON.stringify(currentUserData.trainingInfo)) {
+                updates.trainingInfo = trainingInfo;
+            }
 
-        if (req.body.descriptionthai && req.body.descriptionthai !== currentUserData.trainingInfo['th']) {
-            trainingInfo['th'] = req.body.descriptionthai || '';
+            if (req.body.description && req.body.description !== currentUserData.description) {
+                updates.description = req.body.description || '';
+            }
+    
+            if (req.body.descriptioneng && req.body.descriptioneng !== currentUserData.descriptioneng) {
+                updates.descriptioneng = req.body.descriptioneng || '';
+            }
+    
+            if (req.body.descriptionthai && req.body.descriptionthai !== currentUserData.descriptionthai) {
+                updates.descriptionthai = req.body.descriptionthai || '';
+            }
+        } else {
+            if (req.body.description && req.body.description !== currentUserData.trainingInfo['ru']) {
+                trainingInfo['ru'] = req.body.description || '';
+            }
+    
+            if (req.body.descriptioneng && req.body.descriptioneng !== currentUserData.trainingInfo['en']) {
+                trainingInfo['en'] = req.body.descriptioneng || '';
+            }
+    
+            if (req.body.descriptionthai && req.body.descriptionthai !== currentUserData.trainingInfo['th']) {
+                trainingInfo['th'] = req.body.descriptionthai || '';
+            }
+    
+            if (JSON.stringify(trainingInfo) !== JSON.stringify(currentUserData.trainingInfo)) {
+                updates.trainingInfo = trainingInfo;
+            }
         }
-
-        if (JSON.stringify(trainingInfo) !== JSON.stringify(currentUserData.trainingInfo)) {
-            updates.trainingInfo = trainingInfo;
-        }
+       
         console.log('updatesu', updates);
         if (Object.keys(updates).length > 0) {
             await db.collection('coaches').updateOne(

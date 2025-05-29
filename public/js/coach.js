@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'club': 'สโมสร',
             'address': 'ที่อยู่',
             'aboutTraining': 'เกี่ยวกับการฝึกอบรม',
-            'scheduleBtn': 'Training schedule !!!!ПЕРЕВОД'
+            'scheduleBtn': 'ตารางการฝึกซ้อม'
         }
     };
 

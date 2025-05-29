@@ -99,7 +99,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             'tournaments': 'tournaments',
             'left': 'left',
             'right': 'right',
-            'Coach': 'Coach'
+            'Coach': 'Coach',
+            'Training': 'Training',
+            'hours': 'hours',
+            'Price': 'Price',
+            'club': 'Club',
+            'address': 'Address',
+            'aboutTraining': 'About the training',
+            'scheduleBtn': 'Training schedule'
         },
         'ru': {
             'city': 'Город:',
@@ -121,7 +128,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             'tournaments': 'турниров',
             'left': 'левая',
             'right': 'правая',
-            'Coach': 'Тренер'
+            'Coach': 'Тренер',
+            'Training': 'Тренировка',
+            'hours': 'часа',
+            'Price': 'Стоимость',
+            'club': 'Клуб',
+            'address': 'Адресс',
+            'aboutTraining': 'Подробнее о тренировке',
+            'scheduleBtn': 'График тренировок',
         },
         'th': {
             'city': 'เมือง',
@@ -143,7 +157,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             'tournaments': 'การแข่งขัน',
             'left': 'ซ้าย',
             'right': 'ขวา',
-            'Coach': 'โค้ช'
+            'Coach': 'โค้ช',
+            'Training': 'เทรนกับโค้ช',
+            'hours': 'ชั่วโมง',
+            'Price': 'ราคา',
+            'club': 'สโมสร',
+            'address': 'ที่อยู่',
+            'aboutTraining': 'เกี่ยวกับการฝึกอบรม',
+            'scheduleBtn': 'ตารางการฝึกซ้อม'
         }
     };
 
@@ -192,6 +213,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return { clubId: maxClubId, count: maxCount };
     }
 
+    let club;
     async function fetchClubData(clubId) {
         // console.log(clubId)
         try {
@@ -199,7 +221,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (!response.ok) {
                 throw new Error('Club not found');
             }
-            const club = await response.json();
+            club = await response.json();
             // console.log('club', club)
             playedMostOften = club.name;
             console.log('playedMostOften', playedMostOften);
@@ -328,9 +350,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Playing hand')}: <span>${getTranslation(player.hand)}</span></p>
                         <p>${getTranslation('Rating')}: <span style="margin-left: 5px">${Math.round(player.rating) || ' - '}</span> <span style="margin-left: 5px; color: ${changeRatingColor}">${changeRatingSymbol || ''}${ratingChange || '0'}</span></p>
-                        
+                        <p>${getTranslation('Training')}: <span>${player.trainingDuration / 60 || ' - '} ${getTranslation('hours')}</span></p>
                     </div>
                     <div class="player_mainInfo_info_descr_path">
+                        <p>${getTranslation('Price')}: <span>${player.oneTrainingPrice || '-'}฿</span></p>
                         <p>${getTranslation('city')}: <span>${playerCity || ' - '}</span></p>
                         <p>${getTranslation('Birthday')}: <span>${formattedDate}</span></p>
                         
@@ -355,6 +378,32 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
             
         `;
+
+        const trainingAbout = document.querySelector('.training_about');
+        trainingAbout.style = 'margin-top: 20px';
+        if (player.trainingInfo && player.trainingInfo[lang] && player.trainingInfo[lang].length > 0) {
+
+        const description = player.trainingInfo[lang] || '';
+        // console.log(description);
+        const formattedDescription = typeof description === 'string' ? description.replace(/\r\n/g, '<br>') : 'Описание отсутствует';
+        
+        trainingAbout.innerHTML = `
+            <h3>${getTranslation('aboutTraining')}</h3>
+            <div class="training_about_wrapp">
+                <p><span>${getTranslation('address')}: </span>${club.address[lang] || club.address['en']}</p>
+               
+                <p>${formattedDescription}</p>
+            </div>
+        `;
+        }
+
+        // const linkToSchedule = document.querySelector('#goToTrainingSchedule');
+        // linkToSchedule.innerHTML = `${getTranslation('scheduleBtn')}`;
+        // // linkToSchedule.setAttribute('data-club', `${club._id}`);
+
+        // linkToSchedule.addEventListener('click', () => {
+        //     window.location = `/${lang}/allclubs/${club._id}`;
+        // })
 
         const playerStatistics = document.querySelector('.player_statistics');
         playerStatistics.innerHTML = `

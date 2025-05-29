@@ -184,16 +184,38 @@ document.addEventListener("DOMContentLoaded", async function() {
             'No file selected': 'No file selected',
             'Not an image': 'The selected file is not an image',
             'File too large': 'The file size exceeds the 1 MB limit',
+            'price': 'Price',
+            'Enter price': 'Enter price',
+            'training': 'Training',
+            'training duration': 'Training duration',
+            'Enter training duration': 'Enter training duration',
+            'Training info': 'Training info',
+            'Enter training info': 'Enter training info'
         },
         ru: {
             'No file selected': 'Файл не выбран',
             'Not an image': 'Выбранный файл не является изображением',
             'File too large': 'Размер файла превышает 1 МБ',
+            'price': 'Стоимость тренировки',
+            'Enter price': 'Введите стоимость тренировки',
+            'training': 'Training',
+            'training duration': 'Продолжительность тренировки',
+            'Enter training duration': 'введите продолжительность тренировки',
+            'Training info': 'Информация о тренировках',
+            'Enter training info': 'Введите информацию о тренировках'
         },
         th: {
             'No file selected': 'ยังไม่ได้เลือกไฟล์',
             'Not an image': 'ไฟล์ที่เลือกไม่ใช่รูปภาพ',
             'File too large': 'ขนาดไฟล์เกิน 1 MB',
+            'price': 'ค่าฝึกซ้อม',
+            'Enter price': 'ค่าฝึกซ้อม',
+            'training': 'การฝึกซ้อม',
+            'training duration': 'ระยะเวลาการฝึก',
+            'Enter training duration': 'กรอกระยะเวลาการฝึก',
+            'Training info': 'ข้อมูลการฝึกซ้อม',
+            'Enter training info': 'กรอกข้อมูลการฝึกซ้อม'
+
         },
     };
 
@@ -259,6 +281,53 @@ document.addEventListener("DOMContentLoaded", async function() {
     
         const leftHandRadio = document.getElementById('left');
         const rightHandRadio = document.getElementById('right');
+
+        if (userType === 'coach') {
+            const labelPrice = document.querySelector('label[for="coach"]');
+            labelPrice.htmlFor = `price`;
+            labelPrice.textContent = `${getTranslation('price')}`;
+
+            const inputPrice = document.getElementById('coach');
+            inputPrice.id = 'price';
+            inputPrice.name = 'price';
+            inputPrice.type = 'number';
+            inputPrice.placeholder = `${getTranslation('Enter price')}`;
+            inputPrice.style.backgroundImage = 'none';
+            inputPrice.value = '';
+            inputPrice.nextElementSibling.style.display = 'none';
+            inputPrice.value = playerData.oneTrainingPrice || '';
+
+
+            const labelDuration = document.querySelector('label[for="coachName"]');
+            labelDuration.htmlFor = `duration`;
+            labelDuration.textContent = `${getTranslation('training duration')}`;
+
+            const inputDuration = document.getElementById('coachNameAdditional');
+            inputDuration.id = 'duration';
+            inputDuration.name = 'duration';
+            inputDuration.placeholder = `${getTranslation('Enter training duration')}`;
+            inputDuration.value = '';
+            inputDuration.value = playerData.trainingDuration || '';
+
+            const container = document.querySelector('.editclub_formContainer_formSection');
+            const submitButton = container.querySelector('button[type="submit"]');
+
+            // Создаем новый блок
+            const newBlock = document.createElement('div');
+            newBlock.className = 'inp-label-pare';
+            newBlock.innerHTML = `
+                <label for="trainingInfo">${getTranslation('Training info')}</label>
+                <textarea id="trainingInfo" placeholder="${getTranslation('Enter training info')}" name="trainingInfo" rows="7">${playerData.trainingInfo[lang]|| ""}</textarea>
+            `;
+
+            // Вставляем перед кнопкой
+            container.insertBefore(newBlock, submitButton);
+
+            // document.getElementById('coach').style.display = 'none';
+            // document.querySelector('label[for="coachName"]').style.display = 'none';
+            // document.getElementById('coachNameAdditional').style.display = 'none';
+            
+        }
 
         function updateHandSelection() {
             if (leftHandRadio.checked) {
@@ -367,11 +436,14 @@ document.addEventListener("DOMContentLoaded", async function() {
                 } else if (lang === 'ru') {
                     descrLang = 'description';
                 }
+                formData.append('oneTrainingPrice', document.getElementById('price').value) || '';
+                formData.append('trainingDuration', document.getElementById('duration').value) || '';
+                formData.append(`trainingInfo`, document.getElementById('trainingInfo').value) || '';
             }
             
             formData.append('name', document.getElementById('playerName').value);
             formData.append('city', document.getElementById('city').value);
-            formData.append('coach', document.getElementById('coach').value || document.getElementById('coachNameAdditional').value);
+            formData.append('coach', document.getElementById('coach')?.value || document.getElementById('coachNameAdditional')?.value);
             formData.append('birthdayDate', convertDateToISO(document.getElementById('date').value));
             formData.append('email', document.getElementById('emailRegInput').value);
             formData.append('phoneNumber', document.getElementById('phoneNumber').value);
@@ -382,6 +454,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             formData.append(`${descrLang}`, document.getElementById('description').value);
             formData.append('lang', lang); // Отправляем текущий язык на сервер
             formData.append('userId', userId);
+            formData.append('userType', userType);
+
 
             // // Добавление логотипа
             const logoInput = document.getElementById('logoInput');

@@ -153,8 +153,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Обработчик для кнопки "Зарегистрироваться"
     singUpToTournamentBtn.addEventListener('click', async () => {
         try {
-            if (currentUserId && !tournament.players.some(player => player.id === currentUserId)) {
-                tournament.players.push({ id: currentUserId });
+            // if (currentUserId && !tournament.players?.some(player => player.id === currentUserId)) {
+            //     tournament.players.push({ id: currentUserId });
+            if (
+                currentUserId &&
+                (!Array.isArray(tournament.players) || !tournament.players.some(player => player.id === currentUserId))
+              ) {
+                  // Инициализируем массив, если он пустой
+                  if (!Array.isArray(tournament.players)) {
+                      tournament.players = [];
+                  }
+              
+                  tournament.players.push({ id: currentUserId });
+              
 
                 await fetch(`/api/tournaments/${tournament._id}/register-player`, {
                     method: 'POST',

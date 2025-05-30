@@ -147,10 +147,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             playerCity = await getCityName(player.city || player.city['$oid']);
             // console.log(player.club);
             clubId = player.club || '-';
-            if (player.tournaments !== null) {
+            if (player.tournaments?.length > 0) {
                 mostActiveClub = getClubWithMostTournaments(player.tournaments);
                 console.log('mostActiveClub', mostActiveClub);
                 await fetchClubData(mostActiveClub.clubId);
+            }
+            else {
+                mostActiveClub = '-';
+                playedMostOften = '-';
             }
             // console.log('id клуба', clubId);
             await fetchClubData();

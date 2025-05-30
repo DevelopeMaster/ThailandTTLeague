@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Enter price': 'Enter price',
             'training': 'Training',
             'training duration': 'Training duration',
-            'Enter training duration': 'Enter training duration',
+            'Enter training duration': 'Enter training duration (minutes)',
             'Training info': 'Training info',
             'Enter training info': 'Enter training info'
         },
@@ -200,7 +200,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Enter price': 'Введите стоимость тренировки',
             'training': 'Training',
             'training duration': 'Продолжительность тренировки',
-            'Enter training duration': 'введите продолжительность тренировки',
+            'Enter training duration': 'Введите продолжительность тренировки (минуты)',
             'Training info': 'Информация о тренировках',
             'Enter training info': 'Введите информацию о тренировках'
         },
@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             'Enter price': 'ค่าฝึกซ้อม',
             'training': 'การฝึกซ้อม',
             'training duration': 'ระยะเวลาการฝึก',
-            'Enter training duration': 'กรอกระยะเวลาการฝึก',
+            'Enter training duration': 'กรอกระยะเวลาการฝึก (นาที)',
             'Training info': 'ข้อมูลการฝึกซ้อม',
             'Enter training info': 'กรอกข้อมูลการฝึกซ้อม'
 

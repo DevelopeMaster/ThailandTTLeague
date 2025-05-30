@@ -123,10 +123,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.log(player);
             playerCity = await getCityName(player.city);
             // console.log(mostActiveClub.clubId);
-            if (player.tournaments.length > 0) {
+            if (player.tournaments?.length > 0) {
                 mostActiveClub = getClubWithMostTournaments(player.tournaments);
                 console.log(mostActiveClub.clubId);
                 await fetchClubData(mostActiveClub.clubId);
+            } else {
+                mostActiveClub = '-';
+                playedMostOften = '-';
             }
             renderPlayerData();
             

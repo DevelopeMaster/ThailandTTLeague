@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Coach': 'Coach',
             'Training': 'Training',
             'hours': 'hours',
+            'hour': 'hour',
             'Price': 'Price',
             'club': 'Club',
             'address': 'Address',
@@ -130,7 +131,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             'right': 'правая',
             'Coach': 'Тренер',
             'Training': 'Тренировка',
-            'hours': 'часа',
+            'hours': 'часа/ов',
+            'hour': 'час',
             'Price': 'Стоимость',
             'club': 'Клуб',
             'address': 'Адресс',
@@ -160,6 +162,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             'Coach': 'โค้ช',
             'Training': 'เทรนกับโค้ช',
             'hours': 'ชั่วโมง',
+            'hour': 'ชั่วโมง',
             'Price': 'ราคา',
             'club': 'สโมสร',
             'address': 'ที่อยู่',
@@ -350,7 +353,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Playing hand')}: <span>${getTranslation(player.hand)}</span></p>
                         <p>${getTranslation('Rating')}: <span style="margin-left: 5px">${Math.round(player.rating) || ' - '}</span> <span style="margin-left: 5px; color: ${changeRatingColor}">${changeRatingSymbol || ''}${ratingChange || '0'}</span></p>
-                        <p>${getTranslation('Training')}: <span>${player.trainingDuration / 60 || ' - '} ${getTranslation('hours')}</span></p>
+                        <p>${getTranslation('Training')}: <span>${player.trainingDuration / 60 || ' - '} ${Number(player.trainingDuration) === 60 ? getTranslation('hour') : getTranslation('hours')}</span></p>
                     </div>
                     <div class="player_mainInfo_info_descr_path">
                         <p>${getTranslation('Price')}: <span>${player.oneTrainingPrice || '-'}฿</span></p>

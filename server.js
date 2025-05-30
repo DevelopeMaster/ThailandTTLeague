@@ -2877,6 +2877,22 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+function normalizeFullName(name) {
+  if (!name || typeof name !== 'string') return '';
+
+  return name
+    .trim()
+    .split(/\s+/) // разделяет по пробелам
+    .map(word => {
+      return word
+        .split(/([-'])/) // разбиваем на части по дефису или апострофу, но сохраняем их
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+        .join('');
+    })
+    .join(' ');
+}
+
+
 app.post('/register', [
   body('password')
     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
@@ -2929,7 +2945,7 @@ app.post('/register', [
       nickname,
       password: hashedPassword,
       city: cityId,
-      fullname,
+      fullname: normalizeFullName(fullname) || fullname,
       logo: defaultLogo,
       hand,
       birthdayDate,

@@ -172,6 +172,20 @@ router.get('/clubtournaments', ensureAuthenticated, async (req, res) => {
     }
 });
 
+function normalizeFullName(name) {
+    if (!name || typeof name !== 'string') return '';
+  
+    return name
+      .trim()
+      .split(/\s+/) // разделяет по пробелам
+      .map(word => {
+        return word
+          .split(/([-'])/) // разбиваем на части по дефису или апострофу, но сохраняем их
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+          .join('');
+      })
+      .join(' ');
+  }
 
 //--------------EDIT PROFILES ----------//
 
@@ -214,7 +228,8 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
         }
   
         if ((req.body.name && req.body.name !== currentUserData.name) || (req.body.fullname && req.body.fullname !== currentUserData.name)) {
-            updates.fullname = req.body.name || req.body.fullname;
+            updates.fullname = normalizeFullName(req.body.fullname) || normalizeFullName(req.body.name) || req.body.fullname || req.body.name;
+            
         }
   
         console.log(req.body);
@@ -417,7 +432,8 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
         }
   
         if ((req.body.name && req.body.name !== currentUserData.name) || (req.body.fullname && req.body.fullname !== currentUserData.name)) {
-            updates.fullname = req.body.name || req.body.fullname;
+            // updates.fullname = req.body.name || req.body.fullname;
+            updates.fullname = normalizeFullName(req.body.fullname) || normalizeFullName(req.body.name) || req.body.fullname || req.body.name;
         }
   
         if (req.body.cityName && req.body.cityName !== currentUserData.cityName) {

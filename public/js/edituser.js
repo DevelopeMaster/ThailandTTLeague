@@ -500,7 +500,13 @@ document.addEventListener("DOMContentLoaded", async function() {
                     if (data.logoUrl) {
                         localStorage.setItem('userLogo', data.logoUrl);
                     }
-                    const link = `/${lang}${data.redirectUrl}/${data.userType}/${data.userId}`
+                    let link;
+                    if (userType === 'coach') {
+                        link = `/${lang}${data.redirectUrl}/${data.userType}/${data.userId}`;
+                    } else {
+                        link = `/${lang}${data.redirectUrl}`;
+                    }
+                    
                     // Перенаправляем пользователя на новую страницу
                     window.location.href = link;
                 } else {

@@ -391,7 +391,7 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
         res.json({
           success: true,
           logoUrl: updates.logo || '/icons/playerslogo/default_avatar.svg', 
-          redirectUrl: `/en/dashboard/user/${userId}` 
+          redirectUrl: `/dashboard/user/${userId}` 
         });
     } catch (error) {
         console.error('Ошибка при сохранении профиля пользователя:', error);

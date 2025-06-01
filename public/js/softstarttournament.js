@@ -349,9 +349,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     function renderPlayerList(players, retired, unrated) {
         playerListContainer.innerHTML = '';
         retiredPlayerListContainer.innerHTML = '';
-    
+        console.log('players', players);
         // Разделяем игроков на рейтингованных и нерейтинговых
-        const ratedPlayers = players.filter(player => player.rating !== undefined && !player.unrated);
+        // player.rating !== undefined &&
+        const ratedPlayers = players.filter(player =>  !player.unrated);
         const unratedPlayers = unrated.filter(player => player.unrated === true);
     
         // Сортируем рейтингованных игроков по убыванию рейтинга
@@ -496,17 +497,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     
 
     document.getElementById('saveTournamentData').addEventListener('click', () => {
+        
         byUser = true; 
         if (selectedType === 'roundRobin') {
             saveTournament(null);
-        }
+        } else 
         if (selectedType === 'twoRound') {
             saveTournamentTwoRound(null, [...selectedPlayers, ...unratedPlayersList]);
-        }
+        } else 
         if (selectedType === 'olympic') {
             // saveTournamentOlympic(null, [...selectedPlayers, ...unratedPlayersList]);
+            console.log("selectedType", selectedType);
             saveOlympicTournamentState();
-        }
+        } else 
         if (selectedType === 'groupOlympicFinal') {
             console.log('нужно сохранять турнир - - - - - - 499 строка')
             saveGroupOlympicFinalTournament();
@@ -523,6 +526,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (selectedType === 'groupTwoFinals') {
             alert('Sorry! Selected type of tournamnet in development!')
         }
+        byUser = false; 
     });
 
 
@@ -540,6 +544,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         addPlayertoTournament.classList.add('disabledButton');
         document.querySelector("#numberOfTables").disabled = true;
         document.querySelector("#addPlayertoTournament").disabled = true;
+        document.querySelector('#numberOfParties').disabled = true;
         
 
         if (selectedType === 'roundRobin') {
@@ -626,6 +631,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         startTournament.classList.remove('disabledButton');
 
         startTournament.addEventListener('click', () => {
+            let checkedPlayers = false;
+            let uncorectRating = [];
+            selectedPlayers.forEach(player => {
+                if (player.rating && Number(player.rating) > 0) {
+                    checkedPlayers = true;
+                } else if (player.rating && player.rating === '-') {
+                    checkedPlayers = false;
+                    uncorectRating.push(player.fullname || player.name);
+                    // console.log('Не коректный рейтинг у', uncorectRating);
+                } else {
+                    checkedPlayers = false;
+                    uncorectRating.push(player.fullname || player.name);
+                    // console.log('Не коректный рейтинг у', uncorectRating);
+                }
+            })
+
+            if (!checkedPlayers) {
+                showErrorModal('Invalid rating detected for:\n' + uncorectRating.join(', '));
+                return;
+            }
+            document.querySelector('#numberOfParties').disabled = true;
            
 
             if ((allParticipants && allParticipants.length > 2) || ([...selectedPlayers, ...unratedPlayersList] && [...selectedPlayers, ...unratedPlayersList].length > 2)) {
@@ -773,7 +799,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         
     
         // Обновим DOM
-        if (selectedType = 'groupOlympicFinal') {
+        if (selectedType === 'groupOlympicFinal') {
             renderOlympicGrid(olympicRounds, '.displayTournamentSecond', window.finalists.length);
         } else {
             renderOlympicGrid(olympicRounds, '.displayTournamentFirst', allParticipants.length);
@@ -807,7 +833,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
 
             // Обновим сетку
-            if (selectedType = 'groupOlympicFinal') {
+            if (selectedType === 'groupOlympicFinal') {
                 renderOlympicGrid(olympicRounds, '.displayTournamentSecond', window.finalists.length);
             } else {
                 renderOlympicGrid(olympicRounds, '.displayTournamentFirst', allParticipants.length);
@@ -824,7 +850,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
 
             // Опционально — сохранить результат
-            if (selectedType = 'groupOlympicFinal') {
+            if (selectedType === 'groupOlympicFinal') {
                 saveGroupOlympicFinalTournament();
             } else {
                 saveOlympicTournamentState();
@@ -1002,7 +1028,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
 
     async function saveOlympicTournamentState(finish = false) {
-        if (selectedType = 'groupOlympicFinal') {
+        if (selectedType === 'groupOlympicFinal') {
             return;
         }
         try {
@@ -2017,7 +2043,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     function openGameModal(pair, playingDiv) {
-        const modal = document.getElementById("modalFinishGame");
+        let modal;
+        if (window.numberOfSets === 5) {
+            modal = document.getElementById("modalFinishGame");
+        } else if (window.numberOfSets === 3) {
+            modal = document.getElementById("modalFinishGame3sets");
+        } else if (window.numberOfSets === 7) {
+            modal = document.getElementById("modalFinishGame7sets");
+        }
+        // modal = document.getElementById("modalFinishGame");
         if (!modal) {
             console.error("Modal element not found!");
             return;
@@ -2026,23 +2060,23 @@ document.addEventListener('DOMContentLoaded', async function() {
         modal.setAttribute("data-player2", JSON.stringify(pair.player2));
     
         // Заполняем данные игроков
-        document.querySelector(".modalPairBlockDone_firstPlayer").textContent = pair.player1.name || pair.player1.fullname;
-        document.querySelector(".modalPairBlockDone_secondPlayer").textContent = pair.player2.name || pair.player2.fullname;
-        document.querySelector(".modalScoreBlock_points_row.firstPlayer .modalScoreBlock_points_left h3").textContent = pair.player1.name || pair.player1.fullname;
-        document.querySelector(".modalScoreBlock_points_row.secondPlayer .modalScoreBlock_points_left h3").textContent = pair.player2.name || pair.player2.fullname;
-        document.querySelector('.modalNumberOfTable').textContent = `Table Number: ${pair.table || '-'}`;
+        modal.querySelector(".modalPairBlockDone_firstPlayer").textContent = pair.player1.name || pair.player1.fullname;
+        modal.querySelector(".modalPairBlockDone_secondPlayer").textContent = pair.player2.name || pair.player2.fullname;
+        modal.querySelector(".modalScoreBlock_points_row.firstPlayer .modalScoreBlock_points_left h3").textContent = pair.player1.name || pair.player1.fullname;
+        modal.querySelector(".modalScoreBlock_points_row.secondPlayer .modalScoreBlock_points_left h3").textContent = pair.player2.name || pair.player2.fullname;
+        modal.querySelector('.modalNumberOfTable').textContent = `Table Number: ${pair.table || '-'}`;
         // Очищаем ввод счета
-        const scoreInputs = document.querySelectorAll(".modalPairBlockDone input");
+        const scoreInputs = modal.querySelectorAll(".modalPairBlockDone input");
         scoreInputs.forEach(input => input.value = "");
 
         // Очищаем очки по партиям
-        const setInputs1 = document.querySelectorAll(".modalScoreBlock_points_row.firstPlayer .modalScoreBlock_points_right input");
-        const setInputs2 = document.querySelectorAll(".modalScoreBlock_points_row.secondPlayer .modalScoreBlock_points_right input");
+        const setInputs1 = modal.querySelectorAll(".modalScoreBlock_points_row.firstPlayer .modalScoreBlock_points_right input");
+        const setInputs2 = modal.querySelectorAll(".modalScoreBlock_points_row.secondPlayer .modalScoreBlock_points_right input");
         setInputs1.forEach(input => input.value = "");
         setInputs2.forEach(input => input.value = "");
     
         // Добавляем обработчики на быстрый выбор счета
-        document.querySelectorAll(".modalScoreBlock_scores_player1 button").forEach(button => {
+        modal.querySelectorAll(".modalScoreBlock_scores_player1 button").forEach(button => {
             button.onclick = () => {
                 let score = button.textContent.split(":").map(n => n.trim());
                 score = score.map(value => (value === "W" ? 1 : value === "L" ? 0 : parseInt(value)));
@@ -2052,7 +2086,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             };
         });
     
-        document.querySelectorAll(".modalScoreBlock_scores_player2 button").forEach(button => {
+        modal.querySelectorAll(".modalScoreBlock_scores_player2 button").forEach(button => {
             button.onclick = () => {
                 let score = button.textContent.split(":").map(n => n.trim());
                 score = score.map(value => (value === "W" ? 1 : value === "L" ? 0 : parseInt(value))); // Преобразуем W и L
@@ -2067,7 +2101,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             input.addEventListener("input", highlightWinnerLoser);
         });
 
-        document.querySelectorAll(".modalScoreBlock_points_right input").forEach(input => {
+        modal.querySelectorAll(".modalScoreBlock_points_right input").forEach(input => {
             input.addEventListener("input", () => {
                 if (input.value.trim() !== "") {
                     highlightWinnerLoser();
@@ -2112,7 +2146,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         setInputs2.forEach(input => input.addEventListener("input", updateSetScores));
 
 
-        document.getElementById("saveGameResult").onclick = async () => {
+        let noFinishBtn;
+        let cancelGameBtn;
+        let saveGameResultBtn;
+
+        if (window.numberOfSets === 3) {
+            noFinishBtn = modal.querySelector("#notFinish3");
+            cancelGameBtn = modal.querySelector("#cancelGame3");
+            saveGameResultBtn = modal.querySelector("#saveGameResult3");
+
+        } else if (window.numberOfSets === 5) {
+            noFinishBtn = modal.querySelector("#notFinish");
+            cancelGameBtn = modal.querySelector("#cancelGame");
+            saveGameResultBtn = modal.querySelector("#saveGameResult");
+
+        } else if (window.numberOfSets === 7) {
+            noFinishBtn = modal.querySelector("#notFinish7");
+            cancelGameBtn = modal.querySelector("#cancelGame7");
+            saveGameResultBtn = modal.querySelector("#saveGameResult7");
+        }
+
+        saveGameResultBtn.onclick = async () => {
             let player1Score = scoreInputs[0].value.trim();
             let player2Score = scoreInputs[1].value.trim();
 
@@ -2263,7 +2317,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 updateWaitingPairsForOlympic();
                 saveOlympicTournamentState();
 
-            } else if (selectedType = "groupOlympicFinal") {
+            } else if (selectedType === 'groupOlympicFinal') {
                 if (window.olympicFinalStarted) {
                     updateWaitingPairsForOlympic();
                 }
@@ -2375,17 +2429,19 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             
         };
+
+        
     
         // Обработчик для кнопки Cancel
-        document.getElementById("notFinish").onclick = () => {
+        noFinishBtn.onclick = () => {
             modal.style.display = "none";
-            document.querySelectorAll(".modal-content input").forEach(input => {
+            modal.querySelectorAll(".modal-content input").forEach(input => {
                 input.value = ""; // Очищаем значение
                 input.style.backgroundColor = "#3f3f4c"; // Сбрасываем фон
             });
         };
 
-        document.getElementById("cancelGame").onclick = () => {
+        cancelGameBtn.onclick = () => {
             // Находим идентификаторы игроков
             const player1 = JSON.parse(modal.getAttribute("data-player1"));
             const player2 = JSON.parse(modal.getAttribute("data-player2"));
@@ -3349,13 +3405,21 @@ document.addEventListener('DOMContentLoaded', async function() {
     
    
     function highlightWinnerLoser() {
-        const scoreInputs = document.querySelectorAll(".modalPairBlockDone input");
+        let modal;
+        if (window.numberOfSets === 5) {
+            modal = document.getElementById("modalFinishGame");
+        } else if (window.numberOfSets === 3) {
+            modal = document.getElementById("modalFinishGame3sets");
+        } else if (window.numberOfSets === 7) {
+            modal = document.getElementById("modalFinishGame7sets");
+        }
+        const scoreInputs = modal.querySelectorAll(".modalPairBlockDone input");
         const player1Score = parseInt(scoreInputs[0].value) || 0;
         const player2Score = parseInt(scoreInputs[1].value) || 0;
     
         // Получаем блоки игроков
-        const player1Block = document.querySelector(".modalScoreBlock_points_row.firstPlayer");
-        const player2Block = document.querySelector(".modalScoreBlock_points_row.secondPlayer");
+        const player1Block = modal.querySelector(".modalScoreBlock_points_row.firstPlayer");
+        const player2Block = modal.querySelector(".modalScoreBlock_points_row.secondPlayer");
     
         // Получаем все инпуты заработанных очков
         const player1PointInputs = player1Block.querySelectorAll(".modalScoreBlock_points_right input");
@@ -3479,31 +3543,35 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (selectedType === 'roundRobin') {
             renderCompletedGames(tournamentData.finishedPairs);
             renderFinalResults(tournamentData);
-        }
+        } else
 
         if (selectedType === 'twoRound') {
             renderCompletedGamesTwoRound(tournamentData.finishedPairs);
             console.log("Игроки:", tournamentData.players);
             renderFinalResultsTwoRound(tournamentData);
-        }
+        } else
 
         if (selectedType === 'olympic') {
             renderOlympicFinalResults();
-        }
+        } else
 
         if (selectedType === 'groupOlympicFinal') {
             console.log('турнир завершен, рендерим резкльтаты - - - - - - 3161 строка')
             renderOlympicFinalResults();
-        }
+        } else
+
         if (selectedType === 'singleElimination') {
             alert('Sorry! Selected type of tournamnet in development!')
-        }
+        } else
+
         if (selectedType === 'doubleElimination') {
             alert('Sorry! Selected type of tournamnet in development!')
-        }
+        } else
+
         if (selectedType === 'groupFinal') {
             alert('Sorry! Selected type of tournamnet in development!')
-        }
+        } else
+        
         if (selectedType === 'groupTwoFinals') {
             alert('Sorry! Selected type of tournamnet in development!')
         }

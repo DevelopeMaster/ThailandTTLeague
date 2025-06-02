@@ -3536,7 +3536,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         btn.disabled = true;
         btn.classList.add('disabledButton');
 
-        tournamentData = await fetchTournament(tournamentId);
+        // tournamentData = await fetchTournament(tournamentId);
         // Рендерим финальные результаты
         
 
@@ -3571,7 +3571,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (selectedType === 'groupFinal') {
             alert('Sorry! Selected type of tournamnet in development!')
         } else
-        
+
         if (selectedType === 'groupTwoFinals') {
             alert('Sorry! Selected type of tournamnet in development!')
         }
@@ -3610,13 +3610,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     
             // Получаем результаты из объекта results
             const score = results[player1Index]?.[player2Index] || results[player2Index]?.[player1Index];
-    
+        
             if (!score) {
-                console.log(`⚠️ Счёт не найден для пары ${pair.player1.fullname} vs ${pair.player2.fullname}`);
+                console.log(`⚠️ Счёт не найден для пары ${pair.player1.fullname || pair.player1.name} vs ${pair.player2.fullname || pair.player1.name}`);
                 return;
             }
+            // console.log('pair.player1', pair.player1);
+            // console.log(`✅ Найден счёт: ${score} для ${pair.player1.id} vs ${pair.player2.id}`);
     
-            console.log(`✅ Найден счёт: ${score} для ${pair.player1.fullname} vs ${pair.player2.fullname}`);
+            // console.log(`✅ Найден счёт: ${score} для ${pair.player1.fullname || pair.player1.name} vs ${pair.player2.fullname || pair.player2.name}`);
     
             const [score1, score2] = score.split(":").map(Number);
     
@@ -3624,7 +3626,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Проверяем, есть ли нерейтинговый игрок в паре
             const isPlayer1Unrated = pair.player1.unrated;
             const isPlayer2Unrated = pair.player2.unrated;
-            console.log('isPlayer1Unrated', isPlayer1Unrated, 'isPlayer2Unrated', isPlayer2Unrated);
+            if (isPlayer1Unrated || isPlayer2Unrated) {
+                console.log('isPlayer1Unrated', isPlayer1Unrated, 'isPlayer2Unrated', isPlayer2Unrated);
+            }
+            
             // let leftPlayer, rightPlayer, leftScore, rightScore;
             let winner, loser, winnerScore, loserScore;
 
@@ -3790,9 +3795,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     
         const allPlayers = [...tournament.players, ...(tournament.unratedPlayers || [])];
+        
         const playerStats = allPlayers.map(player => {
             const fullPlayerData = allplayers.find(p => p.id === player.id);
-            const city = fullPlayerData?.cityName || fullPlayerData?.city || player.city || "Unknown";
+            const city = fullPlayerData?.cityName || fullPlayerData?.city || player.city || player.cityName || "Unknown";
     
             const ratingBefore = tournament.initialRatings.find(p => p.id === player.id)?.rating ?? 0;
             const ratingAfter = player.rating ?? ratingBefore;

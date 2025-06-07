@@ -214,3 +214,478 @@
         text-align: center
     &_after
         text-align: center
+
+
+
+    .displayTournament, .completedGames, .finalResults
+        height: 525px
+        // width: 100%
+        max-width: 804px
+        min-width: 320px
+        padding: 14px
+        box-sizing: border-box
+        position: relative
+        overflow: hidden
+        cursor: grab
+        transform-origin: top left
+        transform: scale(1)
+        transition: transform 0.1s ease
+        user-select: none /* Запрет выделения */
+        -webkit-user-select: none /* Safari */
+        -moz-user-select: none /* Firefox */
+        -ms-user-select: none /* IE */
+        // pointer-events: none
+        .content
+            width: 200%
+            height: 200%
+            transform-origin: top left
+            color: #ffffff
+            font-size: 2rem
+            .tournament-wrapper
+                display: flex
+                gap: 14px /* Отступ между списком игроков и таблицей */
+                align-items: flex-start
+                justify-content: flex-start
+                h3
+                    color: #FFF
+                    font-family: Inter
+                    font-size: 16px
+                    font-style: normal
+                    font-weight: 500
+                    line-height: normal
+
+                .groups-wrapper
+                    display: flex
+                    flex-direction: column
+                    gap: 40px
+
+                .players-list
+                    display: flex
+                    flex-direction: column
+                    align-items: flex-start
+                    justify-content: center
+                    padding: 14px
+                    width: 335px
+                    // gap: 14px
+                    border-radius: 8px
+                    background: #3F3F4C
+                    box-sizing: border-box
+
+                    .header-placeholder
+                        box-sizing: border-box
+                        width: 100%
+                        height: 42px
+                        display: flex
+                        gap: 8px
+                        border-radius: 8px
+                        background: #262630
+                        // width: 307px
+                        padding: 0 14px
+                        align-items: center
+                        margin-bottom: 14px
+                        img
+                            width: 15px
+                            height: 20px
+                        
+
+                    .players-names
+                        margin: 0
+                        margin-top: 16px
+                        list-style: none
+                        padding: 0
+                        display: flex
+                        flex-direction: column
+                        gap: 14px
+                        li
+                            display: flex
+                            width: 307px
+                            height: 35px
+                            padding: 10px
+                            // flex-direction: column
+                            align-items: flex-start
+                            gap: 7px
+                            // border-bottom: 1px solid #777785
+                            box-sizing: border-box
+                            span
+                                width: 16px
+                                color: #FFF
+                                font-family: Inter
+                                font-size: 16px
+                                font-style: normal
+                                font-weight: 500
+                                line-height: normal
+                            h3
+                                width: 100%
+                            div
+                                display: flex
+                                width: 33px
+                                padding: 2px
+                                justify-content: center
+                                align-items: center
+                                gap: 10px
+                                flex-shrink: 0
+                                border-radius: 2px
+                                background: #B62727
+                                h5
+                                    color: #FFF
+                                    font-family: Inter
+                                    font-size: 10px
+                                    font-style: normal
+                                    font-weight: 500
+                                    line-height: normal
+                .table-wrapper
+                    display: flex
+                    flex-direction: column
+
+                    .table-header
+                        display: flex
+                        padding: 14px
+                        align-items: center
+                        align-self: stretch
+                        border-radius: 8px
+                        background: #3F3F4C
+                        box-sizing: border-box
+
+                        .header-row
+                            display: flex
+                            gap: 14px
+                            justify-content: space-between
+                            // flex-grow: 1
+                            border-collapse: collapse
+                            box-sizing: border-box
+                            background: #262630
+                            border-radius: 6px
+                            // padding: 0 6px
+                            div
+                                display: flex
+                                width: 58px
+                                height: 42px
+                                padding: 9px 24px
+                                justify-content: center
+                                align-items: center
+                                // gap: 14px
+                                // background: #262630
+                                box-sizing: border-box
+                                font-family: Inter
+                                font-size: 14px
+                                font-style: normal
+                                font-weight: 400
+                                line-height: normal
+                                // &:first-child
+                                //     border-radius: 6px 0 0 6px
+                                // &:last-child
+                                //     border-radius: 0 6px 6px 0
+                    .results-table 
+                        margin-top: 2px
+                        // padding: 14px
+                        // margin-left: -3px
+                        box-sizing: border-box
+                        table
+                            border-collapse: separate
+                            border-spacing: 14.5px
+                            box-sizing: border-box
+                            // height: 748px
+                            // width: 100%
+                            td
+                                position: relative
+                                box-sizing: border-box
+                                width: 58px
+                                height: 35px
+                                border-radius: 6px
+                                background: rgba(63, 63, 76, 0.36)
+                                color: #FFF
+                                font-family: Inter
+                                font-size: 14px
+                                font-style: normal
+                                text-align: center
+                                align-content: center
+                                font-weight: 400
+                                line-height: normal
+                            // td[data-col="5"]::after
+                            //     content: ""
+                            //     display: block
+                            //     width: 100%
+                            //     height: 8px /* Высота дужки */
+                            //     border-bottom: 3px solid black /* Цвет и толщина линии */
+                            //     border-radius: 50% /* Закругление для дужки */
+                            //     position: absolute
+                            //     left: 0
+                            //     bottom: -3px /* Отступ вниз */
+                            
+                            .disabled
+                                background: #585869
+                            .points, .place
+                                background: #FFF
+                                color: #000
+
+                .olympic-rounds
+                    display: flex
+                    justify-content: flex-start
+                    align-items: flex-start
+                    gap: 45px
+                    box-sizing: border-box
+                    .olympic-line-left
+                        position: absolute
+                        left: -22px
+                        top: 50%
+                        width: 22.5px
+                        height: 1px
+                        background-color: #774A35
+                        transform: translateY(-50%)
+                        z-index: 1
+                        box-sizing: border-box
+                        &:before
+                            content: ""
+                            position: absolute
+                            width: 1.5px
+                            height: 114px
+                            background-color: #774A35
+                            left: 0
+                        &:before
+                            top: -57px
+
+                        
+                    .olympic-round
+                        width: 284px
+                        position: relative
+                        box-sizing: border-box
+                        
+                        &_title
+                            display: none
+                        &_match
+                            position: relative
+                            box-sizing: border-box
+                            &:after
+                                content: ""
+                                position: absolute
+                                top: calc(50% - 0.5px)
+                                left: 100%
+                                width: 23px
+                                height: 1.5px
+                                background-color: #774A35
+                                box-sizing: border-box
+
+                            &_pair
+                                position: relative
+                                margin-bottom: 30px
+                                box-sizing: border-box
+                                &_player
+                                    display: flex
+                                    height: 42px
+                                    padding: 8px 10px
+                                    align-items: center
+                                    justify-content: space-between
+                                    gap: 10px
+                                    align-self: stretch
+                                    box-sizing: border-box
+                                    background: #3F3F4C
+                                    transition: background 0.2s ease
+                                    box-sizing: border-box
+                                    &:hover
+                                        background: #FA6400
+                                        .olympic-round_match_pair_player_score
+                                            color: #FFF
+                                    &:nth-child(1)
+                                        border-radius: 10px 10px 0px 0px
+                                        // border: 1px solid #774A35
+                                        border: 1px solid #774A35
+                                        // border-bottom: 2px solid #774A35
+                                        
+                                    &:nth-child(2)
+                                        border-radius: 0px 0px 10px 10px
+                                        // border: 1px solid #774A35
+                                        border: 1px solid #774A35
+                                        // border-top: 2px solid #774A35
+                                        // border-bottom: 1px solid #774A35
+                                        // border-left: 1px solid #774A35
+                                        // background: #3F3F4C
+                                    &_logo
+                                        // width: 26px
+                                        // height: 26px
+                                        // border-radius: 83px
+                                        border: 1px solid #FFF
+                                        background-position: 50% center
+                                        background-size: cover
+                                        background-repeat: no-repeat
+                                        position: relative
+                                        aspect-ratio: 1/1
+                                        width: auto
+                                        height: 26px
+                                        border-radius: 50%
+                                        box-sizing: border-box
+                                    &_wrapper
+                                        display: flex
+                                        align-items: center
+                                        gap: 8px
+                                        box-sizing: border-box
+                                        span
+                                            color: #FFF
+                                            font-family: Inter
+                                            font-size: 16px
+                                            font-style: normal
+                                            font-weight: 400
+                                            line-height: normal
+                                            box-sizing: border-box
+                                    &_score
+                                        color: #666877
+                                        font-family: Inter
+                                        font-size: 16px
+                                        font-style: normal
+                                        font-weight: 400
+                                        line-height: normal
+                                        box-sizing: border-box
+                                        .score-winner
+                                            color: #FA6400 !important
+                                            font-weight: 600
+                                        
+                                    &_winner
+                                        border-radius: 10px 10px 10px 10px !important
+                                        border: 1px solid #774A35
+                                        // background: #FA6400
+                                        box-sizing: border-box
+                                        position: relative
+                                        margin-left: -23px
+                                        z-index: 10
+                                        // &:hover
+                                        //     border: 1px solid #ffffff
+                                        .trophy-icon
+                                            display: inline-block
+                                            animation: flyInTrophy 0.8s ease-out forwards
+                                            font-size: 24px
+                                            // transform: translateY(-50px)
+                                            // opacity: 1
+                                        
+                                    // .winner 
+                                    //     border-radius: 10px 0px 10px 10px !important
+                                    //     position: relative
+                                    //     margin-left: -23px
+                                    //     z-index: 10
+                                    
+                        &:nth-child(2)
+                            margin-top: 57px
+                            .olympic-round_match   
+                                &_pair   
+                                    margin-bottom: 144px
+
+                        &:nth-child(3)
+                            margin-top: 171px
+                            .olympic-round_match_pair   
+                                margin-bottom: 372px
+                            .olympic-line-left:before
+                                height: 228px
+                                top: -114px
+                        &:nth-child(4)
+                            // margin-top: 126px
+                            margin-top: 399px
+                            .olympic-round_match_pair   
+                                margin-bottom: 828px
+                            .olympic-line-left:before
+                                height: 456px
+                                top: -228px
+                        &:nth-child(5)
+                            margin-top: 855px
+                            .olympic-round_match_pair
+                                margin-bottom: 1741px
+                            .olympic-line-left:before
+                                height: 912px
+                                top: -456px
+
+                        &:nth-child(6)
+                            margin-top: 1768px
+                            .olympic-round_match_pair
+                                margin-bottom: 3566px
+                            .olympic-line-left:before
+                                height: 1824px
+                                top: -912px
+
+                        &:nth-child(7)
+                            margin-top: 3594px
+                            // .olympic-round_match_pair
+                            //     margin-bottom: 3566px
+                            .olympic-line-left:before
+                                height: 3648px
+                                top: -1824px
+
+                        &:nth-child(8)
+                            margin-top: 3825px
+                            .olympic-line-left:before
+                                height: 7296px
+                                top: -3648px
+                        // &:nth-child(5)
+                        //     margin-top: 168px
+                        //     .olympic-round_match_pair   
+                        //         margin-bottom: 154px
+                        // &:nth-child(6)
+                        //     margin-top: 210px
+                        // &:nth-child(7)
+                        //     margin-top: 252px
+                        // &:nth-child(8)
+                        //     margin-top: 294px
+                        &:nth-last-child(1)
+                            .olympic-round_match
+                                &:after
+                                    content: ""
+                                    display: none
+                                &_pair_player
+                                    border-radius: 10px
+
+                        &:nth-last-child(2)
+                            .olympic-round_match
+                                // &:after
+                                //     content: ""
+                                //     display: none
+
+                                &:before
+                                    content: ""
+                                    display: none
+                        &:last-child
+                            // 21.5px
+                            .olympic-line-left:before
+                                display: none
+                    .olympic-round_match_pair_player_score.score-winner
+                        color: #FA6400
+
+                    // .olympic-round:not(:last-child) 
+                    //     .olympic-round_match::before
+                    //         content: ""
+                    //         position: absolute
+                    //         top: 42px
+                    //         left: auto
+                    //         right: -15px
+                    //         width: 1px
+                    //         height: 114px
+                    //         background-color: rgba(250, 100, 0, 0.30)
+                    //         transform: translateX(15px)     
+                    // .highlighted-player
+                    //     background: #FA6400 !important
+
+                    //     .olympic-round_match_pair_player_score
+                    //         color: #FFF !important
+    .displayTournamentSecond
+        display: none
+        margin-top: 20px 
+                                                
+    #showResult
+        display: none
+
+
+.highlighted-player
+    background: #FA6400 !important
+    .olympic-round_match_pair_player_score
+        color: #FFF !important
+
+// @keyframes flyInTrophy {
+//     0% {
+//         transform: translateY(-50px) scale(0.8);
+//         opacity: 0;
+//     }
+//     60% {
+//         transform: translateY(5px) scale(1.1);
+//         opacity: 1;
+//     }
+//     100% {
+//         transform: translateY(0) scale(1);
+//         opacity: 1;
+//     }
+// }
+

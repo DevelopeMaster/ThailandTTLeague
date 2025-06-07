@@ -4309,6 +4309,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // ------------------------------------------------------ КРУГОВОЙ ------ КРУГОВОЙ ------КРУГОВОЙ-----------------------------------------
 
     async function saveTournament(state = null, standings = null, final) {
+        window.numberOfSets = inputNumberOfSets.value;
+        // console.log('window.numberOfSets' ,window.numberOfSets)
         // 1️⃣ Формируем `state` вручную, если он не передан
         if (!state) {
             state = {
@@ -4570,6 +4572,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     async function saveGroupOlympicFinalTournament() {
         const tournamentId = document.querySelector('.startTournament').dataset.tournamentid;
+        window.numberOfSets = inputNumberOfSets.value;
     
         averageRating = 0;
         if (tournamentData.initialRatings?.length > 0) {
@@ -4915,6 +4918,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // ------------------------------------------------------2 КРУГА ------ 2 КРУГА ------2 КРУГА-----------------------------------------
     
     async function saveTournamentTwoRound(state = null, standings = null, final) {
+        window.numberOfSets = inputNumberOfSets.value;
 
         if (!state) {
             state = {

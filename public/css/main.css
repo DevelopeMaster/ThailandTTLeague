@@ -8590,7 +8590,8 @@ textarea:-webkit-autofill:focus {
           gap: 8px; }
           .results .finalResults_table_player .finalResults_player .playerLogo {
             width: 27px;
-            height: 27px; }
+            height: 27px;
+            border-radius: 50%; }
           .results .finalResults_table_player .finalResults_player span {
             align-content: center; }
         .results .finalResults_table_player .finalResults_sets {
@@ -8629,7 +8630,8 @@ textarea:-webkit-autofill:focus {
       gap: 8px; }
       .results .finalResults_player .playerLogo {
         width: 27px;
-        height: 27px; }
+        height: 27px;
+        border-radius: 50%; }
       .results .finalResults_player span {
         align-content: center; }
     .results .finalResults_games {

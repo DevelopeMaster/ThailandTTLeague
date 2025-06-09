@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     numberOfTabels.value = `${tournamentData.tables || clubData.tables}`;
     const ratingLimitInput = document.querySelector('#ratingLimit');
     ratingLimitInput.value = `${ratingLimit}`;
+    window.initialPlayerOrder = tournamentData.initialPlayerOrder || [];
     
 
     const inputTypeOfTournament = document.querySelector('#typeOfTournamentInput');
@@ -286,7 +287,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const player = allplayers.find(p => p.id === playerId);
         if (player) {
             // Проверяем наличие рейтинга
-            if (player.rating === undefined || player.rating === null) {
+            if (player.rating === undefined || player.rating === null || typeof(player.rating) === "string") {
                 const ratingPrompt = prompt(`Enter rating for ${player.name} (${player.cityName}):`, '');
                 if (ratingPrompt !== null && !isNaN(ratingPrompt)) {
                     player.rating = Number(ratingPrompt); // Устанавливаем введенный рейтинг
@@ -310,6 +311,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Добавляем игрока в список активных
             selectedPlayers.push({ ...player, retired: false });
             selectedPlayers.sort((a, b) => b.rating - a.rating);
+            console.log('selectedPlayers', selectedPlayers);
             renderPlayerList(selectedPlayers, retiredPlayers, unratedPlayersList); // Перерисовываем списки
             input.value = ''; // Очищаем поле ввода
             input.removeAttribute('data-id'); // Удаляем атрибут data-id
@@ -356,7 +358,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const unratedPlayers = unrated.filter(player => player.unrated === true);
     
         // Сортируем рейтингованных игроков по убыванию рейтинга
-        const sortedRatedPlayers = [...ratedPlayers].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        const sortedRatedPlayers = [...ratedPlayers].sort((a, b) => (b.rating) - (a.rating));
     
         // Рендеринг активных рейтингованных игроков
         sortedRatedPlayers.forEach((player, index) => {
@@ -393,7 +395,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         playerDiv.classList.add('startTournament_panelWrapp_players_registration_showPlayers_item');
         const initialPlayer = tournamentData?.initialRatings?.find(p => p.id === player.id) || null;
         const initialPlayerRating = initialPlayer ? initialPlayer.rating : null;
-       
+    //    console.log('initialPlayer', initialPlayer);
         const playerRating = initialPlayerRating || player.rating;
         playerDiv.innerHTML = `
             <div class="number">
@@ -548,7 +550,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         
 
         if (selectedType === 'roundRobin') {
-            startTournamentDisplay(allParticipants, '.displayTournamentFirst');
+            // startTournamentDisplay(allParticipants, '.displayTournamentFirst');
+            console.log('window.initialPlayerOrder', window.initialPlayerOrder);
+            const orderedPlayers = window.initialPlayerOrder.map(id =>
+                allParticipants.find(p => p.id === id)
+            );
+            console.log('orderedPlayers',orderedPlayers);
+            startTournamentDisplay(orderedPlayers, '.displayTournamentFirst');
             if (tournamentData.results) {
                 results = tournamentData.results; // Восстанавливаем сохранённые результаты
                 restoreSavedResults(results); // Перерисовываем таблицу с данными
@@ -561,6 +569,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (tournamentData.roundCounter === 2) {
                 document.querySelector('.displayTournamentSecond').style.display = 'block';
                 startTournamentDisplay(allParticipants, '.displayTournamentSecond');
+                // startTournamentDisplay(window.initialPlayerOrder, '.displayTournamentSecond');
+                
                 // startTournamentDisplay([...tournamentData.players, ...tournamentData.unratedPlayers], '.displayTournamentSecond');
             }
 
@@ -662,7 +672,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                     saveInitialRatings([...selectedPlayers, ...unratedPlayersList]);
                     allParticipants = [...selectedPlayers, ...unratedPlayersList].sort((a, b) => (b.rating || 0) - (a.rating || 0));
                     console.log('allParticipants',allParticipants);
-                    startTournamentDisplay(allParticipants, '.displayTournamentFirst');
+                    window.initialPlayerOrder = [...allParticipants.map(p => p.id)];
+
+                    // startTournamentDisplay(allParticipants, '.displayTournamentFirst');
+                    console.log('window.initialPlayerOrder', window.initialPlayerOrder);
+                    const orderedPlayers = window.initialPlayerOrder.map(id =>
+                        allParticipants.find(p => p.id === id)
+                    );
+                    console.log('начинаем турнир и сохраняем orderedPlayers',orderedPlayers);
+                    startTournamentDisplay(orderedPlayers, '.displayTournamentFirst');
                     // startTournamentDisplay([...selectedPlayers, ...unratedPlayersList], '.displayTournamentFirst');
                     // Отображаем пары в блоке ожидания
                     renderPairsInWaitingBlock(pairs);
@@ -2213,20 +2231,19 @@ document.addEventListener('DOMContentLoaded', async function() {
             
 
             
-
+            let roundIndexCurPair = null;
             // **Обновляем таблицу результатов**
             if (selectedType === 'roundRobin') {
+                console.log('// **Обновляем таблицу результатов**')
                 finishedPairs.push(pair);
                 updateTableResults(pair, player1Score, player2Score, setsSummary);
-            }
+            } else
 
             if (selectedType === 'twoRound') {
                 finishedPairs.push(pair);
                 updateTableResultsTwoRounds(pair, player1Score, player2Score, setsSummary);
-            }
+            } else
 
-            let roundIndexCurPair = null;
-            
             if (selectedType === 'olympic') {
                 const { roundIndex, matchIndex } = findOlympicMatchIndex(pair.player1.id, pair.player2.id);
                 finishedPairs.push({
@@ -2241,7 +2258,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.log('вызываем функцию завершения олимпийского матча');
                 finishOlympicMatch(roundIndex, matchIndex, player1Score, player2Score);
                 
-            }
+            } else
 
             if (selectedType === 'groupOlympicFinal') {
                 if (!window.olympicFinalStarted) {
@@ -2282,16 +2299,16 @@ document.addEventListener('DOMContentLoaded', async function() {
                     
                 }
                 
-            }
+            } else
             if (selectedType === 'singleElimination') {
                 alert('Sorry! Selected type of tournamnet in development!')
-            }
+            } else
             if (selectedType === 'doubleElimination') {
                 alert('Sorry! Selected type of tournamnet in development!')
-            }
+            } else
             if (selectedType === 'groupFinal') {
                 alert('Sorry! Selected type of tournamnet in development!')
-            }
+            } else
             if (selectedType === 'groupTwoFinals') {
                 alert('Sorry! Selected type of tournamnet in development!')
             }
@@ -2306,7 +2323,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             modal.style.display = "none";
             
             if ( selectedType === 'roundRobin') {
-                updateTournamentStandings([...selectedPlayers, ...unratedPlayersList], results);
+                const orderedPlayers = window.initialPlayerOrder.map(id =>
+                    [...selectedPlayers].find(p => p.id === id)
+                ).filter(Boolean); // на случай, если игрока уже нет
+            
+                updateTournamentStandings([...orderedPlayers, ...unratedPlayersList], results);
+                // updateTournamentStandings([...selectedPlayers, ...unratedPlayersList], results);
             } 
             else if ( selectedType === 'twoRound') {
                 updateTournamentStandingsTwoRound([...selectedPlayers, ...unratedPlayersList], results, roundCounter);
@@ -2342,10 +2364,39 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (selectedType === 'roundRobin') {
                     document.querySelector('#showResult').style = 'display: block';
                     console.log("Все игры завершены! Распределяем места...");
-                    let sortedStandings = allParticipants.map(player => {
-                        const updated = standingsGlobal.find(p => p.id === player.id);
-                        return updated ? { ...player, ...updated } : player;
+                    // let sortedStandings = allParticipants.map(player => {
+                    //     const updated = standingsGlobal.find(p => p.id === player.id);
+                    //     return updated ? { ...player, ...updated } : player;
+                    // });
+
+                    let sortedStandings = window.initialPlayerOrder.map(id => {
+                        const original = allParticipants.find(p => p.id === id) || {};
+                        const updated = standingsGlobal.find(p => p.id === id) || {};
+                        return {
+                            ...original,
+                            ...updated
+                        };
                     });
+
+                    // let sortedStandings = standingsGlobal.map(s => {
+                    //     const original = allParticipants.find(p => p.id === s.id) || {};
+                    //     return {
+                    //         ...original,
+                    //         id: s.id,
+                    //         name: s.name,
+                    //         fullname: s.name,
+                    //         nickname: s.nickname,
+                    //         birthYear: s.birthYear,
+                    //         city: s.city,
+                    //         unrated: s.unrated,
+                    //         wins: s.wins,
+                    //         losses: s.losses,
+                    //         totalPoints: s.totalPoints,
+                    //         setsWon: s.setsWon,
+                    //         setsLost: s.setsLost,
+                    //         place: s.place
+                    //     };
+                    // });
                     console.log('sortedStandings', sortedStandings)
                     let finalStandings = determineTournamentStandings(sortedStandings, results);
                     console.log('finalStandings', finalStandings)
@@ -2590,10 +2641,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
         }
     
-        return sortedStandings;
+        // 6️⃣ Возвращаем игроков в порядке window.initialPlayerOrder
+        const order = window.initialPlayerOrder || standings.map(p => p.id);
+        const finalOrdered = order.map(id => standings.find(p => p.id === id)).filter(Boolean);
+        return finalOrdered;
+        // return sortedStandings;
     }
 
     function compareHeadToHead(playerA, playerB, results) {
+        console.log('вызвана compareHeadToHead');
         const indexA = allParticipants.findIndex(p => p.id === playerA.id);
         const indexB = allParticipants.findIndex(p => p.id === playerB.id);
     
@@ -2621,7 +2677,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             scoreB += b;
         }
     
-        return scoreB - scoreA;
+        return scoreA - scoreB;
     }
     
     
@@ -4347,6 +4403,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 results,
                 numberOfSets: window.numberOfSets,
                 initialRatings: tournamentData.initialRatings,
+                initialPlayerOrder: window.initialPlayerOrder,
                 typeOfTournament: selectedType || 'roundRobin',
             };
         }
@@ -4696,17 +4753,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     
                 const [p1Score, p2Score] = score.split(":").map(n => parseInt(n.trim()));
     
-                const player1 = standings.find(p => p.id == players[row].id);
-                const player2 = standings.find(p => p.id == players[col].id);
+                // const player1 = standings.find(p => p.id == players[row].id);
+                // const player2 = standings.find(p => p.id == players[col].id);
 
-                // const rowIndex = parseInt(row);
-                // const colIndex = parseInt(col);
+                const player1Ref = players[Number(row)];
+                const player2Ref = players[Number(col)];
 
-                // const player1Id = playerIdsByIndex[rowIndex];
-                // const player2Id = playerIdsByIndex[colIndex];
+                const player1 = standings.find(p => p.id === player1Ref.id);
+                const player2 = standings.find(p => p.id === player2Ref.id);
 
-                // const player1 = standings.find(p => p.id === player1Id);
-                // const player2 = standings.find(p => p.id === player2Id);
+                
     
                 if (!player1 || !player2) continue;
     
@@ -4790,15 +4846,42 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             });
         }
-        const updatedPlayers = allParticipants.map(player => {
-            const updated = standings.find(p => p.id === player.id);
-            return updated ? { ...player, ...updated } : player;
+        // const updatedPlayers = allParticipants.map(player => {
+        //     const updated = standings.find(p => p.id === player.id);
+        //     return updated ? { ...player, ...updated } : player;
+        // });
+
+        const updatedPlayers = standings.map(s => {
+            const original = allParticipants.find(p => p.id === s.id) || {};
+            return {
+                ...original,
+                id: s.id,
+                name: s.name,
+                fullname: s.name,
+                nickname: s.nickname,
+                birthYear: s.birthYear,
+                city: s.city,
+                unrated: s.unrated,
+                wins: s.wins,
+                losses: s.losses,
+                totalPoints: s.totalPoints,
+                setsWon: s.setsWon,
+                setsLost: s.setsLost,
+                place: s.place
+            };
         });
+        
         saveTournament(null, updatedPlayers);
     
         console.log('✅ Итоговые standings:', updatedPlayers);
         // saveTournament(null, standings);
         standingsGlobal = updatedPlayers;
+
+        const hasDuplicateIds = new Set(updatedPlayers.map(p => p.id)).size !== updatedPlayers.length;
+        if (hasDuplicateIds) {
+            console.warn("⚠️ Дублирующиеся ID в updatedPlayers! Это приведёт к неверным данным.");
+        }
+
     }
 
 

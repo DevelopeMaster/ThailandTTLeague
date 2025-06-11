@@ -118,14 +118,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         const isRegistered = players.some(player => player.id === currentUserId);
         const isRetired = retiredPlayers.some(player => player.id === currentUserId);
     
-        console.log('allPlayers', allPlayers);
+        // console.log('allPlayers', allPlayers);
         // Получаем рейтинг текущего игрока
         const currentPlayer = allPlayers.find(p => p._id === currentUserId);
         const currentRating = currentPlayer?.rating || 0;
-        console.log('currentRating', currentRating);
+        // console.log('currentRating', currentRating);
         // Получаем лимит рейтинга из поля input
         const ratingLimit = tournament.ratingLimit || tournament.restrictions;
-        console.log('ratingLimit', ratingLimit);
+        // console.log('ratingLimit', ratingLimit);
 
         // Проверяем, проходит ли игрок по рейтингу
         const isRatingAllowed = currentRating <= ratingLimit;
@@ -252,6 +252,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         const date = new Date(tournament.datetime);
         const formattedDate = formatDate(date);
 
+        console.log("tournament.phoneNumber", tournament);
+
         const [dateTourn, time] = tournament.datetime.split('T');
         // Обрезаем время до часов и минут
         const formattedTime = time.substring(0, 5);
@@ -274,8 +276,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         // document.getElementById('tournamentCity').textContent = tournament.address[lang] || tournament.address['en'];
         const cityName = (tournament.address[lang] || tournament.address['en']).split(',')[0];
         document.getElementById('tournamentCity').textContent = cityName;
-        document.getElementById('tournamentContacts').textContent = tournament.contacts || '-';
-        document.getElementById('tournamentContacts').href = `tel:${tournament.contacts || ''}`;
+        document.getElementById('tournamentContacts').textContent = tournament.contact || tournament.phoneNumber || '-';
+        document.getElementById('tournamentContacts').href = `tel:${tournament.contact || tournament.phoneNumber || ''}`;
         document.getElementById('tournamentContribution').textContent = `${tournament.contribution}฿`;
 
         const prizesTable = document.getElementById('prizesTable');
@@ -306,11 +308,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             // registeredPlayersList.appendChild(noPlayersMessage);
             console.log('нет зарегистрированных игроков');
         } else {
-            console.log(tournament.players);
-            console.log(allPlayers);
+            // console.log(tournament.players);
+            // console.log(allPlayers);
             tournament.players.forEach((playerObj, index) => {
                 const player = allPlayers.find(p => p._id === playerObj.id);
-                console.log('player', player);
+                // console.log('player', player);
                 if (player) { // Проверяем, найден ли игрок
                     const playerElement = document.createElement('div');
                     playerElement.className = 'upcomingTournament_table_player';

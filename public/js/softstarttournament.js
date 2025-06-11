@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         addPlayertoTournament.classList.add('disabledButton');
         document.querySelector("#numberOfTables").disabled = true;
         document.querySelector("#addPlayertoTournament").disabled = true;
-        document.querySelector('#numberOfParties').disabled = true;
+        // document.querySelector('#numberOfParties').disabled = true;
         
 
         if (selectedType === 'roundRobin') {
@@ -661,7 +661,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 showErrorModal('Invalid rating detected for:\n' + uncorectRating.join(', '));
                 return;
             }
-            document.querySelector('#numberOfParties').disabled = true;
+            // document.querySelector('#numberOfParties').disabled = true;
            
 
             if ((allParticipants && allParticipants.length > 2) || ([...selectedPlayers, ...unratedPlayersList] && [...selectedPlayers, ...unratedPlayersList].length > 2)) {
@@ -1519,6 +1519,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         } else if ( selectedType === 'twoRound') {
             updateTournamentStandingsTwoRound(players, results, roundCounter);
         }
+
+        document.querySelectorAll('td[data-row][data-col]').forEach(cell => {
+            cell.addEventListener('dblclick', () => {
+                const row = parseInt(cell.dataset.row, 10);
+                const col = parseInt(cell.dataset.col, 10);
+                
+                console.log('двойной клик', row, col);
+                if (isNaN(row) || isNaN(col) || row === col) return;
+        
+                openEditByTableCoords(row, col);
+            });
+        });
         
         
 
@@ -1548,6 +1560,119 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
         });
     }
+
+    function openEditByTableCoords(row, col) {
+        // Найти игроков по индексу
+        const players = window.initialPlayerOrder.map(id =>
+            [...selectedPlayers, ...unratedPlayersList].find(p => p.id === id)
+        );
+        const player1 = players[row];
+        const player2 = players[col];
+    
+        if (!player1 || !player2) return alert("Players not found");
+    
+        // Найти матч в finishedPairs по id
+        const matchIndex = finishedPairs.findIndex(p =>
+            (p.player1.id === player1.id && p.player2.id === player2.id) ||
+            (p.player1.id === player2.id && p.player2.id === player1.id)
+        );
+    
+        if (matchIndex === -1) {
+            alert("Match not found in finished pairs.");
+            return;
+        }
+    
+        const match = finishedPairs[matchIndex];
+        window.currentEditingMatchIndex = matchIndex;
+    
+        // Открываем уже существующее модальное окно с этими игроками
+        openGameModal({
+            player1,
+            player2,
+            score1: match.score1,
+            score2: match.score2,
+            sets: match.sets
+        }, null);
+    }
+
+    function recalculateTournamentFromFinishedPairs() {
+        // 1️⃣ Очистить results полностью
+        for (const row in results) {
+            for (const col in results[row]) {
+                if (col !== "sets" && col !== "points") {
+                    delete results[row][col];
+                }
+            }
+            results[row].points = 0;
+            if (results[row].sets) {
+                for (const setCol in results[row].sets) {
+                    delete results[row].sets[setCol];
+                }
+            }
+        }
+    
+        // 2️⃣ Получить игроков в начальном порядке
+        const allPlayers = [...selectedPlayers, ...unratedPlayersList];
+        const players = window.initialPlayerOrder.map(id =>
+            allPlayers.find(p => p.id === id)
+        ).filter(Boolean);
+    
+        // 3️⃣ Обнулить статы
+        players.forEach(p => {
+            p.totalPoints = 0;
+            p.wins = 0;
+            p.losses = 0;
+            p.setsWon = 0;
+            p.setsLost = 0;
+            p.place = 0;
+        });
+    
+        // 4️⃣ Повторно применить все finishedPairs
+        finishedPairs.forEach(match => {
+            const player1 = allPlayers.find(p => p.id === match.player1.id);
+            const player2 = allPlayers.find(p => p.id === match.player2.id);
+            if (!player1 || !player2) return;
+    
+            updateTableResults({ player1, player2 }, match.score1, match.score2, match.sets);
+        });
+    
+        // 5️⃣ Обновить standings
+        updateTournamentStandings(players, results);
+    }
+    
+    
+    // function recalculateTournamentFromFinishedPairs() {
+    //     // 1️⃣ Очистить results
+    //     for (const row in results) {
+    //         for (const col in results[row]) {
+    //             if (col !== "sets" && col !== "points") {
+    //                 delete results[row][col];
+    //             }
+    //         }
+    //     }
+    
+    //     // 2️⃣ Обнулить статы игроков
+    //     const players = window.initialPlayerOrder.map(id =>
+    //         [...selectedPlayers, ...unratedPlayersList].find(p => p.id === id)
+    //     ).filter(Boolean);
+    
+    //     players.forEach(p => {
+    //         p.totalPoints = 0;
+    //         p.wins = 0;
+    //         p.losses = 0;
+    //         p.setsWon = 0;
+    //         p.setsLost = 0;
+    //         p.place = 0;
+    //     });
+    
+    //     // 3️⃣ Повторно применить каждый finishedPair
+    //     finishedPairs.forEach(pair => {
+    //         updateTableResults(pair, pair.score1, pair.score2, pair.sets);
+    //     });
+    
+    //     // 4️⃣ Пересчитать standings
+    //     updateTournamentStandings(players, results);
+    // }
     
     function flipScore(score) {
         const [p1, p2] = score.trim().split(":");
@@ -2185,6 +2310,44 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         saveGameResultBtn.onclick = async () => {
+            const isEdit = typeof window.currentEditingMatchIndex === 'number';
+
+            if (isEdit) {
+                const oldMatch = finishedPairs[window.currentEditingMatchIndex];
+                finishedPairs.splice(window.currentEditingMatchIndex, 1);
+            
+                const allPlayers = [...selectedPlayers, ...unratedPlayersList];
+                const p1 = allPlayers.find(p => p.id === oldMatch.player1.id);
+                const p2 = allPlayers.find(p => p.id === oldMatch.player2.id);
+            
+                if (oldMatch.score1 > oldMatch.score2) {
+                    p1.wins--;
+                    p2.losses--;
+                    p1.totalPoints -= 2;
+                    p2.totalPoints -= 1;
+                } else {
+                    p2.wins--;
+                    p1.losses--;
+                    p2.totalPoints -= 2;
+                    p1.totalPoints -= 1;
+                }
+            
+                if (oldMatch.sets) {
+                    const sets = oldMatch.sets?.split(",").map(s => s.trim());
+                    sets?.forEach(score => {
+                        const [a, b] = score.split("-").map(Number);
+                        p1.setsWon -= a;
+                        p1.setsLost -= b;
+                        p2.setsWon -= b;
+                        p2.setsLost -= a;
+                    });
+                }
+            
+                if (oldMatch.initialRating1 != null) p1.rating = oldMatch.initialRating1;
+                if (oldMatch.initialRating2 != null) p2.rating = oldMatch.initialRating2;
+            
+                recalculateTournamentFromFinishedPairs();
+            }
             let player1Score = scoreInputs[0].value.trim();
             let player2Score = scoreInputs[1].value.trim();
 
@@ -2235,7 +2398,19 @@ document.addEventListener('DOMContentLoaded', async function() {
             // **Обновляем таблицу результатов**
             if (selectedType === 'roundRobin') {
                 console.log('// **Обновляем таблицу результатов**')
-                finishedPairs.push(pair);
+                // finishedPairs.push(pair);
+                finishedPairs.push({
+                    player1: { id: pair.player1.id },
+                    player2: { id: pair.player2.id },
+                    score1: player1Score,
+                    score2: player2Score,
+                    sets: setsSummary,
+                    round: selectedType === 'twoRound' ? roundCounter : null,
+                    timestamp: Date.now(),
+                    initialRating1: pair.player1.rating,
+                    initialRating2: pair.player2.rating
+
+                });
                 updateTableResults(pair, player1Score, player2Score, setsSummary);
             } else
 
@@ -2353,7 +2528,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             addBracketsAndHighlightResults();
 
             // **Удаляем пару из списка текущих игр**
-            playingDiv.remove();
+            playingDiv?.remove();
 
             if (currentPairs.length === 0 && waitingPairs.length === 0) {
                 // console.log('standingsGlobal перед финальным расчетом:', standingsGlobal);
@@ -3653,10 +3828,17 @@ document.addEventListener('DOMContentLoaded', async function() {
                 console.log("Пропущена пара без игроков:", pair);
                 return;
             }
+            const allPlayers = [...tournamentData.players, ...tournamentData.unratedPlayers];
+
+            const fullPlayer1 = allPlayers.find(p => p.id === pair.player1.id);
+            const fullPlayer2 = allPlayers.find(p => p.id === pair.player2.id);
+
+            if (fullPlayer1) Object.assign(pair.player1, fullPlayer1);
+            if (fullPlayer2) Object.assign(pair.player2, fullPlayer2);
     
             // Получаем индексы игроков в массиве players
-            const player1Index = [...tournamentData.players, ...tournamentData.unratedPlayers].findIndex(p => p.id === pair.player1.id);
-            const player2Index = [...tournamentData.players, ...tournamentData.unratedPlayers].findIndex(p => p.id === pair.player2.id);
+            const player1Index = allPlayers.findIndex(p => p.id === pair.player1.id);
+            const player2Index = allPlayers.findIndex(p => p.id === pair.player2.id);
     
             if (player1Index === -1 || player2Index === -1) {
                 console.log(`Игроки не найдены в списке players:`, pair);
@@ -4888,8 +5070,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     function updateTableResults(pair, player1Score, player2Score, setsSummary) {
         // console.log('allParticipants', pair);
         
-        const rowIndex = [...selectedPlayers, ...unratedPlayersList].findIndex(p => p.id === pair.player1.id);
-        const colIndex = [...selectedPlayers, ...unratedPlayersList].findIndex(p => p.id === pair.player2.id);
+        // const rowIndex = [...selectedPlayers, ...unratedPlayersList].findIndex(p => p.id === pair.player1.id);
+        // const colIndex = [...selectedPlayers, ...unratedPlayersList].findIndex(p => p.id === pair.player2.id);
+        const players = window.initialPlayerOrder.map(id =>
+            [...selectedPlayers, ...unratedPlayersList].find(p => p.id === id)
+        );
+        const rowIndex = players.findIndex(p => p.id === pair.player1.id);
+        const colIndex = players.findIndex(p => p.id === pair.player2.id);
     
         if (rowIndex === -1 || colIndex === -1) {
             console.error("Ошибка: игрок не найден в списке.");
@@ -4913,13 +5100,26 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!results[colIndex].sets) results[colIndex].sets = {};
 
         // Разворачиваем счета партий для второго игрока
-        let reversedSetsSummary = setsSummary
-            .split(", ")
-            .map(set => set.split("-").reverse().join("-"))
-            .join(", ");
+        // let reversedSetsSummary = setsSummary
+        //     .split(", ")
+        //     .map(set => set.split("-").reverse().join("-"))
+        //     .join(", ");
 
-        results[rowIndex].sets[colIndex] = setsSummary;       // Оригинальный счет для первого игрока
-        results[colIndex].sets[rowIndex] = reversedSetsSummary; // Перевернутый счет для второго игрока
+        let reversedSetsSummary = typeof setsSummary === "string" && setsSummary.includes("-")
+            ? setsSummary
+                .split(",")
+                .map(set => set.trim().split("-").reverse().join("-"))
+                .join(", ")
+            : "";
+
+        if (!results[rowIndex].sets) results[rowIndex].sets = {};
+        if (!results[colIndex].sets) results[colIndex].sets = {};
+        
+        results[rowIndex].sets[colIndex] = setsSummary || "";
+        results[colIndex].sets[rowIndex] = reversedSetsSummary || "";
+
+        // results[rowIndex].sets[colIndex] = setsSummary;       // Оригинальный счет для первого игрока
+        // results[colIndex].sets[rowIndex] = reversedSetsSummary; // Перевернутый счет для второго игрока
 
         // **Обновляем очки (если поле points не существует, создаём его)**
         if (!results[rowIndex].points) results[rowIndex].points = 0;

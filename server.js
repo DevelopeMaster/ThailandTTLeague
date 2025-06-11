@@ -1327,9 +1327,12 @@ app.post('/saveTournament', ensureClubOrAdmin, async (req, res) => {
             player2: pair.player2,
             score1: pair.score1 ?? null,
             score2: pair.score2 ?? null,
-            sets: pair.sets || null,
+            sets: pair.sets ?? null,
             round: pair.round ?? null,
-            groupIndex: pair?.groupIndex ?? null
+            groupIndex: pair?.groupIndex ?? null,
+            timestamp: pair.timestamp ?? Date.now(),
+            initialRating1: pair.initialRating1 ?? null,
+            initialRating2: pair.initialRating2 ?? null
         }));
       }
 

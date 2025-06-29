@@ -692,6 +692,7 @@ h2 {
           line-height: normal; }
           .last_tournaments_tournament_winners a span {
             min-width: 150px;
+            max-width: 150px;
             display: inline-block;
             white-space: nowrap;
             overflow: hidden;
@@ -1490,6 +1491,8 @@ h2 {
             cursor: default; }
       .last_tournaments_tournament_winners {
         gap: 8px; }
+        .last_tournaments_tournament_winners a span {
+          max-width: fit-content; }
       .last_tournaments_tournament_aditInfo_playersLimit {
         position: absolute;
         right: 16px;
@@ -2957,7 +2960,8 @@ h2 {
       font-size: 16px;
       font-style: normal;
       font-weight: 500;
-      line-height: 130%; }
+      line-height: 130%;
+      text-decoration: none; }
       .pastTournament_table_player::after {
         position: absolute;
         bottom: 0;

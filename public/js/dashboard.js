@@ -340,7 +340,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     function renderPlayerData() {
         const formattedDate = formatDateAndAge(player.birthdayDate, lang);
         const currentRating = player.rating || '-';
-        const sundayRating = player.sundaysRating || null;
+        // const sundayRating = player.sundaysRating || null;
+        const sundayRating =  (player.sundaysRating === 0 || player.sundaysRating === null) ? player.rating : player.sundaysRating;
         // const ratingChange = currentRating - sundayRating;
         const ratingChange = +(currentRating - sundayRating).toFixed(1) || 0;
         const firstTournamentDate = formatDate(player.firstTournamentDate);

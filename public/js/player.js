@@ -261,8 +261,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         const formattedDate = formatDateAndAge(player.birthdayDate, lang);
         const firstTournamentDate = formatDate(player.firstTournamentDate);
         const currentRating = player.rating;
-        const sundayRating = player.sundaysRating;
-        const ratingChange = currentRating - sundayRating;
+        const sundayRating =  (player.sundaysRating === 0 || player.sundaysRating === null) ? player.rating : player.sundaysRating;
+        // const ratingChange = currentRating - sundayRating;
+        const ratingChange = +(currentRating - sundayRating).toFixed(1) || 0;
         let changeRatingColor;
         let changeRatingSymbol;
 

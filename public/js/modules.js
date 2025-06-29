@@ -3841,28 +3841,67 @@ export async function getAllCoaches() {
         dropdown.style.display = 'block';
     }
 
+    // async function filterCoaches() {
+    //     const nameValue = nameInput.value.toLowerCase();
+    //     const clubValue = clubInput.value.toLowerCase();
+    //     const cityValue = cityInput.value.toLowerCase();
+
+    //     const filteredCoaches = await Promise.all(allCoaches.map(async coach => {
+    //         const nameMatch = !nameValue || coach.name?.toLowerCase().includes(nameValue) || coach.playerName?.toLowerCase().includes(nameValue) || coach.fullname?.toLowerCase().includes(nameValue);
+    //         // const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
+    //         const coachClub = allClubs.find(c => String(c._id) === String(coach.club));
+    //         const clubMatch = !clubValue || (coachClub && coachClub.name.toLowerCase().includes(clubValue));
+
+    //         const cityName = await getCityName(coach.city);
+    //         const cityMatch = !cityValue || cityValue === 'all' || cityName.toLowerCase().includes(cityValue);
+
+    //         return nameMatch && clubMatch && cityMatch ? coach : null;
+    //     }));
+
+    //     // Убираем null значения из массива
+    //     const validCoaches = filteredCoaches.filter(coach => coach !== null);
+
+    //     displayCoaches(validCoaches);
+    // }
+
     async function filterCoaches() {
         const nameValue = nameInput.value.toLowerCase();
         const clubValue = clubInput.value.toLowerCase();
         const cityValue = cityInput.value.toLowerCase();
-
+    
+        // Генерируем альтернативные формы ввода
+        const nameAlt1 = transliterateToCyrillic(nameValue);
+        const nameAlt2 = transliterateToLatin(nameValue);
+        const clubAlt1 = transliterateToCyrillic(clubValue);
+        const clubAlt2 = transliterateToLatin(clubValue);
+        const cityAlt1 = transliterateToCyrillic(cityValue);
+        const cityAlt2 = transliterateToLatin(cityValue);
+    
         const filteredCoaches = await Promise.all(allCoaches.map(async coach => {
-            const nameMatch = !nameValue || coach.name?.toLowerCase().includes(nameValue) || coach.playerName?.toLowerCase().includes(nameValue) || coach.fullname?.toLowerCase().includes(nameValue);
-            // const clubMatch = !clubValue || coach.club.toLowerCase().includes(clubValue);
+            const n1 = coach.name?.toLowerCase() || '';
+            const n2 = coach.playerName?.toLowerCase() || '';
+            const n3 = coach.fullname?.toLowerCase() || '';
+            const nameMatch = !nameValue || 
+                n1.includes(nameValue) || n1.includes(nameAlt1) || n1.includes(nameAlt2) ||
+                n2.includes(nameValue) || n2.includes(nameAlt1) || n2.includes(nameAlt2) ||
+                n3.includes(nameValue) || n3.includes(nameAlt1) || n3.includes(nameAlt2);
+    
             const coachClub = allClubs.find(c => String(c._id) === String(coach.club));
-            const clubMatch = !clubValue || (coachClub && coachClub.name.toLowerCase().includes(clubValue));
-
-            const cityName = await getCityName(coach.city);
-            const cityMatch = !cityValue || cityValue === 'all' || cityName.toLowerCase().includes(cityValue);
-
+            const clubName = coachClub?.name?.toLowerCase() || '';
+            const clubMatch = !clubValue || 
+                clubName.includes(clubValue) || clubName.includes(clubAlt1) || clubName.includes(clubAlt2);
+    
+            const cityName = (await getCityName(coach.city))?.toLowerCase() || '';
+            const cityMatch = !cityValue || cityValue === 'all' ||
+                cityName.includes(cityValue) || cityName.includes(cityAlt1) || cityName.includes(cityAlt2);
+    
             return nameMatch && clubMatch && cityMatch ? coach : null;
         }));
-
-        // Убираем null значения из массива
+    
         const validCoaches = filteredCoaches.filter(coach => coach !== null);
-
         displayCoaches(validCoaches);
     }
+    
 
     async function displayCoaches(coaches) {
         const container = document.querySelector('.coaches_content');
@@ -4617,7 +4656,10 @@ export function registrationForm() {
         listOfCities.innerHTML = '';
         const currentText = cityInput.value.toLowerCase();
 
-        const filteredCities = citiesList.filter(city => city.toLowerCase().startsWith(currentText));
+        // const filteredCities = citiesList.filter(city => city.toLowerCase().startsWith(currentText));
+        const filteredCities = citiesList.filter(city =>
+            city && city.toLowerCase().startsWith(currentText)
+        );
 
         filteredCities.forEach(city => {
             const div = document.createElement('div');
@@ -5992,9 +6034,9 @@ export async function getAllTournaments(user) {
 
 
                 const players = (tournament.players || [])
-                    .map(player => playerMap[player.id || player._id])
+                    .map(player => playerMap[player.id ?? player._id])
                     .filter(Boolean);
-
+                console.log('players', players, "tournament", tournament);
 
                 const validPlayers = players.filter(player => 
                     player.rating !== undefined && !isNaN(Number(player.rating))
@@ -6085,7 +6127,7 @@ export async function getAllTournaments(user) {
                 playersImg.alt = 'person';
                 playersDiv.appendChild(playersImg);
                 let playersSpan = document.createElement('span');
-                if (players.length && Array.isArray(players)) {
+                if (Array.isArray(players) && players.length) {
                     playersSpan.textContent = players.length;
                 } else {
                     playersSpan.textContent = 0;
@@ -6318,26 +6360,99 @@ export async function getAllPlayers() {
         // dropdown.style.display = filteredOptions.length > 0 ? 'block' : 'none'; // Отображаем дропдаун только если есть совпадения
     }
 
+    // async function filterPlayers() {
+    //     const ratingFromValue = ratingFromInput.value;
+    //     const ratingUntilValue = ratingUntilInput.value;
+    //     const nameValue = (nameInput.value || '').toLowerCase();
+    //     const cityValue = (cityInput.value || '').toLowerCase();
+
+    //     const filteredPlayers = await Promise.all(allPlayers.map(async player => {
+    //         const ratingFromMatch = !ratingFromValue || player.rating >= parseInt(ratingFromValue, 10);
+    //         const ratingUntilMatch = !ratingUntilValue || player.rating <= parseInt(ratingUntilValue, 10);
+    //         const nameMatch = !nameValue || (player.fullname && player.fullname.toLowerCase().includes(nameValue)) || (player.nickname && player.nickname.toLowerCase().includes(nameValue));
+
+    //         const cityName = await getCityName(player.city);
+    //         const cityMatch = !cityValue || cityValue === 'all' || (cityName && cityName.toLowerCase().includes(cityValue));
+
+    //         return ratingFromMatch && ratingUntilMatch && nameMatch && cityMatch ? player : null;
+    //     }));
+
+    //     const validPlayers = filteredPlayers.filter(player => player !== null);
+    //     displayPlayers(validPlayers, playersContainer);
+    // }
+
     async function filterPlayers() {
         const ratingFromValue = ratingFromInput.value;
         const ratingUntilValue = ratingUntilInput.value;
         const nameValue = (nameInput.value || '').toLowerCase();
         const cityValue = (cityInput.value || '').toLowerCase();
-
+    
+        // все формы поискового текста
+        const nameAlt1 = transliterateToCyrillic(nameValue);
+        const nameAlt2 = transliterateToLatin(nameValue);
+        const cityAlt1 = transliterateToCyrillic(cityValue);
+        const cityAlt2 = transliterateToLatin(cityValue);
+    
         const filteredPlayers = await Promise.all(allPlayers.map(async player => {
             const ratingFromMatch = !ratingFromValue || player.rating >= parseInt(ratingFromValue, 10);
             const ratingUntilMatch = !ratingUntilValue || player.rating <= parseInt(ratingUntilValue, 10);
-            const nameMatch = !nameValue || (player.fullname && player.fullname.toLowerCase().includes(nameValue)) || (player.nickname && player.nickname.toLowerCase().includes(nameValue));
-
-            const cityName = await getCityName(player.city);
-            const cityMatch = !cityValue || cityValue === 'all' || (cityName && cityName.toLowerCase().includes(cityValue));
-
+    
+            const fullName = player.fullname?.toLowerCase() || '';
+            const nickname = player.nickname?.toLowerCase() || '';
+            const nameMatch = !nameValue || 
+                fullName.includes(nameValue) || fullName.includes(nameAlt1) || fullName.includes(nameAlt2) ||
+                nickname.includes(nameValue) || nickname.includes(nameAlt1) || nickname.includes(nameAlt2);
+    
+            const cityName = (await getCityName(player.city))?.toLowerCase() || '';
+            const cityMatch = !cityValue || cityValue === 'all' ||
+                cityName.includes(cityValue) || cityName.includes(cityAlt1) || cityName.includes(cityAlt2);
+    
             return ratingFromMatch && ratingUntilMatch && nameMatch && cityMatch ? player : null;
         }));
-
+    
         const validPlayers = filteredPlayers.filter(player => player !== null);
         displayPlayers(validPlayers, playersContainer);
     }
+    
+
+    // function transliterateToCyrillic(text) {
+    //     const map = {
+    //         a: "а", b: "б", v: "в", g: "г", d: "д", e: "е", z: "з", i: "и", y: "й",
+    //         k: "к", l: "л", m: "м", n: "н", o: "о", p: "п", r: "р", s: "с", t: "т",
+    //         u: "у", f: "ф", h: "х", c: "ц", ch: "ч", sh: "ш", ya: "я", yo: "ё",
+    //         yu: "ю", zh: "ж", ye: "э", shh: "щ"
+    //     };
+    
+    //     let result = "";
+    //     let i = 0;
+    //     while (i < text.length) {
+    //         const two = text.slice(i, i + 2).toLowerCase();
+    //         const one = text[i].toLowerCase();
+    //         if (map[two]) {
+    //             result += map[two];
+    //             i += 2;
+    //         } else if (map[one]) {
+    //             result += map[one];
+    //             i++;
+    //         } else {
+    //             result += text[i];
+    //             i++;
+    //         }
+    //     }
+    //     return result;
+    // }
+    
+    // function transliterateToLatin(text) {
+    //     const map = {
+    //         а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "yo", ж: "zh", з: "z",
+    //         и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r",
+    //         с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "c", ч: "ch", ш: "sh",
+    //         щ: "shh", э: "ye", ю: "yu", я: "ya"
+    //     };
+    
+    //     return text.split('').map(char => map[char.toLowerCase()] || char).join('');
+    // }
+    
 
     async function displayPlayers(players, container) {
         let currentLang = localStorage.getItem('clientLang') || 'english';
@@ -6428,6 +6543,44 @@ export async function getAllPlayers() {
     }
 }
 
+
+function transliterateToCyrillic(text) {
+    const map = {
+        a: "а", b: "б", v: "в", g: "г", d: "д", e: "е", z: "з", i: "и", y: "й",
+        k: "к", l: "л", m: "м", n: "н", o: "о", p: "п", r: "р", s: "с", t: "т",
+        u: "у", f: "ф", h: "х", c: "ц", ch: "ч", sh: "ш", ya: "я", yo: "ё",
+        yu: "ю", zh: "ж", ye: "э", shh: "щ"
+    };
+
+    let result = "";
+    let i = 0;
+    while (i < text.length) {
+        const two = text.slice(i, i + 2).toLowerCase();
+        const one = text[i].toLowerCase();
+        if (map[two]) {
+            result += map[two];
+            i += 2;
+        } else if (map[one]) {
+            result += map[one];
+            i++;
+        } else {
+            result += text[i];
+            i++;
+        }
+    }
+    return result;
+}
+
+function transliterateToLatin(text) {
+    const map = {
+        а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "yo", ж: "zh", з: "z",
+        и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r",
+        с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "c", ч: "ch", ш: "sh",
+        щ: "shh", э: "ye", ю: "yu", я: "ya"
+    };
+
+    return text.split('').map(char => map[char.toLowerCase()] || char).join('');
+}
 // export async function getAllPlayers() {
 //     const ratingFromInput = document.getElementById('dateFromInput');
 //     const ratingUntilInput = document.getElementById('dateUntilInput');

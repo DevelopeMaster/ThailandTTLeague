@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     const parts = currentPath.split('/');
     const lang = parts[1];
+    window.lang = lang;
     const tournamentId = parts[3];
     
 
@@ -659,8 +660,9 @@ function renderPastTournamentResults(tournamentData) {
     playerStats.sort((a, b) => a.place - b.place);
 
     playerStats.forEach(player => {
-        const playerDiv = document.createElement("div");
+        const playerDiv = document.createElement("a");
         playerDiv.classList.add("pastTournament_table_player");
+        playerDiv.href = `/${window.lang}/allplayers/${player.id || player._id}`;
 
         playerDiv.innerHTML = `
             <div class="pastTournament_number">${player.place}</div>

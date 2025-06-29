@@ -102,12 +102,44 @@ router.post('/tournaments/:tournamentId/register-player', ensureAuthenticated, a
         const db = getDB();
         const tournamentId = req.params.tournamentId;
         const playerId = req.body.playerId;
+        let playerData;
+        playerData = await db.collection('users').findOne({ _id: new ObjectId(playerId) });
+        if (!playerData) {
+            playerData = await db.collection('coaches').findOne({ _id: new ObjectId(playerId) });
+
+            if (!playerData) {
+                // Обновляем массив игроков в турнире
+                await db.collection('tournaments').updateOne(
+                    { _id: new ObjectId(tournamentId) },
+                    { $addToSet: { players: { id: playerId } } } // Добавляем игрока, если его ещё нет в списке
+                );
+            }
+        }
 
         // Обновляем массив игроков в турнире
-        await db.collection('tournaments').updateOne(
-            { _id: new ObjectId(tournamentId) },
-            { $addToSet: { players: { id: playerId } } } // Добавляем игрока, если его ещё нет в списке
-        );
+        // await db.collection('tournaments').updateOne(
+        //     { _id: new ObjectId(tournamentId) },
+        //     { $addToSet: { players: { id: playerId } } } // Добавляем игрока, если его ещё нет в списке
+        // );
+        
+        if (playerData) {
+            await db.collection('tournaments').updateOne(
+                { _id: new ObjectId(tournamentId) },
+                {
+                    $addToSet: {
+                        players: {
+                            id: playerId,
+                            fullname: playerData.fullname || playerData.name,
+                            rating: playerData.rating || 0,
+                            logo: playerData.logo || '/icons/playerslogo/default_avatar.svg',
+                            city: playerData.city
+                        }
+                    }
+                }
+            );
+        }
+
+        
 
         res.status(200).send('Player registered successfully');
     } catch (error) {

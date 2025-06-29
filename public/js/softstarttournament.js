@@ -176,6 +176,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
     
+    // input.addEventListener('input', () => {
+    //     const query = input.value.toLowerCase().trim();
+    
+    //     if (query === '') {
+    //         renderDropdown(allplayers);
+    //         return;
+    //     }
+    
+    //     const filteredPlayers = allplayers.filter(player => 
+    //         player.name.toLowerCase().includes(query) || 
+    //         player.cityName.toLowerCase().includes(query)
+    //     );
+    
+    //     renderDropdown(filteredPlayers);
+    // });
+
     input.addEventListener('input', () => {
         const query = input.value.toLowerCase().trim();
     
@@ -184,13 +200,66 @@ document.addEventListener('DOMContentLoaded', async function() {
             return;
         }
     
-        const filteredPlayers = allplayers.filter(player => 
-            player.name.toLowerCase().includes(query) || 
-            player.cityName.toLowerCase().includes(query)
-        );
+        // Генерируем все формы запроса
+        const queryCyr = transliterateToCyrillic(query);
+        const queryLat = transliterateToLatin(query);
+    
+        const filteredPlayers = allplayers.filter(player => {
+            const name = player.name?.toLowerCase() || '';
+            const city = player.cityName?.toLowerCase() || '';
+    
+            return (
+                name.includes(query) ||
+                city.includes(query) ||
+                name.includes(queryCyr) ||
+                city.includes(queryCyr) ||
+                name.includes(queryLat) ||
+                city.includes(queryLat)
+            );
+        });
     
         renderDropdown(filteredPlayers);
     });
+
+
+    function transliterateToCyrillic(text) {
+        const map = {
+            a: "а", b: "б", v: "в", g: "г", d: "д", e: "е", z: "з", i: "и", y: "й",
+            k: "к", l: "л", m: "м", n: "н", o: "о", p: "п", r: "р", s: "с", t: "т",
+            u: "у", f: "ф", h: "х", c: "ц",
+    
+            ch: "ч", sh: "ш", ya: "я", yo: "ё", yu: "ю", zh: "ж", ye: "э", shh: "щ"
+        };
+    
+        let result = "";
+        let i = 0;
+        while (i < text.length) {
+            const two = text.slice(i, i + 2).toLowerCase();
+            const one = text[i].toLowerCase();
+            if (map[two]) {
+                result += map[two];
+                i += 2;
+            } else if (map[one]) {
+                result += map[one];
+                i++;
+            } else {
+                result += text[i];
+                i++;
+            }
+        }
+        return result;
+    }
+    
+    function transliterateToLatin(text) {
+        const map = {
+            а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "yo", ж: "zh", з: "z",
+            и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r",
+            с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "c", ч: "ch", ш: "sh",
+            щ: "shh", э: "ye", ю: "yu", я: "ya"
+        };
+    
+        return text.split('').map(char => map[char.toLowerCase()] || char).join('');
+    }
     
     document.addEventListener('click', (e) => {
         if (!e.target.closest('#searchPlayerLabel')) {
@@ -668,18 +737,20 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (selectedType === 'roundRobin') {
                     console.log('start round robin tournament');
                     // Генерируем пары игроков
-                    const pairs = generateRoundRobinPairs([...selectedPlayers, ...unratedPlayersList]);
+                    // const pairs = generateRoundRobinPairs([...selectedPlayers, ...unratedPlayersList]);
+                    const pairs = generateOptimizedRoundRobinPairs([...selectedPlayers, ...unratedPlayersList]);
+                    // console.log("список пар", pairs);
                     saveInitialRatings([...selectedPlayers, ...unratedPlayersList]);
                     allParticipants = [...selectedPlayers, ...unratedPlayersList].sort((a, b) => (b.rating || 0) - (a.rating || 0));
-                    console.log('allParticipants',allParticipants);
+                    // console.log('allParticipants',allParticipants);
                     window.initialPlayerOrder = [...allParticipants.map(p => p.id)];
 
                     // startTournamentDisplay(allParticipants, '.displayTournamentFirst');
-                    console.log('window.initialPlayerOrder', window.initialPlayerOrder);
+                    // console.log('window.initialPlayerOrder', window.initialPlayerOrder);
                     const orderedPlayers = window.initialPlayerOrder.map(id =>
                         allParticipants.find(p => p.id === id)
                     );
-                    console.log('начинаем турнир и сохраняем orderedPlayers',orderedPlayers);
+                    // console.log('начинаем турнир и сохраняем orderedPlayers',orderedPlayers);
                     startTournamentDisplay(orderedPlayers, '.displayTournamentFirst');
                     // startTournamentDisplay([...selectedPlayers, ...unratedPlayersList], '.displayTournamentFirst');
                     // Отображаем пары в блоке ожидания
@@ -1732,6 +1803,66 @@ document.addEventListener('DOMContentLoaded', async function() {
             updateTournamentStandingsTwoRound(allParticipants, results, roundCounter);
         }
     }
+
+    function generateOptimizedRoundRobinPairs(players) {
+        const totalPlayers = players.length;
+        if (totalPlayers < 2) return [];
+
+        // Сортируем по рейтингу — обязательно!
+        const sorted = [...players].sort((a, b) => b.rating - a.rating);
+
+        const seenPairs = new Set();
+        const result = [];
+
+        // 1. Зеркальные пары в начало
+        const mid = Math.floor(totalPlayers / 2);
+        for (let i = 0; i < mid; i++) {
+            const p1 = sorted[i];
+            const p2 = sorted[totalPlayers - 1 - i];
+            const key = [p1.id, p2.id].sort().join("-");
+            result.push({ player1: p1, player2: p2 });
+            seenPairs.add(key);
+        }
+
+        // 2. Все остальные уникальные пары
+        const remainingPairs = [];
+        for (let i = 0; i < totalPlayers - 1; i++) {
+            for (let j = i + 1; j < totalPlayers; j++) {
+            const p1 = sorted[i];
+            const p2 = sorted[j];
+            const key = [p1.id, p2.id].sort().join("-");
+            if (!seenPairs.has(key)) {
+                remainingPairs.push({ player1: p1, player2: p2 });
+                seenPairs.add(key);
+            }
+            }
+        }
+
+        // 3. Распределяем оставшиеся пары с минимизацией повторов подряд
+        const scheduledRest = [];
+        const lastPlayed = new Map(); // player.id → номер последнего появления
+
+        while (remainingPairs.length > 0) {
+            remainingPairs.sort((a, b) => {
+            const a1 = lastPlayed.get(a.player1.id) ?? -Infinity;
+            const a2 = lastPlayed.get(a.player2.id) ?? -Infinity;
+            const b1 = lastPlayed.get(b.player1.id) ?? -Infinity;
+            const b2 = lastPlayed.get(b.player2.id) ?? -Infinity;
+
+            const aMax = Math.max(a1, a2);
+            const bMax = Math.max(b1, b2);
+            return aMax - bMax;
+            });
+
+            const next = remainingPairs.shift();
+            scheduledRest.push(next);
+            lastPlayed.set(next.player1.id, result.length + scheduledRest.length);
+            lastPlayed.set(next.player2.id, result.length + scheduledRest.length);
+        }
+
+        return [...result, ...scheduledRest];
+    }
+      
     
 
     function generateRoundRobinPairs(players) {

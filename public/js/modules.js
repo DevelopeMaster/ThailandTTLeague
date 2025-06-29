@@ -1,3 +1,4 @@
+import { MobileCustomCalendar } from './calendar.js';
 // передавать в блок на который нужно ровняться по высоте
 export function fetchAdvertisements(block) {
     fetch(`/adv`)
@@ -3823,11 +3824,40 @@ export async function getAllCoaches() {
         });
     }
 
+    // function updateDropdownList(dropdown, options, inputElement) {
+    //     dropdown.innerHTML = '';
+    //     const currentText = inputElement.value.toLowerCase();
+    //     const filteredOptions = options.filter(option => option.toLowerCase().includes(currentText));
+
+    //     filteredOptions.forEach(option => {
+    //         const div = document.createElement('div');
+    //         div.textContent = option;
+    //         div.addEventListener('click', () => {
+    //             inputElement.value = option;
+    //             dropdown.style.display = 'none';
+    //             filterCoaches();
+    //         });
+    //         dropdown.appendChild(div);
+    //     });
+    //     dropdown.style.display = 'block';
+    // }
+
     function updateDropdownList(dropdown, options, inputElement) {
         dropdown.innerHTML = '';
         const currentText = inputElement.value.toLowerCase();
-        const filteredOptions = options.filter(option => option.toLowerCase().includes(currentText));
-
+    
+        const cyr = transliterateToCyrillic(currentText);
+        const lat = transliterateToLatin(currentText);
+    
+        const filteredOptions = options.filter(option => {
+            const o = option?.toLowerCase();
+            return o && (
+                o.includes(currentText) ||
+                o.includes(cyr) ||
+                o.includes(lat)
+            );
+        });
+    
         filteredOptions.forEach(option => {
             const div = document.createElement('div');
             div.textContent = option;
@@ -3838,8 +3868,12 @@ export async function getAllCoaches() {
             });
             dropdown.appendChild(div);
         });
-        dropdown.style.display = 'block';
+    
+        dropdown.style.display = filteredOptions.length > 0 ? 'block' : 'none';
     }
+    
+
+
 
     // async function filterCoaches() {
     //     const nameValue = nameInput.value.toLowerCase();
@@ -4629,6 +4663,8 @@ export function registrationForm() {
                             </div>
                             <label for="date">${translation.dobLabel}</label>
                             <input type="text" name="date" id="date" placeholder="${translation.dobPlaceholder}" oninput="addDots(this)" maxlength="10" required>
+
+                            
                             <div class="policy">
                                 <input class="checkbox" type="checkbox" id="policy" name="policy" required>
                                 <label for="policy"><a href="\policy">${translation.policyText}</a></label>
@@ -4636,6 +4672,9 @@ export function registrationForm() {
                             <button  class='header_btn-sign btnSbmt' type="submit">${translation.submitButton}</button>
                         </form>`;
 
+                        // <input type="text" name="date" id="date" placeholder="${translation.dobPlaceholder}" maxlength="10" required>
+                        //     <div class="custom-calendar" id="calendarFrom"></div>
+                       
     document.body.style = 'overflow: hidden;';
     modal.style.display = "block";
 
@@ -4888,6 +4927,11 @@ export function registrationForm() {
             showErrorModal(translation.serverError);
         });
     });
+
+    // new MobileCustomCalendar(
+    //     document.getElementById('date'),
+    //     document.getElementById('calendarFrom')
+    // );
 }
 
 export function showErrorModal(message, tittle) {
@@ -6338,27 +6382,59 @@ export async function getAllPlayers() {
         });
     }
 
+    // function updateDropdownList(dropdown, options, inputElement) {
+    //     dropdown.innerHTML = '';
+    //     const currentText = (inputElement.value || '').toLowerCase();
+    //     // console.log('Filtered options:', options);
+    //     const filteredOptions = options.filter(option => option && option.toLowerCase().includes(currentText));
+
+    //     filteredOptions.forEach(option => {
+    //         const div = document.createElement('div');
+    //         div.textContent = option;
+    //         div.addEventListener('click', () => {
+    //             inputElement.value = option;
+    //             dropdown.style.display = 'none';
+    //             isFiltered = true; // Устанавливаем состояние фильтрации
+    //             filterPlayers();
+    //         });
+    //         dropdown.appendChild(div);
+    //     });
+    //     dropdown.style.display = 'block';
+
+    //     // dropdown.style.display = filteredOptions.length > 0 ? 'block' : 'none'; // Отображаем дропдаун только если есть совпадения
+    // }
+
     function updateDropdownList(dropdown, options, inputElement) {
         dropdown.innerHTML = '';
         const currentText = (inputElement.value || '').toLowerCase();
-        // console.log('Filtered options:', options);
-        const filteredOptions = options.filter(option => option && option.toLowerCase().includes(currentText));
-
+    
+        const cyr = transliterateToCyrillic(currentText);
+        const lat = transliterateToLatin(currentText);
+    
+        const filteredOptions = options.filter(option => {
+            const o = option?.toLowerCase();
+            return o && (
+                o.includes(currentText) ||
+                o.includes(cyr) ||
+                o.includes(lat)
+            );
+        });
+    
         filteredOptions.forEach(option => {
             const div = document.createElement('div');
             div.textContent = option;
             div.addEventListener('click', () => {
                 inputElement.value = option;
                 dropdown.style.display = 'none';
-                isFiltered = true; // Устанавливаем состояние фильтрации
+                isFiltered = true;
                 filterPlayers();
             });
             dropdown.appendChild(div);
         });
-        dropdown.style.display = 'block';
-
-        // dropdown.style.display = filteredOptions.length > 0 ? 'block' : 'none'; // Отображаем дропдаун только если есть совпадения
+    
+        dropdown.style.display = filteredOptions.length > 0 ? 'block' : 'none';
     }
+    
 
     // async function filterPlayers() {
     //     const ratingFromValue = ratingFromInput.value;

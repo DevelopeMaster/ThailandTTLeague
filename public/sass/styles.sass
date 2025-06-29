@@ -1793,6 +1793,202 @@
         background: #666877
         
 
+.custom-calendar
+    // position: absolute
+    // top: 100%
+    left: 0
+    right: 0
+    z-index: 9999;
+    background: #3f3f4c
+    border: 1px solid #4a5568
+    border-radius: 12px
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6)
+    margin-top: 4px
+    overflow: hidden
+    display: none
+    animation: calendarSlideIn 0.3s ease-out
+    min-width: 280px
+
+@keyframes calendarSlideIn
+    from
+        opacity: 0
+        transform: translateY(-10px) scale(0.95)
+    to 
+        opacity: 1
+        transform: translateY(0) scale(1)
+
+
+.calendar-header
+    background: #1a202c
+    padding: 16px
+    border-bottom: 1px solid #4a5568
+    display: flex
+    justify-content: space-between
+    align-items: center
+
+.calendar-nav
+    background: none
+    border: none
+    color: #a0aec0
+    font-size: 20px
+    cursor: pointer
+    padding: 12px
+    border-radius: 6px
+    transition: all 0.2s ease
+    min-width: 44px
+    min-height: 44px
+    display: flex
+    align-items: center
+    justify-content: center
+
+.calendar-nav:hover,
+.calendar-nav:active
+    color: #ff6b35
+    background: rgba(255, 107, 53, 0.1)
+
+.calendar-month
+    color: #e2e8f0
+    font-weight: 600
+    font-size: 16px
+
+.calendar-weekdays
+    display: grid
+    grid-template-columns: repeat(7, 1fr)
+    background: #2d3748
+    border-bottom: 1px solid #4a5568
+
+.calendar-weekday
+    padding: 12px
+    text-align: center
+    color: #a0aec0
+    font-weight: 600
+    font-size: 12px
+    text-transform: uppercase
+
+.calendar-days
+    display: grid
+    grid-template-columns: repeat(7, 1fr)
+    padding: 8px
+    background: #2d3748
+
+.calendar-day
+    height: 44px
+    display: flex
+    align-items: center
+    justify-content: center
+    margin: 2px
+    border-radius: 8px
+    cursor: pointer
+    transition: all 0.2s ease
+    color: #e2e8f0
+    font-weight: 500
+    position: relative
+    min-width: 44px
+
+.calendar-day:hover,
+.calendar-day:active
+    background: rgba(255, 107, 53, 0.2)
+    color: #ff6b35
+    transform: scale(1.05)
+
+.calendar-day.selected
+    background: #ff6b35
+    color: white
+    font-weight: 600
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3)
+
+.calendar-day.today
+    background: rgba(255, 107, 53, 0.1)
+    color: #ff6b35
+    font-weight: 600
+    border: 2px solid #ff6b35
+
+.calendar-day.disabled
+    color: #4a5568
+    cursor: not-allowed
+
+.calendar-day.disabled:hover,
+.calendar-day.disabled:active
+    background: transparent
+    transform: none
+    color: #4a5568
+
+.calendar-day.other-month
+    color: #4a5568
+
+
+.features-grid
+    background: #1a202c
+    border-radius: 12px
+    padding: 20px
+    text-align: center
+    margin-top: 30px
+
+.features-title
+    color: #ff6b35
+    margin-bottom: 15px
+
+.features-list
+    display: grid
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))
+    gap: 15px
+    text-align: left
+
+/* Мобильные стили */
+@media (max-width: 768px)
+    .demo-container
+        padding: 20px
+        margin: 10px
+
+    .form-row
+        flex-direction: column
+        gap: 15px
+
+    .form-group
+        min-width: unset
+
+    .custom-calendar
+        position: fixed
+        top: 50%
+        left: 50%
+        transform: translate(-50%, -50%)
+        width: 90vw
+        max-width: 320px
+        margin-top: 0
+
+    .calendar-day
+        height: 40px
+        min-width: 40px
+        font-size: 14px
+
+    .calendar-nav
+        font-size: 18px
+        padding: 10px
+        min-width: 40px
+        min-height: 40px
+
+.calendar-overlay
+    position: fixed
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    background: rgba(0, 0, 0, 0.5)
+    z-index: 9998
+    display: none
+
+@media (max-width: 768px)
+    .calendar-overlay.active
+        display: block
+
+
+
+
+
+
+
+
+
 @import 'personalpage';
 @import 'becomeacoach';
 @import 'addclub';

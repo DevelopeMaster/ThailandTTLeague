@@ -139,6 +139,9 @@ const storage = new CloudinaryStorage({
             case 'banner':
                 folder = 'icons/advbanners';
                 break;
+            case 'tournamentScreenshot':
+                folder = 'screenshots/tournaments';
+                break;
             default:
                 folder = 'misc';
         }

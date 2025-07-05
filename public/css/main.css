@@ -3166,6 +3166,8 @@ h2 {
           height: auto;
           border-radius: 50%; }
         .pastTournament_table_player .pastTournament_player span {
+          max-width: 118px;
+          min-width: 118px;
           align-content: center;
           white-space: nowrap;
           overflow: hidden;
@@ -3200,6 +3202,8 @@ h2 {
     font-size: 16px;
     font-weight: 400;
     align-content: center; }
+  .pastTournament_number {
+    border-radius: 2px; }
   .pastTournament_player {
     display: flex;
     justify-content: flex-start;
@@ -3219,7 +3223,150 @@ h2 {
     text-align: center; }
   .pastTournament_after {
     text-align: center; }
-  .pastTournament .displayTournament, .pastTournament .completedGames, .pastTournament .finalResults {
+  .pastTournament .mediaBlock {
+    border-radius: 14px;
+    background: #262630;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    flex-wrap: wrap; }
+    .pastTournament .mediaBlock_card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-radius: 9px;
+      box-sizing: border-box; }
+      .pastTournament .mediaBlock_card img {
+        aspect-ratio: 1/1;
+        height: auto;
+        width: 184.5px;
+        border-radius: 6px; }
+      .pastTournament .mediaBlock_card span {
+        color: #fff;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal; }
+  .pastTournament .recordBlock {
+    position: relative;
+    border-radius: 14px;
+    background: #262630;
+    aspect-ratio: 16/9;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+  .pastTournament .contentWrapper iframe {
+    position: relative;
+    top: 0;
+    left: 0;
+    aspect-ratio: 16/9;
+    width: 100%;
+    height: auto;
+    border: 0;
+    border-radius: 10px; }
+  .pastTournament .videoPlaceholder {
+    position: absolute;
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+    padding: 20px;
+    font-family: sans-serif;
+    opacity: 0.8; }
+  .pastTournament .youtubeBtn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: #ff0000;
+    color: #fff;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    display: none; }
+  .pastTournament .youtubeBtn:hover {
+    background: #cc0000;
+    display: none; }
+
+#mediaViewerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 10, 15, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease; }
+
+#mediaViewerOverlay.active {
+  opacity: 1;
+  pointer-events: all; }
+
+#mediaViewerOverlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); }
+
+#mediaViewerClose {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 32px;
+  color: #fa6400;
+  cursor: pointer;
+  z-index: 10000; }
+
+.mediaViewerArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 48px;
+  color: #fa6400;
+  cursor: pointer;
+  user-select: none;
+  z-index: 10000;
+  opacity: 0.6; }
+
+.mediaViewerArrow:hover {
+  opacity: 1; }
+
+#mediaViewerPrev {
+  left: 30px; }
+
+#mediaViewerNext {
+  right: 30px; }
+
+#mediaViewerOverlay .counter {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  font-size: 16px;
+  color: #fa6400;
+  font-family: sans-serif;
+  z-index: 10000;
+  opacity: 0.8; }
+
+#mediaViewerOverlay.fadeOut {
+  opacity: 0 !important;
+  transition: opacity 0.25s ease; }
+  #mediaViewerOverlay.fadeOut .displayTournament, #mediaViewerOverlay.fadeOut .completedGames, #mediaViewerOverlay.fadeOut .finalResults {
     height: 525px;
     max-width: 804px;
     min-width: 320px;
@@ -3235,29 +3382,29 @@ h2 {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none; }
-    .pastTournament .displayTournament .content, .pastTournament .completedGames .content, .pastTournament .finalResults .content {
+    #mediaViewerOverlay.fadeOut .displayTournament .content, #mediaViewerOverlay.fadeOut .completedGames .content, #mediaViewerOverlay.fadeOut .finalResults .content {
       width: 200%;
       height: 200%;
       transform-origin: top left;
       color: #ffffff;
       font-size: 2rem; }
-      .pastTournament .displayTournament .content .tournament-wrapper, .pastTournament .completedGames .content .tournament-wrapper, .pastTournament .finalResults .content .tournament-wrapper {
+      #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper {
         display: flex;
         gap: 14px;
         align-items: flex-start;
         justify-content: flex-start; }
-        .pastTournament .displayTournament .content .tournament-wrapper h3, .pastTournament .completedGames .content .tournament-wrapper h3, .pastTournament .finalResults .content .tournament-wrapper h3 {
+        #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper h3, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper h3, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper h3 {
           color: #FFF;
           font-family: Inter;
           font-size: 16px;
           font-style: normal;
           font-weight: 500;
           line-height: normal; }
-        .pastTournament .displayTournament .content .tournament-wrapper .groups-wrapper, .pastTournament .completedGames .content .tournament-wrapper .groups-wrapper, .pastTournament .finalResults .content .tournament-wrapper .groups-wrapper {
+        #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .groups-wrapper, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .groups-wrapper, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .groups-wrapper {
           display: flex;
           flex-direction: column;
           gap: 40px; }
-        .pastTournament .displayTournament .content .tournament-wrapper .players-list, .pastTournament .completedGames .content .tournament-wrapper .players-list, .pastTournament .finalResults .content .tournament-wrapper .players-list {
+        #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .players-list, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .players-list, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .players-list {
           display: flex;
           flex-direction: column;
           align-items: flex-start;
@@ -3267,7 +3414,7 @@ h2 {
           border-radius: 8px;
           background: #3F3F4C;
           box-sizing: border-box; }
-          .pastTournament .displayTournament .content .tournament-wrapper .players-list .header-placeholder, .pastTournament .completedGames .content .tournament-wrapper .players-list .header-placeholder, .pastTournament .finalResults .content .tournament-wrapper .players-list .header-placeholder {
+          #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .players-list .header-placeholder, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .players-list .header-placeholder, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .players-list .header-placeholder {
             box-sizing: border-box;
             width: 100%;
             height: 42px;
@@ -3278,10 +3425,10 @@ h2 {
             padding: 0 14px;
             align-items: center;
             margin-bottom: 14px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .players-list .header-placeholder img, .pastTournament .completedGames .content .tournament-wrapper .players-list .header-placeholder img, .pastTournament .finalResults .content .tournament-wrapper .players-list .header-placeholder img {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .players-list .header-placeholder img, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .players-list .header-placeholder img, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .players-list .header-placeholder img {
               width: 15px;
               height: 20px; }
-          .pastTournament .displayTournament .content .tournament-wrapper .players-list .players-names, .pastTournament .completedGames .content .tournament-wrapper .players-list .players-names, .pastTournament .finalResults .content .tournament-wrapper .players-list .players-names {
+          #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .players-list .players-names, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .players-list .players-names, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .players-list .players-names {
             margin: 0;
             margin-top: 16px;
             list-style: none;
@@ -3289,7 +3436,7 @@ h2 {
             display: flex;
             flex-direction: column;
             gap: 14px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .players-list .players-names li, .pastTournament .completedGames .content .tournament-wrapper .players-list .players-names li, .pastTournament .finalResults .content .tournament-wrapper .players-list .players-names li {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .players-list .players-names li, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .players-list .players-names li, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .players-list .players-names li {
               display: flex;
               width: 307px;
               height: 35px;
@@ -3297,7 +3444,7 @@ h2 {
               align-items: flex-start;
               gap: 7px;
               box-sizing: border-box; }
-              .pastTournament .displayTournament .content .tournament-wrapper .players-list .players-names li span, .pastTournament .completedGames .content .tournament-wrapper .players-list .players-names li span, .pastTournament .finalResults .content .tournament-wrapper .players-list .players-names li span {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .players-list .players-names li span, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .players-list .players-names li span, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .players-list .players-names li span {
                 width: 16px;
                 color: #FFF;
                 font-family: Inter;
@@ -3305,9 +3452,9 @@ h2 {
                 font-style: normal;
                 font-weight: 500;
                 line-height: normal; }
-              .pastTournament .displayTournament .content .tournament-wrapper .players-list .players-names li h3, .pastTournament .completedGames .content .tournament-wrapper .players-list .players-names li h3, .pastTournament .finalResults .content .tournament-wrapper .players-list .players-names li h3 {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .players-list .players-names li h3, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .players-list .players-names li h3, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .players-list .players-names li h3 {
                 width: 100%; }
-              .pastTournament .displayTournament .content .tournament-wrapper .players-list .players-names li div, .pastTournament .completedGames .content .tournament-wrapper .players-list .players-names li div, .pastTournament .finalResults .content .tournament-wrapper .players-list .players-names li div {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .players-list .players-names li div, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .players-list .players-names li div, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .players-list .players-names li div {
                 display: flex;
                 width: 33px;
                 padding: 2px;
@@ -3317,17 +3464,17 @@ h2 {
                 flex-shrink: 0;
                 border-radius: 2px;
                 background: #B62727; }
-                .pastTournament .displayTournament .content .tournament-wrapper .players-list .players-names li div h5, .pastTournament .completedGames .content .tournament-wrapper .players-list .players-names li div h5, .pastTournament .finalResults .content .tournament-wrapper .players-list .players-names li div h5 {
+                #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .players-list .players-names li div h5, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .players-list .players-names li div h5, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .players-list .players-names li div h5 {
                   color: #FFF;
                   font-family: Inter;
                   font-size: 10px;
                   font-style: normal;
                   font-weight: 500;
                   line-height: normal; }
-        .pastTournament .displayTournament .content .tournament-wrapper .table-wrapper, .pastTournament .completedGames .content .tournament-wrapper .table-wrapper, .pastTournament .finalResults .content .tournament-wrapper .table-wrapper {
+        #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .table-wrapper, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .table-wrapper, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .table-wrapper {
           display: flex;
           flex-direction: column; }
-          .pastTournament .displayTournament .content .tournament-wrapper .table-wrapper .table-header, .pastTournament .completedGames .content .tournament-wrapper .table-wrapper .table-header, .pastTournament .finalResults .content .tournament-wrapper .table-wrapper .table-header {
+          #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .table-wrapper .table-header, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .table-wrapper .table-header, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .table-wrapper .table-header {
             display: flex;
             padding: 14px;
             align-items: center;
@@ -3335,7 +3482,7 @@ h2 {
             border-radius: 8px;
             background: #3F3F4C;
             box-sizing: border-box; }
-            .pastTournament .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row, .pastTournament .completedGames .content .tournament-wrapper .table-wrapper .table-header .header-row, .pastTournament .finalResults .content .tournament-wrapper .table-wrapper .table-header .header-row {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .table-wrapper .table-header .header-row, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .table-wrapper .table-header .header-row {
               display: flex;
               gap: 14px;
               justify-content: space-between;
@@ -3343,7 +3490,7 @@ h2 {
               box-sizing: border-box;
               background: #262630;
               border-radius: 6px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row div, .pastTournament .completedGames .content .tournament-wrapper .table-wrapper .table-header .header-row div, .pastTournament .finalResults .content .tournament-wrapper .table-wrapper .table-header .header-row div {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .table-wrapper .table-header .header-row div, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .table-wrapper .table-header .header-row div, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .table-wrapper .table-header .header-row div {
                 display: flex;
                 width: 58px;
                 height: 42px;
@@ -3356,14 +3503,14 @@ h2 {
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal; }
-          .pastTournament .displayTournament .content .tournament-wrapper .table-wrapper .results-table, .pastTournament .completedGames .content .tournament-wrapper .table-wrapper .results-table, .pastTournament .finalResults .content .tournament-wrapper .table-wrapper .results-table {
+          #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .table-wrapper .results-table, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .table-wrapper .results-table, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .table-wrapper .results-table {
             margin-top: 2px;
             box-sizing: border-box; }
-            .pastTournament .displayTournament .content .tournament-wrapper .table-wrapper .results-table table, .pastTournament .completedGames .content .tournament-wrapper .table-wrapper .results-table table, .pastTournament .finalResults .content .tournament-wrapper .table-wrapper .results-table table {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .table-wrapper .results-table table, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .table-wrapper .results-table table, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .table-wrapper .results-table table {
               border-collapse: separate;
               border-spacing: 14.5px;
               box-sizing: border-box; }
-              .pastTournament .displayTournament .content .tournament-wrapper .table-wrapper .results-table table td, .pastTournament .completedGames .content .tournament-wrapper .table-wrapper .results-table table td, .pastTournament .finalResults .content .tournament-wrapper .table-wrapper .results-table table td {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .table-wrapper .results-table table td, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .table-wrapper .results-table table td, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .table-wrapper .results-table table td {
                 position: relative;
                 box-sizing: border-box;
                 width: 58px;
@@ -3378,18 +3525,18 @@ h2 {
                 align-content: center;
                 font-weight: 400;
                 line-height: normal; }
-              .pastTournament .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .disabled, .pastTournament .completedGames .content .tournament-wrapper .table-wrapper .results-table table .disabled, .pastTournament .finalResults .content .tournament-wrapper .table-wrapper .results-table table .disabled {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .disabled, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .table-wrapper .results-table table .disabled, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .table-wrapper .results-table table .disabled {
                 background: #585869; }
-              .pastTournament .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .points, .pastTournament .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .place, .pastTournament .completedGames .content .tournament-wrapper .table-wrapper .results-table table .points, .pastTournament .completedGames .content .tournament-wrapper .table-wrapper .results-table table .place, .pastTournament .finalResults .content .tournament-wrapper .table-wrapper .results-table table .points, .pastTournament .finalResults .content .tournament-wrapper .table-wrapper .results-table table .place {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .points, #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .table-wrapper .results-table table .place, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .table-wrapper .results-table table .points, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .table-wrapper .results-table table .place, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .table-wrapper .results-table table .points, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .table-wrapper .results-table table .place {
                 background: #FFF;
                 color: #000; }
-        .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds {
+        #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds {
           display: flex;
           justify-content: flex-start;
           align-items: flex-start;
           gap: 45px;
           box-sizing: border-box; }
-          .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-line-left, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-line-left, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-line-left {
+          #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-line-left, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-line-left, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-line-left {
             position: absolute;
             left: -22px;
             top: 50%;
@@ -3399,25 +3546,25 @@ h2 {
             transform: translateY(-50%);
             z-index: 1;
             box-sizing: border-box; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-line-left:before, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-line-left:before, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-line-left:before {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-line-left:before, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-line-left:before, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-line-left:before {
               content: "";
               position: absolute;
               width: 1.5px;
               height: 114px;
               background-color: #774A35;
               left: 0; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-line-left:before, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-line-left:before, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-line-left:before {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-line-left:before, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-line-left:before, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-line-left:before {
               top: -57px; }
-          .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round {
+          #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round {
             width: 284px;
             position: relative;
             box-sizing: border-box; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_title, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_title, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_title {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_title, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_title, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_title {
               display: none; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match {
               position: relative;
               box-sizing: border-box; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match:after, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match:after, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match:after {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match:after, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match:after, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match:after {
                 content: "";
                 position: absolute;
                 top: calc(50% - 0.5px);
@@ -3426,11 +3573,11 @@ h2 {
                 height: 1.5px;
                 background-color: #774A35;
                 box-sizing: border-box; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair {
                 position: relative;
                 margin-bottom: 30px;
                 box-sizing: border-box; }
-                .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player {
+                #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player {
                   display: flex;
                   height: 42px;
                   padding: 8px 10px;
@@ -3442,17 +3589,17 @@ h2 {
                   background: #3F3F4C;
                   transition: background 0.2s ease;
                   box-sizing: border-box; }
-                  .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover {
+                  #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover {
                     background: #FA6400; }
-                    .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover .olympic-round_match_pair_player_score, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover .olympic-round_match_pair_player_score, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover .olympic-round_match_pair_player_score {
+                    #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover .olympic-round_match_pair_player_score, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover .olympic-round_match_pair_player_score, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:hover .olympic-round_match_pair_player_score {
                       color: #FFF; }
-                  .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(1), .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(1), .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(1) {
+                  #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(1), #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(1), #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(1) {
                     border-radius: 10px 10px 0px 0px;
                     border: 1px solid #774A35; }
-                  .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(2), .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(2), .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(2) {
+                  #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(2), #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(2), #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player:nth-child(2) {
                     border-radius: 0px 0px 10px 10px;
                     border: 1px solid #774A35; }
-                  .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_logo, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_logo, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_logo {
+                  #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_logo, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_logo, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_logo {
                     border: 1px solid #FFF;
                     background-position: 50% center;
                     background-size: cover;
@@ -3463,12 +3610,12 @@ h2 {
                     height: 26px;
                     border-radius: 50%;
                     box-sizing: border-box; }
-                  .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper {
+                  #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper {
                     display: flex;
                     align-items: center;
                     gap: 8px;
                     box-sizing: border-box; }
-                    .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper span, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper span, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper span {
+                    #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper span, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper span, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_wrapper span {
                       color: #FFF;
                       font-family: Inter;
                       font-size: 16px;
@@ -3476,7 +3623,7 @@ h2 {
                       font-weight: 400;
                       line-height: normal;
                       box-sizing: border-box; }
-                  .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score {
+                  #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score {
                     color: #666877;
                     font-family: Inter;
                     font-size: 16px;
@@ -3484,84 +3631,148 @@ h2 {
                     font-weight: 400;
                     line-height: normal;
                     box-sizing: border-box; }
-                    .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score .score-winner, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score .score-winner, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score .score-winner {
+                    #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score .score-winner, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score .score-winner, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score .score-winner {
                       color: #FA6400 !important;
                       font-weight: 600; }
-                  .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner {
+                  #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner {
                     border-radius: 10px 10px 10px 10px !important;
                     border: 1px solid #774A35;
                     box-sizing: border-box;
                     position: relative;
                     margin-left: -23px;
                     z-index: 10; }
-                    .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner .trophy-icon, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner .trophy-icon, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner .trophy-icon {
+                    #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner .trophy-icon, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner .trophy-icon, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_winner .trophy-icon {
                       display: inline-block;
                       animation: flyInTrophy 0.8s ease-out forwards;
                       font-size: 24px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2), .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2), .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2) {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2), #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2), #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2) {
               margin-top: 57px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2) .olympic-round_match_pair, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2) .olympic-round_match_pair, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2) .olympic-round_match_pair {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2) .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2) .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(2) .olympic-round_match_pair {
                 margin-bottom: 144px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3), .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3), .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3), #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3), #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) {
               margin-top: 171px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-round_match_pair, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-round_match_pair, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-round_match_pair {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-round_match_pair {
                 margin-bottom: 372px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-line-left:before, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-line-left:before, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-line-left:before {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(3) .olympic-line-left:before {
                 height: 228px;
                 top: -114px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4), .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4), .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4), #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4), #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) {
               margin-top: 399px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-round_match_pair, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-round_match_pair, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-round_match_pair {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-round_match_pair {
                 margin-bottom: 828px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-line-left:before, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-line-left:before, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-line-left:before {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(4) .olympic-line-left:before {
                 height: 456px;
                 top: -228px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5), .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5), .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5), #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5), #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) {
               margin-top: 855px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-round_match_pair, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-round_match_pair, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-round_match_pair {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-round_match_pair {
                 margin-bottom: 1741px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-line-left:before, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-line-left:before, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-line-left:before {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(5) .olympic-line-left:before {
                 height: 912px;
                 top: -456px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6), .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6), .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6), #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6), #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) {
               margin-top: 1768px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-round_match_pair, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-round_match_pair, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-round_match_pair {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-round_match_pair, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-round_match_pair {
                 margin-bottom: 3566px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-line-left:before, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-line-left:before, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-line-left:before {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(6) .olympic-line-left:before {
                 height: 1824px;
                 top: -912px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7), .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7), .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7) {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7), #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7), #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7) {
               margin-top: 3594px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7) .olympic-line-left:before, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7) .olympic-line-left:before, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7) .olympic-line-left:before {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(7) .olympic-line-left:before {
                 height: 3648px;
                 top: -1824px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8), .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8), .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8) {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8), #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8), #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8) {
               margin-top: 3825px; }
-              .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8) .olympic-line-left:before, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8) .olympic-line-left:before, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8) .olympic-line-left:before {
+              #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8) .olympic-line-left:before, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-child(8) .olympic-line-left:before {
                 height: 7296px;
                 top: -3648px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match:after, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match:after, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match:after {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match:after, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match:after, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match:after {
               content: "";
               display: none; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match_pair_player, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match_pair_player, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match_pair_player {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match_pair_player, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match_pair_player, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(1) .olympic-round_match_pair_player {
               border-radius: 10px; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(2) .olympic-round_match:before, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(2) .olympic-round_match:before, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(2) .olympic-round_match:before {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(2) .olympic-round_match:before, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(2) .olympic-round_match:before, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:nth-last-child(2) .olympic-round_match:before {
               content: "";
               display: none; }
-            .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:last-child .olympic-line-left:before, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:last-child .olympic-line-left:before, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:last-child .olympic-line-left:before {
+            #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round:last-child .olympic-line-left:before, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round:last-child .olympic-line-left:before, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round:last-child .olympic-line-left:before {
               display: none; }
-          .pastTournament .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score.score-winner, .pastTournament .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score.score-winner, .pastTournament .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score.score-winner {
+          #mediaViewerOverlay.fadeOut .displayTournament .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score.score-winner, #mediaViewerOverlay.fadeOut .completedGames .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score.score-winner, #mediaViewerOverlay.fadeOut .finalResults .content .tournament-wrapper .olympic-rounds .olympic-round_match_pair_player_score.score-winner {
             color: #FA6400; }
-  .pastTournament .displayTournamentSecond {
+  #mediaViewerOverlay.fadeOut .displayTournamentSecond {
     display: none;
     margin-top: 20px; }
-  .pastTournament #showResult {
+  #mediaViewerOverlay.fadeOut #showResult {
     display: none; }
 
 .highlighted-player {
   background: #FA6400 !important; }
   .highlighted-player .olympic-round_match_pair_player_score {
     color: #FFF !important; }
+
+@media (max-width: 768px) {
+  .pastTournament_table_header {
+    font-size: 14px;
+    padding: 8px 16px;
+    grid-template-columns: 150px repeat(5, 1fr); }
+    .pastTournament_table_header .pastTournament_sets {
+      padding: 0; }
+    .pastTournament_table_header .pastTournament_avarage {
+      text-align: center; }
+  .pastTournament_table_player {
+    padding: 8px 16px;
+    grid-template-columns: 150px repeat(5, 1fr); }
+    .pastTournament_table_player .pastTournament_sets {
+      padding: 0; }
+    .pastTournament_table_player .pastTournament_avarage {
+      text-align: center; }
+  .pastTournament_city {
+    display: none; }
+  .pastTournament_number {
+    display: none; }
+  .pastTournament_table_player .pastTournament_city {
+    display: none; }
+  .pastTournament_table_player .pastTournament_number {
+    display: none; }
+  .pastTournament .cell {
+    font-size: 14px; }
+  .pastTournament .recordBlock .videoPlaceholder {
+    font-size: 16px; }
+  .pastTournament .mediaBlock_card span {
+    font-size: 14px; }
+  .pastTournament .mediaBlock_card img {
+    width: 164.5px; } }
+
+@media (max-width: 576px) {
+  .pastTournament_table {
+    padding: 19px 8px; }
+    .pastTournament_table_header {
+      display: none; }
+    .pastTournament_table_player {
+      padding: 8px 0px;
+      grid-template-columns: 100px repeat(5, 1fr); }
+      .pastTournament_table_player .pastTournament_sets {
+        display: none; }
+      .pastTournament_table_player .pastTournament_player .playerLogo {
+        width: 20px;
+        height: 20px; }
+      .pastTournament_table_player .pastTournament_player span {
+        max-width: 76px;
+        min-width: 76px; }
+  .pastTournament .recordBlock {
+    padding: 0;
+    aspect-ratio: 7.6255 / 4.3; }
+    .pastTournament .recordBlock iframe {
+      border-radius: 14px; }
+    .pastTournament .recordBlock .videoPlaceholder {
+      font-size: 14px; }
+  .pastTournament .mediaBlock {
+    padding: 16px 8px;
+    justify-content: center; }
+    .pastTournament .mediaBlock_card {
+      width: 100%; }
+      .pastTournament .mediaBlock_card img {
+        width: 100%; } }
 
 .tournament h3 {
   color: #FFF;
@@ -7733,6 +7944,18 @@ textarea:-webkit-autofill:focus {
               appearance: textfield; }
               .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param input::-webkit-inner-spin-button, .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param input::-webkit-outer-spin-button {
                 appearance: auto; }
+            .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param .streamButton {
+              width: 46px;
+              height: 26px;
+              background-color: #ffffff;
+              border-radius: 6px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              cursor: pointer; }
+              .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param .streamButton img {
+                width: 26px;
+                height: 26px; }
             .startTournament_panelWrapp_tournament_menu_tournamentInfoBlock_param #ratingLimit {
               padding: 11px 6px; }
       .startTournament_panelWrapp_tournament_games {
@@ -8060,6 +8283,66 @@ textarea:-webkit-autofill:focus {
         font-weight: 400;
         line-height: normal;
         cursor: default; }
+
+.streamModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+.streamModal {
+  background: #1e1e1e;
+  padding: 20px 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  color: white;
+  font-family: sans-serif;
+  position: relative; }
+
+.streamModal h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 20px; }
+
+.streamModal input {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #333;
+  color: white;
+  font-size: 14px; }
+
+.streamModal .btnsBlock {
+  display: flex;
+  justify-content: space-between; }
+  .streamModal .btnsBlock .addStreamBtn {
+    background: #444;
+    color: white;
+    height: 28px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px; }
+
+.streamModal .closeModalBtn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #ccc; }
 
 .disabledButton {
   background: #A6A6A6;

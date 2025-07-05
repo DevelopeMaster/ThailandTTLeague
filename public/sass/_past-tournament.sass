@@ -145,6 +145,8 @@
                     height: auto
                     border-radius: 50%
                 span
+                    max-width: 118px
+                    min-width: 118px
                     align-content: center
                     white-space: nowrap
                     overflow: hidden
@@ -186,6 +188,8 @@
         font-size: 16px
         font-weight: 400
         align-content: center
+    &_number
+        border-radius: 2px
         
 
     // &_number
@@ -215,6 +219,163 @@
         text-align: center
     &_after
         text-align: center
+
+    .mediaBlock
+        border-radius: 14px
+        background: #262630
+        width: 100%
+        height: auto
+        padding: 20px
+        box-sizing: border-box
+
+        display: flex
+        flex-direction: row
+        gap: 8px
+        flex-wrap: wrap
+        &_card
+            display: flex
+            flex-direction: column
+            gap: 8px
+            // padding: 10px
+            border-radius: 9px
+            box-sizing: border-box
+
+            img
+                aspect-ratio: 1/1
+                height: auto
+                width: 184.5px
+                border-radius: 6px
+            span
+                color: #fff
+                font-family: Inter
+                font-size: 16px
+                font-style: normal
+                font-weight: 500
+                line-height: normal
+
+    .recordBlock
+        position: relative
+        border-radius: 14px
+        background: #262630
+        aspect-ratio: 16/9
+        width: 100%
+        height: auto
+        padding: 20px
+        box-sizing: border-box
+        display: flex
+        align-items: center
+        justify-content: center
+    .contentWrapper iframe
+        // position: absolute
+        position: relative
+        top: 0
+        left: 0
+        aspect-ratio: 16/9
+        width: 100%
+        height: auto
+        border: 0
+        border-radius: 10px
+    .videoPlaceholder 
+        position: absolute
+        color: #fff
+        font-size: 20px
+        text-align: center
+        padding: 20px
+        font-family: sans-serif
+        opacity: 0.8
+    
+
+    .youtubeBtn
+        position: absolute
+        bottom: 20px
+        right: 20px
+        background: #ff0000
+        color: #fff
+        padding: 8px 14px
+        border: none
+        border-radius: 6px
+        cursor: pointer
+        font-weight: bold
+        font-size: 14px
+        display: none
+        
+    .youtubeBtn:hover
+        background: #cc0000
+        display: none
+        
+    
+#mediaViewerOverlay
+    position: fixed
+    top: 0
+    left: 0
+    width: 100vw
+    height: 100vh
+    background: rgba(10, 10, 15, 0.95)
+    display: flex
+    align-items: center
+    justify-content: center
+    z-index: 9999
+    opacity: 0
+    pointer-events: none
+    transition: opacity 0.3s ease
+
+#mediaViewerOverlay.active
+    opacity: 1
+    pointer-events: all
+
+#mediaViewerOverlay img
+    max-width: 90vw
+    max-height: 90vh
+    object-fit: contain
+    transition: transform 0.3s ease
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4)
+
+#mediaViewerClose
+    position: absolute
+    top: 20px
+    right: 30px
+    font-size: 32px
+    color: #fa6400
+    cursor: pointer
+    z-index: 10000
+
+.mediaViewerArrow
+    position: absolute
+    top: 50%
+    transform: translateY(-50%)
+    font-size: 48px
+    color: #fa6400
+    cursor: pointer
+    user-select: none
+    z-index: 10000
+    opacity: 0.6
+
+.mediaViewerArrow:hover
+    opacity: 1
+
+#mediaViewerPrev
+    left: 30px
+
+#mediaViewerNext
+    right: 30px
+
+#mediaViewerOverlay .counter
+    position: absolute
+    top: 20px
+    left: 30px
+    font-size: 16px
+    color: #fa6400
+    font-family: sans-serif
+    z-index: 10000
+    opacity: 0.8
+
+#mediaViewerOverlay.fadeOut
+    opacity: 0 !important
+    transition: opacity 0.25s ease
+
+
+
+
 
 
 
@@ -690,3 +851,94 @@
 //     }
 // }
 
+// @media (max-width: 800px)
+
+@media (max-width: 768px)
+    .pastTournament
+        &_table
+            &_header
+                font-size: 14px
+                padding: 8px 16px
+                // grid-template-columns: 153px 2fr 1fr 2fr repeat(3, 1fr)
+                grid-template-columns: 150px repeat(5, 1fr)
+                .pastTournament_sets
+                    padding: 0
+                .pastTournament_avarage
+                    text-align: center
+            &_player
+                padding: 8px 16px
+                // grid-template-columns: 153px 2fr 1fr 2fr repeat(3, 1fr)
+                grid-template-columns: 150px repeat(5, 1fr)
+                .pastTournament_sets
+                    padding: 0
+                .pastTournament_avarage
+                    text-align: center
+                
+
+        &_city
+            display: none
+        &_number
+            display: none
+        &_table_player 
+            .pastTournament_city
+                display: none
+            .pastTournament_number
+                display: none
+        .cell
+            font-size: 14px
+        
+        .recordBlock
+            .videoPlaceholder
+                font-size: 16px
+        
+        .mediaBlock_card 
+            span 
+                font-size: 14px
+            img
+                width: 164.5px
+
+            
+
+@media (max-width: 576px)
+    .pastTournament
+        &_table
+            padding: 19px 8px
+            &_header
+                display: none
+                // font-size: 14px
+                // padding: 8px 16px
+                
+                // grid-template-columns: 100px repeat(5, 1fr)
+                
+            &_player
+                padding: 8px 0px
+                // grid-template-columns: 153px 2fr 1fr 2fr repeat(3, 1fr)
+                grid-template-columns: 100px repeat(5, 1fr)
+                .pastTournament_sets
+                    display: none
+                //     padding: none
+                // .pastTournament_avarage
+                //     text-align: center
+                .pastTournament_player 
+                    .playerLogo
+                        width: 20px
+                        height: 20px
+                    
+                    span
+                        max-width: 76px
+                        min-width: 76px
+        .recordBlock
+            padding: 0
+            aspect-ratio: 7.6255 / 4.3
+            iframe
+                border-radius: 14px
+            .videoPlaceholder
+                font-size: 14px
+        .mediaBlock
+            padding: 16px 8px
+            justify-content: center
+            &_card 
+                width: 100%
+                img
+                    // width: 164.5px
+                    width: 100%

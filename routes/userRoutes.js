@@ -6,7 +6,8 @@ const { ObjectId } = require('mongodb');
 const { body, validationResult } = require('express-validator');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
-const { getDB } = require('../db');
+// const { getDB } = require('../db');
+const { connectDB, getDB, client } = require('../db');
 const path = require('path');
 const { ensureAuthenticated, deleteFile, ensureAuthenticatedOrAdmin, ensureAdmin, upload } = require('../middlewares/uploadConfig');
 // const Player = require('../models/player');
@@ -86,6 +87,29 @@ router.post('/upload/club-photos', upload.array('photos', 10), (req, res) => {
     } catch (error) {
         console.error('Ошибка при загрузке фотографий клуба:', error);
         res.status(500).json({ error: 'Ошибка при загрузке фотографий клуба' });
+    }
+});
+
+
+router.post('/tournament/:id/screenshot', upload.single('tournamentScreenshot'), async (req, res) => {
+    const { id } = req.params;
+    const { field } = req.body;
+
+    if (!req.file || !field) {
+        return res.status(400).json({ success: false, error: 'Missing image or field' });
+    }
+
+    try {
+        const db = getDB();
+        await db.collection('tournaments').updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { [field]: req.file.path } } // req.file.path — это URL в Cloudinary
+        );
+
+        res.json({ success: true, url: req.file.path });
+    } catch (error) {
+        console.error('Ошибка при сохранении ссылки в турнире:', error);
+        res.status(500).json({ success: false, error: 'DB update error' });
     }
 });
 

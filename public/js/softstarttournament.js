@@ -3840,6 +3840,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             renderCompletedGames(finishedPairs);
             renderFinalResults(tournamentData);
             incrementTournamentsForPlayers([...tournamentData.players]);
+
+            // const canvas = await html2canvas(document.getElementById('tournament-wrapper'));
+            // const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
+            await captureAndUploadTournamentScreenshot('tournament-wrapper', tournamentId, 'screenshotRoundRobin');
         }
 
         if (selectedType === 'twoRound') {
@@ -4705,7 +4710,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     id: player.id,
                     name: player.name || player.fullname,
                     birthYear: player.birthYear,
-                    city: player.city,
+                    city: player.city || player.cityName,
                     nickname: player.nickname,
                     unrated: true
                 })),
@@ -4986,7 +4991,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 id: player.id,
                 name: player.name || player.fullname,
                 birthYear: player.birthYear,
-                city: player.city,
+                city: player.city || player.cityName,
                 nickname: player.nickname,
                 unrated: true
             })),
@@ -5040,7 +5045,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             name: player.name || player.fullname,
             birthYear: player.birthYear,
             nickname: player.nickname,
-            city: player.city || "Unknown",
+            city: player.city || player.cityName || "Unknown",
             unrated: player.unrated || false,
             wins: 0,
             losses: 0,
@@ -6333,3 +6338,247 @@ function generateFakePlayers(count = 35) {
 //     });
 // });
 
+// document.getElementById('streamBtn').addEventListener('click', () => {
+//     const overlay = document.getElementById('streamModalOverlay');
+//     overlay.style.display = 'flex';
+  
+//     overlay.innerHTML = `
+//       <div class="streamModal">
+//         <span class="closeModalBtn">&times;</span>
+//         <h3>Enter YouTube Stream Links</h3>
+//         <div id="streamInputs">
+//           <input type="url" placeholder="https://youtube.com/..." />
+//           <input type="url" placeholder="https://youtube.com/..." />
+//           <input type="url" placeholder="https://youtube.com/..." />
+//         </div>
+//         <div class="btnsBlock">
+//             <div class="addStreamBtn" id="addStreamInput">+ Add another stream</div>
+//             <button id="saveStreamsLinks" class="header_btn-sign btnSbmt" type="submit">Add</button>
+//         </div>
+       
+//       </div>
+//     `;
+  
+//     overlay.querySelector('.closeModalBtn').onclick = () => {
+//       overlay.style.display = 'none';
+//       overlay.innerHTML = '';
+//     };
+  
+//     overlay.querySelector('#addStreamInput').onclick = () => {
+//       const inputBlock = document.createElement('input');
+//       inputBlock.type = 'url';
+//       inputBlock.placeholder = 'https://youtube.com/...';
+//       document.getElementById('streamInputs').appendChild(inputBlock);
+//     };
+// });
+  
+
+
+export async function captureAndUploadTournamentScreenshot(elementClass, tournamentId, fieldName, backgroundColor = '#000817') {
+    const element = document.querySelector(`.${elementClass}`);
+    if (!element) {
+        console.error(`⛔ Элемент с классом "${elementClass}" не найден`);
+        return;
+    }
+
+    // Дождаться отрисовки DOM и всех изображений
+    await new Promise(resolve => requestAnimationFrame(resolve));
+    await Promise.all([...element.querySelectorAll('img')].map(img =>
+        img.complete ? Promise.resolve() : new Promise(res => {
+            img.onload = img.onerror = res;
+        })
+    ));
+
+    const contentWidth = element.scrollWidth;
+    const contentHeight = element.scrollHeight;
+    console.log('📐 Контентные размеры:', contentWidth, contentHeight);
+    
+
+    // Устанавливаем width: min-content
+    element.style.width = 'min-content';
+
+    // Ждём отрисовки
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    // Скриншот по новому размеру
+    const canvas = await html2canvas(element, {
+        backgroundColor: null,
+        useCORS: true,
+        scale: 2,
+        width: element.scrollWidth,
+        height: element.scrollHeight
+    });
+
+    // Возвращаем исходную ширину
+    element.style.width = 'auto';
+
+
+    const originalWidth = canvas.width;
+    const originalHeight = canvas.height;
+
+    // const finalSize = 1024;
+    // const padding = 50;
+    const finalSize = 2048; 
+    const padding = 100;
+    const squareCanvas = document.createElement('canvas');
+    squareCanvas.width = finalSize;
+    squareCanvas.height = finalSize;
+
+    const ctx = squareCanvas.getContext('2d');
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(0, 0, finalSize, finalSize);
+
+    const scale = Math.min((finalSize - padding * 2) / originalWidth, (finalSize - padding * 2) / originalHeight);
+    const drawWidth = originalWidth * scale;
+    const drawHeight = originalHeight * scale;
+    const offsetX = (finalSize - drawWidth) / 2;
+    const offsetY = (finalSize - drawHeight) / 2;
+
+    ctx.drawImage(canvas, 0, 0, originalWidth, originalHeight, offsetX, offsetY, drawWidth, drawHeight);
+
+    const blob = await new Promise(resolve => squareCanvas.toBlob(resolve, 'image/png'));
+
+    const formData = new FormData();
+    formData.append('tournamentScreenshot', blob);
+    formData.append('field', fieldName);
+
+    try {
+        const response = await fetch(`/api/tournament/${tournamentId}/screenshot`, {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.error || '❌ Ошибка при загрузке изображения');
+        }
+
+        console.log(`✅ Скриншот "${elementClass}" успешно загружен:`, result.url);
+        return result.url;
+
+    } catch (error) {
+        console.error('🚨 Ошибка при отправке скриншота:', error);
+    }
+}
+
+
+
+
+
+
+
+// export async function captureAndUploadTournamentScreenshot(elementId, tournamentId, fieldName, backgroundColor = '#2c2b3d') {
+//     const element = document.querySelector(`.${elementId}`);
+//     if (!element) {
+//         console.error(`Элемент #${elementId} не найден`);
+//         return;
+//     }
+
+//     // 1. Определяем размеры элемента
+//     const bounds = element.getBoundingClientRect();
+//     const contentWidth = bounds.width;
+//     const contentHeight = bounds.height;
+
+//     const finalSize = 1024;
+
+//     // 2. Вычисляем масштаб для увеличения DOM в холсте
+//     const scale = Math.min(finalSize / contentWidth, finalSize / contentHeight);
+//     console.log('SCALE', scale);
+//     const scaledWidth = contentWidth * scale;
+//     const scaledHeight = contentHeight * scale;
+
+//     // 3. Рендерим DOM с нужным масштабом
+//     const canvas = await html2canvas(element, {
+//         backgroundColor,
+//         useCORS: true,
+//         scale: scale,
+//         width: scaledWidth,
+//         height: scaledHeight
+//     });
+
+//     // 4. Создаём квадратный холст 1920×1920 и центрируем результат
+//     const squareCanvas = document.createElement('canvas');
+//     squareCanvas.width = finalSize;
+//     squareCanvas.height = finalSize;
+
+//     const ctx = squareCanvas.getContext('2d');
+//     ctx.strokeStyle = 'red';
+//     ctx.lineWidth = 5;
+//     ctx.strokeRect(0, 0, squareCanvas.width, squareCanvas.height);
+
+//     // ctx.fillStyle = backgroundColor;
+//     // ctx.fillRect(0, 0, finalSize, finalSize);
+
+//     const offsetX = (finalSize - canvas.width) / 2;
+//     const offsetY = (finalSize - canvas.height) / 2;
+
+//     ctx.drawImage(canvas, offsetX, offsetY);
+
+//     // 5. Преобразуем и отправляем
+//     const blob = await new Promise(resolve => squareCanvas.toBlob(resolve, 'image/png'));
+
+//     const formData = new FormData();
+//     formData.append('tournamentScreenshot', blob);
+//     formData.append('field', fieldName);
+
+//     try {
+//         const response = await fetch(`/api/tournament/${tournamentId}/screenshot`, {
+//             method: 'POST',
+//             body: formData
+//         });
+
+//         const result = await response.json();
+
+//         if (!response.ok || !result.success) {
+//             throw new Error(result.error || 'Ошибка при загрузке изображения');
+//         }
+
+//         console.log(`✅ Скриншот "${elementId}" успешно загружен:`, result.url);
+//         return result.url;
+
+//     } catch (error) {
+//         console.error('❌ Ошибка при отправке скриншота:', error);
+//     }
+// }
+
+
+
+
+
+
+
+
+// export async function captureAndUploadTournamentScreenshot(elementId, tournamentId, fieldName) {
+//     // const element = document.getElementById(elementId);
+//     const element = document.querySelector(`.${elementId}`);
+//     if (!element) {
+//         console.error(`Элемент #${elementId} не найден`);
+//         return;
+//     }
+
+//     const canvas = await html2canvas(element, {
+//         backgroundColor: '#262630',
+//         scale: 2,
+//         useCORS: true
+//     });
+
+//     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
+//     const formData = new FormData();
+//     formData.append('tournamentScreenshot', blob); // ключ совпадает с fieldname на сервере
+//     formData.append('field', fieldName);
+
+//     const response = await fetch(`/api/tournament/${tournamentId}/screenshot`, {
+//         method: 'POST',
+//         body: formData
+//     });
+
+//     const result = await response.json();
+//     if (!response.ok || !result.success) {
+//         console.error('Ошибка при сохранении скриншота:', result.error);
+//         return;
+//     }
+
+//     console.log(`Скриншот "${elementId}" загружен:`, result.url);
+// }

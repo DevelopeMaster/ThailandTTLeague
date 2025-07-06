@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     createSoftHeader(localStorage.getItem('clientLang') || 'english');
     const userId = document.querySelector('.startTournament').dataset.userid;
     let tournamentId = document.querySelector('.startTournament').dataset.tournamentid;
-  
+    window.tournamentId = tournamentId;
     initializeApp();
     
     languageControl();
@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
 
     let tournamentData = await fetchTournament(tournamentId);
+    window.tournamentData = tournamentData;
     let waitingPairs = tournamentData.waitingPairs || [];
     let currentPairs = tournamentData.currentPairs || [];
     let finishedPairs = tournamentData.finishedPairs || [];
@@ -6338,39 +6339,130 @@ function generateFakePlayers(count = 35) {
 //     });
 // });
 
-// document.getElementById('streamBtn').addEventListener('click', () => {
-//     const overlay = document.getElementById('streamModalOverlay');
-//     overlay.style.display = 'flex';
+document.getElementById('streamBtn').addEventListener('click', () => {
+    // const overlay = document.getElementById('streamModalOverlay');
+    // overlay.style.display = 'flex';
   
-//     overlay.innerHTML = `
-//       <div class="streamModal">
-//         <span class="closeModalBtn">&times;</span>
-//         <h3>Enter YouTube Stream Links</h3>
-//         <div id="streamInputs">
-//           <input type="url" placeholder="https://youtube.com/..." />
-//           <input type="url" placeholder="https://youtube.com/..." />
-//           <input type="url" placeholder="https://youtube.com/..." />
-//         </div>
-//         <div class="btnsBlock">
-//             <div class="addStreamBtn" id="addStreamInput">+ Add another stream</div>
-//             <button id="saveStreamsLinks" class="header_btn-sign btnSbmt" type="submit">Add</button>
-//         </div>
+    // overlay.innerHTML = `
+    //   <div class="streamModal">
+    //     <span class="closeModalBtn">&times;</span>
+    //     <h3>Enter YouTube Stream Links</h3>
+    //     <div id="streamInputs">
+    //       <input type="url" placeholder="https://youtube.com/..." />
+    //       <input type="url" placeholder="https://youtube.com/..." />
+    //       <input type="url" placeholder="https://youtube.com/..." />
+    //     </div>
+    //     <div class="btnsBlock">
+    //         <div class="addStreamBtn" id="addStreamInput">+ Add another stream</div>
+    //         <button id="saveStreamLinks" class="header_btn-sign btnSbmt">Save</button>
+    //     </div>
        
-//       </div>
-//     `;
+    //   </div>
+    // `;
+
+    const overlay = document.getElementById('streamModalOverlay');
+    overlay.style.display = 'flex';
+
+    // 1. Собираем все recordId из window.tournament
+    const streamKeys = Object.keys(window.tournamentData || {}).filter(key => key.startsWith('recordId'));
+    const initialIds = streamKeys
+        .map(key => window.tournamentData[key])
+        .filter(Boolean); // удаляем null/undefined
+
+    // 2. Определяем, сколько инпутов нужно
+    const inputCount = Math.max(3, initialIds.length);
+
+    // 3. Генерируем HTML инпутов
+    let inputsHtml = '';
+    for (let i = 0; i < inputCount; i++) {
+        const value = initialIds[i] ? `value="https://www.youtube.com/watch?v=${initialIds[i]}"` : '';
+
+        inputsHtml += `<input type="url" placeholder="https://youtube.com/..." ${value} />`;
+    }
+
+    // 4. Рендерим окно
+    overlay.innerHTML = `
+        <div class="streamModal">
+        <span class="closeModalBtn">&times;</span>
+        <h3>Enter YouTube Stream Links</h3>
+        <div id="streamInputs">
+            ${inputsHtml}
+        </div>
+        <div class="btnsBlock">
+            <div class="addStreamBtn" id="addStreamInput">+ Add another stream</div>
+            <button id="saveStreamLinks" class="header_btn-sign btnSbmt">Save</button>
+        </div>
+        </div>
+    `;
   
-//     overlay.querySelector('.closeModalBtn').onclick = () => {
-//       overlay.style.display = 'none';
-//       overlay.innerHTML = '';
-//     };
+    overlay.querySelector('.closeModalBtn').onclick = () => {
+      overlay.style.display = 'none';
+      overlay.innerHTML = '';
+    };
   
-//     overlay.querySelector('#addStreamInput').onclick = () => {
-//       const inputBlock = document.createElement('input');
-//       inputBlock.type = 'url';
-//       inputBlock.placeholder = 'https://youtube.com/...';
-//       document.getElementById('streamInputs').appendChild(inputBlock);
-//     };
-// });
+    overlay.querySelector('#addStreamInput').onclick = () => {
+        const container = document.getElementById('streamInputs');
+        const currentCount = container.querySelectorAll('input').length;
+      
+        if (currentCount >= 12) {
+          console.warn('⚠️ Максимум 12 стримов');
+          overlay.querySelector('#addStreamInput').style.display = 'none';
+          return;
+        }
+      
+        const inputBlock = document.createElement('input');
+        inputBlock.type = 'url';
+        inputBlock.placeholder = 'https://youtube.com/...';
+        container.appendChild(inputBlock);
+      
+        if (container.querySelectorAll('input').length >= 12) {
+          overlay.querySelector('#addStreamInput').style.display = 'none';
+        }
+    };
+    // console.log('tournamentId', window.tournamentId);
+    overlay.querySelector('#saveStreamLinks').onclick = async () => {
+        const links = [...overlay.querySelectorAll('#streamInputs input')]
+          .map(input => input.value.trim())
+          .filter(url => url !== '');
+      
+        const videoIds = links
+          .map(extractYoutubeId)
+          .filter(id => id); // убираем null
+      
+        const tournamentId = window.tournamentId; // подставь реальный ID
+        // console.log('tournamentId', tournamentId);
+        try {
+          const res = await fetch(`/api/tournament/${tournamentId}/record`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ videoIds })
+          });
+      
+          const data = await res.json();
+          if (data.success) {
+            showErrorModal("Success", "Links have been saved.")
+            console.log('✅ Ссылки сохранены');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+          } else {
+            console.error('❌ Ошибка при сохранении:', data.error);
+          }
+        } catch (error) {
+          console.error('❌ Ошибка запроса:', error);
+        }
+      
+        overlay.style.display = 'none';
+        overlay.innerHTML = '';
+      };
+
+
+    function extractYoutubeId(url) {
+        const match = url.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/);
+        return match ? match[1] : null;
+    }
+      
+});
   
 
 

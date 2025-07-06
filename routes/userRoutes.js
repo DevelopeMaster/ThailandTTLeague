@@ -90,6 +90,50 @@ router.post('/upload/club-photos', upload.array('photos', 10), (req, res) => {
     }
 });
 
+router.post('/tournament/:id/record', async (req, res) => {
+    const db = getDB();
+  const tournamentId = req.params.id;
+  const { videoIds } = req.body;
+
+  try {
+    if (!Array.isArray(videoIds) || videoIds.length === 0) {
+      return res.status(400).json({ success: false, error: 'No videoIds provided' });
+    }
+
+    // Формируем $set: { recordId, recordId2, ... }
+    const setFields = {};
+    videoIds.forEach((id, index) => {
+      const key = index === 0 ? 'recordId' : `recordId${index + 1}`;
+      setFields[key] = id;
+    });
+
+    // Формируем $unset для лишних записей
+    const unsetFields = {};
+    for (let i = videoIds.length + 1; i <= 12; i++) {
+      const key = i === 1 ? 'recordId' : `recordId${i}`;
+      unsetFields[key] = "";
+    }
+
+    const result = await db.collection('tournaments').updateOne(
+      { _id: new ObjectId(tournamentId) },
+      {
+        $set: setFields,
+        $unset: unsetFields
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ success: false, error: 'Tournament not found' });
+    }
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('❌ Ошибка при сохранении записей трансляции:', err);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+  
+
 
 router.post('/tournament/:id/screenshot', upload.single('tournamentScreenshot'), async (req, res) => {
     const { id } = req.params;

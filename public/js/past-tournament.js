@@ -505,7 +505,7 @@ function createYoutubePlayer(videoId) {
         videoId: videoId,
         playerVars: {
             rel: 0,
-            controls: 0,
+            controls: 1,
             modestbranding: 1,
             disablekb: 1,
             iv_load_policy: 3,
@@ -521,11 +521,11 @@ function createYoutubePlayer(videoId) {
   });
 
     // Пересоздаём плеер при ресайзе (переключение fullscreen)
-    window.addEventListener('resize', () => {
-        if (!ytPlayer || !ytPlayer.getVideoData) return;
-        const currentVideo = ytPlayer.getVideoData().video_id;
-        renderTournamentVideo(currentVideo); // пересоздаём плеер
-    }, { once: true }); // только один раз на смену
+    // window.addEventListener('resize', () => {
+    //     if (!ytPlayer || !ytPlayer.getVideoData) return;
+    //     const currentVideo = ytPlayer.getVideoData().video_id;
+    //     renderTournamentVideo(currentVideo); // пересоздаём плеер
+    // }, { once: true }); // только один раз на смену
 }
 
 

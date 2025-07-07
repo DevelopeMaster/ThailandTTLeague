@@ -2922,7 +2922,11 @@ app.post('/register', [
   
 
   const parts = date.split(".");
-  const birthdayDate = new Date(`${parts[1]}/${parts[0]}/${parts[2]}`);
+  // console.log('date', parts);
+  const [day, month, year] = date.split('.');
+  // console.log('date for server', new Date(Date.UTC(Number(year), Number(month) - 1, Number(day))));
+  // const birthdayDate = new Date(`${parts[1]}/${parts[0]}/${parts[2]}`);
+  const birthdayDate = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
 
   try {
     // Check if the city already exists

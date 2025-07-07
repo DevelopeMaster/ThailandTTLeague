@@ -415,7 +415,8 @@ router.post('/savePlayerProfile', ensureAuthenticated, upload.fields([
         } 
   
         if (req.body.birthdayDate && req.body.birthdayDate !== currentUserData.birthdayDate) {
-            updates.birthdayDate = req.body.birthdayDate;
+            console.log('req.body.birthdayDate', req.body.birthdayDate);
+            updates.birthdayDate = new Date(req.body.birthdayDate);
         }
   
         if (req.body.email && req.body.email !== currentUserData.email) {

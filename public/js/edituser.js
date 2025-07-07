@@ -411,6 +411,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         return isoDate.toISOString(); // Возвращаем ISO строку
     }
 
+    
+
     window.removePhoto = function(event) {
         event.stopPropagation(); // Предотвращаем открытие проводника при удалении фото
 

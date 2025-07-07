@@ -6383,7 +6383,10 @@ document.getElementById('streamBtn').addEventListener('click', () => {
     // 4. Рендерим окно
     overlay.innerHTML = `
         <div class="streamModal">
-        <span class="closeModalBtn">&times;</span>
+        <button class="closeModalBtn modal_close">
+            <img src="/icons/x-circle.svg" alt="кнопка закрыть">
+        </button>
+        
         <h3>Enter YouTube Stream Links</h3>
         <div id="streamInputs">
             ${inputsHtml}
